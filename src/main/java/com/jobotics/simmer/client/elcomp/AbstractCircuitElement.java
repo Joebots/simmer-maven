@@ -34,12 +34,13 @@ import com.jobotics.simmer.client.gui.util.Point;
 import com.jobotics.simmer.client.gui.util.Polygon;
 import com.jobotics.simmer.client.gui.util.Rectangle;
 import com.jobotics.simmer.client.util.GraphicsUtil;
+import com.jobotics.simmer.client.util.MouseModeEnum.MouseMode;
 
 public abstract class AbstractCircuitElement implements Editable {
 	protected static Color colorScale[];
 	protected static int colorScaleCount = 32;
 	public static double currentMult, powerMult;
-	protected static final double pi = 3.14159265358979323846;
+	protected static final double pi = Math.PI;
 	public static Point ps1, ps2;
 	protected static NumberFormat showFormat, shortFormat;// , noCommaFormat;
 	public static Simmer sim;
@@ -554,8 +555,8 @@ public abstract class AbstractCircuitElement implements Editable {
 		if (sim.dragElm == null && !needsHighlight()
 				&& sim.getCircuitNode(n).links.size() == 2)
 			return;
-		if (sim.getMouseMode() == Simmer.MODE_DRAG_ROW
-				|| sim.getMouseMode() == Simmer.MODE_DRAG_COLUMN)
+		if (sim.getMouseMode() == MouseMode.DRAG_ROW
+				|| sim.getMouseMode() == MouseMode.DRAG_COLUMN)
 			return;
 		drawPost(g, x0, y0);
 	}

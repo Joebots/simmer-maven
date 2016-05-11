@@ -111,6 +111,7 @@ import com.jobotics.simmer.client.gui.impl.Scope;
 import com.jobotics.simmer.client.gui.impl.ScrollValuePopup;
 import com.jobotics.simmer.client.gui.impl.Scrollbar;
 import com.jobotics.simmer.client.gui.util.Color;
+import com.jobotics.simmer.client.gui.util.Display;
 import com.jobotics.simmer.client.gui.util.Font;
 import com.jobotics.simmer.client.gui.util.Graphics;
 import com.jobotics.simmer.client.gui.util.LoadFile;
@@ -119,149 +120,35 @@ import com.jobotics.simmer.client.gui.util.Point;
 import com.jobotics.simmer.client.gui.util.Rectangle;
 import com.jobotics.simmer.client.gui.util.RowInfo;
 import com.jobotics.simmer.client.util.CircuitElementFactory;
+import com.jobotics.simmer.client.util.FindPathInfo;
+import com.jobotics.simmer.client.util.HintTypeEnum.HintType;
+import com.jobotics.simmer.client.util.MouseModeEnum.MouseMode;
 import com.jobotics.simmer.client.util.QueryParameters;
 import com.jobotics.simmer.client.util.StringTokenizer;
 
 public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHandler, MouseUpHandler, MouseOutHandler, ClickHandler, DoubleClickHandler, ContextMenuHandler, NativePreviewHandler
 {
 
-	private class FindPathInfo {
-		static final int		CAP_V	= 4;
-		static final int		INDUCT	= 1;
-		static final int		SHORT	= 3;
-		static final int		VOLTAGE	= 2;
-		int						dest;
-		AbstractCircuitElement	firstElm;
-		int						type;
-		boolean					used[];
-
-		FindPathInfo(int t, AbstractCircuitElement e, int d) {
-			dest = d;
-			type = t;
-			firstElm = e;
-			used = new boolean[getNodeList().size()];
-		}
-
-		boolean findPath(int n1) {
-			return findPath(n1, -1);
-		}
-
-		boolean findPath(int n1, int depth) {
-			if (n1 == dest)
-				return true;
-			
-			if (depth-- == 0)
-				return false;
-			
-			if (used[n1]) {
-				// System.out.println("used " + n1);
-				return false;
-			}
-			
-			used[n1] = true;
-			int i;
-			
-			for (i = 0; i != getElmList().size(); i++) {
-				AbstractCircuitElement ce = getElm(i);
-				
-				if (ce == firstElm)
-					continue;
-				
-				if (type == INDUCT) {
-					if (ce instanceof CurrentElm)
-						continue;
-				}
-				if (type == VOLTAGE) {
-					if (!(ce.isWire() || ce instanceof VoltageElm))
-						continue;
-				}
-				if (type == SHORT && !ce.isWire())
-					continue;
-				
-				if (type == CAP_V) {
-					if (!(ce.isWire() || ce instanceof CapacitorElm || ce instanceof VoltageElm))
-						continue;
-				}
-				
-				if (n1 == 0) {
-					// look for posts which have a ground connection;
-					// our path can go through ground
-					int j;
-					for (j = 0; j != ce.getPostCount(); j++)
-						if (ce.hasGroundConnection(j) && findPath(ce.getNode(j), depth)) {
-							used[n1] = false;
-							return true;
-						}
-				}
-				
-				int j;
-				for (j = 0; j != ce.getPostCount(); j++) {
-					// System.out.println(ce + " " + ce.getNode(j));
-					if (ce.getNode(j) == n1)
-						break;
-				}
-				
-				if (j == ce.getPostCount())
-					continue;
-				
-				if (ce.hasGroundConnection(j) && findPath(0, depth)) {
-					// System.out.println(ce + " has ground");
-					used[n1] = false;
-					return true;
-				}
-				
-				if (type == INDUCT && ce instanceof InductorElm) {
-					double c = ce.getCurrent();
-					if (j == 0)
-						c = -c;
-					// System.out.println("matching " + c + " to " +
-					// firstElm.getCurrent());
-					// System.out.println(ce + " " + firstElm);
-					if (Math.abs(c - firstElm.getCurrent()) > 1e-10)
-						continue;
-				}
-				
-				int k;
-				for (k = 0; k != ce.getPostCount(); k++) {
-					if (j == k)
-						continue;
-					// System.out.println(ce + " " + ce.getNode(j) + "-" +
-					// ce.getNode(k));
-					if (ce.getConnection(j, k) && findPath(ce.getNode(k), depth)) {
-						// System.out.println("got findpath " + n1);
-						used[n1] = false;
-						return true;
-					}
-					// System.out.println("back on findpath " + n1);
-				}
-			}
-			
-			used[n1] = false;
-			// System.out.println(n1 + " failed");
-			return false;
-		}
-	}
-
-	public static final double				freqMult			= 3.14159265 * 2 * 4;
-	private static final int				HINT_3DB_C			= 3;
-	private static final int				HINT_3DB_L			= 5;
-	private static final int				HINT_LC				= 1;
-	private static final int				HINT_RC				= 2;
-	private static final int				HINT_TWINT			= 4;
-	private static final int				infoWidth			= 120;
-	private static final int				MENUBARHEIGHT		= 30;
-	private static final int				MODE_ADD_ELM		= 0;
-	private static final int				MODE_DRAG_ALL		= 1;
-	private static final int				MODE_DRAG_POST		= 5;
-	public static final int					MODE_DRAG_COLUMN	= 3;
-	public static final int					MODE_DRAG_ROW		= 2;
-	private static final int				MODE_DRAG_SELECTED	= 4;
-	private static final int				MODE_SELECT			= 6;
+	public static final double				freqMult			= Math.PI * 2 * 4;
+//	private static final int				HINT_3DB_C			= 3;
+//	private static final int				HINT_3DB_L			= 5;
+//	private static final int				HINT_LC				= 1;
+//	private static final int				HINT_RC				= 2;
+//	private static final int				HINT_TWINT			= 4;
+//	private static final int				infoWidth			= 120;
+//	private static final int				MENUBARHEIGHT		= 30;
+//	private static final int				MODE_ADD_ELM		= 0;
+//	private static final int				MODE_DRAG_ALL		= 1;
+//	private static final int				MODE_DRAG_POST		= 5;
+//	public static final int					MODE_DRAG_COLUMN	= 3;
+//	public static final int					MODE_DRAG_ROW		= 2;
+//	private static final int				MODE_DRAG_SELECTED	= 4;
+//	private static final int				MODE_SELECT			= 6;
 	private static String					muString			= "u";
-	private static final double				pi					= 3.14159265358979323846;
-	private static final int				POSTGRABSQ			= 16;
-	public static final int					sourceRadius		= 7;
-	public static final int					VERTICALPANELWIDTH	= 166;
+//	private static final double				pi					= 3.14159265358979323846;
+//	private static final int				POSTGRABSQ			= 16;
+//	public static final int					sourceRadius		= 7;
+//	public static final int					VERTICALPANELWIDTH	= 166;
 	public static final String				ohmString			= "ohm";
 	// private static final int resct = 6;
 
@@ -271,14 +158,17 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 	private boolean							circuitNeedsMap;
 	private boolean							circuitNonLinear;
 	private int								circuitPermute[];
-	private final int						FASTTIMER			= 40;
+	private final int						FASTTIMER = 40;
 	// private int framerate = 0, steprate = 0;
 	// private int frames = 0;
 	private int								gridMask;
 	private int								gridRound;
 	private int								gridSize;
 	private SwitchElm						heldSwitchElm;
-	private int								hintType			= -1, hintItem1, hintItem2;
+//	private int								hintType			= -1, hintItem1, hintItem2;
+	private HintType						hintType			= HintType.HINT_UNSET;
+	private HintType						hintItem1			= HintType.HINT_UNSET;
+	private HintType						hintItem2			= HintType.HINT_UNSET;
 	private int								draggingPost;
 	private int								dragX, dragY, initDragX, initDragY;
 	private boolean							dumpMatrix;
@@ -326,7 +216,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 	private MenuItem						importFromLocalFileItem, importFromTextItem, exportAsUrlItem, exportAsLocalFileItem, exportAsTextItem;
 	// boolean useBufferedImage;
 	private boolean							isMac;
-	private int								mouseMode			= MODE_SELECT;
+	private MouseMode						mouseMode			= MouseMode.SELECT;
 	private int								mousePost			= -1;
 	private int								scopeColCount[];
 	// public boolean useFrame;
@@ -337,7 +227,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 	private int								scopeSelected		= -1;
 	private int								subIterations;
 	private double							t;
-	private int								tempMouseMode		= MODE_SELECT;
+	private MouseMode						tempMouseMode		= MouseMode.SELECT;
 
 	private AbstractCircuitElement			mouseElm			= null;
 	private DockLayoutPanel					layoutPanel;
@@ -633,7 +523,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			AbstractCircuitElement ce = getElm(i);
 			// look for inductors with no current path
 			if (ce instanceof InductorElm) {
-				FindPathInfo fpi = new FindPathInfo(FindPathInfo.INDUCT, ce, ce.getNode(1));
+				FindPathInfo fpi = new FindPathInfo(FindPathInfo.INDUCT, ce, ce.getNode(1), getNodeList().size(), getElmList());
 				// first try findPath with maximum depth of 5, to avoid
 				// slowdowns
 				if (!fpi.findPath(ce.getNode(0), 5) && !fpi.findPath(ce.getNode(0))) {
@@ -643,7 +533,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			}
 			// look for current sources with no current path
 			if (ce instanceof CurrentElm) {
-				FindPathInfo fpi = new FindPathInfo(FindPathInfo.INDUCT, ce, ce.getNode(1));
+				FindPathInfo fpi = new FindPathInfo(FindPathInfo.INDUCT, ce, ce.getNode(1), getNodeList().size(), getElmList());
 				if (!fpi.findPath(ce.getNode(0))) {
 					stop("No path for current source!", ce);
 					return;
@@ -652,7 +542,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			// look for voltage source loops
 			// IES
 			if ((ce instanceof VoltageElm && ce.getPostCount() == 2) || ce instanceof WireElm) {
-				FindPathInfo fpi = new FindPathInfo(FindPathInfo.VOLTAGE, ce, ce.getNode(1));
+				FindPathInfo fpi = new FindPathInfo(FindPathInfo.VOLTAGE, ce, ce.getNode(1), getNodeList().size(), getElmList());
 				if (fpi.findPath(ce.getNode(0))) {
 					stop("Voltage source/wire loop with no resistance!", ce);
 					return;
@@ -660,12 +550,12 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			}
 			// look for shorted caps, or caps w/ voltage but no R
 			if (ce instanceof CapacitorElm) {
-				FindPathInfo fpi = new FindPathInfo(FindPathInfo.SHORT, ce, ce.getNode(1));
+				FindPathInfo fpi = new FindPathInfo(FindPathInfo.SHORT, ce, ce.getNode(1), getNodeList().size(), getElmList());
 				if (fpi.findPath(ce.getNode(0))) {
 					System.out.println(ce + " shorted");
 					ce.reset();
 				} else {
-					fpi = new FindPathInfo(FindPathInfo.CAP_V, ce, ce.getNode(1));
+					fpi = new FindPathInfo(FindPathInfo.CAP_V, ce, ce.getNode(1), getNodeList().size(), getElmList());
 					if (fpi.findPath(ce.getNode(0))) {
 						stop("Capacitor loop with no resistance!", ce);
 						return;
@@ -1475,7 +1365,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			if (d != null)
 				dump += d + "\n";
 		}
-		if (hintType != -1)
+		if (hintType != HintType.HINT_UNSET)
 			dump += "h " + hintType + " " + hintItem1 + " " + hintItem2 + "\n";
 		return dump;
 	}
@@ -1564,13 +1454,13 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 	}
 
 	private String getHint() {
-		AbstractCircuitElement c1 = getElm(hintItem1);
-		AbstractCircuitElement c2 = getElm(hintItem2);
+		AbstractCircuitElement c1 = getElm(hintItem1.getValue());
+		AbstractCircuitElement c2 = getElm(hintItem2.getValue());
 
 		if (c1 == null || c2 == null)
 			return null;
 
-		if (hintType == HINT_LC) {
+		if (hintType == HintType.HINT_LC) {
 			if (!(c1 instanceof InductorElm))
 				return null;
 
@@ -1580,9 +1470,9 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			InductorElm ie = (InductorElm) c1;
 			CapacitorElm ce = (CapacitorElm) c2;
 
-			return "res.f = " + AbstractCircuitElement.getUnitText(1 / (2 * pi * Math.sqrt(ie.getInductance() * ce.getCapacitance())), "Hz");
+			return "res.f = " + AbstractCircuitElement.getUnitText(1 / (2 * Math.PI * Math.sqrt(ie.getInductance() * ce.getCapacitance())), "Hz");
 		}
-		if (hintType == HINT_RC) {
+		if (hintType == HintType.HINT_RC) {
 			if (!(c1 instanceof ResistorElm))
 				return null;
 
@@ -1594,7 +1484,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 
 			return "RC = " + AbstractCircuitElement.getUnitText(re.getResistance() * ce.getCapacitance(), "s");
 		}
-		if (hintType == HINT_3DB_C) {
+		if (hintType == HintType.HINT_3DB_C) {
 			if (!(c1 instanceof ResistorElm))
 				return null;
 
@@ -1604,9 +1494,9 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			ResistorElm re = (ResistorElm) c1;
 			CapacitorElm ce = (CapacitorElm) c2;
 
-			return "f.3db = " + AbstractCircuitElement.getUnitText(1 / (2 * pi * re.getResistance() * ce.getCapacitance()), "Hz");
+			return "f.3db = " + AbstractCircuitElement.getUnitText(1 / (2 * Math.PI * re.getResistance() * ce.getCapacitance()), "Hz");
 		}
-		if (hintType == HINT_3DB_L) {
+		if (hintType == HintType.HINT_3DB_L) {
 			if (!(c1 instanceof ResistorElm))
 				return null;
 
@@ -1616,9 +1506,9 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			ResistorElm re = (ResistorElm) c1;
 			InductorElm ie = (InductorElm) c2;
 
-			return "f.3db = " + AbstractCircuitElement.getUnitText(re.getResistance() / (2 * pi * ie.getInductance()), "Hz");
+			return "f.3db = " + AbstractCircuitElement.getUnitText(re.getResistance() / (2 * Math.PI * ie.getInductance()), "Hz");
 		}
-		if (hintType == HINT_TWINT) {
+		if (hintType == HintType.HINT_TWINT) {
 			if (!(c1 instanceof ResistorElm))
 				return null;
 
@@ -1628,7 +1518,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			ResistorElm re = (ResistorElm) c1;
 			CapacitorElm ce = (CapacitorElm) c2;
 
-			return "fc = " + AbstractCircuitElement.getUnitText(1 / (2 * pi * re.getResistance() * ce.getCapacitance()), "Hz");
+			return "fc = " + AbstractCircuitElement.getUnitText(1 / (2 * Math.PI * re.getResistance() * ce.getCapacitance()), "Hz");
 		}
 		return null;
 	}
@@ -1641,7 +1531,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 
 	}
 
-	public int getMouseMode() {
+	public MouseMode getMouseMode() {
 		return mouseMode;
 	}
 
@@ -1870,8 +1760,8 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		// popup
 		buildDrawMenu(drawMenuBar);
 
-		layoutPanel.addNorth(menuBar, MENUBARHEIGHT);
-		layoutPanel.addEast(verticalPanel, VERTICALPANELWIDTH);
+		layoutPanel.addNorth(menuBar, Display.MENUBARHEIGHT);
+		layoutPanel.addEast(verticalPanel, Display.VERTICALPANELWIDTH);
 		RootLayoutPanel.get().add(layoutPanel);
 		cv = Canvas.createIfSupported();
 		if (cv == null) {
@@ -2077,7 +1967,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		verticalPanel.add(powerBar = new Scrollbar(Scrollbar.HORIZONTAL, 50, 1, 1, 100));
 		setPowerBarEnable();
 		verticalPanel.add(iFrame = new Frame("iframe.html"));
-		iFrame.setWidth(VERTICALPANELWIDTH + "px");
+		iFrame.setWidth(Display.VERTICALPANELWIDTH + "px");
 		iFrame.setHeight("100 px");
 		iFrame.getElement().setAttribute("scrolling", "no");
 	}
@@ -2376,22 +2266,22 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 				contextPanel.hide();
 			// MenuItem mmi = (MenuItem) mi;
 			// int prevMouseMode = mouseMode;
-			setMouseMode(MODE_ADD_ELM);
+			setMouseMode(MouseMode.ADD_ELM);
 			String s = item;
 			if (s.length() > 0)
 				mouseModeStr = s;
 			if (s.compareTo("DragAll") == 0)
-				setMouseMode(MODE_DRAG_ALL);
+				setMouseMode(MouseMode.DRAG_ALL);
 			else if (s.compareTo("DragRow") == 0)
-				setMouseMode(MODE_DRAG_ROW);
+				setMouseMode(MouseMode.DRAG_ROW);
 			else if (s.compareTo("DragColumn") == 0)
-				setMouseMode(MODE_DRAG_COLUMN);
+				setMouseMode(MouseMode.DRAG_COLUMN);
 			else if (s.compareTo("DragSelected") == 0)
-				setMouseMode(MODE_DRAG_SELECTED);
+				setMouseMode(MouseMode.DRAG_SELECTED);
 			else if (s.compareTo("DragPost") == 0)
-				setMouseMode(MODE_DRAG_POST);
+				setMouseMode(MouseMode.DRAG_POST);
 			else if (s.compareTo("Select") == 0)
-				setMouseMode(MODE_SELECT);
+				setMouseMode(MouseMode.SELECT);
 
 			tempMouseMode = mouseMode;
 		}
@@ -2413,34 +2303,36 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			dragElm.drag(e.getX(), e.getY());
 		boolean success = true;
 		switch (tempMouseMode) {
-		case MODE_DRAG_ALL:
-			dragAll(snapGrid(e.getX()), snapGrid(e.getY()));
-			break;
-		case MODE_DRAG_ROW:
-			dragRow(snapGrid(e.getX()), snapGrid(e.getY()));
-			break;
-		case MODE_DRAG_COLUMN:
-			dragColumn(snapGrid(e.getX()), snapGrid(e.getY()));
-			break;
-		case MODE_DRAG_POST:
-			if (mouseElm != null)
-				dragPost(snapGrid(e.getX()), snapGrid(e.getY()));
-			break;
-		case MODE_SELECT:
-			if (mouseElm == null)
-				selectArea(e.getX(), e.getY());
-			else {
-				tempMouseMode = MODE_DRAG_SELECTED;
+			case DRAG_ALL:
+				dragAll(snapGrid(e.getX()), snapGrid(e.getY()));
+				break;
+			case DRAG_ROW:
+				dragRow(snapGrid(e.getX()), snapGrid(e.getY()));
+				break;
+			case DRAG_COLUMN:
+				dragColumn(snapGrid(e.getX()), snapGrid(e.getY()));
+				break;
+			case DRAG_POST:
+				if (mouseElm != null)
+					dragPost(snapGrid(e.getX()), snapGrid(e.getY()));
+				break;
+			case SELECT:
+				if (mouseElm == null)
+					selectArea(e.getX(), e.getY());
+				else {
+					tempMouseMode = MouseMode.DRAG_SELECTED;
+					success = dragSelected(e.getX(), e.getY());
+				}
+				break;
+			case DRAG_SELECTED:
 				success = dragSelected(e.getX(), e.getY());
-			}
-			break;
-		case MODE_DRAG_SELECTED:
-			success = dragSelected(e.getX(), e.getY());
-			break;
+				break;
+			case ADD_ELM:
+				break;
 		}
 		dragging = true;
 		if (success) {
-			if (tempMouseMode == MODE_DRAG_SELECTED && mouseElm instanceof GraphicElm) {
+			if (tempMouseMode == MouseMode.DRAG_SELECTED && mouseElm instanceof GraphicElm) {
 				dragX = e.getX();
 				dragY = e.getY();
 			} else {
@@ -2520,31 +2412,31 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			// if ((ex & MouseEvent.ALT_DOWN_MASK) != 0 &&
 			// (ex & MouseEvent.META_DOWN_MASK) != 0)
 			if (e.isAltKeyDown() && e.isMetaKeyDown())
-				tempMouseMode = MODE_DRAG_COLUMN;
+				tempMouseMode = MouseMode.DRAG_COLUMN;
 			// else if ((ex & MouseEvent.ALT_DOWN_MASK) != 0 &&
 			// (ex & MouseEvent.SHIFT_DOWN_MASK) != 0)
 			else if (e.isAltKeyDown() && e.isShiftKeyDown())
-				tempMouseMode = MODE_DRAG_ROW;
+				tempMouseMode = MouseMode.DRAG_ROW;
 			// else if ((ex & MouseEvent.SHIFT_DOWN_MASK) != 0)
 			else if (e.isShiftKeyDown())
-				tempMouseMode = MODE_SELECT;
+				tempMouseMode = MouseMode.SELECT;
 			// else if ((ex & MouseEvent.ALT_DOWN_MASK) != 0)
 			else if (e.isAltKeyDown())
-				tempMouseMode = MODE_DRAG_ALL;
+				tempMouseMode = MouseMode.DRAG_ALL;
 			else if (e.isControlKeyDown() || e.isMetaKeyDown())
-				tempMouseMode = MODE_DRAG_POST;
+				tempMouseMode = MouseMode.DRAG_POST;
 		}
 
 		// IES - Grab resize handles in select mode if they are far enough apart
 		// and you are on top of them
-		if (tempMouseMode == MODE_SELECT
+		if (tempMouseMode == MouseMode.SELECT
 				&& mouseElm != null
 				&& distanceSq(mouseElm.getX(), mouseElm.getY(), mouseElm.getX2(), mouseElm.getY2()) >= 256
-				&& (distanceSq(e.getX(), e.getY(), mouseElm.getX(), mouseElm.getY()) <= POSTGRABSQ || distanceSq(e.getX(), e.getY(), mouseElm.getX2(), mouseElm.getY2()) <= POSTGRABSQ)
+				&& (distanceSq(e.getX(), e.getY(), mouseElm.getX(), mouseElm.getY()) <= Display.POSTGRABSQ || distanceSq(e.getX(), e.getY(), mouseElm.getX2(), mouseElm.getY2()) <= Display.POSTGRABSQ)
 				&& !anySelectedButMouse())
-			tempMouseMode = MODE_DRAG_POST;
+			tempMouseMode = MouseMode.DRAG_POST;
 
-		if (tempMouseMode != MODE_SELECT && tempMouseMode != MODE_DRAG_SELECTED)
+		if (tempMouseMode != MouseMode.SELECT && tempMouseMode != MouseMode.DRAG_SELECTED)
 			clearSelection();
 
 		if (doSwitch(e.getX(), e.getY())) {
@@ -2555,7 +2447,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		initDragX = e.getX();
 		initDragY = e.getY();
 		dragging = true;
-		if (tempMouseMode != MODE_ADD_ELM)
+		if (tempMouseMode != MouseMode.ADD_ELM)
 			return;
 
 		int x0 = snapGrid(e.getX());
@@ -2587,7 +2479,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 
 		mousePost = -1;
 		plotXElm = plotYElm = null;
-		if (mouseElm != null && (distanceSq(x, y, mouseElm.getX(), mouseElm.getY()) <= POSTGRABSQ || distanceSq(x, y, mouseElm.getX2(), mouseElm.getY2()) <= POSTGRABSQ)) {
+		if (mouseElm != null && (distanceSq(x, y, mouseElm.getX(), mouseElm.getY()) <= Display.POSTGRABSQ || distanceSq(x, y, mouseElm.getX2(), mouseElm.getY2()) <= Display.POSTGRABSQ)) {
 			newMouseElm = mouseElm;
 		} else {
 			int bestDist = 100000;
@@ -2636,7 +2528,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			// // might still be close to a post
 			for (i = 0; i != elmList.size(); i++) {
 				AbstractCircuitElement ce = getElm(i);
-				if (mouseMode == MODE_DRAG_POST) {
+				if (mouseMode == MouseMode.DRAG_POST) {
 					if (distanceSq(ce.getX(), ce.getY(), x, y) < 26) {
 						newMouseElm = ce;
 						break;
@@ -2694,7 +2586,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			// IES - and disable any previous selection
 			if (dragElm.getX() == dragElm.getX2() && dragElm.getY() == dragElm.getY2()) {
 				dragElm.delete();
-				if (mouseMode == MODE_SELECT || mouseMode == MODE_DRAG_SELECTED)
+				if (mouseMode == MouseMode.SELECT || mouseMode == MouseMode.DRAG_SELECTED)
 					clearSelection();
 			} else {
 				elmList.addElement(dragElm);
@@ -2745,7 +2637,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 				e.cancel();
 			}
 			if (code == KEY_ESCAPE) {
-				setMouseMode(MODE_SELECT);
+				setMouseMode(MouseMode.SELECT);
 				mouseModeStr = "Select";
 				tempMouseMode = mouseMode;
 				e.cancel();
@@ -2783,12 +2675,12 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 				e.cancel();
 				if (c == null)
 					return;
-				setMouseMode(MODE_ADD_ELM);
+				setMouseMode(MouseMode.ADD_ELM);
 				mouseModeStr = c;
 				tempMouseMode = mouseMode;
 			}
 			if (cc == 32) {
-				setMouseMode(MODE_SELECT);
+				setMouseMode(MouseMode.SELECT);
 				mouseModeStr = "Select";
 				tempMouseMode = mouseMode;
 				e.cancel();
@@ -2855,9 +2747,9 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 	}
 
 	private void readHint(StringTokenizer st) {
-		hintType = new Integer(st.nextToken()).intValue();
-		hintItem1 = new Integer(st.nextToken()).intValue();
-		hintItem2 = new Integer(st.nextToken()).intValue();
+		hintType = hintType.getHintFromValue(new Integer(st.nextToken()).intValue());
+		hintItem1 = hintType.getHintFromValue(new Integer(st.nextToken()).intValue());
+		hintItem2 = hintType.getHintFromValue(new Integer(st.nextToken()).intValue());
 	}
 
 	private void readOptions(StringTokenizer st) {
@@ -2892,7 +2784,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 				ce.delete();
 			}
 			elmList.removeAllElements();
-			hintType = -1;
+			hintType = HintType.HINT_UNSET;
 			setTimeStep(5e-6);
 			getDotsCheckItem().setState(false);
 			getSmallGridCheckItem().setState(false);
@@ -3175,8 +3067,8 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		int width, height;
 		width = (int) RootLayoutPanel.get().getOffsetWidth();
 		height = (int) RootLayoutPanel.get().getOffsetHeight();
-		height = height - MENUBARHEIGHT;
-		width = width - VERTICALPANELWIDTH;
+		height = height - Display.MENUBARHEIGHT;
+		width = width - Display.VERTICALPANELWIDTH;
 		if (cv != null) {
 			cv.setWidth(width + "PX");
 			cv.setHeight(height + "PX");
@@ -3240,7 +3132,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		}
 		// int
 		// ih=RootLayoutPanel.get().getOffsetHeight()-(iFrame.getAbsoluteTop()-RootLayoutPanel.get().getAbsoluteTop());
-		int ih = RootLayoutPanel.get().getOffsetHeight() - MENUBARHEIGHT - cumheight;
+		int ih = RootLayoutPanel.get().getOffsetHeight() - Display.MENUBARHEIGHT - cumheight;
 		// GWT.log("Root OH="+RootLayoutPanel.get().getOffsetHeight());
 		// GWT.log("iF top="+iFrame.getAbsoluteTop() );
 		// GWT.log("RP top="+RootLayoutPanel.get().getAbsoluteTop());
@@ -3270,9 +3162,9 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		}
 	}
 
-	private void setMouseMode(int mode) {
-		mouseMode = mode;
-		if (mode == MODE_ADD_ELM) {
+	private void setMouseMode(MouseMode addElm) {
+		mouseMode = addElm;
+		if (addElm == MouseMode.ADD_ELM) {
 			cv.addStyleName("cursorCross");
 			cv.removeStyleName("cursorPointer");
 		} else {
@@ -3443,7 +3335,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			scopeColCount[scopes[i].getPosition()]++;
 		}
 		int colct = pos + 1;
-		int iw = infoWidth;
+		int iw = Display.INFOWIDTH;
 		if (colct <= 2)
 			iw = iw * 3 / 2;
 		int w = (cv.getCoordinateSpaceWidth() - iw) / colct;
@@ -3737,13 +3629,13 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			getElm(i).draw(g);
 		}
 		// mydrawtime += System.currentTimeMillis() - mydrawstarttime;
-		if (tempMouseMode == MODE_DRAG_ROW || tempMouseMode == MODE_DRAG_COLUMN || tempMouseMode == MODE_DRAG_POST || tempMouseMode == MODE_DRAG_SELECTED)
+		if (tempMouseMode == MouseMode.DRAG_ROW || tempMouseMode == MouseMode.DRAG_COLUMN || tempMouseMode == MouseMode.DRAG_POST || tempMouseMode == MouseMode.DRAG_SELECTED)
 			for (i = 0; i != elmList.size(); i++) {
 
 				AbstractCircuitElement ce = getElm(i);
 				// ce.drawPost(g, ce.x , ce.y );
 				// ce.drawPost(g, ce.x2, ce.y2);
-				if (ce != mouseElm || tempMouseMode != MODE_DRAG_POST) {
+				if (ce != mouseElm || tempMouseMode != MouseMode.DRAG_POST) {
 					g.setColor(Color.gray);
 					g.fillOval(ce.getX() - 3, ce.getY() - 3, 7, 7);
 					g.fillOval(ce.getX2() - 3, ce.getY2() - 3, 7, 7);
@@ -3751,7 +3643,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 					ce.drawHandles(g, Color.cyan);
 				}
 			}
-		if (tempMouseMode == MODE_SELECT && mouseElm != null) {
+		if (tempMouseMode ==MouseMode.SELECT && mouseElm != null) {
 			mouseElm.drawHandles(g, Color.cyan);
 		}
 		int badnodes = 0;
@@ -3811,12 +3703,12 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 				info[0] = "t = " + AbstractCircuitElement.getUnitText(t, "s");
 				// AbstractCircuitElement.showFormat.setMinimumFractionDigits(0);
 			}
-			if (hintType != -1) {
+			if (hintType != HintType.HINT_UNSET) {
 				for (i = 0; info[i] != null; i++)
 					;
 				String s = getHint();
 				if (s == null)
-					hintType = -1;
+					hintType = HintType.HINT_UNSET;
 				else
 					info[i] = s;
 			}

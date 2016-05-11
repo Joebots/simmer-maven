@@ -17,30 +17,41 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jobotics.simmer.client.gui.util;
+package com.jobotics.simmer.client.util;
 
-public class Point {
 
-	public int x;
-	public int y;
+public class HintTypeEnum {
 
-	public Point() {
-		x = 0;
-		y = 0;
-	}
-
-	public Point(int i, int j) {
-		x = i;
-		y = j;
-	}
-
-	public Point(Point p) {
-		x = p.x;
-		y = p.y;
-	}
-
-	public void setLocation(Point p) {
-		x = p.x;
-		y = p.y;
+	public enum HintType {
+		HINT_UNSET(-1),
+		HINT_LC(1),
+		HINT_RC(2),
+		HINT_3DB_C(3),
+		HINT_TWINT(4),
+		HINT_3DB_L(5);
+		
+		private int hintValue;
+		
+		private HintType(int value){
+			this.hintValue = value;
+		}
+		
+		public int getValue(){ 
+		    return this.hintValue; 
+		}
+		
+	    public HintType getHintFromValue(int value){
+	        for(HintType h : HintType.values()){
+	            if(value == h.hintValue){
+	            	return h;
+	            }
+	        }
+	        return HintType.HINT_UNSET; //or null ??
+	    }
 	}
 }
+
+
+
+
+

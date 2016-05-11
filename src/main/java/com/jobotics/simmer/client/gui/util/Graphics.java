@@ -68,7 +68,7 @@ public class Graphics {
 
 	public void fillOval(int x, int y, int width, int height) {
 		context.beginPath();
-		context.arc(x + width / 2, y + width / 2, width / 2, 0, 2.0 * 3.14159);
+		context.arc(x + width / 2, y + width / 2, width / 2, 0, 2.0 * Math.PI);
 		context.closePath();
 		context.fill();
 	}

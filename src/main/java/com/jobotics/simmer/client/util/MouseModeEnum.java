@@ -17,30 +17,18 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jobotics.simmer.client.gui.util;
+package com.jobotics.simmer.client.util;
 
-public class Point {
 
-	public int x;
-	public int y;
+public class MouseModeEnum {
 
-	public Point() {
-		x = 0;
-		y = 0;
-	}
-
-	public Point(int i, int j) {
-		x = i;
-		y = j;
-	}
-
-	public Point(Point p) {
-		x = p.x;
-		y = p.y;
-	}
-
-	public void setLocation(Point p) {
-		x = p.x;
-		y = p.y;
+	public enum MouseMode {
+		ADD_ELM,
+		DRAG_ALL,
+		DRAG_POST,
+		DRAG_COLUMN,
+		DRAG_ROW,
+		DRAG_SELECTED,
+		SELECT
 	}
 }
