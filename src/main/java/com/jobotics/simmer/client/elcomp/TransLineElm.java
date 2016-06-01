@@ -80,13 +80,13 @@ public class TransLineElm extends AbstractCircuitElement {
 	public void drag(int xx, int yy) {
 		xx = sim.snapGrid(xx);
 		yy = sim.snapGrid(yy);
-		int w1 = max(sim.getGridSize(), abs(yy - getY()));
-		int w2 = max(sim.getGridSize(), abs(xx - getX()));
+		int w1 = max(sim.getGridSize(), abs(yy - getY1()));
+		int w2 = max(sim.getGridSize(), abs(xx - getX1()));
 		if (w1 > w2) {
-			xx = getX();
+			xx = getX1();
 			width = w2;
 		} else {
-			yy = getY();
+			yy = getY1();
 			width = w1;
 		}
 		setX2(xx);
@@ -101,8 +101,8 @@ public class TransLineElm extends AbstractCircuitElement {
 		double segf = 1. / segments;
 		int i;
 		g.setColor(Color.darkGray);
-		g.fillRect(inner[2].x, inner[2].y, inner[1].x - inner[2].x + 2,
-				inner[1].y - inner[2].y + 2);
+		g.fillRect(inner[2].getX(), inner[2].getY(), inner[1].getX() - inner[2].getX() + 2,
+				inner[1].getY() - inner[2].getY() + 2);
 		for (i = 0; i != 4; i++) {
 			setVoltageColor(g, getVolts()[i]);
 			GraphicsUtil.drawThickLine(g, posts[i], inner[i]);
@@ -116,7 +116,7 @@ public class TransLineElm extends AbstractCircuitElement {
 				setVoltageColor(g, v);
 				interpPoint(inner[0], inner[1], ps1, i * segf);
 				interpPoint(inner[2], inner[3], ps2, i * segf);
-				g.drawLine(ps1.x, ps1.y, ps2.x, ps2.y);
+				g.drawLine(ps1.getX(), ps1.getY(), ps2.getX(), ps2.getY());
 				interpPoint(inner[2], inner[3], ps1, (i + 1) * segf);
 				GraphicsUtil.drawThickLine(g, ps1, ps2);
 			}

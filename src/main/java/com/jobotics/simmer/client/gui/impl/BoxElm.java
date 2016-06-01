@@ -32,7 +32,7 @@ public class BoxElm extends GraphicElm {
 		super(xx, yy);
 		setX2(xx + 16);
 		setY2(yy + 16);
-		setBbox(getX(), getY(), getX2(), getY2());
+		setBbox(getX1(), getY1(), getX2(), getY2());
 	}
 
 	public BoxElm(int xa, int ya, int xb, int yb, int f, StringTokenizer st) {
@@ -46,26 +46,26 @@ public class BoxElm extends GraphicElm {
 		 * Integer(st.nextToken()).intValue(); if ( st.hasMoreTokens() ) y2 =
 		 * new Integer(st.nextToken()).intValue();
 		 */
-		setBbox(getX(), getY(), getX2(), getY2());
+		setBbox(getX1(), getY1(), getX2(), getY2());
 	}
 
 	public void drag(int xx, int yy) {
-		setX(xx);
-		setY(yy);
+		setX1(xx);
+		setY1(yy);
 	}
 
 	public void draw(Graphics g) {
 		// g.setColor(needsHighlight() ? selectColor : lightGrayColor);
 		g.setColor(needsHighlight() ? selectColor : Color.GRAY);
-		setBbox(getX(), getY(), getX2(), getY2());
-		if (getX() < getX2() && getY() < getY2())
-			g.fillRect(getX(), getY(), getX2() - getX(), getY2() - getY());
-		else if (getX() > getX2() && getY() < getY2())
-			g.fillRect(getX2(), getY(), getX() - getX2(), getY2() - getY());
-		else if (getX() < getX2() && getY() > getY2())
-			g.fillRect(getX(), getY2(), getX2() - getX(), getY() - getY2());
+		setBbox(getX1(), getY1(), getX2(), getY2());
+		if (getX1() < getX2() && getY1() < getY2())
+			g.fillRect(getX1(), getY1(), getX2() - getX1(), getY2() - getY1());
+		else if (getX1() > getX2() && getY1() < getY2())
+			g.fillRect(getX2(), getY1(), getX1() - getX2(), getY2() - getY1());
+		else if (getX1() < getX2() && getY1() > getY2())
+			g.fillRect(getX1(), getY2(), getX2() - getX1(), getY1() - getY2());
 		else
-			g.fillRect(getX2(), getY2(), getX() - getX2(), getY() - getY2());
+			g.fillRect(getX2(), getY2(), getX1() - getX2(), getY1() - getY2());
 	}
 
 	public String dump() {

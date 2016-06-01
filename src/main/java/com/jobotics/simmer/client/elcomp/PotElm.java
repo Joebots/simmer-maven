@@ -228,14 +228,18 @@ public class PotElm extends AbstractCircuitElement implements Command, MouseWhee
 		int offset = 0;
 		if (abs(getDx()) > abs(getDy())) {
 			setDx(sim.snapGrid(getDx() / 2) * 2);
-			getPoint2().x = setX2(getPoint1().x + getDx());
+			setX2(getPoint1().getX() + getDx());
+			getPoint2().setX(getX2());
+//			getPoint2().x = setX2(getPoint1().getX() + getDx());
 			offset = (getDx() < 0) ? getDy() : -getDy();
-			getPoint2().y = getPoint1().y;
+			getPoint2().setY(getPoint1().getY());
 		} else {
 			setDy(sim.snapGrid(getDy() / 2) * 2);
-			getPoint2().y = setY2(getPoint1().y + getDy());
+			setY2(getPoint1().getY() + getDy());
+			getPoint2().setY(getY2());
+//			getPoint2().y = setY2(getPoint1().getY() + getDy());
 			offset = (getDy() > 0) ? getDx() : -getDx();
-			getPoint2().x = getPoint1().x;
+			getPoint2().setX(getPoint1().getX());
 		}
 		if (offset == 0)
 			offset = sim.getGridSize();

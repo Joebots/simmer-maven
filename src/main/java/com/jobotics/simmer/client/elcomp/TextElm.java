@@ -55,8 +55,8 @@ public class TextElm extends GraphicElm {
 	}
 
 	public void drag(int xx, int yy) {
-		setX(xx);
-		setY(yy);
+		setX1(xx);
+		setY1(yy);
 		setX2(xx + 16);
 		setY2(yy);
 	}
@@ -79,19 +79,19 @@ public class TextElm extends GraphicElm {
 			if (w > maxw)
 				maxw = w;
 		}
-		int cury = getY();
-		setBbox(getX(), getY(), getX(), getY());
+		int cury = getY1();
+		setBbox(getX1(), getY1(), getX1(), getY1());
 		for (i = 0; i != lines.size(); i++) {
 			String s = (String) (lines.elementAt(i));
 			int sw = (int) g.getContext().measureText(s).getWidth();
 			if ((getFlags() & FLAG_CENTER) != 0)
-				setX((g.getContext().getCanvas().getWidth() - sw) / 2);
-			g.drawString(s, getX(), cury);
+				setX1((g.getContext().getCanvas().getWidth() - sw) / 2);
+			g.drawString(s, getX1(), cury);
 			if ((getFlags() & FLAG_BAR) != 0) {
 				int by = cury - g.getCurrentFontSize();
-				g.drawLine(getX(), by, getX() + sw - 1, by);
+				g.drawLine(getX1(), by, getX1() + sw - 1, by);
 			}
-			adjustBbox(getX(), cury - g.getCurrentFontSize(), getX() + sw, cury + 3);
+			adjustBbox(getX1(), cury - g.getCurrentFontSize(), getX1() + sw, cury + 3);
 			cury += g.getCurrentFontSize() + 3;
 		}
 		setX2(getBoundingBox().x + getBoundingBox().width);

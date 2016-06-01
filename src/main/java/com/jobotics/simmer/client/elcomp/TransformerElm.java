@@ -87,9 +87,9 @@ public class TransformerElm extends AbstractCircuitElement {
 	public void drag(int xx, int yy) {
 		xx = sim.snapGrid(xx);
 		yy = sim.snapGrid(yy);
-		width = max(32, abs(yy - getY()));
-		if (xx == getX())
-			yy = getY();
+		width = max(32, abs(yy - getY1()));
+		if (xx == getX1())
+			yy = getY1();
 		setX2(xx);
 		setY2(yy);
 		setPoints();
@@ -198,7 +198,7 @@ public class TransformerElm extends AbstractCircuitElement {
 
 	public void setPoints() {
 		super.setPoints();
-		getPoint2().y = getPoint1().y;
+		getPoint2().setY(getPoint1().getY());
 		ptEnds = newPointArray(4);
 		ptCoil = newPointArray(4);
 		ptCore = newPointArray(4);

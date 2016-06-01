@@ -141,8 +141,8 @@ public class RelayElm extends AbstractCircuitElement {
 								* getDsign());
 			interpPoint(getPoint1(), getPoint2(), lines[i * 2 + 1], .5,
 					(int) (openhs * (-i * 3 - .5 + d_position)) - 5 * getDsign());
-			g.drawLine(lines[i * 2].x, lines[i * 2].y, lines[i * 2 + 1].x,
-					lines[i * 2 + 1].y);
+			g.drawLine(lines[i * 2].getX(), lines[i * 2].getY(), lines[i * 2 + 1].getX(),
+					lines[i * 2 + 1].getY());
 		}
 
 		for (p = 0; p != poleCount; p++) {

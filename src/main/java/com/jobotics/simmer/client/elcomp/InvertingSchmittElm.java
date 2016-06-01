@@ -107,7 +107,7 @@ public class InvertingSchmittElm extends AbstractCircuitElement {
 		g.setColor(needsHighlight() ? selectColor : lightGrayColor);
 		GraphicsUtil.drawThickPolygon(g, gatePoly);
 		GraphicsUtil.drawThickPolygon(g, symbolPoly);
-		GraphicsUtil.drawThickCircle(g, pcircle.x, pcircle.y, 3);
+		GraphicsUtil.drawThickCircle(g, pcircle.getX(), pcircle.getY(), 3);
 		setCurcount(updateDotCount(getCurrent(), getCurcount()));
 		drawDots(g, getLead2(), getPoint2(), getCurcount());
 	}

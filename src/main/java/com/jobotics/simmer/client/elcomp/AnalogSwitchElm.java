@@ -75,11 +75,11 @@ public class AnalogSwitchElm extends AbstractCircuitElement {
 	public void drag(int xx, int yy) {
 		xx = sim.snapGrid(xx);
 		yy = sim.snapGrid(yy);
-		if (abs(getX() - xx) < abs(getY() - yy))
-			xx = getX();
+		if (abs(getX1() - xx) < abs(getY1() - yy))
+			xx = getX1();
 		else
-			yy = getY();
-		int q1 = abs(getX() - xx) + abs(getY() - yy);
+			yy = getY1();
+		int q1 = abs(getX1() - xx) + abs(getY1() - yy);
 		int q2 = (q1 / 2) % sim.getGridSize();
 		if (q2 != 0)
 			return;

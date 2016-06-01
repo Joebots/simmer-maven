@@ -179,12 +179,12 @@ public class TransistorElm extends AbstractCircuitElement {
 			// IES
 			// g.setFont(unitsFont);
 			int ds = sign(getDx());
-			g.drawString("B", base.x - 10 * ds, base.y - 5);
-			g.drawString("C", coll[0].x - 3 + 9 * ds, coll[0].y + 4); // x+6 if
+			g.drawString("B", base.getX() - 10 * ds, base.getY() - 5);
+			g.drawString("C", coll[0].getX() - 3 + 9 * ds, coll[0].getY() + 4); // x+6 if
 																		// ds=1,
 																		// -12
 																		// if -1
-			g.drawString("E", emit[0].x - 3 + 9 * ds, emit[0].y + 4);
+			g.drawString("E", emit[0].getX() - 3 + 9 * ds, emit[0].getY() + 4);
 		}
 		drawPosts(g);
 	}

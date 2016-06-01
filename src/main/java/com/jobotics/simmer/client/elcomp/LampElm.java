@@ -74,15 +74,14 @@ public class LampElm extends AbstractCircuitElement {
 		double v1 = getVolts()[0];
 		double v2 = getVolts()[1];
 		setBbox(getPoint1(), getPoint2(), 4);
-		adjustBbox(bulb.x - bulbR, bulb.y - bulbR, bulb.x + bulbR, bulb.y
-				+ bulbR);
+		adjustBbox(bulb.getX() - bulbR, bulb.getY() - bulbR, bulb.getX() + bulbR, bulb.getY() + bulbR);
 		// adjustbbox
 		draw2Leads(g);
 		setPowerColor(g, true);
 		g.setColor(getTempColor());
-		g.fillOval(bulb.x - bulbR, bulb.y - bulbR, bulbR * 2, bulbR * 2);
+		g.fillOval(bulb.getX() - bulbR, bulb.getY() - bulbR, bulbR * 2, bulbR * 2);
 		g.setColor(Color.white);
-		GraphicsUtil.drawThickCircle(g, bulb.x, bulb.y, bulbR);
+		GraphicsUtil.drawThickCircle(g, bulb.getX(), bulb.getY(), bulbR);
 		setVoltageColor(g, v1);
 		GraphicsUtil.drawThickLine(g, getLead1(), filament[0]);
 		setVoltageColor(g, v2);

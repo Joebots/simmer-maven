@@ -42,8 +42,8 @@ public class SevenSegElm extends ChipElm {
 	public void draw(Graphics g) {
 		drawChip(g);
 		g.setColor(Color.red);
-		int xl = getX() + getCspc() * 5;
-		int yl = getY() + getCspc();
+		int xl = getX1() + getCspc() * 5;
+		int yl = getY1() + getCspc();
 		setColor(g, 0);
 		GraphicsUtil.drawThickLine(g, xl, yl, xl + getCspc(), yl);
 		setColor(g, 1);

@@ -20,9 +20,9 @@
 package com.jobotics.simmer.client.gui.util;
 
 public class Point {
-
-	public int x;
-	public int y;
+	
+	private int x;
+	private int y;
 
 	public Point() {
 		x = 0;
@@ -42,5 +42,21 @@ public class Point {
 	public void setLocation(Point p) {
 		x = p.x;
 		y = p.y;
+	}
+	
+	public int getX() {
+		return x;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
 	}
 }

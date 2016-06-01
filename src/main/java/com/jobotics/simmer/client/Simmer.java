@@ -376,8 +376,8 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		if (!gotGround && volt != null && !gotRail) {
 			CircuitNode cn = new CircuitNode();
 			Point pt = volt.getPost(0);
-			cn.x = (int) pt.x;
-			cn.y = (int) pt.y;
+			cn.x = (int) pt.getX();
+			cn.y = (int) pt.getY();
 			getNodeList().addElement(cn);
 		} else {
 			// otherwise allocate extra node for ground
@@ -400,13 +400,13 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 				int k;
 				for (k = 0; k != getNodeList().size(); k++) {
 					CircuitNode cn = getCircuitNode(k);
-					if (pt.x == cn.x && pt.y == cn.y)
+					if (pt.getX() == cn.x && pt.getY() == cn.y)
 						break;
 				}
 				if (k == getNodeList().size()) {
 					CircuitNode cn = new CircuitNode();
-					cn.x = (int) pt.x;
-					cn.y = (int) pt.y;
+					cn.x = (int) pt.getX();
+					cn.y = (int) pt.getY();
 					CircuitNodeLink cnl = new CircuitNodeLink();
 					cnl.setNum(j);
 					cnl.setElm(ce);
@@ -987,11 +987,11 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			// centered text causes problems when trying to center the circuit,
 			// so we special-case it here
 			if (!ce.isCenteredText()) {
-				minx = min(ce.getX(), min(ce.getX2(), minx));
-				maxx = max(ce.getX(), max(ce.getX2(), maxx));
+				minx = min(ce.getX1(), min(ce.getX2(), minx));
+				maxx = max(ce.getX1(), max(ce.getX2(), maxx));
 			}
-			miny = min(ce.getY(), min(ce.getY2(), miny));
-			maxy = max(ce.getY(), max(ce.getY2(), maxy));
+			miny = min(ce.getY1(), min(ce.getY2(), miny));
+			maxy = max(ce.getY1(), max(ce.getY2(), maxy));
 		}
 		// center circuit; we don't use snapGrid() because that rounds
 		int dx = gridMask & ((circuitArea.width - (maxx - minx)) / 2 - minx);
@@ -1262,7 +1262,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		int i;
 		for (i = 0; i != elmList.size(); i++) {
 			AbstractCircuitElement ce = getElm(i);
-			if (ce.getX() == dragX)
+			if (ce.getX1() == dragX)
 				ce.movePoint(0, dx, 0);
 			if (ce.getX2() == dragX)
 				ce.movePoint(1, dx, 0);
@@ -1272,7 +1272,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 
 	private void dragPost(int x, int y) {
 		if (draggingPost == -1) {
-			draggingPost = (distanceSq(mouseElm.getX(), mouseElm.getY(), x, y) > distanceSq(mouseElm.getX2(), mouseElm.getY2(), x, y)) ? 1 : 0;
+			draggingPost = (distanceSq(mouseElm.getX1(), mouseElm.getY1(), x, y) > distanceSq(mouseElm.getX2(), mouseElm.getY2(), x, y)) ? 1 : 0;
 		}
 		int dx = x - dragX;
 		int dy = y - dragY;
@@ -1289,7 +1289,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		int i;
 		for (i = 0; i != elmList.size(); i++) {
 			AbstractCircuitElement ce = getElm(i);
-			if (ce.getY() == dragY)
+			if (ce.getY1() == dragY)
 				ce.movePoint(0, 0, dy);
 			if (ce.getY2() == dragY)
 				ce.movePoint(1, 0, dy);
@@ -2431,8 +2431,8 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		// and you are on top of them
 		if (tempMouseMode == MouseMode.SELECT
 				&& mouseElm != null
-				&& distanceSq(mouseElm.getX(), mouseElm.getY(), mouseElm.getX2(), mouseElm.getY2()) >= 256
-				&& (distanceSq(e.getX(), e.getY(), mouseElm.getX(), mouseElm.getY()) <= Display.POSTGRABSQ || distanceSq(e.getX(), e.getY(), mouseElm.getX2(), mouseElm.getY2()) <= Display.POSTGRABSQ)
+				&& distanceSq(mouseElm.getX1(), mouseElm.getY1(), mouseElm.getX2(), mouseElm.getY2()) >= 256
+				&& (distanceSq(e.getX(), e.getY(), mouseElm.getX1(), mouseElm.getY1()) <= Display.POSTGRABSQ || distanceSq(e.getX(), e.getY(), mouseElm.getX2(), mouseElm.getY2()) <= Display.POSTGRABSQ)
 				&& !anySelectedButMouse())
 			tempMouseMode = MouseMode.DRAG_POST;
 
@@ -2479,7 +2479,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 
 		mousePost = -1;
 		plotXElm = plotYElm = null;
-		if (mouseElm != null && (distanceSq(x, y, mouseElm.getX(), mouseElm.getY()) <= Display.POSTGRABSQ || distanceSq(x, y, mouseElm.getX2(), mouseElm.getY2()) <= Display.POSTGRABSQ)) {
+		if (mouseElm != null && (distanceSq(x, y, mouseElm.getX1(), mouseElm.getY1()) <= Display.POSTGRABSQ || distanceSq(x, y, mouseElm.getX2(), mouseElm.getY2()) <= Display.POSTGRABSQ)) {
 			newMouseElm = mouseElm;
 		} else {
 			int bestDist = 100000;
@@ -2494,7 +2494,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 						jn = 2;
 					for (j = 0; j != jn; j++) {
 						Point pt = ce.getPost(j);
-						int dist = distanceSq(x, y, pt.x, pt.y);
+						int dist = distanceSq(x, y, pt.getX(), pt.getY());
 
 						// if multiple elements have overlapping bounding boxes,
 						// we prefer selecting elements that have posts close
@@ -2529,7 +2529,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			for (i = 0; i != elmList.size(); i++) {
 				AbstractCircuitElement ce = getElm(i);
 				if (mouseMode == MouseMode.DRAG_POST) {
-					if (distanceSq(ce.getX(), ce.getY(), x, y) < 26) {
+					if (distanceSq(ce.getX1(), ce.getY1(), x, y) < 26) {
 						newMouseElm = ce;
 						break;
 					}
@@ -2543,7 +2543,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 				for (j = 0; j != jn; j++) {
 					Point pt = ce.getPost(j);
 					// int dist = distanceSq(x, y, pt.x, pt.y);
-					if (distanceSq(pt.x, pt.y, x, y) < 26) {
+					if (distanceSq(pt.getX(), pt.getY(), x, y) < 26) {
 						newMouseElm = ce;
 						mousePost = j;
 						break;
@@ -2555,7 +2555,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			// look for post close to the mouse pointer
 			for (i = 0; i != newMouseElm.getPostCount(); i++) {
 				Point pt = newMouseElm.getPost(i);
-				if (distanceSq(pt.x, pt.y, x, y) < 26)
+				if (distanceSq(pt.getX(), pt.getY(), x, y) < 26)
 					mousePost = i;
 			}
 		}
@@ -2584,7 +2584,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		if (dragElm != null) {
 			// if the element is zero size then don't create it
 			// IES - and disable any previous selection
-			if (dragElm.getX() == dragElm.getX2() && dragElm.getY() == dragElm.getY2()) {
+			if (dragElm.getX1() == dragElm.getX2() && dragElm.getY1() == dragElm.getY2()) {
 				dragElm.delete();
 				if (mouseMode == MouseMode.SELECT || mouseMode == MouseMode.DRAG_SELECTED)
 					clearSelection();
@@ -2903,7 +2903,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		// boolean changed = false;
 		for (i = elmList.size() - 1; i >= 0; i--) {
 			AbstractCircuitElement ce = getElm(i);
-			if (ce.getX() == ce.getX2() && ce.getY() == ce.getY2()) {
+			if (ce.getX1() == ce.getX2() && ce.getY1() == ce.getY2()) {
 				elmList.removeElementAt(i);
 				ce.delete();
 				// changed = true;
@@ -3637,7 +3637,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 				// ce.drawPost(g, ce.x2, ce.y2);
 				if (ce != mouseElm || tempMouseMode != MouseMode.DRAG_POST) {
 					g.setColor(Color.gray);
-					g.fillOval(ce.getX() - 3, ce.getY() - 3, 7, 7);
+					g.fillOval(ce.getX1() - 3, ce.getY1() - 3, 7, 7);
 					g.fillOval(ce.getX2() - 3, ce.getY2() - 3, 7, 7);
 				} else {
 					ce.drawHandles(g, Color.cyan);
@@ -3677,7 +3677,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		 * if (mouseElm != null) { g.setFont(oldfont); g.drawString("+",
 		 * mouseElm.x+10, mouseElm.y); }
 		 */
-		if (dragElm != null && (dragElm.getX() != dragElm.getX2() || dragElm.getY() != dragElm.getY2())) {
+		if (dragElm != null && (dragElm.getX1() != dragElm.getX2() || dragElm.getY1() != dragElm.getY2())) {
 			dragElm.draw(g);
 			dragElm.drawHandles(g, Color.cyan);
 		}

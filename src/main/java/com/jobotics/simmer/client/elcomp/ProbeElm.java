@@ -62,9 +62,9 @@ public class ProbeElm extends AbstractCircuitElement {
 		Font f = new Font("SansSerif", Font.BOLD, 14);
 		g.setFont(f);
 		if (this == sim.getPlotXElm())
-			drawCenteredText(g, "X", center.x, center.y, true);
+			drawCenteredText(g, "X", center.getX(), center.getY(), true);
 		if (this == sim.getPlotYElm())
-			drawCenteredText(g, "Y", center.x, center.y, true);
+			drawCenteredText(g, "Y", center.getX(), center.getY(), true);
 		if (mustShowVoltage()) {
 			String s = getShortUnitText(getVolts()[0], "V");
 			drawValues(g, s, 4);
@@ -110,7 +110,7 @@ public class ProbeElm extends AbstractCircuitElement {
 	public void setPoints() {
 		super.setPoints();
 		// swap points so that we subtract higher from lower
-		if (getPoint2().y < getPoint1().y) {
+		if (getPoint2().getY() < getPoint1().getY()) {
 			Point x = getPoint1();
 			setPoint1(getPoint2());
 			setPoint2(x);

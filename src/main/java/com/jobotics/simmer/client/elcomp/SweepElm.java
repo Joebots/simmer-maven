@@ -73,8 +73,8 @@ public class SweepElm extends AbstractCircuitElement {
 		GraphicsUtil.drawThickLine(g, getPoint1(), getLead1());
 		g.setColor(needsHighlight() ? selectColor : Color.gray);
 		setPowerColor(g, false);
-		int xc = getPoint2().x;
-		int yc = getPoint2().y;
+		int xc = getPoint2().getX();
+		int yc = getPoint2().getY();
 		GraphicsUtil.drawThickCircle(g, xc, yc, circleSize);
 		int wl = 8;
 		adjustBbox(xc - circleSize, yc - circleSize, xc + circleSize, yc

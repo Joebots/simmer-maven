@@ -32,7 +32,7 @@ public class GraphicsUtil {
 		// g.drawLine(pa.x, pa.y+1, pb.x, pb.y+1);
 		// g.drawLine(pa.x+1, pa.y+1, pb.x+1, pb.y+1);
 		g.setLineWidth(3.0);
-		g.drawLine(pa.x, pa.y, pb.x, pb.y);
+		g.drawLine(pa.getX(), pa.getY(), pb.getX(), pb.getY());
 		g.setLineWidth(1.0);
 	}
 	public static void drawThickPolygon(Graphics g, int xs[], int ys[], int c) {

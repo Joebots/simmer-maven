@@ -187,7 +187,7 @@ public class MosfetElm extends AbstractCircuitElement {
 		GraphicsUtil.drawThickLine(g, getPoint1(), gate[1]);
 		GraphicsUtil.drawThickLine(g, gate[0], gate[2]);
 		if (drawDigital() && pnp == -1)
-			GraphicsUtil.drawThickCircle(g, pcircle.x, pcircle.y, pcircler);
+			GraphicsUtil.drawThickCircle(g, pcircle.getX(), pcircle.getY(), pcircler);
 		if ((getFlags() & FLAG_SHOWVT) != 0) {
 			String s = "" + (vt * pnp);
 			g.setColor(whiteColor);
@@ -198,11 +198,11 @@ public class MosfetElm extends AbstractCircuitElement {
 			g.setColor(Color.white);
 			g.setFont(unitsFont);
 			int ds = sign(getDx());
-			g.drawString("G", gate[1].x - 10 * ds, gate[1].y - 5);
-			g.drawString(pnp == -1 ? "D" : "S", src[0].x - 3 + 9 * ds,
-					src[0].y + 4); // x+6 if ds=1, -12 if -1
-			g.drawString(pnp == -1 ? "S" : "D", drn[0].x - 3 + 9 * ds,
-					drn[0].y + 4);
+			g.drawString("G", gate[1].getX() - 10 * ds, gate[1].getY() - 5);
+			g.drawString(pnp == -1 ? "D" : "S", src[0].getX() - 3 + 9 * ds,
+					src[0].getY() + 4); // x+6 if ds=1, -12 if -1
+			g.drawString(pnp == -1 ? "S" : "D", drn[0].getX() - 3 + 9 * ds,
+					drn[0].getY() + 4);
 		}
 		setCurcount(updateDotCount(-ids, getCurcount()));
 		drawDots(g, src[0], src[1], getCurcount());

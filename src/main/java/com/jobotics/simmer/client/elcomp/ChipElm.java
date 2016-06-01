@@ -235,11 +235,11 @@ public abstract class ChipElm extends AbstractCircuitElement {
 
 	public void drag(int xx, int yy) {
 		yy = sim.snapGrid(yy);
-		if (xx < getX()) {
-			xx = getX();
-			yy = getY();
+		if (xx < getX1()) {
+			xx = getX1();
+			yy = getY1();
 		} else {
-			setY(setY2(yy));
+			setY1(setY2(yy));
 			setX2(sim.snapGrid(xx));
 		}
 		setPoints();
@@ -274,10 +274,10 @@ public abstract class ChipElm extends AbstractCircuitElement {
 			// int sw = fm.stringWidth(p.text);
 			int sw = (int) g.getContext().measureText(p.text).getWidth();
 			int asc = (int) g.getCurrentFontSize();
-			g.drawString(p.text, p.textloc.x - sw / 2, p.textloc.y + asc / 2);
+			g.drawString(p.text, p.textloc.getX() - sw / 2, p.textloc.getY() + asc / 2);
 			if (p.isLineOver()) {
-				int ya = p.textloc.y - asc / 2;
-				g.drawLine(p.textloc.x - sw / 2, ya, p.textloc.x + sw / 2, ya);
+				int ya = p.textloc.getY() - asc / 2;
+				g.drawLine(p.textloc.getX() - sw / 2, ya, p.textloc.getX() + sw / 2, ya);
 			}
 		}
 		g.setColor(needsHighlight() ? selectColor : lightGrayColor);
@@ -285,7 +285,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 		if (clockPointsX != null)
 			g.drawPolyline(clockPointsX, clockPointsY, 3);
 		for (i = 0; i != getPostCount(); i++)
-			drawPost(g, pins[i].post.x, pins[i].post.y, getNodes()[i]);
+			drawPost(g, pins[i].post.getX(), pins[i].post.getY(), getNodes()[i]);
 		g.setFont(oldfont);
 	}
 
@@ -396,11 +396,11 @@ public abstract class ChipElm extends AbstractCircuitElement {
 	}
 
 	public void setPoints() {
-		if (getX2() - getX() > sizeX * cspc2 && this == sim.dragElm)
+		if (getX2() - getX1() > sizeX * cspc2 && this == sim.dragElm)
 			setSize(2);
 //		int hs = cspc;
-		int x0 = getX() + cspc2;
-		int y0 = getY();
+		int x0 = getX1() + cspc2;
+		int y0 = getY1();
 		int xr = x0 - cspc;
 		int yr = y0 - cspc;
 		int xs = sizeX * cspc2;

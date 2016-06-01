@@ -222,10 +222,10 @@ public class TriacElm extends AbstractCircuitElement {
 		int dir = 0;
 		if (abs(getDx()) > abs(getDy())) {
 			dir = -sign(getDx()) * sign(getDy());
-			getPoint2().y = getPoint1().y;
+			getPoint2().setY(getPoint1().getY());
 		} else {
 			dir = sign(getDy()) * sign(getDx());
-			getPoint2().x = getPoint1().x;
+			getPoint2().setX(getPoint1().getX());
 		}
 		if (dir == 0)
 			dir = 1;
@@ -241,8 +241,8 @@ public class TriacElm extends AbstractCircuitElement {
 		int gatelen = sim.getGridSize();
 		gatelen += leadlen % sim.getGridSize();
 		if (leadlen < gatelen) {
-			setX2(getX());
-			setY2(getY());
+			setX2(getX1());
+			setY2(getY1());
 			return;
 		}
 		interpPoint(getLead2(), getPoint2(), gate[0], gatelen / leadlen, gatelen * dir);

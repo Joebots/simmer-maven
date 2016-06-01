@@ -68,7 +68,7 @@ public class InverterElm extends AbstractCircuitElement {
 		draw2Leads(g);
 		g.setColor(needsHighlight() ? selectColor : lightGrayColor);
 		GraphicsUtil.drawThickPolygon(g, gatePoly);
-		GraphicsUtil.drawThickCircle(g, pcircle.x, pcircle.y, 3);
+		GraphicsUtil.drawThickCircle(g, pcircle.getX(), pcircle.getY(), 3);
 		setCurcount(updateDotCount(getCurrent(), getCurcount()));
 		drawDots(g, getLead2(), getPoint2(), getCurcount());
 	}

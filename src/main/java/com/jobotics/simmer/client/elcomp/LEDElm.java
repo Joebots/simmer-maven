@@ -65,7 +65,7 @@ public class LEDElm extends DiodeElm {
 
 		g.setColor(Color.gray);
 		int cr = 12;
-		GraphicsUtil.drawThickCircle(g, ledCenter.x, ledCenter.y, cr);
+		GraphicsUtil.drawThickCircle(g, ledCenter.getX(), ledCenter.getY(), cr);
 		cr -= 4;
 		double w = 255 * getCurrent() / .01;
 		if (w > 255)
@@ -73,7 +73,7 @@ public class LEDElm extends DiodeElm {
 		Color cc = new Color((int) (colorR * w), (int) (colorG * w),
 				(int) (colorB * w));
 		g.setColor(cc);
-		g.fillOval(ledCenter.x - cr, ledCenter.y - cr, cr * 2, cr * 2);
+		g.fillOval(ledCenter.getX() - cr, ledCenter.getY() - cr, cr * 2, cr * 2);
 		setBbox(getPoint1(), getPoint2(), cr);
 		updateDotCount();
 		drawDots(g, getPoint1(), ledLead1, getCurcount());

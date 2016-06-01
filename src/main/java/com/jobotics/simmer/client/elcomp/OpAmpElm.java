@@ -119,8 +119,8 @@ public class OpAmpElm extends AbstractCircuitElement {
 		setPowerColor(g, true);
 		GraphicsUtil.drawThickPolygon(g, triangle);
 		g.setFont(plusFont);
-		drawCenteredText(g, "-", textp[0].x, textp[0].y - 2, true);
-		drawCenteredText(g, "+", textp[1].x, textp[1].y, true);
+		drawCenteredText(g, "-", textp[0].getX(), textp[0].getY() - 2, true);
+		drawCenteredText(g, "+", textp[1].getX(), textp[1].getY(), true);
 		setVoltageColor(g, getVolts()[2]);
 		GraphicsUtil.drawThickLine(g, getLead2(), getPoint2());
 		setCurcount(updateDotCount(getCurrent(), getCurcount()));

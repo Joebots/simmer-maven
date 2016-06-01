@@ -88,11 +88,11 @@ public abstract class AbstractCircuitElement implements Editable {
 
 	protected int voltSource;
 
-	protected int x;
+	protected int x1;
 
 	protected int x2;
 
-	protected int y;
+	protected int y1;
 
 	protected int y2;
 
@@ -100,8 +100,8 @@ public abstract class AbstractCircuitElement implements Editable {
 		return x < 0 ? -x : x;
 	}
 	protected static double distance(Point p1, Point p2) {
-		double x = p1.x - p2.x;
-		double y = p1.y - p2.y;
+		double x = p1.getX() - p2.getX();
+		double y = p1.getY() - p2.getY();
 		return Math.sqrt(x * x + y * y);
 	}
 
@@ -229,16 +229,16 @@ public abstract class AbstractCircuitElement implements Editable {
 	}
 
 	protected AbstractCircuitElement(int xx, int yy) {
-		x = x2 = xx;
-		y = y2 = yy;
+		x1 = x2 = xx;
+		y1 = y2 = yy;
 		flags = getDefaultFlags();
 		allocNodes();
 		initBoundingBox();
 	}
 
 	protected AbstractCircuitElement(int xa, int ya, int xb, int yb, int f) {
-		x = xa;
-		y = ya;
+		x1 = xa;
+		y1 = ya;
 		x2 = xb;
 		y2 = yb;
 		flags = f;
@@ -265,7 +265,7 @@ public abstract class AbstractCircuitElement implements Editable {
 	}
 
 	protected void adjustBbox(Point p1, Point p2) {
-		adjustBbox(p1.x, p1.y, p2.x, p2.y);
+		adjustBbox(p1.getX(), p1.getY(), p2.getX(), p2.getY());
 	}
 
 	protected void allocNodes() {
@@ -276,18 +276,18 @@ public abstract class AbstractCircuitElement implements Editable {
 	// determine if moving this element by (dx,dy) will put it on top of another
 	// element
 	public boolean allowMove(int dx, int dy) {
-		int nx = x + dx;
-		int ny = y + dy;
+		int nx = x1 + dx;
+		int ny = y1 + dy;
 		int nx2 = x2 + dx;
 		int ny2 = y2 + dy;
 		
 		int i;
 		for (i = 0; i != sim.getElmList().size(); i++) {
 			AbstractCircuitElement ce = sim.getElm(i);
-			if (ce.x == nx && ce.y == ny && ce.x2 == nx2 && ce.y2 == ny2)
+			if (ce.x1 == nx && ce.y1 == ny && ce.x2 == nx2 && ce.y2 == ny2)
 				return false;
 			
-			if (ce.x == nx2 && ce.y == ny2 && ce.x2 == nx && ce.y2 == ny)
+			if (ce.x1 == nx2 && ce.y1 == ny2 && ce.x2 == nx && ce.y2 == ny)
 				return false;
 		}
 		return true;
@@ -298,13 +298,13 @@ public abstract class AbstractCircuitElement implements Editable {
 		Polygon poly = new Polygon();
 		Point p1 = new Point();
 		Point p2 = new Point();
-		int adx = b.x - a.x;
-		int ady = b.y - a.y;
+		int adx = b.getX() - a.getX();
+		int ady = b.getY() - a.getY();
 		double l = Math.sqrt(adx * adx + ady * ady);
-		poly.addPoint(b.x, b.y);
+		poly.addPoint(b.getX(), b.getY());
 		interpPoint2(a, b, p1, p2, 1 - al / l, aw);
-		poly.addPoint(p1.x, p1.y);
-		poly.addPoint(p2.x, p2.y);
+		poly.addPoint(p1.getX(), p1.getY());
+		poly.addPoint(p2.getX(), p2.getY());
 		return poly;
 	}
 
@@ -353,7 +353,7 @@ public abstract class AbstractCircuitElement implements Editable {
 	// TODO: badger: abstraction
 	public String dump() {
 		int t = getDumpType();
-		return (t < 127 ? ((char) t) + " " : t + " ") + x + " " + y + " " + x2
+		return (t < 127 ? ((char) t) + " " : t + " ") + x1 + " " + y1 + " " + x2
 				+ " " + y2 + " " + flags;
 	}
 
@@ -388,26 +388,26 @@ public abstract class AbstractCircuitElement implements Editable {
 		Polygon p = new Polygon();
 		int i;
 		for (i = 0; i != a.length; i++)
-			p.addPoint(a[i].x, a[i].y);
+			p.addPoint(a[i].getX(), a[i].getY());
 		return p;
 	}
 
 	// TODO: Badger: utils
 	protected Polygon createPolygon(Point a, Point b, Point c) {
 		Polygon p = new Polygon();
-		p.addPoint(a.x, a.y);
-		p.addPoint(b.x, b.y);
-		p.addPoint(c.x, c.y);
+		p.addPoint(a.getX(), a.getY());
+		p.addPoint(b.getX(), b.getY());
+		p.addPoint(c.getX(), c.getY());
 		return p;
 	}
 
 	// TODO: Badger: utils
 	protected Polygon createPolygon(Point a, Point b, Point c, Point d) {
 		Polygon p = new Polygon();
-		p.addPoint(a.x, a.y);
-		p.addPoint(b.x, b.y);
-		p.addPoint(c.x, c.y);
-		p.addPoint(d.x, d.y);
+		p.addPoint(a.getX(), a.getY());
+		p.addPoint(b.getX(), b.getY());
+		p.addPoint(c.getX(), c.getY());
+		p.addPoint(d.getX(), d.getY());
 		return p;
 	}
 	
@@ -423,10 +423,10 @@ public abstract class AbstractCircuitElement implements Editable {
 		xx = sim.snapGrid(xx);
 		yy = sim.snapGrid(yy);
 		if (noDiagonal) {
-			if (Math.abs(x - xx) < Math.abs(y - yy)) {
-				xx = x;
+			if (Math.abs(x1 - xx) < Math.abs(y1 - yy)) {
+				xx = x1;
 			} else {
-				yy = y;
+				yy = y1;
 			}
 		}
 		x2 = xx;
@@ -520,8 +520,8 @@ public abstract class AbstractCircuitElement implements Editable {
 		if (sim.getStoppedCheck().getState() || pos == 0
 				|| !sim.getDotsCheckItem().getState())
 			return;
-		int dx = pb.x - pa.x;
-		int dy = pb.y - pa.y;
+		int dx = pb.getX() - pa.getX();
+		int dy = pb.getY() - pa.getY();
 		double dn = Math.sqrt(dx * dx + dy * dy);
 		g.setColor(sim.getConventionCheckItem().getState() ? Color.yellow
 				: Color.cyan);
@@ -531,8 +531,8 @@ public abstract class AbstractCircuitElement implements Editable {
 			pos += ds;
 		double di = 0;
 		for (di = pos; di < dn; di += ds) {
-			int x0 = (int) (pa.x + di * dx / dn);
-			int y0 = (int) (pa.y + di * dy / dn);
+			int x0 = (int) (pa.getX() + di * dx / dn);
+			int y0 = (int) (pa.getY() + di * dy / dn);
 			g.fillRect(x0 - 2, y0 - 2, 4, 4);
 		}
 	}
@@ -540,7 +540,7 @@ public abstract class AbstractCircuitElement implements Editable {
 	// TODO: Badger: utils
 	public void drawHandles(Graphics g, Color c) {
 		g.setColor(c);
-		g.fillRect(x - 3, y - 3, 7, 7);
+		g.fillRect(x1 - 3, y1 - 3, 7, 7);
 		g.fillRect(x2 - 3, y2 - 3, 7, 7);
 	}
 
@@ -566,7 +566,7 @@ public abstract class AbstractCircuitElement implements Editable {
 		int i;
 		for (i = 0; i != getPostCount(); i++) {
 			Point p = getPost(i);
-			drawPost(g, p.x, p.y, nodes[i]);
+			drawPost(g, p.getX(), p.getY(), nodes[i]);
 		}
 	}
 
@@ -585,8 +585,8 @@ public abstract class AbstractCircuitElement implements Editable {
 			xc = x2;
 			yc = y2;
 		} else {
-			xc = (x2 + x) / 2;
-			yc = (y2 + y) / 2;
+			xc = (x2 + x1) / 2;
+			yc = (y2 + y1) / 2;
 		}
 		int dpx = (int) (dpx1 * hs);
 		int dpy = (int) (dpy1 * hs);
@@ -594,7 +594,7 @@ public abstract class AbstractCircuitElement implements Editable {
 			g.drawString(s, xc - w / 2, yc - abs(dpy) - 2);
 		} else {
 			int xx = xc + abs(dpx) + 2;
-			if (this instanceof VoltageElm || (x < x2 && y > y2))
+			if (this instanceof VoltageElm || (x1 < x2 && y1 > y2))
 				xx = xc - (w + abs(dpx) + 2);
 			g.drawString(s, xx, yc + dpy + ya);
 		}
@@ -772,16 +772,16 @@ public abstract class AbstractCircuitElement implements Editable {
 		return voltSource;
 	}
 
-	public int getX() {
-		return x;
+	public int getX1() {
+		return x1;
 	}
 
 	public int getX2() {
 		return x2;
 	}
 
-	public int getY() {
-		return y;
+	public int getY1() {
+		return y1;
 	}
 
 	public int getY2() {
@@ -790,8 +790,8 @@ public abstract class AbstractCircuitElement implements Editable {
 
 	private void initBoundingBox() {
 		boundingBox = new Rectangle();
-		boundingBox.setBounds(min(x, x2), min(y, y2), abs(x2 - x) + 1, abs(y2
-				- y) + 1);
+		boundingBox.setBounds(min(x1, x2), min(y1, y2), abs(x2 - x1) + 1, abs(y2
+				- y1) + 1);
 	}
 
 	// TODO: Badger: utils
@@ -816,32 +816,32 @@ public abstract class AbstractCircuitElement implements Editable {
 		 * double q = (a.x*(1-f)+b.x*f+.48); System.out.println(q + " " + (int)
 		 * q);
 		 */
-		c.x = (int) Math.floor(a.x * (1 - f) + b.x * f + .48);
-		c.y = (int) Math.floor(a.y * (1 - f) + b.y * f + .48);
+		c.setX((int) Math.floor(a.getX() * (1 - f) + b.getX() * f + .48));
+		c.setY((int) Math.floor(a.getY() * (1 - f) + b.getY() * f + .48));
 	}
 
 	// TODO: Badger: utils
 	protected void interpPoint(Point a, Point b, Point c, double f, double g) {
 		// int xpd = b.x-a.x;
 		// int ypd = b.y-a.y;
-		int gx = b.y - a.y;
-		int gy = a.x - b.x;
+		int gx = b.getY() - a.getY();
+		int gy = a.getX() - b.getX();
 		g /= Math.sqrt(gx * gx + gy * gy);
-		c.x = (int) Math.floor(a.x * (1 - f) + b.x * f + g * gx + .48);
-		c.y = (int) Math.floor(a.y * (1 - f) + b.y * f + g * gy + .48);
+		c.setX((int) Math.floor(a.getX() * (1 - f) + b.getX() * f + g * gx + .48));
+		c.setY((int) Math.floor(a.getY() * (1 - f) + b.getY() * f + g * gy + .48));
 	}
 
 	// TODO: Badger: utils
 	protected void interpPoint2(Point a, Point b, Point c, Point d, double f, double g) {
 		// int xpd = b.x-a.x;
 		// int ypd = b.y-a.y;
-		int gx = b.y - a.y;
-		int gy = a.x - b.x;
+		int gx = b.getY() - a.getY();
+		int gy = a.getX() - b.getX();
 		g /= Math.sqrt(gx * gx + gy * gy);
-		c.x = (int) Math.floor(a.x * (1 - f) + b.x * f + g * gx + .48);
-		c.y = (int) Math.floor(a.y * (1 - f) + b.y * f + g * gy + .48);
-		d.x = (int) Math.floor(a.x * (1 - f) + b.x * f - g * gx + .48);
-		d.y = (int) Math.floor(a.y * (1 - f) + b.y * f - g * gy + .48);
+		c.setX((int) Math.floor(a.getX() * (1 - f) + b.getX() * f + g * gx + .48));
+		c.setY((int) Math.floor(a.getY() * (1 - f) + b.getY() * f + g * gy + .48));
+		d.setX((int) Math.floor(a.getX() * (1 - f) + b.getX() * f - g * gx + .48));
+		d.setY((int) Math.floor(a.getY() * (1 - f) + b.getY() * f - g * gy + .48));
 	}
 
 	public boolean isCenteredText() {
@@ -865,8 +865,8 @@ public abstract class AbstractCircuitElement implements Editable {
 	}
 
 	public void move(int dx, int dy) {
-		x += dx;
-		y += dy;
+		x1 += dx;
+		y1 += dy;
 		x2 += dx;
 		y2 += dy;
 		boundingBox.move(dx, dy);
@@ -881,20 +881,20 @@ public abstract class AbstractCircuitElement implements Editable {
 		// modified by IES to prevent the user dragging points to create zero
 		// sized nodes
 		// that then render improperly
-		int oldx = x;
-		int oldy = y;
+		int oldx = x1;
+		int oldy = y1;
 		int oldx2 = x2;
 		int oldy2 = y2;
 		if (n == 0) {
-			x += dx;
-			y += dy;
+			x1 += dx;
+			y1 += dy;
 		} else {
 			x2 += dx;
 			y2 += dy;
 		}
-		if (x == x2 && y == y2) {
-			x = oldx;
-			y = oldy;
+		if (x1 == x2 && y1 == y2) {
+			x1 = oldx;
+			y1 = oldy;
 			x2 = oldx2;
 			y2 = oldy2;
 		}
@@ -938,12 +938,12 @@ public abstract class AbstractCircuitElement implements Editable {
 
 	// TODO: Badger: utils
 	protected void setBbox(Point p1, Point p2, double w) {
-		setBbox(p1.x, p1.y, p2.x, p2.y);
+		setBbox(p1.getX(), p1.getY(), p2.getX(), p2.getY());
 //		int gx = p2.y - p1.y;
 //		int gy = p1.x - p2.x;
 		int dpx = (int) (dpx1 * w);
 		int dpy = (int) (dpy1 * w);
-		adjustBbox(p1.x + dpx, p1.y + dpy, p1.x - dpx, p1.y - dpy);
+		adjustBbox(p1.getX() + dpx, p1.getY() + dpy, p1.getX() - dpx, p1.getY() - dpy);
 	}
 
 	protected void setBoundingBox(Rectangle boundingBox) {
@@ -1024,13 +1024,13 @@ public abstract class AbstractCircuitElement implements Editable {
 	}
 
 	public void setPoints() {
-		setDx(x2 - x);
-		dy = y2 - y;
-		dn = Math.sqrt(getDx() * getDx() + dy * dy);
+		dx = x2 - x1;
+		dy = y2 - y1;
+		dn = Math.sqrt(dx * dx + dy * dy);
 		dpx1 = dy / dn;
-		dpy1 = -getDx() / dn;
-		dsign = (dy == 0) ? sign(getDx()) : sign(dy);
-		point1 = new Point(x, y);
+		dpy1 = -dx / dn;
+		dsign = (dy == 0) ? sign(dx) : sign(dy);
+		point1 = new Point(x1, y1);
 		point2 = new Point(x2, y2);
 	}
 
@@ -1083,8 +1083,8 @@ public abstract class AbstractCircuitElement implements Editable {
 		this.voltSource = voltSource;
 	}
 
-	public void setX(int x) {
-		this.x = x;
+	public void setX1(int x1) {
+		this.x1 = x1;
 	}
 
 	public int setX2(int x2) {
@@ -1092,8 +1092,8 @@ public abstract class AbstractCircuitElement implements Editable {
 		return x2;
 	}
 
-	public void setY(int y) {
-		this.y = y;
+	public void setY1(int y1) {
+		this.y1 = y1;
 	}
 
 	public int setY2(int y2) {

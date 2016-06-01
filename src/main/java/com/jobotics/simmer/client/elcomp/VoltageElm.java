@@ -90,7 +90,7 @@ public class VoltageElm extends AbstractCircuitElement {
 	 */
 
 	public void draw(Graphics g) {
-		setBbox(getX(), getY(), getX2(), getY2());
+		setBbox(getX1(), getY1(), getX2(), getY2());
 		draw2Leads(g);
 		if (waveform == WF_DC) {
 			setPowerColor(g, false);
@@ -122,8 +122,8 @@ public class VoltageElm extends AbstractCircuitElement {
 	void drawWaveform(Graphics g, Point center) {
 		g.setColor(needsHighlight() ? selectColor : Color.gray);
 		setPowerColor(g, false);
-		int xc = center.x;
-		int yc = center.y;
+		int xc = center.getX();
+		int yc = center.getY();
 		GraphicsUtil.drawThickCircle(g, xc, yc, circleSize);
 		int wl = 8;
 		adjustBbox(xc - circleSize, yc - circleSize, xc + circleSize, yc

@@ -59,7 +59,7 @@ public class CurrentElm extends AbstractCircuitElement {
 		setVoltageColor(g, (getVolts()[0] + getVolts()[1]) / 2);
 		setPowerColor(g, false);
 
-		GraphicsUtil.drawThickCircle(g, center.x, center.y, cr);
+		GraphicsUtil.drawThickCircle(g, center.getX(), center.getY(), cr);
 		GraphicsUtil.drawThickLine(g, ashaft1, ashaft2);
 
 		g.fillPolygon(arrow);

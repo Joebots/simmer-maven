@@ -81,7 +81,7 @@ public class LogicOutputElm extends AbstractCircuitElement {
 
 	public void drawHandles(Graphics g, Color c) {
 		g.setColor(c);
-		g.fillRect(getX() - 3, getY() - 3, 7, 7);
+		g.fillRect(getX1() - 3, getY1() - 3, 7, 7);
 	}
 
 	public String dump() {

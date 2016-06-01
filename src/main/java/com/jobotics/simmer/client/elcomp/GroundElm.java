@@ -47,7 +47,7 @@ public class GroundElm extends AbstractCircuitElement {
 		doDots(g);
 		interpPoint(getPoint1(), getPoint2(), ps2, 1 + 11. / getDn());
 		setBbox(getPoint1(), ps2, 11);
-		drawPost(g, getX(), getY(), getNodes()[0]);
+		drawPost(g, getX1(), getY1(), getNodes()[0]);
 	}
 
 	public int getDumpType() {

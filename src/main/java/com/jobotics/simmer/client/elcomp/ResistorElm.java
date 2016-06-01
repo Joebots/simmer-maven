@@ -64,10 +64,10 @@ public class ResistorElm extends AbstractCircuitElement {
 		double len = distance(getLead1(), getLead2());
 		g.getContext().save();
 		g.getContext().setLineWidth(3.0);
-		g.getContext().setTransform(((double) (getLead2().x - getLead1().x)) / len,
-				((double) (getLead2().y - getLead1().y)) / len,
-				-((double) (getLead2().y - getLead1().y)) / len,
-				((double) (getLead2().x - getLead1().x)) / len, getLead1().x, getLead1().y);
+		g.getContext().setTransform(((double) (getLead2().getX() - getLead1().getX())) / len,
+				((double) (getLead2().getY() - getLead1().getY())) / len,
+				-((double) (getLead2().getY() - getLead1().getY())) / len,
+				((double) (getLead2().getX() - getLead1().getX())) / len, getLead1().getX(), getLead1().getY());
 		CanvasGradient grad = g.getContext().createLinearGradient(0, 0, len, 0);
 		grad.addColorStop(0, getVoltageColor(g, v1).getHexValue());
 		grad.addColorStop(1.0, getVoltageColor(g, v2).getHexValue());

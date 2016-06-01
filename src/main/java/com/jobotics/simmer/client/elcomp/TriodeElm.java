@@ -118,9 +118,9 @@ public class TriodeElm extends AbstractCircuitElement {
 
 	public void draw(Graphics g) {
 		g.setColor(Color.gray);
-		GraphicsUtil.drawThickCircle(g, getPoint2().x, getPoint2().y, circler);
+		GraphicsUtil.drawThickCircle(g, getPoint2().getX(), getPoint2().getY(), circler);
 		setBbox(getPoint1(), plate[0], 16);
-		adjustBbox(cath[0].x, cath[1].y, getPoint2().x + circler, getPoint2().y + circler);
+		adjustBbox(cath[0].getX(), cath[1].getY(), getPoint2().getX() + circler, getPoint2().getY() + circler);
 		setPowerColor(g, true);
 		// draw plate
 		setVoltageColor(g, getVolts()[0]);

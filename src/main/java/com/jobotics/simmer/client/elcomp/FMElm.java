@@ -94,8 +94,8 @@ public class FMElm extends AbstractCircuitElement {
 	void drawWaveform(Graphics g, Point center) {
 		g.setColor(needsHighlight() ? selectColor : Color.gray);
 		setPowerColor(g, false);
-		int xc = center.x;
-		int yc = center.y;
+		int xc = center.getX();
+		int yc = center.getY();
 		GraphicsUtil.drawThickCircle(g, xc, yc, circleSize);
 //		int wl = 8;
 		adjustBbox(xc - circleSize, yc - circleSize, xc + circleSize, yc
