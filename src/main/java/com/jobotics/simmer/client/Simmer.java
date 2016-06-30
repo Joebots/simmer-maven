@@ -21,7 +21,7 @@ package com.jobotics.simmer.client;
 
 // GWT conversion (c) 2015 by Iain Sharp
 // For information about the theory behind this, see Electronic Circuit & System Simulation Methods by Pillage
-
+import com.jobotics.simmer.client.util.MessageI18N;
 import static com.google.gwt.event.dom.client.KeyCodes.KEY_A;
 import static com.google.gwt.event.dom.client.KeyCodes.KEY_BACKSPACE;
 import static com.google.gwt.event.dom.client.KeyCodes.KEY_C;
@@ -295,7 +295,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 	private AbstractCircuitElement			stopElm;
 	private String							stopMessage;
 	private Checkbox						stoppedCheck;
-	// String baseURL = "http://www.falstad.com/circuit/";
 	private final Timer						timer				= new Timer() {
 																	public void run() {
 																		updateCircuit();
@@ -357,7 +356,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		boolean gotRail = false;
 		AbstractCircuitElement volt = null;
 
-		// System.out.println("ac1");
 		// look for voltage or ground element
 		for (i = 0; i != elmList.size(); i++) {
 			AbstractCircuitElement ce = getElm(i);
@@ -385,7 +383,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			cn.x = cn.y = -1;
 			getNodeList().addElement(cn);
 		}
-		// System.out.println("ac2");
 
 		// allocate nodes and voltage sources
 		for (i = 0; i != elmList.size(); i++) {
@@ -441,7 +438,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		voltageSources = new AbstractCircuitElement[vscount];
 		vscount = 0;
 		circuitNonLinear = false;
-		// System.out.println("ac3");
 
 		// determine if circuit is nonlinear
 		for (i = 0; i != elmList.size(); i++) {
@@ -474,7 +470,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			AbstractCircuitElement ce = getElm(i);
 			ce.stamp();
 		}
-		// System.out.println("ac4");
 
 		// determine nodes that are unconnected
 		boolean closure[] = new boolean[getNodeList().size()];
@@ -510,15 +505,14 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			// connect unconnected nodes
 			for (i = 0; i != getNodeList().size(); i++)
 				if (!closure[i] && !getCircuitNode(i).internal) {
-					System.out.println("node " + i + " unconnected");
+					System.out.println(MessageI18N.getLocale("node_") + i + MessageI18N.getLocale("_unconnected"));
 					stampResistor(0, i, 1e8);
 					closure[i] = true;
 					changed = true;
 					break;
 				}
 		}
-		// System.out.println("ac5");
-
+	
 		for (i = 0; i != elmList.size(); i++) {
 			AbstractCircuitElement ce = getElm(i);
 			// look for inductors with no current path
@@ -527,7 +521,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 				// first try findPath with maximum depth of 5, to avoid
 				// slowdowns
 				if (!fpi.findPath(ce.getNode(0), 5) && !fpi.findPath(ce.getNode(0))) {
-					System.out.println(ce + " no path");
+					System.out.println(ce + MessageI18N.getLocale("_no_path"));
 					ce.reset();
 				}
 			}
@@ -535,7 +529,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			if (ce instanceof CurrentElm) {
 				FindPathInfo fpi = new FindPathInfo(FindPathInfo.INDUCT, ce, ce.getNode(1), getNodeList().size(), getElmList());
 				if (!fpi.findPath(ce.getNode(0))) {
-					stop("No path for current source!", ce);
+					stop(MessageI18N.getLocale("No_path_for_current_source!"), ce);
 					return;
 				}
 			}
@@ -544,7 +538,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			if ((ce instanceof VoltageElm && ce.getPostCount() == 2) || ce instanceof WireElm) {
 				FindPathInfo fpi = new FindPathInfo(FindPathInfo.VOLTAGE, ce, ce.getNode(1), getNodeList().size(), getElmList());
 				if (fpi.findPath(ce.getNode(0))) {
-					stop("Voltage source/wire loop with no resistance!", ce);
+					stop(MessageI18N.getLocale("Voltage_source/wire_loop_with_no_resistance!"), ce);
 					return;
 				}
 			}
@@ -552,18 +546,18 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			if (ce instanceof CapacitorElm) {
 				FindPathInfo fpi = new FindPathInfo(FindPathInfo.SHORT, ce, ce.getNode(1), getNodeList().size(), getElmList());
 				if (fpi.findPath(ce.getNode(0))) {
-					System.out.println(ce + " shorted");
+					System.out.println(ce + MessageI18N.getLocale("_shorted"));
 					ce.reset();
 				} else {
 					fpi = new FindPathInfo(FindPathInfo.CAP_V, ce, ce.getNode(1), getNodeList().size(), getElmList());
 					if (fpi.findPath(ce.getNode(0))) {
-						stop("Capacitor loop with no resistance!", ce);
+						stop(MessageI18N.getLocale("Capacitor_loop_with_no_resistance!"), ce);
 						return;
 					}
 				}
 			}
 		}
-		// System.out.println("ac6");
+		// System.out.println(MessageI18N.getLocale("ac6"));
 
 		// simplify the matrix; this speeds things up quite a bit
 		for (i = 0; i != matrixSize; i++) {
@@ -571,8 +565,8 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			double qv = 0;
 			RowInfo re = circuitRowInfo[i];
 			/*
-			 * System.out.println("row " + i + " " + re.lsChanges + " " +
-			 * re.rsChanges + " " + re.dropRow);
+			 * System.out.println(MessageI18N.getLocale("row_") + i + "_" + re.lsChanges + "_" +
+			 * re.rsChanges + "_" + re.dropRow);
 			 */
 			if (re.isLsChanges() || re.isDropRow() || re.isRsChanges())
 				continue;
@@ -605,16 +599,16 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 				
 				break;
 			}
-			// System.out.println("line " + i + " " + qp + " " + qm + " " + j);
+			// System.out.println(MessageI18N.getLocale("line_") + i + "_" + qp + "_" + qm + "_" + j);
 			/*
 			 * if (qp != -1 && circuitRowInfo[qp].lsChanges) {
-			 * System.out.println("lschanges"); continue; } if (qm != -1 &&
-			 * circuitRowInfo[qm].lsChanges) { System.out.println("lschanges");
+			 * System.out.println(MessageI18N.getLocale("lschanges")); continue; } if (qm != -1 &&
+			 * circuitRowInfo[qm].lsChanges) { System.out.println(MessageI18N.getLocale("lschanges"));
 			 * continue; }
 			 */
 			if (j == matrixSize) {
 				if (qp == -1) {
-					stop("Matrix error", null);
+					stop(MessageI18N.getLocale("Matrix_error"), null);
 					return;
 				}
 				RowInfo elt = circuitRowInfo[qp];
@@ -625,33 +619,33 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 					for (k = 0; elt.getType() == RowInfo.ROW_EQUAL && k < 100; k++) {
 						// follow the chain
 						/*
-						 * System.out.println("following equal chain from " + i
-						 * + " " + qp + " to " + elt.nodeEq);
+						 * System.out.println(MessageI18N.getLocale("following_equal_chain_from_") + i
+						 * + "_" + qp + MessageI18N.getLocale("_to_") + elt.nodeEq);
 						 */
 						qp = elt.getNodeEq();
 						elt = circuitRowInfo[qp];
 					}
 					if (elt.getType() == RowInfo.ROW_EQUAL) {
 						// break equal chains
-						// System.out.println("Break equal chain");
+						// System.out.println(MessageI18N.getLocale("Break_equal_chain"));
 						elt.setType(RowInfo.ROW_NORMAL);
 						continue;
 					}
 					if (elt.getType() != RowInfo.ROW_NORMAL) {
-						System.out.println("type already " + elt.getType() + " for " + qp + "!");
+						System.out.println(MessageI18N.getLocale("type_already_") + elt.getType() + MessageI18N.getLocale("_for_") + qp + "!");
 						continue;
 					}
 					elt.setType(RowInfo.ROW_CONST);
 					elt.setValue((circuitRightSide[i] + rsadd) / qv);
 					circuitRowInfo[i].setDropRow(true);
-					// System.out.println(qp + " * " + qv + " = const " +
+					// System.out.println(qp + MessageI18N.getLocale("_*_") + qv + MessageI18N.getLocale("_=_const_") +
 					// elt.value);
 					i = -1; // start over from scratch
 				} else if (circuitRightSide[i] + rsadd == 0) {
 					// we found a row with only two nonzero entries, and one
 					// is the negative of the other; the values are equal
 					if (elt.getType() != RowInfo.ROW_NORMAL) {
-						// System.out.println("swapping");
+						// System.out.println(MessageI18N.getLocale("swapping"));
 						int qq = qm;
 						qm = qp;
 						qp = qq;
@@ -660,14 +654,14 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 							// we should follow the chain here, but this
 							// hardly ever happens so it's not worth worrying
 							// about
-							System.out.println("swap failed");
+							System.out.println(MessageI18N.getLocale("swap_failed"));
 							continue;
 						}
 					}
 					elt.setType(RowInfo.ROW_EQUAL);
 					elt.setNodeEq(qm);
 					circuitRowInfo[i].setDropRow(true);
-					// System.out.println(qp + " = " + qm);
+					// System.out.println(qp + MessageI18N.getLocale("_=_") + qm);
 				}
 			}
 		}
@@ -678,7 +672,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			RowInfo elt = circuitRowInfo[i];
 			if (elt.getType() == RowInfo.ROW_NORMAL) {
 				elt.setMapCol(nn++);
-				// System.out.println("col " + i + " maps to " + elt.mapCol);
+				// System.out.println(MessageI18N.getLocale("col_") + i + MessageI18N.getLocale("_maps_to_") + elt.mapCol);
 				continue;
 			}
 			if (elt.getType() == RowInfo.ROW_EQUAL) {
@@ -705,10 +699,10 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 					elt.setType(e2.getType());
 					elt.setValue(e2.getValue());
 					elt.setMapCol(-1);
-					// System.out.println(i + " = [late]const " + elt.value);
+					// System.out.println(i + MessageI18N.getLocale("_=_[late]const_") + elt.value);
 				} else {
 					elt.setMapCol(e2.getMapCol());
-					// System.out.println(i + " maps to: " + e2.mapCol);
+					// System.out.println(i + MessageI18N.getLocale("_maps_to:_") + e2.mapCol);
 				}
 			}
 		}
@@ -726,7 +720,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			}
 			newrs[ii] = circuitRightSide[i];
 			rri.setMapRow(ii);
-			// System.out.println("Row " + i + " maps to " + ii);
+			// System.out.println(MessageI18N.getLocale("Row_") + i + MessageI18N.getLocale("_maps_to_") + ii);
 			for (j = 0; j != matrixSize; j++) {
 				RowInfo ri = circuitRowInfo[j];
 				if (ri.getType() == RowInfo.ROW_CONST)
@@ -754,7 +748,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		// needing to do it every frame
 		if (!circuitNonLinear) {
 			if (!lu_factor(circuitMatrix, circuitMatrixSize, circuitPermute)) {
-				stop("Singular matrix!", null);
+				stop(MessageI18N.getLocale("Singular_matrix!"), null);
 				return;
 			}
 		}
@@ -768,144 +762,144 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 	}
 	
 	private void buildDrawMenu(MenuBar mainMenuBar) {
-		mainMenuBar.addItem(getClassCheckItem("Add Wire", "WireElm"));
-		mainMenuBar.addItem(getClassCheckItem("Add Resistor", "ResistorElm"));
+		mainMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Wire"), "WireElm"));
+		mainMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Resistor"), "ResistorElm"));
 
 		// Passive Components
 		MenuBar passMenuBar = new MenuBar(true);
-		passMenuBar.addItem(getClassCheckItem("Add Capacitor", "CapacitorElm"));
-		passMenuBar.addItem(getClassCheckItem("Add Inductor", "InductorElm"));
-		passMenuBar.addItem(getClassCheckItem("Add Switch", "SwitchElm"));
-		passMenuBar.addItem(getClassCheckItem("Add Push Switch", "PushSwitchElm"));
-		passMenuBar.addItem(getClassCheckItem("Add SPDT Switch", "Switch2Elm"));
-		passMenuBar.addItem(getClassCheckItem("Add Potentiometer", "PotElm"));
-		passMenuBar.addItem(getClassCheckItem("Add Transformer", "TransformerElm"));
-		passMenuBar.addItem(getClassCheckItem("Add Tapped Transformer", "TappedTransformerElm"));
-		passMenuBar.addItem(getClassCheckItem("Add Transmission Line", "TransLineElm"));
-		passMenuBar.addItem(getClassCheckItem("Add Relay", "RelayElm"));
-		passMenuBar.addItem(getClassCheckItem("Add Memristor", "MemristorElm"));
-		passMenuBar.addItem(getClassCheckItem("Add Spark Gap", "SparkGapElm"));
-		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>Passive Components"), passMenuBar);
+		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Capacitor"), "CapacitorElm"));
+		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Inductor"), "InductorElm"));
+		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Switch"), "SwitchElm"));
+		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Push_Switch"), "PushSwitchElm"));
+		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_SPDT_Switch"), "Switch2Elm"));
+		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Potentiometer"), "PotElm"));
+		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Transformer"), "TransformerElm"));
+		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Tapped_Transformer"), "TappedTransformerElm"));
+		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Transmission_Line"), "TransLineElm"));
+		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Relay"), "RelayElm"));
+		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Memristor"), "MemristorElm"));
+		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Spark_Gap"), "SparkGapElm"));
+		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Passive_Components")), passMenuBar);
 
 		// Inputs and Sources
 		MenuBar inputMenuBar = new MenuBar(true);
-		inputMenuBar.addItem(getClassCheckItem("Add Ground", "GroundElm"));
-		inputMenuBar.addItem(getClassCheckItem("Add Voltage Source (2-terminal)", "DCVoltageElm"));
-		inputMenuBar.addItem(getClassCheckItem("Add A/C Voltage Source (2-terminal)", "ACVoltageElm"));
-		inputMenuBar.addItem(getClassCheckItem("Add Voltage Source (1-terminal)", "RailElm"));
-		inputMenuBar.addItem(getClassCheckItem("Add A/C Voltage Source (1-terminal)", "ACRailElm"));
-		inputMenuBar.addItem(getClassCheckItem("Add Square Wave Source (1-terminal)", "SquareRailElm"));
-		inputMenuBar.addItem(getClassCheckItem("Add Clock", "ClockElm"));
-		inputMenuBar.addItem(getClassCheckItem("Add A/C Sweep", "SweepElm"));
-		inputMenuBar.addItem(getClassCheckItem("Add Variable Voltage", "VarRailElm"));
-		inputMenuBar.addItem(getClassCheckItem("Add Antenna", "AntennaElm"));
-		inputMenuBar.addItem(getClassCheckItem("Add AM Source", "AMElm"));
-		inputMenuBar.addItem(getClassCheckItem("Add FM Source", "FMElm"));
-		inputMenuBar.addItem(getClassCheckItem("Add Current Source", "CurrentElm"));
+		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Ground"), "GroundElm"));
+		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Voltage_Source_(2-terminal)"), "DCVoltageElm"));
+		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_A/C_Voltage_Source_(2-terminal)"), "ACVoltageElm"));
+		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Voltage_Source_(1-terminal)"), "RailElm"));
+		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_A/C_Voltage_Source_(1-terminal)"), "ACRailElm"));
+		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Square_Wave_Source_(1-terminal)"), "SquareRailElm"));
+		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Clock"), "ClockElm"));
+		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_A/C_Sweep"), "SweepElm"));
+		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Variable_Voltage"), "VarRailElm"));
+		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Antenna"), "AntennaElm"));
+		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_AM_Source"), "AMElm"));
+		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_FM_Source"), "FMElm"));
+		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Current_Source"), "CurrentElm"));
 
-		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>Inputs and Sources"), inputMenuBar);
+		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Inputs_and_Sources")), inputMenuBar);
 
 		// Outputs and Labels
 		MenuBar outputMenuBar = new MenuBar(true);
-		outputMenuBar.addItem(getClassCheckItem("Add Analog Output", "OutputElm"));
-		outputMenuBar.addItem(getClassCheckItem("Add LED", "LEDElm"));
-		outputMenuBar.addItem(getClassCheckItem("Add Lamp (beta)", "LampElm"));
-		outputMenuBar.addItem(getClassCheckItem("Add Text", "TextElm"));
-		outputMenuBar.addItem(getClassCheckItem("Add Box", "BoxElm"));
-		outputMenuBar.addItem(getClassCheckItem("Add Scope Probe", "ProbeElm"));
-		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>Outputs and Labels"), outputMenuBar);
+		outputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Analog_Output"), "OutputElm"));
+		outputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_LED"), "LEDElm"));
+		outputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Lamp_(beta)"), "LampElm"));
+		outputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Text"), "TextElm"));
+		outputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Box"), "BoxElm"));
+		outputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Scope_Probe"), "ProbeElm"));
+		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Outputs_and_Labels")), outputMenuBar);
 		
 		// Active Components
 		MenuBar activeMenuBar = new MenuBar(true);
-		activeMenuBar.addItem(getClassCheckItem("Add Diode", "DiodeElm"));
-		activeMenuBar.addItem(getClassCheckItem("Add Zener Diode", "ZenerElm"));
-		activeMenuBar.addItem(getClassCheckItem("Add Transistor (bipolar, NPN)", "NTransistorElm"));
-		activeMenuBar.addItem(getClassCheckItem("Add Transistor (bipolar, PNP)", "PTransistorElm"));
-		activeMenuBar.addItem(getClassCheckItem("Add MOSFET (N-Channel)", "NMosfetElm"));
-		activeMenuBar.addItem(getClassCheckItem("Add MOSFET (P-Channel)", "PMosfetElm"));
-		activeMenuBar.addItem(getClassCheckItem("Add JFET (N-Channel)", "NJfetElm"));
-		activeMenuBar.addItem(getClassCheckItem("Add JFET (P-Channel)", "PJfetElm"));
-		activeMenuBar.addItem(getClassCheckItem("Add SCR", "SCRElm"));
-		// activeMenuBar.addItem(getClassCheckItem("Add Varactor/Varicap",
-		// "VaractorElm"));
-		activeMenuBar.addItem(getClassCheckItem("Add Tunnel Diode", "TunnelDiodeElm"));
-		activeMenuBar.addItem(getClassCheckItem("Add Triode", "TriodeElm"));
-		// activeMenuBar.addItem(getClassCheckItem("Add Diac", "DiacElm"));
-		// activeMenuBar.addItem(getClassCheckItem("Add Triac", "TriacElm"));
-		// activeMenuBar.addItem(getClassCheckItem("Add Photoresistor",
-		// "PhotoResistorElm"));
-		// activeMenuBar.addItem(getClassCheckItem("Add Thermistor",
-		// "ThermistorElm"));
-		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>Active Components"), activeMenuBar);
+		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Diode"), "DiodeElm"));
+		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Zener_Diode"), "ZenerElm"));
+		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Transistor_(bipolar_NPN)"), "NTransistorElm"));
+		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Transistor_(bipolar_PNP)"), "PTransistorElm"));
+		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_MOSFET_(N-Channel)"), "NMosfetElm"));
+		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_MOSFET_(P-Channel)"), "PMosfetElm"));
+		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_JFET_(N-Channel)"), "NJfetElm"));
+		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_JFET_(P-Channel)"), "PJfetElm"));
+		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_SCR"), "SCRElm"));
+		// activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Varactor/Varicap"),
+		// MessageI18N.getLocale("VaractorElm"));
+		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Tunnel_Diode"), "TunnelDiodeElm"));
+		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Triode"), "TriodeElm"));
+		// activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Diac"), MessageI18N.getLocale("DiacElm"));
+		// activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Triac"), MessageI18N.getLocale("TriacElm"));
+		// activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Photoresistor"),
+		// MessageI18N.getLocale("PhotoResistorElm"));
+		// activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Thermistor"),
+		// MessageI18N.getLocale("ThermistorElm"));
+		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Active_Components")), activeMenuBar);
 		
 		// Active Building Blocks
 		MenuBar activeBlocMenuBar = new MenuBar(true);
-		activeBlocMenuBar.addItem(getClassCheckItem("Add Op Amp (- on top)", "OpAmpElm"));
-		activeBlocMenuBar.addItem(getClassCheckItem("Add Op Amp (+ on top)", "OpAmpSwapElm"));
-		activeBlocMenuBar.addItem(getClassCheckItem("Add Analog Switch (SPST)", "AnalogSwitchElm"));
-		activeBlocMenuBar.addItem(getClassCheckItem("Add Analog Switch (SPDT)", "AnalogSwitch2Elm"));
-		activeBlocMenuBar.addItem(getClassCheckItem("Add Tristate Buffer", "TriStateElm"));
-		activeBlocMenuBar.addItem(getClassCheckItem("Add Schmitt Trigger", "SchmittElm"));
-		activeBlocMenuBar.addItem(getClassCheckItem("Add Schmitt Trigger (Inverting)", "InvertingSchmittElm"));
-		activeBlocMenuBar.addItem(getClassCheckItem("Add CCII+", "CC2Elm"));
-		activeBlocMenuBar.addItem(getClassCheckItem("Add CCII-", "CC2NegElm"));
-		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>Active Building Blocks"), activeBlocMenuBar);
+		activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Op_Amp_(-_on_top)"), "OpAmpElm"));
+		activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Op_Amp_(+_on_top)"), "OpAmpSwapElm"));
+		activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Analog_Switch_(SPST)"), "AnalogSwitchElm"));
+		activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Analog_Switch_(SPDT)"), "AnalogSwitch2Elm"));
+		activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Tristate_Buffer"), "TriStateElm"));
+		activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Schmitt_Trigger"), "SchmittElm"));
+		activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Schmitt_Trigger_(Inverting)"), "InvertingSchmittElm"));
+		activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_CCII+"), "CC2Elm"));
+		activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_CCII-"), "CC2NegElm"));
+		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Active_Building_Blocks")), activeBlocMenuBar);
 		
 		// Logic Gates, Input and Output
 		MenuBar gateMenuBar = new MenuBar(true);
-		gateMenuBar.addItem(getClassCheckItem("Add Logic Input", "LogicInputElm"));
-		gateMenuBar.addItem(getClassCheckItem("Add Logic Output", "LogicOutputElm"));
-		gateMenuBar.addItem(getClassCheckItem("Add Inverter", "InverterElm"));
-		gateMenuBar.addItem(getClassCheckItem("Add NAND Gate", "NandGateElm"));
-		gateMenuBar.addItem(getClassCheckItem("Add NOR Gate", "NorGateElm"));
-		gateMenuBar.addItem(getClassCheckItem("Add AND Gate", "AndGateElm"));
-		gateMenuBar.addItem(getClassCheckItem("Add OR Gate", "OrGateElm"));
-		gateMenuBar.addItem(getClassCheckItem("Add XOR Gate", "XorGateElm"));
-		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>Logic Gates, Input and Output"), gateMenuBar);
+		gateMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Logic_Input"), "LogicInputElm"));
+		gateMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Logic_Output"), "LogicOutputElm"));
+		gateMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Inverter"), "InverterElm"));
+		gateMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_NAND_Gate"), "NandGateElm"));
+		gateMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_NOR_Gate"), "NorGateElm"));
+		gateMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_AND_Gate"), "AndGateElm"));
+		gateMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_OR_Gate"), "OrGateElm"));
+		gateMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_XOR_Gate"), "XorGateElm"));
+		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Logic_Gates_Input_and_Output")), gateMenuBar);
 
 		// Digital Chips
 		MenuBar chipMenuBar = new MenuBar(true);
-		chipMenuBar.addItem(getClassCheckItem("Add D Flip-Flop", "DFlipFlopElm"));
-		chipMenuBar.addItem(getClassCheckItem("Add JK Flip-Flop", "JKFlipFlopElm"));
-		chipMenuBar.addItem(getClassCheckItem("Add T Flip-Flop", "TFlipFlopElm"));
-		chipMenuBar.addItem(getClassCheckItem("Add 7 Segment LED", "SevenSegElm"));
-		chipMenuBar.addItem(getClassCheckItem("Add 7 Segment Decoder", "SevenSegDecoderElm"));
-		chipMenuBar.addItem(getClassCheckItem("Add Multiplexer", "MultiplexerElm"));
-		chipMenuBar.addItem(getClassCheckItem("Add Demultiplexer", "DeMultiplexerElm"));
-		chipMenuBar.addItem(getClassCheckItem("Add SIPO shift register", "SipoShiftElm"));
-		chipMenuBar.addItem(getClassCheckItem("Add PISO shift register", "PisoShiftElm"));
-		chipMenuBar.addItem(getClassCheckItem("Add Counter", "CounterElm"));
-		chipMenuBar.addItem(getClassCheckItem("Add Decade Counter", "DecadeElm"));
-		chipMenuBar.addItem(getClassCheckItem("Add Latch", "LatchElm"));
-		// chipMenuBar.addItem(getClassCheckItem("Add Static RAM", "SRAMElm"));
-		chipMenuBar.addItem(getClassCheckItem("Add Sequence generator", "SeqGenElm"));
-		chipMenuBar.addItem(getClassCheckItem("Add Full Adder", "FullAdderElm"));
-		chipMenuBar.addItem(getClassCheckItem("Add Half Adder", "HalfAdderElm"));
-		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>Digital Chips"), chipMenuBar);
+		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_D_Flip-Flop"), "DFlipFlopElm"));
+		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_JK_Flip-Flop"), "JKFlipFlopElm"));
+		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_T_Flip-Flop"), "TFlipFlopElm"));
+		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_7_Segment_LED"), "SevenSegElm"));
+		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_7_Segment_Decoder"), "SevenSegDecoderElm"));
+		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Multiplexer"), "MultiplexerElm"));
+		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Demultiplexer"), "DeMultiplexerElm"));
+		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_SIPO_shift_register"), "SipoShiftElm"));
+		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_PISO_shift_register"), "PisoShiftElm"));
+		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Counter"), "CounterElm"));
+		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Decade_Counter"), "DecadeElm"));
+		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Latch"), "LatchElm"));
+		// chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Static_RAM"), MessageI18N.getLocale("SRAMElm"));
+		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Sequence_generator"), "SeqGenElm"));
+		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Full_Adder"), "FullAdderElm"));
+		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Half_Adder"), "HalfAdderElm"));
+		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Digital_Chips")), chipMenuBar);
 		
 		// Analog and Hybrid Chips
 		MenuBar achipMenuBar = new MenuBar(true);
-		achipMenuBar.addItem(getClassCheckItem("Add 555 Timer", "TimerElm"));
-		achipMenuBar.addItem(getClassCheckItem("Add Phase Comparator", "PhaseCompElm"));
-		achipMenuBar.addItem(getClassCheckItem("Add DAC", "DACElm"));
-		achipMenuBar.addItem(getClassCheckItem("Add ADC", "ADCElm"));
-		achipMenuBar.addItem(getClassCheckItem("Add VCO", "VCOElm"));
-		achipMenuBar.addItem(getClassCheckItem("Add Monostable", "MonostableElm"));
-		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>Analog and Hybrid Chips"), achipMenuBar);
+		achipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_555_Timer"), "TimerElm"));
+		achipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Phase_Comparator"), "PhaseCompElm"));
+		achipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_DAC"), "DACElm"));
+		achipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_ADC"), "ADCElm"));
+		achipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_VCO"), "VCOElm"));
+		achipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Monostable"), "MonostableElm"));
+		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Analog_and_Hybrid_Chips")), achipMenuBar);
 		
 		// Drag
 		MenuBar otherMenuBar = new MenuBar(true);
 		CheckboxMenuItem mi;
-		otherMenuBar.addItem(mi = getClassCheckItem("Drag All", "DragAll"));
+		otherMenuBar.addItem(mi = getClassCheckItem(MessageI18N.getLocale("Drag_All"), "DragAll"));
 		mi.addShortcut("(Alt-drag)");
-		otherMenuBar.addItem(mi = getClassCheckItem("Drag Row", "DragRow"));
+		otherMenuBar.addItem(mi = getClassCheckItem(MessageI18N.getLocale("Drag_Row"), "DragRow"));
 		mi.addShortcut("(S-right)");
-		otherMenuBar.addItem(getClassCheckItem("Drag Column", "DragColumn"));
-		otherMenuBar.addItem(getClassCheckItem("Drag Selected", "DragSelected"));
-		otherMenuBar.addItem(mi = getClassCheckItem("Drag Post", "DragPost"));
+		otherMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Drag_Column"), "DragColumn"));
+		otherMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Drag_Selected"), "DragSelected"));
+		otherMenuBar.addItem(mi = getClassCheckItem(MessageI18N.getLocale("Drag_Post"), "DragPost"));
 		mi.addShortcut("(" + ctrlMetaKey + "-drag)");
 
-		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>Drag"), otherMenuBar);
+		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Drag")), otherMenuBar);
 
 		mainMenuBar.addItem(mi = getClassCheckItem("Select/Drag Sel", "Select"));
 		mi.addShortcut("(space or Shift-drag)");
@@ -913,34 +907,34 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 
 	private MenuBar buildScopeMenu(boolean t) {
 		MenuBar m = new MenuBar(true);
-		m.addItem(new CheckboxAlignedMenuItem("Remove", new MenuCommand("scopepop", "remove")));
-		m.addItem(new CheckboxAlignedMenuItem("Speed 2x", new MenuCommand("scopepop", "speed2")));
-		m.addItem(new CheckboxAlignedMenuItem("Speed 1/2x", new MenuCommand("scopepop", "speed1/2")));
-		m.addItem(new CheckboxAlignedMenuItem("Scale 2x", new MenuCommand("scopepop", "scale")));
-		m.addItem(new CheckboxAlignedMenuItem("Max Scale", new MenuCommand("scopepop", "maxscale")));
-		m.addItem(new CheckboxAlignedMenuItem("Stack", new MenuCommand("scopepop", "stack")));
-		m.addItem(new CheckboxAlignedMenuItem("Unstack", new MenuCommand("scopepop", "unstack")));
-		m.addItem(new CheckboxAlignedMenuItem("Reset", new MenuCommand("scopepop", "reset")));
+		m.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Remove"), new MenuCommand("scopepop", "remove")));
+		m.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Speed_2x"), new MenuCommand("scopepop", "speed2")));
+		m.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Speed_1/2x"), new MenuCommand("scopepop", "speed1/2")));
+		m.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Scale_2x"), new MenuCommand("scopepop", "scale")));
+		m.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Max_Scale"), new MenuCommand("scopepop", "maxscale")));
+		m.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Stack"), new MenuCommand("scopepop", "stack")));
+		m.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Unstack"), new MenuCommand("scopepop", "unstack")));
+		m.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Reset"), new MenuCommand("scopepop", "reset")));
 		if (t) {
-			m.addItem(scopeIbMenuItem = new CheckboxMenuItem("Show Ib", new MenuCommand("scopepop", "showib")));
-			m.addItem(scopeIcMenuItem = new CheckboxMenuItem("Show Ic", new MenuCommand("scopepop", "showic")));
-			m.addItem(scopeIeMenuItem = new CheckboxMenuItem("Show Ie", new MenuCommand("scopepop", "showie")));
-			m.addItem(scopeVbeMenuItem = new CheckboxMenuItem("Show Vbe", new MenuCommand("scopepop", "showvbe")));
-			m.addItem(scopeVbcMenuItem = new CheckboxMenuItem("Show Vbc", new MenuCommand("scopepop", "showvbc")));
-			m.addItem(scopeVceMenuItem = new CheckboxMenuItem("Show Vce", new MenuCommand("scopepop", "showvce")));
-			m.addItem(scopeVceIcMenuItem = new CheckboxMenuItem("Show Vce vs Ic", new MenuCommand("scopepop", "showvcevsic")));
+			m.addItem(scopeIbMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Ib"), new MenuCommand("scopepop", "showib")));
+			m.addItem(scopeIcMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Ic"), new MenuCommand("scopepop", "showic")));
+			m.addItem(scopeIeMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Ie"), new MenuCommand("scopepop", "showie")));
+			m.addItem(scopeVbeMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Vbe"), new MenuCommand("scopepop", "showvbe")));
+			m.addItem(scopeVbcMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Vbc"), new MenuCommand("scopepop", "showvbc")));
+			m.addItem(scopeVceMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Vce"), new MenuCommand("scopepop", "showvce")));
+			m.addItem(scopeVceIcMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Vce_vs_Ic"), new MenuCommand("scopepop", "showvcevsic")));
 		} else {
-			m.addItem(scopeVMenuItem = new CheckboxMenuItem("Show Voltage", new MenuCommand("scopepop", "showvoltage")));
-			m.addItem(scopeIMenuItem = new CheckboxMenuItem("Show Current", new MenuCommand("scopepop", "showcurrent")));
-			m.addItem(scopePowerMenuItem = new CheckboxMenuItem("Show Power Consumed", new MenuCommand("scopepop", "showpower")));
-			m.addItem(scopeScaleMenuItem = new CheckboxMenuItem("Show Scale", new MenuCommand("scopepop", "showscale")));
-			m.addItem(scopeMaxMenuItem = new CheckboxMenuItem("Show Peak Value", new MenuCommand("scopepop", "showpeak")));
-			m.addItem(scopeMinMenuItem = new CheckboxMenuItem("Show Negative Peak Value", new MenuCommand("scopepop", "shownegpeak")));
-			m.addItem(scopeFreqMenuItem = new CheckboxMenuItem("Show Frequency", new MenuCommand("scopepop", "showfreq")));
-			m.addItem(scopeVIMenuItem = new CheckboxMenuItem("Show V vs I", new MenuCommand("scopepop", "showvvsi")));
-			m.addItem(scopeXYMenuItem = new CheckboxMenuItem("Plot X/Y", new MenuCommand("scopepop", "plotxy")));
-			m.addItem(scopeSelectYMenuItem = new CheckboxAlignedMenuItem("Select Y", new MenuCommand("scopepop", "selecty")));
-			m.addItem(scopeResistMenuItem = new CheckboxMenuItem("Show Resistance", new MenuCommand("scopepop", "showresistance")));
+			m.addItem(scopeVMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Voltage"), new MenuCommand("scopepop", "showvoltage")));
+			m.addItem(scopeIMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Current"), new MenuCommand("scopepop", "showcurrent")));
+			m.addItem(scopePowerMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Power_Consumed"), new MenuCommand("scopepop", "showpower")));
+			m.addItem(scopeScaleMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Scale"), new MenuCommand("scopepop", "showscale")));
+			m.addItem(scopeMaxMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Peak_Value"), new MenuCommand("scopepop", "showpeak")));
+			m.addItem(scopeMinMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Negative_Peak_Value"), new MenuCommand("scopepop", "shownegpeak")));
+			m.addItem(scopeFreqMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Frequency"), new MenuCommand("scopepop", "showfreq")));
+			m.addItem(scopeVIMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_V_vs_I"), new MenuCommand("scopepop", "showvvsi")));
+			m.addItem(scopeXYMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Plot_X/Y"), new MenuCommand("scopepop", "plotxy")));
+			m.addItem(scopeSelectYMenuItem = new CheckboxAlignedMenuItem(MessageI18N.getLocale("Select_Y"), new MenuCommand("scopepop", "selecty")));
+			m.addItem(scopeResistMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Resistance"), new MenuCommand("scopepop", "showresistance")));
 		}
 		return m;
 	}
@@ -949,11 +943,11 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 	private MenuBar buildEditMenu1(){
 		
 		elmMenuBar = new MenuBar(true);
-		elmMenuBar.addItem(elmEditMenuItem = new MenuItem("Edit", new MenuCommand("elm", "edit")));
-		elmMenuBar.addItem(elmScopeMenuItem = new MenuItem("View in Scope", new MenuCommand("elm", "viewInScope")));
-		elmMenuBar.addItem(elmCutMenuItem = new MenuItem("Cut", new MenuCommand("elm", "cut")));
-		elmMenuBar.addItem(elmCopyMenuItem = new MenuItem("Copy", new MenuCommand("elm", "copy")));
-		elmMenuBar.addItem(elmDeleteMenuItem = new MenuItem("Delete", new MenuCommand("elm", "delete")));
+		elmMenuBar.addItem(elmEditMenuItem = new MenuItem(MessageI18N.getLocale("Edit"), new MenuCommand("elm", "edit")));
+		elmMenuBar.addItem(elmScopeMenuItem = new MenuItem(MessageI18N.getLocale("View_in_Scope"), new MenuCommand("elm", "viewInScope")));
+		elmMenuBar.addItem(elmCutMenuItem = new MenuItem(MessageI18N.getLocale("Cut"), new MenuCommand("elm", "cut")));
+		elmMenuBar.addItem(elmCopyMenuItem = new MenuItem(MessageI18N.getLocale("Copy"), new MenuCommand("elm", "copy")));
+		elmMenuBar.addItem(elmDeleteMenuItem = new MenuItem(MessageI18N.getLocale("Delete"), new MenuCommand("elm", "delete")));
 		
 		return elmMenuBar;
 	}
@@ -1411,7 +1405,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			elm.delete();
 		}
 		// else
-		// GWT.log("Coudn't create class: "+t);
+		// GWT.log(MessageI18N.getLocale("Coudn't_create_class:_")+t);
 		// } catch (Exception ee) {
 		// ee.printStackTrace();
 		// }
@@ -1483,7 +1477,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			CapacitorElm ce = (CapacitorElm) c2;
 
 			return "RC = " + AbstractCircuitElement.getUnitText(re.getResistance() * ce.getCapacitance(), "s");
-		}
+	}
 		if (hintType == HintType.HINT_3DB_C) {
 			if (!(c1 instanceof ResistorElm))
 				return null;
@@ -1643,7 +1637,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		try {
 			requestBuilder.sendRequest(null, new RequestCallback() {
 				public void onError(Request request, Throwable exception) {
-					GWT.log("File Error Response", exception);
+					GWT.log(MessageI18N.getLocale("File_Error_Response"), exception);
 				}
 
 				public void onResponseReceived(Request request, Response response) {
@@ -1653,11 +1647,11 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 						processSetupList(text.getBytes(), text.length(), openDefault);
 						// end or processing
 					} else
-						GWT.log("Bad file server response:" + response.getStatusText());
+						GWT.log(MessageI18N.getLocale("Bad_file_server_response") + response.getStatusText());
 				}
 			});
 		} catch (RequestException e) {
-			GWT.log("failed file reading", e);
+			GWT.log(MessageI18N.getLocale("failed_file_reading"), e);
 		}
 		
 		String s = "";
@@ -1738,11 +1732,11 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		drawMenuBar.setAutoOpen(true);
 		
 		menuBar = new MenuBar();
-		menuBar.addItem("File", buildFileMenu());
-		menuBar.addItem("Edit", buildEditMenu());
-		menuBar.addItem("Draw", drawMenuBar);
-		menuBar.addItem("Scopes", buildScopesMenu());
-		menuBar.addItem("Options", buildOptionsMenu());
+		menuBar.addItem(MessageI18N.getLocale("File"), buildFileMenu());
+		menuBar.addItem(MessageI18N.getLocale("Edit"), buildEditMenu());
+		menuBar.addItem(MessageI18N.getLocale("Draw"), drawMenuBar);
+		menuBar.addItem(MessageI18N.getLocale("Scopes"), buildScopesMenu());
+		menuBar.addItem(MessageI18N.getLocale("Options"), buildOptionsMenu());
 		verticalPanel = new VerticalPanel();
 
 //		optionsMenuBar = m = new MenuBar(true);
@@ -1765,7 +1759,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		RootLayoutPanel.get().add(layoutPanel);
 		cv = Canvas.createIfSupported();
 		if (cv == null) {
-			RootPanel.get().add(new Label("Not working. You need a browser that supports the CANVAS element."));
+			RootPanel.get().add(new Label(MessageI18N.getLocale("Not_working._You_need_a_browser_that_supports_the_CANVAS_element.")));
 			return;
 		}
 		layoutPanel.add(cv);
@@ -1792,11 +1786,11 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		
 		// element popup menu
 		elmMenuBar = new MenuBar(true);
-		elmMenuBar.addItem(elmEditMenuItem = new MenuItem("Edit", new MenuCommand("elm", "edit")));
-		elmMenuBar.addItem(elmScopeMenuItem = new MenuItem("View in Scope", new MenuCommand("elm", "viewInScope")));
-		elmMenuBar.addItem(elmCutMenuItem = new MenuItem("Cut", new MenuCommand("elm", "cut")));
-		elmMenuBar.addItem(elmCopyMenuItem = new MenuItem("Copy", new MenuCommand("elm", "copy")));
-		elmMenuBar.addItem(elmDeleteMenuItem = new MenuItem("Delete", new MenuCommand("elm", "delete")));
+		elmMenuBar.addItem(elmEditMenuItem = new MenuItem(MessageI18N.getLocale("Edit"), new MenuCommand("elm", "edit")));
+		elmMenuBar.addItem(elmScopeMenuItem = new MenuItem(MessageI18N.getLocale("View_in_Scope"), new MenuCommand("elm", "viewInScope")));
+		elmMenuBar.addItem(elmCutMenuItem = new MenuItem(MessageI18N.getLocale("Cut"), new MenuCommand("elm", "cut")));
+		elmMenuBar.addItem(elmCopyMenuItem = new MenuItem(MessageI18N.getLocale("Copy"), new MenuCommand("elm", "copy")));
+		elmMenuBar.addItem(elmDeleteMenuItem = new MenuItem(MessageI18N.getLocale("Delete"), new MenuCommand("elm", "delete")));
 		// main.add(elmMenu);
 
 		scopeMenuBar = buildScopeMenu(false);
@@ -1833,8 +1827,8 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		m.addItem(redoItem = new MenuItem(SafeHtmlUtils.fromTrustedString(sn), new MenuCommand("edit", "redo")));
 		// redoItem.setShortcut(new MenuShortcut(KeyEvent.VK_Z, true));
 		m.addSeparator();
-		// m.addItem(cutItem = new MenuItem("Cut", new
-		// MenuCommand("edit","cut")));
+		// m.addItem(cutItem = new MenuItem("Cut"), new
+		// MenuCommand("edit"),"cut"))));
 		sn = edithtml + "Cut</div>Ctrl-X";
 		m.addItem(cutItem = new MenuItem(SafeHtmlUtils.fromTrustedString(sn), new MenuCommand("edit", "cut")));
 		// cutItem.setShortcut(new MenuShortcut(KeyEvent.VK_X));
@@ -1848,26 +1842,26 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		sn = edithtml + "Select All</div>Ctrl-A";
 		m.addItem(selectAllItem = new MenuItem(SafeHtmlUtils.fromTrustedString(sn), new MenuCommand("edit", "selectAll")));
 		// selectAllItem.setShortcut(new MenuShortcut(KeyEvent.VK_A));
-		m.addItem(new MenuItem("Centre Circuit", new MenuCommand("edit", "centrecircuit")));
+		m.addItem(new MenuItem(MessageI18N.getLocale("Centre_Circuit"), new MenuCommand("edit", "centrecircuit")));
 		return m;
 	}
 
 	private MenuBar buildFileMenu() {
 		MenuBar fileMenuBar = new MenuBar(true);
-		MenuItem importFromLocalFileItem = new MenuItem("Import From Local File", new MenuCommand("file", "importfromlocalfile"));
+		MenuItem importFromLocalFileItem = new MenuItem(MessageI18N.getLocale("Import_From_Local_File"), new MenuCommand("file", "importfromlocalfile"));
 		importFromLocalFileItem.setEnabled(LoadFile.isSupported());
 		fileMenuBar.addItem(importFromLocalFileItem);
-		MenuItem importFromTextItem = new MenuItem("Import From Text", new MenuCommand("file", "importfromtext"));
+		MenuItem importFromTextItem = new MenuItem(MessageI18N.getLocale("Import_From_Text"), new MenuCommand("file", "importfromtext"));
 		fileMenuBar.addItem(importFromTextItem);
-		MenuItem exportAsUrlItem = new MenuItem("Export as Link", new MenuCommand("file", "exportasurl"));
+		MenuItem exportAsUrlItem = new MenuItem(MessageI18N.getLocale("Export_as_Link"), new MenuCommand("file", "exportasurl"));
 		fileMenuBar.addItem(exportAsUrlItem);
-		MenuItem exportAsLocalFileItem = new MenuItem("Export as Local File", new MenuCommand("file", "exportaslocalfile"));
+		MenuItem exportAsLocalFileItem = new MenuItem(MessageI18N.getLocale("Export_as_Local_File"), new MenuCommand("file", "exportaslocalfile"));
 		exportAsLocalFileItem.setEnabled(ExportAsLocalFileDialog.downloadIsSupported());
 		fileMenuBar.addItem(exportAsLocalFileItem);
-		MenuItem exportAsTextItem = new MenuItem("Export as Text", new MenuCommand("file", "exportastext"));
+		MenuItem exportAsTextItem = new MenuItem(MessageI18N.getLocale("Export_as_Text"), new MenuCommand("file", "exportastext"));
 		fileMenuBar.addItem(exportAsTextItem);
 		fileMenuBar.addSeparator();
-		MenuItem aboutItem = new MenuItem("About", (Command) null);
+		MenuItem aboutItem = new MenuItem(MessageI18N.getLocale("About"), (Command) null);
 		fileMenuBar.addItem(aboutItem);
 		aboutItem.setScheduledCommand(new MenuCommand("file", "about"));
 		return fileMenuBar;
@@ -1875,47 +1869,47 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 
 	private MenuBar buildScopesMenu() {
 		MenuBar m = new MenuBar(true);
-		m.addItem(new MenuItem("Stack All", new MenuCommand("scopes", "stackAll")));
-		m.addItem(new MenuItem("Unstack All", new MenuCommand("scopes", "unstackAll")));
+		m.addItem(new MenuItem(MessageI18N.getLocale("Stack_All"), new MenuCommand("scopes", "stackAll")));
+		m.addItem(new MenuItem(MessageI18N.getLocale("Unstack_All"), new MenuCommand("scopes", "unstackAll")));
 		return m;
 	}
 
 	private MenuBar buildOptionsMenu() {
 		
 		MenuBar optionsMenuBar = new MenuBar(true);
-		optionsMenuBar.addItem(setDotsCheckItem(new CheckboxMenuItem("Show Current")));
+		optionsMenuBar.addItem(setDotsCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Current"))));
 		getDotsCheckItem().setState(true);
-		optionsMenuBar.addItem(setVoltsCheckItem(new CheckboxMenuItem("Show Voltage", new Command() {
+		optionsMenuBar.addItem(setVoltsCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Voltage"), new Command() {
 			public void execute() {
 				if (getVoltsCheckItem().getState())
 					getPowerCheckItem().setState(false);
 				setPowerBarEnable();
 			}
 		})));
-		optionsMenuBar.addItem(setPowerCheckItem(new CheckboxMenuItem("Show Power", new Command() {
+		optionsMenuBar.addItem(setPowerCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Power"), new Command() {
 			public void execute() {
 				if (getPowerCheckItem().getState())
 					getVoltsCheckItem().setState(false);
 				setPowerBarEnable();
 			}
 		})));
-		optionsMenuBar.addItem(setShowValuesCheckItem(new CheckboxMenuItem("Show Values")));
-		// m.add(conductanceCheckItem = getCheckItem("Show Conductance"));
-		optionsMenuBar.addItem(setSmallGridCheckItem(new CheckboxMenuItem("Small Grid", new Command() {
+		optionsMenuBar.addItem(setShowValuesCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Values"))));
+		// m.add(conductanceCheckItem = getCheckItem(MessageI18N.getLocale("Show_Conductance")));
+		optionsMenuBar.addItem(setSmallGridCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("Small_Grid"), new Command() {
 			public void execute() {
 				setGrid();
 			}
 		})));
-		optionsMenuBar.addItem(setEuroResistorCheckItem(new CheckboxMenuItem("European Resistors")));
-		optionsMenuBar.addItem(setPrintableCheckItem(new CheckboxMenuItem("White Background", new Command() {
+		optionsMenuBar.addItem(setEuroResistorCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("European_Resistors"))));
+		optionsMenuBar.addItem(setPrintableCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("White_Background"), new Command() {
 			public void execute() {
 				int i;
 				for (i = 0; i < scopeCount; i++)
 					scopes[i].setRect(scopes[i].getRect());
 			}
 		})));
-		optionsMenuBar.addItem(setConventionCheckItem(new CheckboxMenuItem("Conventional Current Motion")));
-		optionsMenuBar.addItem(optionsItem = new CheckboxAlignedMenuItem("Other Options...", new MenuCommand("options", "other")));
+		optionsMenuBar.addItem(setConventionCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("Conventional_Current_Motion"))));
+		optionsMenuBar.addItem(optionsItem = new CheckboxAlignedMenuItem(MessageI18N.getLocale("Other_Options..."), new MenuCommand("options", "other")));
 		
 		return optionsMenuBar;
 	}
@@ -1937,39 +1931,39 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 	}
 
 	private void createSideBar() {
-		verticalPanel.add(resetButton = new Button("Reset"));
+		verticalPanel.add(resetButton = new Button(MessageI18N.getLocale("Reset")));
 		resetButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				resetAction();
 			}
 		});
-		// dumpMatrixButton = new Button("Dump Matrix");
+		// dumpMatrixButton = new Button(MessageI18N.getLocale("Dump_Matrix"));
 		// main.add(dumpMatrixButton);// IES for debugging
-		setStoppedCheck(new Checkbox("Stopped"));
+		setStoppedCheck(new Checkbox(MessageI18N.getLocale("Stopped")));
 		verticalPanel.add(getStoppedCheck());
 
 		if (LoadFile.isSupported())
 			verticalPanel.add(loadFileInput = new LoadFile(this));
 
 		Label l;
-		verticalPanel.add(l = new Label("Simulation Speed"));
-		l.addStyleName("topSpace");
+		verticalPanel.add(l = new Label(MessageI18N.getLocale("Simulation_Speed")));
+		l.addStyleName(MessageI18N.getLocale("topSpace"));
 
 		// was max of 140
 		verticalPanel.add(speedBar = new Scrollbar(Scrollbar.HORIZONTAL, 3, 1, 0, 260));
 
-		verticalPanel.add(l = new Label("Current Speed"));
+		verticalPanel.add(l = new Label(MessageI18N.getLocale("Current_Speed")));
 		l.addStyleName("topSpace");
 		currentBar = new Scrollbar(Scrollbar.HORIZONTAL, 50, 1, 1, 100);
 		verticalPanel.add(currentBar);
-		verticalPanel.add(powerLabel = new Label("Power Brightness"));
+		verticalPanel.add(powerLabel = new Label(MessageI18N.getLocale("Power_Brightness")));
 		powerLabel.addStyleName("topSpace");
 		verticalPanel.add(powerBar = new Scrollbar(Scrollbar.HORIZONTAL, 50, 1, 1, 100));
 		setPowerBarEnable();
 		verticalPanel.add(iFrame = new Frame("iframe.html"));
 		iFrame.setWidth(Display.VERTICALPANELWIDTH + "px");
 		iFrame.setHeight("100 px");
-		iFrame.getElement().setAttribute("scrolling", "no");
+		iFrame.getElement().setAttribute("scrolling","no");
 	}
 
 	private void loadFileFromURL(String url, final boolean centre) {
@@ -1977,7 +1971,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		try {
 			requestBuilder.sendRequest(null, new RequestCallback() {
 				public void onError(Request request, Throwable exception) {
-					GWT.log("File Error Response", exception);
+					GWT.log(MessageI18N.getLocale("File_Error_Response"), exception);
 				}
 
 				public void onResponseReceived(Request request, Response response) {
@@ -1985,11 +1979,11 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 						String text = response.getText();
 						readSetup(text.getBytes(), text.length(), false, centre);
 					} else
-						GWT.log("Bad file server response:" + response.getStatusText());
+						GWT.log(MessageI18N.getLocale("Bad_file_server_response") + response.getStatusText());
 				}
 			});
 		} catch (RequestException e) {
-			GWT.log("failed file reading", e);
+			GWT.log(MessageI18N.getLocale("failed_file_reading"), e);
 		}
 
 	}
@@ -2069,7 +2063,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 
 			// avoid zeros
 			if (a[j][j] == 0.0) {
-				System.out.println("avoided zero");
+				System.out.println(MessageI18N.getLocale("avoided_zero"));
 				a[j][j] = 1e-18;
 			}
 
@@ -2638,7 +2632,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			}
 			if (code == KEY_ESCAPE) {
 				setMouseMode(MouseMode.SELECT);
-				mouseModeStr = "Select";
+				mouseModeStr = MessageI18N.getLocale("Select");
 				tempMouseMode = mouseMode;
 				e.cancel();
 			}
@@ -2681,7 +2675,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			}
 			if (cc == 32) {
 				setMouseMode(MouseMode.SELECT);
-				mouseModeStr = "Select";
+				mouseModeStr = MessageI18N.getLocale("Select");
 				tempMouseMode = mouseMode;
 				e.cancel();
 			}
@@ -2694,7 +2688,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		int stackptr = 0;
 		currentMenuBar = new MenuBar(true);
 		currentMenuBar.setAutoOpen(true);
-		menuBar.addItem("Circuits", currentMenuBar);
+		menuBar.addItem(MessageI18N.getLocale("Circuits"), currentMenuBar);
 		stack[stackptr++] = currentMenuBar;
 		int p;
 		for (p = 0; p < len;) {
@@ -2723,7 +2717,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 					if (line.charAt(0) == '>')
 						first = true;
 					String file = line.substring(first ? 1 : 0, i);
-					// menu.add(getMenuItem(title, "setup " + file));
+					// menu.add(getMenuItem(title, MessageI18N.getLocale("setup_") + file));
 					currentMenuBar.addItem(new MenuItem(title, new MenuCommand("circuits", "setup " + file)));
 					if (first && startCircuit == null) {
 						startCircuit = file;
@@ -2846,7 +2840,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 
 					AbstractCircuitElement newce = CircuitElementFactory.createCircuitElement(tint, x1, y1, x2, y2, f, st);
 					if (newce == null) {
-						System.out.println("unrecognized dump type: " + type);
+						System.out.println(MessageI18N.getLocale("unrecognized_dump_type_") + type);
 						break;
 					}
 					newce.setPoints();
@@ -2969,7 +2963,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 					for (i = 0; i != circuitMatrixSize; i++) {
 						double x = circuitMatrix[i][j];
 						if (Double.isNaN(x) || Double.isInfinite(x)) {
-							stop("nan/infinite matrix!", null);
+							stop(MessageI18N.getLocale("nan/infinite_matrix!"), null);
 							return;
 						}
 					}
@@ -2986,7 +2980,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 					if (converged && subiter > 0)
 						break;
 					if (!lu_factor(circuitMatrix, circuitMatrixSize, circuitPermute)) {
-						stop("Singular matrix!", null);
+						stop(MessageI18N.getLocale("Singular_matrix!"), null);
 						return;
 					}
 				}
@@ -3000,7 +2994,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 					else
 						res = circuitRightSide[ri.getMapCol()];
 					/*
-					 * System.out.println(j + " " + res + " " + ri.type + " " +
+					 * System.out.println(j + "_" + res + "_" + ri.type + "_" +
 					 * ri.mapCol);
 					 */
 					if (Double.isNaN(res)) {
@@ -3016,7 +3010,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 						}
 					} else {
 						int ji = j - (getNodeList().size() - 1);
-						// System.out.println("setting vsrc " + ji + " to " +
+						// System.out.println(MessageI18N.getLocale("setting_vsrc_") + ji + MessageI18N.getLocale("_to_") +
 						// res);
 						voltageSources[ji].setCurrent(ji, res);
 					}
@@ -3025,9 +3019,9 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 					break;
 			}
 			if (subiter > 5)
-				System.out.print("converged after " + subiter + " iterations\n");
+				System.out.print(MessageI18N.getLocale("converged_after_") + subiter + MessageI18N.getLocale("_iterations")+"\n");
 			if (subiter == subiterCount) {
-				stop("Convergence failed!", null);
+				stop(MessageI18N.getLocale("Convergence_failed!"), null);
 				break;
 			}
 			t += getTimeStep();
@@ -3133,11 +3127,11 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		// int
 		// ih=RootLayoutPanel.get().getOffsetHeight()-(iFrame.getAbsoluteTop()-RootLayoutPanel.get().getAbsoluteTop());
 		int ih = RootLayoutPanel.get().getOffsetHeight() - Display.MENUBARHEIGHT - cumheight;
-		// GWT.log("Root OH="+RootLayoutPanel.get().getOffsetHeight());
-		// GWT.log("iF top="+iFrame.getAbsoluteTop() );
-		// GWT.log("RP top="+RootLayoutPanel.get().getAbsoluteTop());
-		// GWT.log("ih="+ih);
-		// GWT.log("if left="+iFrame.getAbsoluteLeft());
+		// GWT.log(MessageI18N.getLocale("Root_OH=")+RootLayoutPanel.get().getOffsetHeight());
+		// GWT.log(MessageI18N.getLocale("iF_top=")+iFrame.getAbsoluteTop() );
+		// GWT.log(MessageI18N.getLocale("RP_top=")+RootLayoutPanel.get().getAbsoluteTop());
+		// GWT.log(MessageI18N.getLocale("ih=")+ih);
+		// GWT.log(MessageI18N.getLocale("if_left=")+iFrame.getAbsoluteLeft());
 		if (ih < 0)
 			ih = 0;
 		iFrame.setHeight(ih + "px");
@@ -3423,13 +3417,13 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 				i = circuitRowInfo[i - 1].getMapRow();
 				RowInfo ri = circuitRowInfo[j - 1];
 				if (ri.getType() == RowInfo.ROW_CONST) {
-					// System.out.println("Stamping constant " + i + " " + j +
-					// " " + x);
+					// System.out.println(MessageI18N.getLocale("Stamping_constant_") + i + "_" + j +
+					// "_" + x);
 					circuitRightSide[i] -= x * ri.getValue();
 					return;
 				}
 				j = ri.getMapCol();
-				// System.out.println("stamping " + i + " " + j + " " + x);
+				// System.out.println(MessageI18N.getLocale("stamping_") + i + "_" + j + "_" + x);
 			} else {
 				i--;
 				j--;
@@ -3447,7 +3441,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 	public void stampResistor(int n1, int n2, double r) {
 		double r0 = 1 / r;
 		if (Double.isNaN(r0) || Double.isInfinite(r0)) {
-			System.out.print("bad resistance " + r + " " + r0 + "\n");
+			System.out.print(MessageI18N.getLocale("bad_resistance_") + r + "_" + r0 + "\n");
 			int a = 0;
 			a /= a;
 		}
@@ -3459,7 +3453,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 
 	// indicate that the value on the right side of row i changes in doStep()
 	public void stampRightSide(int i) {
-		// System.out.println("rschanges true " + (i-1));
+		// System.out.println(MessageI18N.getLocale("rschanges_true_") + (i-1));
 		if (i > 0)
 			circuitRowInfo[i - 1].setRsChanges(true);
 	}
@@ -3470,7 +3464,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		if (i > 0) {
 			if (circuitNeedsMap) {
 				i = circuitRowInfo[i - 1].getMapRow();
-				// System.out.println("stamping " + i + " " + x);
+				// System.out.println(MessageI18N.getLocale("stamping_") + i + "_" + x);
 			} else
 				i--;
 			circuitRightSide[i] += x;
@@ -3722,7 +3716,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			for (i = 0; info[i] != null; i++)
 				;
 			if (badnodes > 0)
-				info[i++] = badnodes + ((badnodes == 1) ? " bad connection" : " bad connections");
+				info[i++] = badnodes + ((badnodes == 1) ? MessageI18N.getLocale("_bad_connection") : MessageI18N.getLocale("_bad_connections"));
 
 			// find where to show data; below circuit, not too high unless we
 			// need it
@@ -3741,23 +3735,23 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		// frames++;
 
 		g.setColor(Color.white);
-		// g.drawString("Framerate: " +
+		// g.drawString(MessageI18N.getLocale("Framerate:_") +
 		// AbstractCircuitElement.showFormat.format(framerate),
 		// 10, 10);
-		// g.drawString("Steprate: " +
+		// g.drawString(MessageI18N.getLocale("Steprate:_") +
 		// AbstractCircuitElement.showFormat.format(steprate),
 		// 10, 30);
-		// g.drawString("Steprate/iter: " +
+		// g.drawString(MessageI18N.getLocale("Steprate/iter:_") +
 		// AbstractCircuitElement.showFormat.format(steprate/getIterCount()),
 		// 10, 50);
-		// g.drawString("iterc: " +
+		// g.drawString(MessageI18N.getLocale("iterc:_") +
 		// AbstractCircuitElement.showFormat.format(getIterCount()), 10, 70);
-		// g.drawString("Frames: "+ frames,10,90);
-		// g.drawString("ms per frame (other): "+
+		// g.drawString(MessageI18N.getLocale("Frames:_")+ frames,10,90);
+		// g.drawString(MessageI18N.getLocale("ms_per_frame_(other):_")+
 		// AbstractCircuitElement.showFormat.format((mytime-myruntime-mydrawtime)/myframes),10,110);
-		// g.drawString("ms per frame (simmer): "+
+		// g.drawString(MessageI18N.getLocale("ms_per_frame_(simmer):_")+
 		// AbstractCircuitElement.showFormat.format((myruntime)/myframes),10,130);
-		// g.drawString("ms per frame (draw): "+
+		// g.drawString(MessageI18N.getLocale("ms_per_frame_(draw):_")+
 		// AbstractCircuitElement.showFormat.format((mydrawtime)/myframes),10,150);
 
 		cvcontext.drawImage(backcontext.getCanvas(), 0.0, 0.0);
@@ -3765,7 +3759,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		// if (!stoppedCheck.getState() && circuitMatrix != null) {
 		// Limit to 50 fps (thanks to Jurgen Klotzer for this)
 		// long delay = 1000/50 - (System.currentTimeMillis() - lastFrameTime);
-		// realg.drawString("delay: " + delay, 10, 110);
+		// realg.drawString(MessageI18N.getLocale("delay:_") + delay, 10, 110);
 		// if (delay > 0) {
 		// try {
 		// Thread.sleep(delay);
