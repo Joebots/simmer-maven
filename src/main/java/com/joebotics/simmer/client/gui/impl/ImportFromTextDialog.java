@@ -17,7 +17,7 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jobotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui.impl;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.jobotics.simmer.client.Simmer;
+import com.joebotics.simmer.client.Simmer;
 
 public class ImportFromTextDialog extends DialogBox {
 
@@ -55,7 +55,7 @@ public class ImportFromTextDialog extends DialogBox {
 		okButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				String s;
-				sim.pushUndo();
+				sim.getEditMenu().pushUndo();
 				closeDialog();
 				// s=textBox.getHTML();
 				// s=s.replace("<br>", "\r");

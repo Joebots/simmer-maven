@@ -17,24 +17,24 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jobotics.simmer.client.elcomp;
+package com.joebotics.simmer.client.elcomp;
 
 // import java.awt.*;
 //import java.text.DecimalFormat;
 //import java.text.NumberFormat;
 
 import com.google.gwt.i18n.client.NumberFormat;
-import com.jobotics.simmer.client.Simmer;
-import com.jobotics.simmer.client.gui.impl.EditInfo;
-import com.jobotics.simmer.client.gui.impl.Editable;
-import com.jobotics.simmer.client.gui.util.Color;
-import com.jobotics.simmer.client.gui.util.Font;
-import com.jobotics.simmer.client.gui.util.Graphics;
-import com.jobotics.simmer.client.gui.util.Point;
-import com.jobotics.simmer.client.gui.util.Polygon;
-import com.jobotics.simmer.client.gui.util.Rectangle;
-import com.jobotics.simmer.client.util.GraphicsUtil;
-import com.jobotics.simmer.client.util.MouseModeEnum.MouseMode;
+import com.joebotics.simmer.client.Simmer;
+import com.joebotics.simmer.client.gui.impl.EditInfo;
+import com.joebotics.simmer.client.gui.impl.Editable;
+import com.joebotics.simmer.client.gui.util.Color;
+import com.joebotics.simmer.client.gui.util.Font;
+import com.joebotics.simmer.client.gui.util.Graphics;
+import com.joebotics.simmer.client.gui.util.Point;
+import com.joebotics.simmer.client.gui.util.Polygon;
+import com.joebotics.simmer.client.gui.util.Rectangle;
+import com.joebotics.simmer.client.util.GraphicsUtil;
+import com.joebotics.simmer.client.util.MouseModeEnum.MouseMode;
 
 public abstract class AbstractCircuitElement implements Editable {
 	protected static Color colorScale[];
@@ -135,26 +135,32 @@ public abstract class AbstractCircuitElement implements Editable {
 	public static String getCurrentText(double i) {
 		return getUnitText(i, "A");
 	}
+
 	protected static NumberFormat getShortFormat() {
 		return shortFormat;
 	}
+
 	public static String getShortUnitText(double v, String u) {
 		return myGetUnitText(v, u, true);
 	}
+
 	protected static NumberFormat getShowFormat() {
 		return showFormat;
 	}
+
 	// IES - hacking
 	public static String getUnitText(double v, String u) {
 		return myGetUnitText(v, u, false);
 	}
+
 	protected static String getVoltageDText(double v) {
 		return getUnitText(Math.abs(v), "V");
 	}
+
 	public static String getVoltageText(double v) {
 		return getUnitText(v, "V");
-
 	}
+
 	public static void initClass(Simmer s) {
 		unitsFont = new Font("SansSerif", 0, 12);
 		sim = s;
@@ -187,12 +193,15 @@ public abstract class AbstractCircuitElement implements Editable {
 		// noCommaFormat.setMaximumFractionDigits(10);
 		// noCommaFormat.setGroupingUsed(false);
 	}
+
 	protected static int max(int a, int b) {
 		return (a > b) ? a : b;
 	}
+
 	protected static int min(int a, int b) {
 		return (a < b) ? a : b;
 	}
+
 	private static String myGetUnitText(double v, String u, boolean sf) {
 		NumberFormat s;
 		if (sf)
@@ -218,12 +227,15 @@ public abstract class AbstractCircuitElement implements Editable {
 			return s.format(v * 1e-6) + " M" + u;
 		return s.format(v * 1e-9) + " G" + u;
 	}
+
 	protected static void setShortFormat(NumberFormat shortFormat) {
 		AbstractCircuitElement.shortFormat = shortFormat;
 	}
+
 	protected static void setShowFormat(NumberFormat showFormat) {
 		AbstractCircuitElement.showFormat = showFormat;
 	}
+
 	protected static int sign(int x) {
 		return (x < 0) ? -1 : (x == 0) ? 0 : 1;
 	}

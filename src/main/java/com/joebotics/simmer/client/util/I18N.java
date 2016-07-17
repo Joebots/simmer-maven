@@ -1,4 +1,4 @@
-package com.jobotics.simmer.client.util;
+package com.joebotics.simmer.client.util;
 
 import java.util.Map;
 

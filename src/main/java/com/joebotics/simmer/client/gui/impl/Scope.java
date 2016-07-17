@@ -17,7 +17,7 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jobotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui.impl;
 
 //import java.awt.*;
 //import java.awt.image.*;
@@ -28,17 +28,17 @@ package com.jobotics.simmer.client.gui.impl;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.user.client.ui.MenuBar;
-import com.jobotics.simmer.client.Simmer;
-import com.jobotics.simmer.client.elcomp.AbstractCircuitElement;
-import com.jobotics.simmer.client.elcomp.LogicOutputElm;
-import com.jobotics.simmer.client.elcomp.MemristorElm;
-import com.jobotics.simmer.client.elcomp.OutputElm;
-import com.jobotics.simmer.client.elcomp.ProbeElm;
-import com.jobotics.simmer.client.elcomp.TransistorElm;
-import com.jobotics.simmer.client.gui.util.Color;
-import com.jobotics.simmer.client.gui.util.Graphics;
-import com.jobotics.simmer.client.gui.util.Rectangle;
-import com.jobotics.simmer.client.util.StringTokenizer;
+import com.joebotics.simmer.client.Simmer;
+import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
+import com.joebotics.simmer.client.elcomp.LogicOutputElm;
+import com.joebotics.simmer.client.elcomp.MemristorElm;
+import com.joebotics.simmer.client.elcomp.OutputElm;
+import com.joebotics.simmer.client.elcomp.ProbeElm;
+import com.joebotics.simmer.client.elcomp.TransistorElm;
+import com.joebotics.simmer.client.gui.util.Color;
+import com.joebotics.simmer.client.gui.util.Graphics;
+import com.joebotics.simmer.client.gui.util.Rectangle;
+import com.joebotics.simmer.client.util.StringTokenizer;
 
 public class Scope {
 	public static final int VAL_IB = 1;
@@ -49,35 +49,44 @@ public class Scope {
 	public static final int VAL_VBC = 5;
 	public static final int VAL_VBE = 4;
 	public static final int VAL_VCE = 6;
-	int alphadiv = 0;
-	float dpixels[];
-	int draw_ox, draw_oy;
-	private AbstractCircuitElement elm;
-	private final int FLAG_YELM = 32;
-	Canvas imageCanvas;
-	Context2d imageContext;
-	boolean lockScale;
-	double minI[], maxI[], minMaxI;
-	double minV[], maxV[], minMaxV;
-	// MemoryImageSource imageSource;
-	// Image image;
-	int pixels[];
-	boolean plot2d;
-	private boolean plotXY;
-	private int position;
-	int ptr, ctr;
-	private Rectangle rect;
-	int scopePointCount = 128;
-	boolean showFreq;
-	boolean showI, showV, showScale;
 	private boolean showMax;
 	private boolean showMin;
-	Simmer simmer;
+	private AbstractCircuitElement elm;
+	private final int FLAG_YELM = 32;
+	private Rectangle rect;
 	private int speed;
-	String text;
-	int value, ivalue;
-	AbstractCircuitElement xElm;
 	private AbstractCircuitElement yElm;
+	private CheckboxMenuItem				scopeFreqMenuItem;
+	private CheckboxMenuItem				scopeIbMenuItem;
+	private CheckboxMenuItem				scopeIcMenuItem;
+	private CheckboxMenuItem				scopeIeMenuItem;
+	private CheckboxMenuItem				scopeIMenuItem;
+	private CheckboxMenuItem				scopeMaxMenuItem;
+	private MenuBar							scopeMenuBar;
+	private CheckboxMenuItem				scopeMinMenuItem;
+	private CheckboxMenuItem				scopePowerMenuItem;
+
+
+    private 	int alphadiv = 0;
+    private 	float dpixels[];
+    private 	int draw_ox, draw_oy;
+    private 	Canvas imageCanvas;
+    private 	Context2d imageContext;
+    private 	boolean lockScale;
+    private 	double minI[], maxI[], minMaxI;
+    private 	double minV[], maxV[], minMaxV;
+    private 	int pixels[];
+    private 	boolean plot2d;
+    private 	boolean plotXY;
+    private 	int position;
+    private 	int ptr, ctr;
+    private 	int scopePointCount = 128;
+    private 	boolean showFreq;
+    private 	boolean showI, showV, showScale;
+    private 	Simmer simmer;
+    private 	String text;
+    private 	int value, ivalue;
+    private 	AbstractCircuitElement xElm;
 
 	public Scope(Simmer s) {
 		simmer = s;
@@ -86,7 +95,6 @@ public class Scope {
 		imageContext = imageCanvas.getContext2d();
 		allocImage();
 		reset();
-
 	}
 
 	boolean active() {

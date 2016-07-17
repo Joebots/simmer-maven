@@ -17,7 +17,7 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jobotics.simmer.client.util;
+package com.joebotics.simmer.client.util;
 
 import java.util.HashMap;
 import java.util.Map;

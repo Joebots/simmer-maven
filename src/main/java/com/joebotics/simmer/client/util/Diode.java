@@ -17,9 +17,9 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jobotics.simmer.client.util;
+package com.joebotics.simmer.client.util;
 
-import com.jobotics.simmer.client.Simmer;
+import com.joebotics.simmer.client.Simmer;
 
 public class Diode {
 	private double lastvoltdiff;

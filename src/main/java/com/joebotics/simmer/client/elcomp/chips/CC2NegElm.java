@@ -1,4 +1,4 @@
-package com.jobotics.simmer.client.elcomp.chips;
+package com.joebotics.simmer.client.elcomp.chips;
 
 public class CC2NegElm extends CC2Elm {
 	public CC2NegElm(int xx, int yy) {

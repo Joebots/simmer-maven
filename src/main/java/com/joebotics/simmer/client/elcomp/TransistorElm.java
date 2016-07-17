@@ -17,17 +17,17 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jobotics.simmer.client.elcomp;
+package com.joebotics.simmer.client.elcomp;
 
-import com.jobotics.simmer.client.gui.impl.Checkbox;
-import com.jobotics.simmer.client.gui.impl.EditInfo;
-import com.jobotics.simmer.client.gui.impl.Scope;
-import com.jobotics.simmer.client.gui.util.Color;
-import com.jobotics.simmer.client.gui.util.Graphics;
-import com.jobotics.simmer.client.gui.util.Point;
-import com.jobotics.simmer.client.gui.util.Polygon;
-import com.jobotics.simmer.client.util.GraphicsUtil;
-import com.jobotics.simmer.client.util.StringTokenizer;
+import com.joebotics.simmer.client.gui.impl.Checkbox;
+import com.joebotics.simmer.client.gui.impl.EditInfo;
+import com.joebotics.simmer.client.gui.impl.Scope;
+import com.joebotics.simmer.client.gui.util.Color;
+import com.joebotics.simmer.client.gui.util.Graphics;
+import com.joebotics.simmer.client.gui.util.Point;
+import com.joebotics.simmer.client.gui.util.Polygon;
+import com.joebotics.simmer.client.util.GraphicsUtil;
+import com.joebotics.simmer.client.util.StringTokenizer;
 
 public class TransistorElm extends AbstractCircuitElement {
 	private static final double leakage = 1e-13; // 1e-6;

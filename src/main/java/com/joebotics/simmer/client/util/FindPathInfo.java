@@ -1,12 +1,12 @@
-package com.jobotics.simmer.client.util;
+package com.joebotics.simmer.client.util;
 
 import java.util.Vector;
 
-import com.jobotics.simmer.client.elcomp.AbstractCircuitElement;
-import com.jobotics.simmer.client.elcomp.CapacitorElm;
-import com.jobotics.simmer.client.elcomp.CurrentElm;
-import com.jobotics.simmer.client.elcomp.InductorElm;
-import com.jobotics.simmer.client.elcomp.VoltageElm;
+import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
+import com.joebotics.simmer.client.elcomp.CapacitorElm;
+import com.joebotics.simmer.client.elcomp.CurrentElm;
+import com.joebotics.simmer.client.elcomp.InductorElm;
+import com.joebotics.simmer.client.elcomp.VoltageElm;
 
 public class FindPathInfo {
 	public static final int		CAP_V	= 4;
@@ -14,7 +14,7 @@ public class FindPathInfo {
 	public static final int		SHORT	= 3;
 	public static final int		VOLTAGE	= 2;
 	int						dest;
-	AbstractCircuitElement	firstElm;
+	AbstractCircuitElement firstElm;
 	int						type;
 	boolean					used[];
 	Vector<AbstractCircuitElement> elementList = null;

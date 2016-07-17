@@ -1,4 +1,4 @@
-package com.jobotics.simmer.client.gui.util;
+package com.joebotics.simmer.client.gui.util;
 
 public class Display {
 	

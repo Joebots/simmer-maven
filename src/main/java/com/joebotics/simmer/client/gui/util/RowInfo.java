@@ -17,7 +17,7 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jobotics.simmer.client.gui.util;
+package com.joebotics.simmer.client.gui.util;
 
 // info about each row/column of the matrix for simplification purposes
 public class RowInfo {

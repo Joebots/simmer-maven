@@ -17,7 +17,7 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jobotics.simmer.client;
+package com.joebotics.simmer.client;
 
 //Simmer.java (c) 2010 by Paul Falstad
 //GWT conversion (c) 2015 by Iain Sharp

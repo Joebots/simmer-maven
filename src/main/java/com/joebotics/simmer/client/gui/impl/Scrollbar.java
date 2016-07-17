@@ -17,7 +17,7 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jobotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui.impl;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
@@ -38,8 +38,8 @@ import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.jobotics.simmer.client.elcomp.AbstractCircuitElement;
-import com.jobotics.simmer.client.gui.util.Display;
+import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
+import com.joebotics.simmer.client.gui.util.Display;
 
 public class Scrollbar extends Composite implements ClickHandler,
 		MouseDownHandler, MouseMoveHandler, MouseUpHandler, MouseOutHandler,

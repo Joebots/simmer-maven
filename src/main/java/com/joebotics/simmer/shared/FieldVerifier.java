@@ -1,4 +1,4 @@
-package com.jobotics.simmer.shared;
+package com.joebotics.simmer.shared;
 
 /**
  * <p>

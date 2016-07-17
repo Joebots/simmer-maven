@@ -5,7 +5,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.jobotics.simmer</groupId>
+  <groupId>com.joebotics.simmer</groupId>
   <artifactId>simmer</artifactId>
   <packaging>war</packaging>
   <version>1</version>
@@ -83,7 +83,7 @@
         <configuration>
           <runTarget>circuitjs.html</runTarget>
           <modules>
-            <module>com.jobotics.simmer.simmer</module>
+            <module>com.joebotics.simmer.simmer</module>
           </modules>
           
         </configuration>

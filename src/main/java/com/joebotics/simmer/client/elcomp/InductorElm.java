@@ -17,14 +17,13 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jobotics.simmer.client.elcomp;
+package com.joebotics.simmer.client.elcomp;
 
-import com.jobotics.simmer.client.gui.impl.Checkbox;
-import com.jobotics.simmer.client.gui.impl.EditInfo;
-import com.jobotics.simmer.client.gui.util.Graphics;
-import com.jobotics.simmer.client.util.Inductor;
-import com.jobotics.simmer.client.util.StringTokenizer;
-
+import com.joebotics.simmer.client.gui.impl.Checkbox;
+import com.joebotics.simmer.client.gui.impl.EditInfo;
+import com.joebotics.simmer.client.gui.util.Graphics;
+import com.joebotics.simmer.client.util.Inductor;
+import com.joebotics.simmer.client.util.StringTokenizer;
 
 
 //import java.awt.*;

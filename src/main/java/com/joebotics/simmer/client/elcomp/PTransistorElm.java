@@ -17,7 +17,7 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jobotics.simmer.client.elcomp;
+package com.joebotics.simmer.client.elcomp;
 
 
 public class PTransistorElm extends TransistorElm {

@@ -1,4 +1,4 @@
-package com.jobotics.simmer.client;
+package com.joebotics.simmer.client;
 
 public class MouseHandler {
 

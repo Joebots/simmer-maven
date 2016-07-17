@@ -17,16 +17,16 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jobotics.simmer.client.elcomp;
+package com.joebotics.simmer.client.elcomp;
 
 //import java.awt.*;
 //import java.util.StringTokenizer;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.user.client.ui.Label;
-import com.jobotics.simmer.client.gui.impl.EditInfo;
-import com.jobotics.simmer.client.gui.impl.Scrollbar;
-import com.jobotics.simmer.client.util.StringTokenizer;
+import com.joebotics.simmer.client.gui.impl.EditInfo;
+import com.joebotics.simmer.client.gui.impl.Scrollbar;
+import com.joebotics.simmer.client.util.StringTokenizer;
 
 public class VarRailElm extends RailElm implements MouseWheelHandler {
 	Label label;

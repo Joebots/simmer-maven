@@ -17,10 +17,10 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jobotics.simmer.client.gui.util;
+package com.joebotics.simmer.client.gui.util;
 
 import com.google.gwt.user.client.Command;
-import com.jobotics.simmer.client.Launcher;
+import com.joebotics.simmer.client.Launcher;
 
 public class MenuCommand implements Command {
 	private final String itemName;

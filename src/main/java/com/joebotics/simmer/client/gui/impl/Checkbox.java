@@ -17,7 +17,7 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jobotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui.impl;
 
 import com.google.gwt.user.client.ui.CheckBox;
 

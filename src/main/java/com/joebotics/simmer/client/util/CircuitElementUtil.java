@@ -1,8 +1,8 @@
-package com.jobotics.simmer.client.util;
+package com.joebotics.simmer.client.util;
 
 import java.util.Vector;
 
-import com.jobotics.simmer.client.elcomp.AbstractCircuitElement;
+import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
 
 public class CircuitElementUtil {
 	

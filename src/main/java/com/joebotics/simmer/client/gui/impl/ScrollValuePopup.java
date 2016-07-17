@@ -17,7 +17,7 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jobotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui.impl;
 
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
@@ -30,11 +30,11 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.jobotics.simmer.client.Simmer;
-import com.jobotics.simmer.client.elcomp.CapacitorElm;
-import com.jobotics.simmer.client.elcomp.AbstractCircuitElement;
-import com.jobotics.simmer.client.elcomp.InductorElm;
-import com.jobotics.simmer.client.elcomp.ResistorElm;
+import com.joebotics.simmer.client.Simmer;
+import com.joebotics.simmer.client.elcomp.CapacitorElm;
+import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
+import com.joebotics.simmer.client.elcomp.InductorElm;
+import com.joebotics.simmer.client.elcomp.ResistorElm;
 
 public class ScrollValuePopup extends PopupPanel implements MouseOutHandler,
 		MouseWheelHandler, MouseDownHandler {
@@ -61,7 +61,7 @@ public class ScrollValuePopup extends PopupPanel implements MouseOutHandler,
 		myElm = e;
 		deltaY = 0;
 		sim = s;
-		sim.pushUndo();
+		sim.getEditMenu().pushUndo();
 		vp = new VerticalPanel();
 		setWidget(vp);
 		setupValues();

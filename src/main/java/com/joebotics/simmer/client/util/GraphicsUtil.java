@@ -1,8 +1,8 @@
-package com.jobotics.simmer.client.util;
+package com.joebotics.simmer.client.util;
 
-import com.jobotics.simmer.client.gui.util.Graphics;
-import com.jobotics.simmer.client.gui.util.Point;
-import com.jobotics.simmer.client.gui.util.Polygon;
+import com.joebotics.simmer.client.gui.util.Graphics;
+import com.joebotics.simmer.client.gui.util.Point;
+import com.joebotics.simmer.client.gui.util.Polygon;
 
 public class GraphicsUtil {
 	public static void drawThickCircle(Graphics g, int cx, int cy, int ri) {

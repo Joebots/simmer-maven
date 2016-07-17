@@ -17,7 +17,7 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jobotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui.impl;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.jobotics.simmer.client.Simmer;
+import com.joebotics.simmer.client.Simmer;
 
 // class EditDialog extends Dialog implements AdjustmentListener,
 // ActionListener, ItemListener {
@@ -48,8 +48,9 @@ public class EditDialog extends DialogBox {
 	private int einfocount;
 	private EditInfo einfos[];
 	private Editable elm;
-private HorizontalPanel hp;
+	private HorizontalPanel hp;
 	private NumberFormat noCommaFormat;
+
 	//	private final int barmax = 1000;
 	private VerticalPanel vp;
 

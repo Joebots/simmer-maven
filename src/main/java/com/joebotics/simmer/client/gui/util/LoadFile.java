@@ -17,12 +17,12 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jobotics.simmer.client.gui.util;
+package com.joebotics.simmer.client.gui.util;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.FileUpload;
-import com.jobotics.simmer.client.Simmer;
+import com.joebotics.simmer.client.Simmer;
 
 public class LoadFile extends FileUpload implements ChangeHandler {
 
@@ -36,7 +36,7 @@ public class LoadFile extends FileUpload implements ChangeHandler {
 			var reader = new FileReader();
 			reader.onload = function(e) {
 				var text = reader.result;
-				@com.jobotics.simmer.client.gui.util.LoadFile::doLoadCallback(Ljava/lang/String;)(text);
+				@com.joebotics.simmer.client.gui.util.LoadFile::doLoadCallback(Ljava/lang/String;)(text);
 			};
 
 			reader.readAsText(oFiles[0]);

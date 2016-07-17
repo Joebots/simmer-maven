@@ -17,10 +17,10 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jobotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui.impl;
 
-import com.jobotics.simmer.client.Simmer;
-import com.jobotics.simmer.client.elcomp.AbstractCircuitElement;
+import com.joebotics.simmer.client.Simmer;
+import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
 
 public class EditOptions implements Editable {
 	private Simmer sim;

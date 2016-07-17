@@ -3,5 +3,5 @@
     <inherits name="com.google.gwt.user.User" />
     <inherits name="com.google.gwt.http.HTTP" />
     <inherits name='com.google.gwt.user.theme.clean.Clean'/>
-    <entry-point class="com.jobotics.simmer.client.Launcher" />
+    <entry-point class="com.joebotics.simmer.client.Launcher" />
 </module>

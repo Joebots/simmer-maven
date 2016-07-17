@@ -1,11 +1,11 @@
-package com.jobotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui.impl;
 
 
 
 public interface Editable {
 
-	public abstract EditInfo getEditInfo(int n);
+	EditInfo getEditInfo(int n);
 
-	public abstract void setEditValue(int n, EditInfo ei);
+	void setEditValue(int n, EditInfo ei);
 
 }
