@@ -50,6 +50,8 @@ public class EditMenu extends MenuBar{
 
         sn = edithtml + "Select All</div>Ctrl-A";
         m.addItem(selectAllItem = new MenuItem(SafeHtmlUtils.fromTrustedString(sn), new MenuCommand("edit", "selectAll")));
+        sn = edithtml + "Select None</div>";
+        m.addItem( new MenuItem(SafeHtmlUtils.fromTrustedString(sn), new MenuCommand("edit", "selectNone")));
         m.addItem(new MenuItem(MessageI18N.getLocale("Centre_Circuit"), new MenuCommand("edit", "centrecircuit")));
 
         pasteItem.setEnabled(false);

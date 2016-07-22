@@ -25,6 +25,7 @@ package com.joebotics.simmer.client;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.*;
@@ -115,21 +116,26 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 	
 	// Class addingClass;
 	private PopupPanel						contextPanel;
-	private CheckboxMenuItem conventionCheckItem;
+
 	private String							ctrlMetaKey;
 	private Canvas							cv;
 	private Context2d						cvcontext;
 
 	// private boolean didSwitch = false;
-	private CheckboxMenuItem				dotsCheckItem;
+
 
 	// Vector setupList;
 	private Vector<AbstractCircuitElement>	elmList;
 
 	// private CheckboxMenuItem conductanceCheckItem;
-	private CheckboxMenuItem				euroResistorCheckItem;
+    private CheckboxMenuItem                conventionCheckItem;
+    private CheckboxMenuItem				euroResistorCheckItem;
+    private CheckboxMenuItem				dotsCheckItem;
+    private CheckboxMenuItem				showValuesCheckItem;
+    private CheckboxMenuItem				smallGridCheckItem;
+    private CheckboxMenuItem				voltsCheckItem;
+
 	private MenuBar							fileMenuBar;
-	private Frame							iFrame;
 //	private MenuItem						importFromLocalFileItem, importFromTextItem, exportAsUrlItem, exportAsLocalFileItem, exportAsTextItem;
 	// boolean useBufferedImage;
 	private boolean							isMac;
@@ -150,8 +156,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 	private DockLayoutPanel					layoutPanel;
 	private LoadFile loadFileInput;
 	private MenuBar							mainMenuBar;
-	private Vector<String>					mainMenuItemNames	= new Vector<String>();
-	private Vector<CheckboxMenuItem>		mainMenuItems		= new Vector<CheckboxMenuItem>();
+
 	private Vector<CircuitNode>				nodeList;
 	private MenuBar							menuBar;
 
@@ -170,38 +175,12 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 	// IES - remove interaction
 	// Label titleLabel;
 
-    /** Scope.java **/
-	private CheckboxMenuItem				scopeFreqMenuItem;
-	private CheckboxMenuItem				scopeIbMenuItem;
-	private CheckboxMenuItem				scopeIcMenuItem;
-	private CheckboxMenuItem				scopeIeMenuItem;
-	private CheckboxMenuItem				scopeIMenuItem;
-	private CheckboxMenuItem				scopeMaxMenuItem;
-	private MenuBar							scopeMenuBar;
-	private CheckboxMenuItem				scopeMinMenuItem;
-	private CheckboxMenuItem				scopePowerMenuItem;
-
-	private CheckboxMenuItem				scopeResistMenuItem;
-	private Scope							scopes[];
-	private CheckboxMenuItem				scopeScaleMenuItem;
-	private MenuItem						scopeSelectYMenuItem;
-
-	private CheckboxMenuItem				scopeVbcMenuItem;
-	private CheckboxMenuItem				scopeVbeMenuItem;
-
-	private CheckboxMenuItem				scopeVceIcMenuItem;
-	private CheckboxMenuItem				scopeVceMenuItem;
-
-	private CheckboxMenuItem				scopeVIMenuItem;
-	private CheckboxMenuItem				scopeVMenuItem;
-	private CheckboxMenuItem				scopeXYMenuItem;
 	private Rectangle						selectedArea;
 	// private int selectedSource;
 	// Class dumpTypes[], shortcuts[];
 	private String							shortcuts[];
 	// private boolean shown = false;
-	private CheckboxMenuItem				showValuesCheckItem;
-	private CheckboxMenuItem				smallGridCheckItem;
+
 	private Scrollbar						speedBar;
 	private String							startCircuit		= null;
 	private String							startCircuitText	= null;
@@ -209,7 +188,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 	// private int steps = 0;
 	private AbstractCircuitElement			stopElm;
 	private String							stopMessage;
-	private Checkbox						stoppedCheck;
 	private final Timer						timer				= new Timer() {
 																	public void run() {
 																		updateCircuit();
@@ -220,8 +198,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 	private Vector<String>					undoStack, redoStack;
 	// private int voltageSourceCount;
 	private AbstractCircuitElement			voltageSources[];
-	private CheckboxMenuItem				voltsCheckItem;
-	
+
 	public AbstractCircuitElement			dragElm;
 	public boolean							analyzeFlag;
 	public boolean							dragging;
@@ -286,15 +263,18 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		getPrintableCheckItem().setState(printable);
 		getConventionCheckItem().setState(convention);
 
-		mainMenuBar = new MenuBar(true);
+		mainMenuBar = new DrawMenu(this, true);
 		mainMenuBar.setAutoOpen(true);
-		buildDrawMenu(mainMenuBar);
+		//buildDrawMenu(mainMenuBar);
 
 		// popup
-		buildDrawMenu(drawMenuBar);
+		//buildDrawMenu(drawMenuBar);
 
 		layoutPanel.addNorth(menuBar, Display.MENUBARHEIGHT);
 		layoutPanel.addEast(verticalPanel, Display.VERTICALPANELWIDTH);
+//        SideBar sideBar = new SideBar(this);
+//        layoutPanel.addEast(sideBar, Display.VERTICALPANELWIDTH);
+
 		RootLayoutPanel.get().add(layoutPanel);
 		cv = Canvas.createIfSupported();
 		if (cv == null) {
@@ -327,8 +307,8 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		elmMenuBar = buildElementPopupMenu();
 		// main.add(elmMenu);
 
-		scopeMenuBar = buildScopeMenu(false);
 		transScopeMenuBar = buildScopeMenu(true);
+		scopeMenuBar = buildScopeMenu(false);
 
 		if (startCircuitText != null) {
 			getSetupList(false);
@@ -362,19 +342,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 
 	public static void setEditDialog(EditDialog editDialog) {
 		Simmer.editDialog = editDialog;
-	}
-
-	public static void setMuString(String muString) {
-		Simmer.muString = muString;
-	}
-
-	public void addWidgetToVerticalPanel(Widget w) {
-		if (iFrame != null) {
-			int i = verticalPanel.getWidgetIndex(iFrame);
-			verticalPanel.insert(w, i);
-			setiFrameHeight();
-		} else
-			verticalPanel.add(w);
 	}
 
 	private void analyzeCircuit() {
@@ -566,6 +533,9 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 				FindPathInfo fpi = new FindPathInfo(FindPathInfo.INDUCT, ce, ce.getNode(1), getNodeList().size(), getElmList());
 				if (!fpi.findPath(ce.getNode(0))) {
 					stop(MessageI18N.getLocale("No_path_for_current_source!"), ce);
+
+					// fire circuit broken event here
+					// {source: simmer, component: ce, message: "No_path_for_current_source"}
 					return;
 				}
 			}
@@ -575,6 +545,9 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 				FindPathInfo fpi = new FindPathInfo(FindPathInfo.VOLTAGE, ce, ce.getNode(1), getNodeList().size(), getElmList());
 				if (fpi.findPath(ce.getNode(0))) {
 					stop(MessageI18N.getLocale("Voltage_source/wire_loop_with_no_resistance!"), ce);
+
+					// fire circuit broken event here
+					// {source: simmer, component: ce, message: "Voltage_source/wire_loop_with_no_resistance!"}
 					return;
 				}
 			}
@@ -588,6 +561,9 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 					fpi = new FindPathInfo(FindPathInfo.CAP_V, ce, ce.getNode(1), getNodeList().size(), getElmList());
 					if (fpi.findPath(ce.getNode(0))) {
 						stop(MessageI18N.getLocale("Capacitor_loop_with_no_resistance!"), ce);
+
+						// fire circuit broken event here
+						// {source: simmer, component: ce, message: "Capacitor_loop_with_no_resistance!"}
 						return;
 					}
 				}
@@ -606,6 +582,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			 */
 			if (re.isLsChanges() || re.isDropRow() || re.isRsChanges())
 				continue;
+
 			double rsadd = 0;
 
 			// look for rows that can be removed
@@ -645,6 +622,9 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			if (j == matrixSize) {
 				if (qp == -1) {
 					stop(MessageI18N.getLocale("Matrix_error"), null);
+
+					// fire circuit broken event here
+					// {source: simmer, component: ce, message: "Matrix_error"}
 					return;
 				}
 				RowInfo elt = circuitRowInfo[qp];
@@ -785,9 +765,14 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		if (!circuitNonLinear) {
 			if (!lu_factor(circuitMatrix, circuitMatrixSize, circuitPermute)) {
 				stop(MessageI18N.getLocale("Singular_matrix!"), null);
+
+				// fire circuit broken event here?
+				// {source: simmer, component: ce, message: "Singular_matrix!"}
 				return;
 			}
 		}
+
+		// fire circuit working event here
 	}
 
 	private boolean anySelectedButMouse() {
@@ -796,7 +781,10 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 				return true;
 		return false;
 	}
-	
+
+    private Vector<String>					mainMenuItemNames	= new Vector<String>();
+    private Vector<CheckboxMenuItem>		mainMenuItems		= new Vector<CheckboxMenuItem>();
+
 	private void buildDrawMenu(MenuBar mainMenuBar) {
 		mainMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Wire"), "WireElm"));
 		mainMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Resistor"), "ResistorElm"));
@@ -958,6 +946,32 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 
 		return elmMenuBar;
 	}
+    /** Scope.java **/
+
+    private CheckboxMenuItem				scopeFreqMenuItem;
+    private CheckboxMenuItem				scopeIbMenuItem;
+    private CheckboxMenuItem				scopeIcMenuItem;
+    private CheckboxMenuItem				scopeIeMenuItem;
+    private CheckboxMenuItem				scopeIMenuItem;
+    private CheckboxMenuItem				scopeMaxMenuItem;
+    private MenuBar							scopeMenuBar;
+    private CheckboxMenuItem				scopeMinMenuItem;
+    private CheckboxMenuItem				scopePowerMenuItem;
+
+    private CheckboxMenuItem				scopeResistMenuItem;
+    private Scope							scopes[];
+    private CheckboxMenuItem				scopeScaleMenuItem;
+    private MenuItem						scopeSelectYMenuItem;
+
+    private CheckboxMenuItem				scopeVbcMenuItem;
+    private CheckboxMenuItem				scopeVbeMenuItem;
+
+    private CheckboxMenuItem				scopeVceIcMenuItem;
+    private CheckboxMenuItem				scopeVceMenuItem;
+
+    private CheckboxMenuItem				scopeVIMenuItem;
+    private CheckboxMenuItem				scopeVMenuItem;
+    private CheckboxMenuItem				scopeXYMenuItem;
 
 	private MenuBar buildScopeMenu(boolean t) {
 		MenuBar m = new MenuBar(true);
@@ -992,6 +1006,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		}
 		return m;
 	}
+	// end scope.java
 
 	private void calcCircuitBottom() {
 		int i;
@@ -1081,27 +1096,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		x2 -= x1;
 		y2 -= y1;
 		return x2 * x2 + y2 * y2;
-	}
-
-	private void doExportAsLocalFile() {
-		String dump = dumpCircuit();
-		exportAsLocalFileDialog = new ExportAsLocalFileDialog(dump);
-		exportAsLocalFileDialog.show();
-	}
-
-	private void doExportAsText() {
-		String dump = dumpCircuit();
-		exportAsTextDialog = new ExportAsTextDialog(dump);
-		exportAsTextDialog.show();
-	}
-
-	private void doExportAsUrl() {
-		String start[] = Location.getHref().split("\\?");
-		String dump = dumpCircuit();
-		dump = dump.replace(' ', '+');
-		dump = start[0] + "?cct=" + URL.encode(dump);
-		exportAsUrlDialog = new ExportAsUrlDialog(dump);
-		exportAsUrlDialog.show();
 	}
 
 	private void doMainMenuChecks() {
@@ -1227,6 +1221,28 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		return allowed;
 	}
 
+	// this is the file generation logic!  :)
+    private void doExportAsLocalFile() {
+        String dump = dumpCircuit();
+        exportAsLocalFileDialog = new ExportAsLocalFileDialog(dump);
+        exportAsLocalFileDialog.show();
+    }
+
+    private void doExportAsText() {
+        String dump = dumpCircuit();
+        exportAsTextDialog = new ExportAsTextDialog(dump);
+        exportAsTextDialog.show();
+    }
+
+    private void doExportAsUrl() {
+        String start[] = Location.getHref().split("\\?");
+        String dump = dumpCircuit();
+        dump = dump.replace(' ', '+');
+        dump = start[0] + "?cct=" + URL.encode(dump);
+        exportAsUrlDialog = new ExportAsUrlDialog(dump);
+        exportAsUrlDialog.show();
+    }
+
 	public String dumpCircuit() {
 		int i;
 		int f = (getDotsCheckItem().getState()) ? 1 : 0;
@@ -1235,11 +1251,11 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		f |= (getPowerCheckItem().getState()) ? 8 : 0;
 		f |= (getShowValuesCheckItem().getState()) ? 0 : 16;
 		// 32 = linear scale in afilter
-		String dump = "$ " + f + " " + getTimeStep() + " " + getIterCount() + " " + currentBar.getValue() + " " + AbstractCircuitElement.voltageRange + " " + powerBar.getValue()
-				+ "\n";
+		String dump = "$ " + f + " " + getTimeStep() + " " + getIterCount() + " " + currentBar.getValue() + " " + AbstractCircuitElement.voltageRange + " " + powerBar.getValue() + "\n";
 
 		for (i = 0; i != elmList.size(); i++)
 			dump += getElm(i).dump() + "\n";
+
 		for (i = 0; i != scopeCount; i++) {
 			String d = scopes[i].dump();
 			if (d != null)
@@ -1249,6 +1265,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			dump += "h " + hintType + " " + hintItem1 + " " + hintItem2 + "\n";
 		return dump;
 	}
+	// end file generation logic
 
 	public CircuitNode getCircuitNode(int n) {
 		if (n >= getNodeList().size())
@@ -1406,86 +1423,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		return q % x;
 	}
 
-	public CheckboxMenuItem getScopeFreqMenuItem() {
-		return scopeFreqMenuItem;
-	}
-
-	public CheckboxMenuItem getScopeIbMenuItem() {
-		return scopeIbMenuItem;
-	}
-
-	public CheckboxMenuItem getScopeIcMenuItem() {
-		return scopeIcMenuItem;
-	}
-
-	public CheckboxMenuItem getScopeIeMenuItem() {
-		return scopeIeMenuItem;
-	}
-
-	public CheckboxMenuItem getScopeIMenuItem() {
-		return scopeIMenuItem;
-	}
-
-	public CheckboxMenuItem getScopeMaxMenuItem() {
-		return scopeMaxMenuItem;
-	}
-
-	public MenuBar getScopeMenuBar() {
-		return scopeMenuBar;
-	}
-
-	public CheckboxMenuItem getScopeMinMenuItem() {
-		return scopeMinMenuItem;
-	}
-
-	public CheckboxMenuItem getScopePowerMenuItem() {
-		return scopePowerMenuItem;
-	}
-
-	public CheckboxMenuItem getScopeResistMenuItem() {
-		return scopeResistMenuItem;
-	}
-
-	public CheckboxMenuItem getScopeScaleMenuItem() {
-		return scopeScaleMenuItem;
-	}
-
-	public int getScopeSelected() {
-		return scopeSelected;
-	}
-
-	public MenuItem getScopeSelectYMenuItem() {
-		return scopeSelectYMenuItem;
-	}
-
-	public CheckboxMenuItem getScopeVbcMenuItem() {
-		return scopeVbcMenuItem;
-	}
-
-	public CheckboxMenuItem getScopeVbeMenuItem() {
-		return scopeVbeMenuItem;
-	}
-
-	public CheckboxMenuItem getScopeVceIcMenuItem() {
-		return scopeVceIcMenuItem;
-	}
-
-	public CheckboxMenuItem getScopeVceMenuItem() {
-		return scopeVceMenuItem;
-	}
-
-	public CheckboxMenuItem getScopeVIMenuItem() {
-		return scopeVIMenuItem;
-	}
-
-	public CheckboxMenuItem getScopeVMenuItem() {
-		return scopeVMenuItem;
-	}
-
-	public CheckboxMenuItem getScopeXYMenuItem() {
-		return scopeXYMenuItem;
-	}
-
 	private void getSetupList(final boolean openDefault) {
 
 		String url = GWT.getModuleBaseURL();
@@ -1538,26 +1475,29 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		return timeStep;
 	}
 
-	public MenuBar getTransScopeMenuBar() {
-		return transScopeMenuBar;
-	}
-
 	public CheckboxMenuItem getVoltsCheckItem() {
 		return voltsCheckItem;
 	}
 
-
 	private EditMenu editMenu;
-	public EditMenu getEditMenu(){return editMenu;};
+
+    public EditMenu getEditMenu(){return editMenu;};
+
 	private MenuBar buildEditMenu() {
 		editMenu = new EditMenu(this);
 		return editMenu;
 	}
 
-    public void removeWidgetFromVerticalPanel(Widget w) {
-        verticalPanel.remove(w);
-        if (iFrame != null)
-            setiFrameHeight();
+    public int getScopeCount(){
+        return this.scopeCount;
+    }
+
+    public Scope[] getScopes(){
+        return scopes;
+    }
+
+    public Scope getScope(int idx){
+        return scopes[idx];
     }
 
 	/** Options Menu **/
@@ -1572,7 +1512,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
         return powerCheckItem;
     }
 
-    private void setPowerBarEnable() {
+    public void setPowerBarEnable() {
         if (getPowerCheckItem().getState()) {
             powerLabel.setStyleName("disabled", false);
             powerBar.enable();
@@ -1660,8 +1600,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		optionsMenuBar.addItem(setEuroResistorCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("European_Resistors"))));
 		optionsMenuBar.addItem(setPrintableCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("White_Background"), new Command() {
 			public void execute() {
-				int i;
-				for (i = 0; i < scopeCount; i++)
+				for (int i = 0; i < scopeCount; i++)
 					scopes[i].setRect(scopes[i].getRect());
 			}
 		})));
@@ -1696,10 +1635,60 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
     private VerticalPanel					verticalPanel;
     private Button							resetButton;
     private Scrollbar                       currentBar;
+    private Checkbox						stoppedCheck;
+    private Frame							iFrame;
+
     protected void setStoppedCheck(Checkbox stoppedCheck) {
         this.stoppedCheck = stoppedCheck;
     }
-	private void createSideBar() {
+
+
+
+    public void setiFrameHeight() {
+        if (iFrame == null)
+            return;
+        int i;
+        int cumheight = 0;
+        for (i = 0; i < verticalPanel.getWidgetIndex(iFrame); i++) {
+            if (verticalPanel.getWidget(i) != loadFileInput) {
+                cumheight = cumheight + verticalPanel.getWidget(i).getOffsetHeight();
+                if (verticalPanel.getWidget(i).getStyleName().contains("topSpace"))
+                    cumheight += 12;
+            }
+        }
+        // int
+        // ih=RootLayoutPanel.get().getOffsetHeight()-(iFrame.getAbsoluteTop()-RootLayoutPanel.get().getAbsoluteTop());
+        int ih = RootLayoutPanel.get().getOffsetHeight() - Display.MENUBARHEIGHT - cumheight;
+        // GWT.log(MessageI18N.getLocale("Root_OH=")+RootLayoutPanel.get().getOffsetHeight());
+        // GWT.log(MessageI18N.getLocale("iF_top=")+iFrame.getAbsoluteTop() );
+        // GWT.log(MessageI18N.getLocale("RP_top=")+RootLayoutPanel.get().getAbsoluteTop());
+        // GWT.log(MessageI18N.getLocale("ih=")+ih);
+        // GWT.log(MessageI18N.getLocale("if_left=")+iFrame.getAbsoluteLeft());
+        if (ih < 0)
+            ih = 0;
+        iFrame.setHeight(ih + "px");
+    }
+
+    public void removeWidgetFromVerticalPanel(Widget w) {
+        verticalPanel.remove(w);
+        if (iFrame != null)
+            setiFrameHeight();
+    }
+
+    public void addWidgetToVerticalPanel(Widget w) {
+        if (iFrame != null) {
+            int i = verticalPanel.getWidgetIndex(iFrame);
+            verticalPanel.insert(w, i);
+            setiFrameHeight();
+        } else
+            verticalPanel.add(w);
+    }
+
+    public void setIFrame(Frame iFrame){
+        this.iFrame = iFrame;
+    }
+
+    private void createSideBar() {
 		verticalPanel.add(resetButton = new Button(MessageI18N.getLocale("Reset")));
 		resetButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -1893,25 +1882,35 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 
 	// IES - remove interaction
 	public void menuPerformed(String menu, String item) {
+
+	    Window.alert("menu: " + menu + "\titem: " + item);
+
 		if (item == "about")
 			aboutBox = new AboutBox(Launcher.versionString);
-		if (item == "importfromlocalfile") {
+
+        if (item == "importfromlocalfile") {
 			editMenu.pushUndo();
 			loadFileInput.click();
 		}
+
 		if (item == "importfromtext") {
 			importFromTextDialog = new ImportFromTextDialog(this);
 		}
+
 		if (item == "exportasurl") {
 			doExportAsUrl();
 		}
+
 		if (item == "exportaslocalfile")
 			doExportAsLocalFile();
+
 		if (item == "exportastext")
 			doExportAsText();
-		if ((menu == "elm" || menu == "scopepop") && contextPanel != null)
+
+        if ((menu == "elm" || menu == "scopepop") && contextPanel != null)
 			contextPanel.hide();
-		if (menu == "options" && item == "other")
+
+        if (menu == "options" && item == "other")
 			editMenu.doEdit(new EditOptions(this));
 		// public void actionPerformed(ActionEvent e) {
 		// String ac = e.getActionCommand();
@@ -1968,6 +1967,9 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		if (item == "selectAll")
 			editMenu.doSelectAll();
 
+        if (item == "selectNone")
+            editMenu.doSelectNone();
+
 		if (item == "centrecircuit") {
 			editMenu.pushUndo();
 			centreCircuit();
@@ -1986,17 +1988,23 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 
 		if (item == "viewInScope" && menuElm != null) {
 			int i;
-			for (i = 0; i != scopeCount; i++)
-				if (scopes[i].getElm() == null)
+			for (i = 0; i != scopeCount; i++){
+				if (scopes[i].getElm() == null){
 					break;
+                }
+            }
+
 			if (i == scopeCount) {
-				if (scopeCount == scopes.length)
+
+			    if (scopeCount == scopes.length)
 					return;
-				scopeCount++;
+
+                scopeCount++;
 				scopes[i] = new Scope(this);
 				scopes[i].setPosition(i);
 				// handleResize();
 			}
+
 			scopes[i].setElm(menuElm);
 		}
 		if (menu == "scopepop") {
@@ -2065,10 +2073,12 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			if (!(e.isMetaKeyDown() || e.isShiftKeyDown() || e.isControlKeyDown() || e.isAltKeyDown()))
 				return;
 		}
+
 		if (!circuitArea.contains(e.getX(), e.getY()))
 			return;
 		if (dragElm != null)
 			dragElm.drag(e.getX(), e.getY());
+
 		boolean success = true;
 		switch (tempMouseMode) {
 			case DRAG_ALL:
@@ -2124,13 +2134,19 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			scrollValues(e.getNativeEvent().getClientX(), e.getNativeEvent().getClientY(), 0);
 	}
 
+	public int getScopeSelected(){return scopeSelected;}
+
 	public void onContextMenu(ContextMenuEvent e) {
 		e.preventDefault();
 		int x, y;
 		menuElm = mouseElm;
 		menuScope = -1;
+
 		if (scopeSelected != -1) {
 			MenuBar m = scopes[scopeSelected].getMenu();
+
+            Window.alert(scopeSelected + " " + m);
+
 			menuScope = scopeSelected;
 			if (m != null) {
 				contextPanel = new PopupPanel(true);
@@ -2358,6 +2374,8 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 					editMenu.doSelectNone();
 			} else {
 				elmList.addElement(dragElm);
+				// fire component added
+
 				circuitChanged = true;
 			}
 			dragElm = null;
@@ -2455,6 +2473,10 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			}
 		}
 	}
+
+	public String[] getShortcuts(){
+	    return this.shortcuts;
+    }
 
 	private void processSetupList(byte b[], int len, final boolean openDefault) {
 		MenuBar currentMenuBar;
@@ -2657,6 +2679,8 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			AbstractCircuitElement ce = getElm(i);
 			if (ce.getX1() == ce.getX2() && ce.getY1() == ce.getY2()) {
 				elmList.removeElementAt(i);
+				// fire component removed event
+				// {source: simmer, component: elmList.getElementAt(i)}
 				ce.delete();
 				// changed = true;
 			}
@@ -2664,13 +2688,15 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		needAnalyze();
 	}
 
-	private void resetAction() {
+	public void resetAction() {
 		int i;
 		for (i = 0; i != elmList.size(); i++)
 			getElm(i).reset();
+
 		for (i = 0; i != scopeCount; i++)
 			scopes[i].resetGraph();
-		// TODO: Will need to do IE bug fix here?
+
+        // TODO: Will need to do IE bug fix here?
 		analyzeFlag = true;
 		t = 0;
 		getStoppedCheck().setState(false);
@@ -2722,6 +2748,9 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 						double x = circuitMatrix[i][j];
 						if (Double.isNaN(x) || Double.isInfinite(x)) {
 							stop(MessageI18N.getLocale("nan/infinite_matrix!"), null);
+
+							// fire circuit broken event here
+							// {source: simmer, component: ce, message: "nan/infinite_matrix!"}
 							return;
 						}
 					}
@@ -2739,6 +2768,9 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 						break;
 					if (!lu_factor(circuitMatrix, circuitMatrixSize, circuitPermute)) {
 						stop(MessageI18N.getLocale("Singular_matrix!"), null);
+
+						// fire circuit broken event here
+						// {source: simmer, component: ce, message: "Singular_matrix!"}
 						return;
 					}
 				}
@@ -2791,8 +2823,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 				break;
 		} // for (iter = 1; ; iter++)
 		lastIterTime = lit;
-		// System.out.println((System.currentTimeMillis()-lastFrameTime)/(double)
-		// iter);
 	}
 
 	private void scrollValues(int x, int y, int deltay) {
@@ -2856,31 +2886,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		this.gridSize = gridSize;
 	}
 
-	public void setiFrameHeight() {
-		if (iFrame == null)
-			return;
-		int i;
-		int cumheight = 0;
-		for (i = 0; i < verticalPanel.getWidgetIndex(iFrame); i++) {
-			if (verticalPanel.getWidget(i) != loadFileInput) {
-				cumheight = cumheight + verticalPanel.getWidget(i).getOffsetHeight();
-				if (verticalPanel.getWidget(i).getStyleName().contains("topSpace"))
-					cumheight += 12;
-			}
-		}
-		// int
-		// ih=RootLayoutPanel.get().getOffsetHeight()-(iFrame.getAbsoluteTop()-RootLayoutPanel.get().getAbsoluteTop());
-		int ih = RootLayoutPanel.get().getOffsetHeight() - Display.MENUBARHEIGHT - cumheight;
-		// GWT.log(MessageI18N.getLocale("Root_OH=")+RootLayoutPanel.get().getOffsetHeight());
-		// GWT.log(MessageI18N.getLocale("iF_top=")+iFrame.getAbsoluteTop() );
-		// GWT.log(MessageI18N.getLocale("RP_top=")+RootLayoutPanel.get().getAbsoluteTop());
-		// GWT.log(MessageI18N.getLocale("ih=")+ih);
-		// GWT.log(MessageI18N.getLocale("if_left=")+iFrame.getAbsoluteLeft());
-		if (ih < 0)
-			ih = 0;
-		iFrame.setHeight(ih + "px");
-	}
-
 	public void setMenuSelection() {
 		if (menuElm != null) {
 			if (menuElm.isSelected())
@@ -2921,10 +2926,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 
 	public void setTimeStep(double timeStep) {
 		this.timeStep = timeStep;
-	}
-
-	public void setTransScopeMenuBar(MenuBar transScopeMenuBar) {
-		this.transScopeMenuBar = transScopeMenuBar;
 	}
 
 	private void setupScopes() {
@@ -3168,19 +3169,13 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 
 	public void updateCircuit() {
 		long mystarttime;
-		// long myrunstarttime;
-		// long mydrawstarttime;
 		AbstractCircuitElement realMouseElm;
-		// if (winSize == null || winSize.width == 0)
-		// return;
 		mystarttime = System.currentTimeMillis();
 		if (analyzeFlag) {
 			analyzeCircuit();
 			analyzeFlag = false;
 		}
-		// if (editDialog != null && editDialog.elm instanceof
-		// AbstractCircuitElement)
-		// mouseElm = (AbstractCircuitElement) (editDialog.elm);
+
 		realMouseElm = mouseElm;
 		if (mouseElm == null)
 			mouseElm = stopElm;
@@ -3201,7 +3196,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			g.setColor(Color.black);
 		}
 		g.fillRect(0, 0, g.getContext().getCanvas().getWidth(), g.getContext().getCanvas().getHeight());
-		// myrunstarttime = System.currentTimeMillis();
 		if (!getStoppedCheck().getState()) {
 			try {
 				runCircuit();
@@ -3211,7 +3205,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 				// cv.repaint();
 				return;
 			}
-			// myruntime += System.currentTimeMillis() - myrunstarttime;
 		}
 		long sysTime = System.currentTimeMillis();
 		if (!getStoppedCheck().getState()) {
@@ -3365,40 +3358,8 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		// frames++;
 
 		g.setColor(Color.white);
-		// g.drawString(MessageI18N.getLocale("Framerate:_") +
-		// AbstractCircuitElement.showFormat.format(framerate),
-		// 10, 10);
-		// g.drawString(MessageI18N.getLocale("Steprate:_") +
-		// AbstractCircuitElement.showFormat.format(steprate),
-		// 10, 30);
-		// g.drawString(MessageI18N.getLocale("Steprate/iter:_") +
-		// AbstractCircuitElement.showFormat.format(steprate/getIterCount()),
-		// 10, 50);
-		// g.drawString(MessageI18N.getLocale("iterc:_") +
-		// AbstractCircuitElement.showFormat.format(getIterCount()), 10, 70);
-		// g.drawString(MessageI18N.getLocale("Frames:_")+ frames,10,90);
-		// g.drawString(MessageI18N.getLocale("ms_per_frame_(other):_")+
-		// AbstractCircuitElement.showFormat.format((mytime-myruntime-mydrawtime)/myframes),10,110);
-		// g.drawString(MessageI18N.getLocale("ms_per_frame_(simmer):_")+
-		// AbstractCircuitElement.showFormat.format((myruntime)/myframes),10,130);
-		// g.drawString(MessageI18N.getLocale("ms_per_frame_(draw):_")+
-		// AbstractCircuitElement.showFormat.format((mydrawtime)/myframes),10,150);
 
 		cvcontext.drawImage(backcontext.getCanvas(), 0.0, 0.0);
-		// IES - remove interaction and delay
-		// if (!stoppedCheck.getState() && circuitMatrix != null) {
-		// Limit to 50 fps (thanks to Jurgen Klotzer for this)
-		// long delay = 1000/50 - (System.currentTimeMillis() - lastFrameTime);
-		// realg.drawString(MessageI18N.getLocale("delay:_") + delay, 10, 110);
-		// if (delay > 0) {
-		// try {
-		// Thread.sleep(delay);
-		// } catch (InterruptedException e) {
-		// }
-		// }
-
-		// cv.repaint(0);
-		// }
 		lastFrameTime = lastTime;
 		mytime = mytime + System.currentTimeMillis() - mystarttime;
 		// myframes++;

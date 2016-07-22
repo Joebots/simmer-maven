@@ -41,6 +41,9 @@ import com.joebotics.simmer.client.gui.util.Rectangle;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 public class Scope {
+
+	private ScopePopupMenu scopeMenuBar, transScopeMenuBar;
+
 	public static final int VAL_IB = 1;
 	public static final int VAL_IC = 2;
 	public static final int VAL_IE = 3;
@@ -56,15 +59,6 @@ public class Scope {
 	private Rectangle rect;
 	private int speed;
 	private AbstractCircuitElement yElm;
-	private CheckboxMenuItem				scopeFreqMenuItem;
-	private CheckboxMenuItem				scopeIbMenuItem;
-	private CheckboxMenuItem				scopeIcMenuItem;
-	private CheckboxMenuItem				scopeIeMenuItem;
-	private CheckboxMenuItem				scopeIMenuItem;
-	private CheckboxMenuItem				scopeMaxMenuItem;
-	private MenuBar							scopeMenuBar;
-	private CheckboxMenuItem				scopeMinMenuItem;
-	private CheckboxMenuItem				scopePowerMenuItem;
 
 
     private 	int alphadiv = 0;
@@ -88,8 +82,13 @@ public class Scope {
     private 	int value, ivalue;
     private 	AbstractCircuitElement xElm;
 
-	public Scope(Simmer s) {
+    public Scope(Simmer s) {
 		simmer = s;
+
+		scopeMenuBar = new ScopePopupMenu(true);
+
+		transScopeMenuBar = new ScopePopupMenu(false);
+
 		rect = new Rectangle(0, 0, 1, 1);
 		imageCanvas = Canvas.createIfSupported();
 		imageContext = imageCanvas.getContext2d();
@@ -132,6 +131,7 @@ public class Scope {
 
 		if (elm == null)
 			return;
+
 		if (plot2d) {
 			draw2d(g);
 			return;
@@ -147,23 +147,27 @@ public class Scope {
 		// for (i = 0; i != pixels.length; i++)
 		// pixels[i] = col;
 
-		double multa[] = { 2.0, 2.5, 2.0 };
 		int multptr = 0;
 		int x = 0;
 		int maxy = (rect.height - 1) / 2;
 		int y = maxy;
+        int minRange = 4;
 
 		boolean gotI = false;
 		boolean gotV = false;
-		int minRange = 4;
-		double realMaxV = -1e8;
+
+		double multa[] = { 2.0, 2.5, 2.0 };
+        double realMaxV = -1e8;
 		double realMaxI = -1e8;
 		double realMinV = 1e8;
 		double realMinI = 1e8;
-		String curColor = "#FFFF00";
+
+        String curColor = "#FFFF00";
 		String voltColor = (value > 0) ? "#FFFFFF" : "#00FF00";
-		if (simmer.getScopeSelected() == -1 && elm.isMouseElm())
+
+        if (simmer.getScopeSelected() == -1 && elm.isMouseElm())
 			curColor = voltColor = "#00FFFF";
+
 		int ipa = ptr + scopePointCount - rect.width;
 		for (i = 0; i != rect.width; i++) {
 			int ip = (i + ipa) & (scopePointCount - 1);
@@ -383,6 +387,7 @@ public class Scope {
 		if (showScale) {
 			String unitText = "";
 			String vScaleText = "";
+
 			if (gridStepY != 0 && (!(showV && showI))) {
 				if (value != 0)
 					unitText = elm.getScopeUnits(value);
@@ -411,12 +416,16 @@ public class Scope {
 		if (showMin) {
 			// int ym = r.y+r.height-5;
 			int ym = rect.height - 5;
-			if (value != 0)
+
+            if (value != 0)
 				g.drawString(
-						AbstractCircuitElement.getUnitText(realMinV, elm.getScopeUnits(value)), x,
+						AbstractCircuitElement.getUnitText(realMinV, elm.getScopeUnits(value)),
+                        x,
 						ym);
+
 			else if (showV)
 				g.drawString(AbstractCircuitElement.getVoltageText(realMinV), x, ym);
+
 			else if (showI)
 				g.drawString(AbstractCircuitElement.getCurrentText(realMinI), x, ym);
 		}
@@ -534,22 +543,30 @@ public class Scope {
 	public String dump() {
 		if (elm == null)
 			return null;
-		int flags = (showI ? 1 : 0) | (showV ? 2 : 0)
+
+        int flags = (showI ? 1 : 0) | (showV ? 2 : 0)
 				| (showMax ? 0 : 4)
 				| // showMax used to be always on
 				(showFreq ? 8 : 0) | (lockScale ? 16 : 0) | (plot2d ? 64 : 0)
 				| (plotXY ? 128 : 0) | (showMin ? 256 : 0)
 				| (showScale ? 512 : 0);
-		flags |= FLAG_YELM; // yelm present
-		int eno = simmer.locateElm(elm);
-		if (eno < 0)
+
+        flags |= FLAG_YELM; // yelm present
+
+        int eno = simmer.locateElm(elm);
+
+        if (eno < 0)
 			return null;
-		int yno = yElm == null ? -1 : simmer.locateElm(yElm);
-		String x = "o " + eno + " " + speed + " " + value + " " + flags + " "
+
+        int yno = yElm == null ? -1 : simmer.locateElm(yElm);
+
+        String x = "o " + eno + " " + speed + " " + value + " " + flags + " "
 				+ minMaxV + " " + minMaxI + " " + position + " " + yno;
-		if (text != null)
+
+        if (text != null)
 			x += " " + text;
-		return x;
+
+        return x;
 	}
 
 	public AbstractCircuitElement getElm() {
@@ -559,30 +576,33 @@ public class Scope {
 	public MenuBar getMenu() {
 		if (elm == null)
 			return null;
+
 		if (elm instanceof TransistorElm) {
-			simmer.getScopeIbMenuItem().setState(value == VAL_IB);
-			simmer.getScopeIcMenuItem().setState(value == VAL_IC);
-			simmer.getScopeIeMenuItem().setState(value == VAL_IE);
-			simmer.getScopeVbeMenuItem().setState(value == VAL_VBE);
-			simmer.getScopeVbcMenuItem().setState(value == VAL_VBC);
-			simmer.getScopeVceMenuItem().setState(value == VAL_VCE && ivalue != VAL_IC);
-			simmer.getScopeVceIcMenuItem().setState(value == VAL_VCE
-					&& ivalue == VAL_IC);
-			return simmer.getTransScopeMenuBar();
+            transScopeMenuBar.getScopeIbMenuItem().setState(value == VAL_IB);
+            transScopeMenuBar.getScopeIcMenuItem().setState(value == VAL_IC);
+            transScopeMenuBar.getScopeIeMenuItem().setState(value == VAL_IE);
+            transScopeMenuBar.getScopeVbeMenuItem().setState(value == VAL_VBE);
+            transScopeMenuBar.getScopeVbcMenuItem().setState(value == VAL_VBC);
+            transScopeMenuBar.getScopeVceMenuItem().setState(value == VAL_VCE && ivalue != VAL_IC);
+            transScopeMenuBar.getScopeVceIcMenuItem().setState(value == VAL_VCE && ivalue == VAL_IC);
+
+			return transScopeMenuBar;
+
 		} else {
-			simmer.getScopeVMenuItem().setState(showV && value == 0);
-			simmer.getScopeIMenuItem().setState(showI && value == 0);
-			simmer.getScopeScaleMenuItem().setState(showScale);
-			simmer.getScopeMaxMenuItem().setState(showMax);
-			simmer.getScopeMinMenuItem().setState(showMin);
-			simmer.getScopeFreqMenuItem().setState(showFreq);
-			simmer.getScopePowerMenuItem().setState(value == VAL_POWER);
-			simmer.getScopeVIMenuItem().setState(plot2d && !plotXY);
-			simmer.getScopeXYMenuItem().setState(plotXY);
-			simmer.getScopeSelectYMenuItem().setEnabled(plotXY);
-			simmer.getScopeResistMenuItem().setState(value == VAL_R);
-			simmer.getScopeResistMenuItem().setEnabled(elm instanceof MemristorElm);
-			return simmer.getScopeMenuBar();
+            scopeMenuBar.getScopeVMenuItem().setState(showV && value == 0);
+            scopeMenuBar.getScopeIMenuItem().setState(showI && value == 0);
+            scopeMenuBar.getScopeScaleMenuItem().setState(showScale);
+            scopeMenuBar.getScopeMaxMenuItem().setState(showMax);
+            scopeMenuBar.getScopeMinMenuItem().setState(showMin);
+            scopeMenuBar.getScopeFreqMenuItem().setState(showFreq);
+            scopeMenuBar.getScopePowerMenuItem().setState(value == VAL_POWER);
+            scopeMenuBar.getScopeVIMenuItem().setState(plot2d && !plotXY);
+            scopeMenuBar.getScopeXYMenuItem().setState(plotXY);
+            scopeMenuBar.getScopeSelectYMenuItem().setEnabled(plotXY);
+            scopeMenuBar.getScopeResistMenuItem().setState(value == VAL_R);
+            scopeMenuBar.getScopeResistMenuItem().setEnabled(elm instanceof MemristorElm);
+
+			return scopeMenuBar;
 		}
 	}
 
@@ -608,32 +628,45 @@ public class Scope {
 
 	public void handleMenu(String mi) {
 		if (mi == "showvoltage")
-			showVoltage(simmer.getScopeVMenuItem().getState());
-		if (mi == "showcurrent")
-			showCurrent(simmer.getScopeIMenuItem().getState());
+			showVoltage(scopeMenuBar.getScopeVMenuItem().getState());
+
+        if (mi == "showcurrent")
+			showCurrent(scopeMenuBar.getScopeIMenuItem().getState());
+
 		if (mi == "showscale")
-			showScale(simmer.getScopeScaleMenuItem().getState());
-		if (mi == "showpeak")
-			showMax(simmer.getScopeMaxMenuItem().getState());
-		if (mi == "shownegpeak")
-			showMin(simmer.getScopeMinMenuItem().getState());
-		if (mi == "showfreq")
-			showFreq(simmer.getScopeFreqMenuItem().getState());
-		if (mi == "showpower")
+			showScale(scopeMenuBar.getScopeScaleMenuItem().getState());
+
+        if (mi == "showpeak")
+			showMax(scopeMenuBar.getScopeMaxMenuItem().getState());
+
+        if (mi == "shownegpeak")
+			showMin(scopeMenuBar.getScopeMinMenuItem().getState());
+
+        if (mi == "showfreq")
+			showFreq(scopeMenuBar.getScopeFreqMenuItem().getState());
+
+        if (mi == "showpower")
 			setValue(VAL_POWER);
-		if (mi == "showib")
+
+        if (mi == "showib")
 			setValue(VAL_IB);
-		if (mi == "showic")
+
+        if (mi == "showic")
 			setValue(VAL_IC);
-		if (mi == "showie")
+
+        if (mi == "showie")
 			setValue(VAL_IE);
-		if (mi == "showvbe")
+
+        if (mi == "showvbe")
 			setValue(VAL_VBE);
-		if (mi == "showvbc")
+
+        if (mi == "showvbc")
 			setValue(VAL_VBC);
-		if (mi == "showvce")
+
+        if (mi == "showvce")
 			setValue(VAL_VCE);
-		if (mi == "showvcevsic") {
+
+        if (mi == "showvcevsic") {
 			plot2d = true;
 			plotXY = false;
 			value = VAL_VCE;
@@ -642,16 +675,18 @@ public class Scope {
 		}
 
 		if (mi == "showvvsi") {
-			plot2d = simmer.getScopeVIMenuItem().getState();
+			plot2d = scopeMenuBar.getScopeVIMenuItem().getState();
 			plotXY = false;
 			resetGraph();
 		}
+
 		if (mi == "plotxy") {
-			plotXY = plot2d = simmer.getScopeXYMenuItem().getState();
+			plotXY = plot2d = scopeMenuBar.getScopeXYMenuItem().getState();
 			if (yElm == null)
 				selectY();
 			resetGraph();
 		}
+
 		if (mi == "showresistance")
 			setValue(VAL_R);
 	}
@@ -738,54 +773,6 @@ public class Scope {
 		this.position = position;
 	}
 
-	// void allocImage() {
-	// pixels = null;
-	// int w = r.width;
-	// int h = r.height;
-	// if (w == 0 || h == 0)
-	// return;
-	// if (simmer.useBufferedImage) {
-	// try {
-	// /* simulate the following code using reflection:
-	// dbimage = new BufferedImage(d.width, d.height,
-	// BufferedImage.TYPE_INT_RGB);
-	// DataBuffer db = (DataBuffer)(((BufferedImage)dbimage).
-	// getRaster().getDataBuffer());
-	// DataBufferInt dbi = (DataBufferInt) db;
-	// pixels = dbi.getData();
-	// */
-	// Class biclass = Class.forName("java.awt.image.BufferedImage");
-	// Class dbiclass = Class.forName("java.awt.image.DataBufferInt");
-	// Class rasclass = Class.forName("java.awt.image.Raster");
-	// Constructor cstr = biclass.getConstructor(
-	// new Class[] { int.class, int.class, int.class });
-	// image = (Image) cstr.newInstance(new Object[] {
-	// new Integer(w), new Integer(h),
-	// new Integer(BufferedImage.TYPE_INT_RGB)});
-	// Method m = biclass.getMethod("getRaster");
-	// Object ras = m.invoke(image);
-	// Object db = rasclass.getMethod("getDataBuffer").invoke(ras);
-	// pixels = (int[])
-	// dbiclass.getMethod("getData").invoke(db);
-	// } catch (Exception ee) {
-	// // ee.printStackTrace();
-	// System.out.println("BufferedImage failed");
-	// }
-	// }
-	// if (pixels == null) {
-	// pixels = new int[w*h];
-	// int i;
-	// for (i = 0; i != w*h; i++)
-	// pixels[i] = 0xFF000000;
-	// imageSource = new MemoryImageSource(w, h, pixels, 0, w);
-	// imageSource.setAnimated(true);
-	// imageSource.setFullBufferUpdates(true);
-	// image = simmer.cv.createImage(imageSource);
-	// }
-	// dpixels = new float[w*h];
-	// draw_ox = draw_oy = -1;
-	// }
-
 	public void setRect(Rectangle r) {
 		this.rect = r;
 		resetGraph();
@@ -866,16 +853,23 @@ public class Scope {
 	public void timeStep() {
 		if (elm == null)
 			return;
+
 		double v = elm.getScopeValue(value);
+
 		if (v < minV[ptr])
 			minV[ptr] = v;
+
 		if (v > maxV[ptr])
 			maxV[ptr] = v;
+
 		double i = 0;
+
 		if (value == 0 || ivalue != 0) {
 			i = (ivalue == 0) ? elm.getCurrent() : elm.getScopeValue(ivalue);
+
 			if (i < minI[ptr])
 				minI[ptr] = i;
+
 			if (i > maxI[ptr])
 				maxI[ptr] = i;
 		}
@@ -887,22 +881,30 @@ public class Scope {
 				minMaxV *= 2;
 				newscale = true;
 			}
+
 			double yval = i;
+
 			if (plotXY)
 				yval = (yElm == null) ? 0 : yElm.getVoltageDiff();
+
 			while (yval > minMaxI || yval < -minMaxI) {
 				minMaxI *= 2;
 				newscale = true;
 			}
+
 			if (newscale)
 				clear2dView();
+
 			double xa = v / minMaxV;
 			double ya = yval / minMaxI;
+
 			int x = (int) (rect.width * (1 + xa) * .499);
 			int y = (int) (rect.height * (1 - ya) * .499);
+
 			drawTo(x, y);
 		} else {
 			ctr++;
+
 			if (ctr >= speed) {
 				ptr = (ptr + 1) & (scopePointCount - 1);
 				minV[ptr] = maxV[ptr] = v;
@@ -914,37 +916,48 @@ public class Scope {
 
 	public void undump(StringTokenizer st) {
 		reset();
-		int e = new Integer(st.nextToken()).intValue();
+
+        int e = new Integer(st.nextToken()).intValue();
+
 		if (e == -1)
 			return;
-		elm = simmer.getElm(e);
+
+        elm = simmer.getElm(e);
 		speed = new Integer(st.nextToken()).intValue();
 		value = new Integer(st.nextToken()).intValue();
 		int flags = new Integer(st.nextToken()).intValue();
 		minMaxV = new Double(st.nextToken()).doubleValue();
 		minMaxI = new Double(st.nextToken()).doubleValue();
-		if (minMaxV == 0)
+
+        if (minMaxV == 0)
 			minMaxV = .5;
-		if (minMaxI == 0)
+
+        if (minMaxI == 0)
 			minMaxI = 1;
-		text = null;
+
+        text = null;
 		yElm = null;
 		try {
+
 			position = new Integer(st.nextToken()).intValue();
 			int ye = -1;
+
 			if ((flags & FLAG_YELM) != 0) {
 				ye = new Integer(st.nextToken()).intValue();
 				if (ye != -1)
 					yElm = simmer.getElm(ye);
 			}
+
 			while (st.hasMoreTokens()) {
 				if (text == null)
 					text = st.nextToken();
 				else
 					text += " " + st.nextToken();
 			}
-		} catch (Exception ee) {
+		} catch (Exception ex) {
+            ex.printStackTrace();
 		}
+
 		showI = (flags & 1) != 0;
 		showV = (flags & 2) != 0;
 		showMax = (flags & 4) == 0;
