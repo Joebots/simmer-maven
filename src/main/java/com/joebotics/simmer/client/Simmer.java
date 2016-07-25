@@ -3425,7 +3425,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			Connection connection =(Connection) entry.getValue();
 			int i=0;
 			for (Map.Entry<Double, Identifiable> insideEntry : circuit.entrySet()){
-				if (i==2) continue;
+				if (i==2) break;
 				if (insideEntry.getValue() instanceof CircuitComponent) {
 					if (connection.getBoundedBox().intersects(insideEntry.getValue().getBoundedBox())){
 						if (i==0){
@@ -3438,7 +3438,8 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 					}
 				}
 			}
-		}		
+		}	
+		
 		return circuit;
 	}
 }
