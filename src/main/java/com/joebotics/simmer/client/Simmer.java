@@ -40,6 +40,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.*;
+import com.joebotics.simmer.client.breadboard.CircuitComponent;
+import com.joebotics.simmer.client.breadboard.CircuitLibrary;
 import com.joebotics.simmer.client.elcomp.*;
 import com.joebotics.simmer.client.gui.impl.*;
 import com.joebotics.simmer.client.gui.util.*;
@@ -327,6 +329,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		bindEventHandlers();
 		// setup timer
 		timer.scheduleRepeating(FASTTIMER);
+		NativeJavascriptWrapper.EventBus();
 
 	}
 
@@ -773,6 +776,8 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		}
 
 		// fire circuit working event here
+	CircuitLibrary circuit =createCircuitLibrary(elmList);
+		NativeJavascriptWrapper.fire("closed_circuit_signal", circuit);
 	}
 
 	private boolean anySelectedButMouse() {
@@ -3385,5 +3390,10 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 	public AbstractCircuitElement getPlotYElm() {
 		return plotYElm;
 	}
-
+   
+	private CircuitLibrary createCircuitLibrary(Vector<AbstractCircuitElement>	elmList){
+		CircuitLibrary circuit = new CircuitLibrary();
+		
+		return circuit;
+	}
 }
