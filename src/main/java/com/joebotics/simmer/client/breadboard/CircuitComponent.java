@@ -7,7 +7,7 @@ import com.joebotics.simmer.client.gui.util.Rectangle;
 public class CircuitComponent implements Identifiable{
 	String type;
 	String typeClassName;
-	Class<AbstractCircuitElement>  typeClass;
+	Class<? extends AbstractCircuitElement>  typeClass;
 	Rectangle boundedBox;
 	Point[] posts;
 	double UUID;
@@ -23,17 +23,11 @@ public class CircuitComponent implements Identifiable{
 	public void setTypeClassName(String typeClassName) {
 		this.typeClassName = typeClassName;
 	}
-	public Class<AbstractCircuitElement> getTypeClass() {
+	public Class<? extends AbstractCircuitElement> getTypeClass() {
 		return typeClass;
 	}
-	public void setTypeClass(Class<AbstractCircuitElement> typeClass) {
+	public void setTypeClass(Class<? extends AbstractCircuitElement> typeClass) {
 		this.typeClass = typeClass;
-	}
-	public Rectangle getBoundedBox() {
-		return boundedBox;
-	}
-	public void setBoundedBox(Rectangle boundedBox) {
-		this.boundedBox = boundedBox;
 	}
 	public Point[] getPosts() {
 		return posts;
@@ -41,11 +35,22 @@ public class CircuitComponent implements Identifiable{
 	public void setPosts(Point[] posts) {
 		this.posts = posts;
 	}
+	@Override
 	public double getUUID() {
 		return UUID;
 	}
+	@Override
 	public void setUUID(double uUID) {
 		UUID = uUID;
+	}
+	@Override
+	public void setBoundedBox(Rectangle boundedBox) {
+		this.boundedBox = boundedBox;
+		
+	}
+	@Override
+	public Rectangle getBoundedBox() {
+		return boundedBox;
 	}
 
 }

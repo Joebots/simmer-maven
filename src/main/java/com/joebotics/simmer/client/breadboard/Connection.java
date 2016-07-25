@@ -1,10 +1,13 @@
 package com.joebotics.simmer.client.breadboard;
 
+import com.joebotics.simmer.client.gui.util.Rectangle;
+
 public class Connection implements Identifiable {
   double side1UUID;
   double side2UUID;
   int side1PostIndex;
   int side2PostIndex; 
+  Rectangle boundedBox;
   double UUID;
 	
 	public double getSide1UUID() {
@@ -36,8 +39,18 @@ public class Connection implements Identifiable {
 	public double getUUID() {
 		return UUID;
 	}
+	@Override
 	public void setUUID(double uUID) {
 		UUID = uUID;
+	}
+	@Override
+	public void setBoundedBox(Rectangle boundedBox) {
+		this.boundedBox = boundedBox;
+		
+	}
+	@Override
+	public Rectangle getBoundedBox() {
+		return boundedBox;
 	}
 
 }

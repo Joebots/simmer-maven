@@ -42,6 +42,8 @@ import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.*;
 import com.joebotics.simmer.client.breadboard.CircuitComponent;
 import com.joebotics.simmer.client.breadboard.CircuitLibrary;
+import com.joebotics.simmer.client.breadboard.Connection;
+import com.joebotics.simmer.client.breadboard.Identifiable;
 import com.joebotics.simmer.client.elcomp.*;
 import com.joebotics.simmer.client.gui.impl.*;
 import com.joebotics.simmer.client.gui.util.*;
@@ -49,6 +51,7 @@ import com.joebotics.simmer.client.util.*;
 import com.joebotics.simmer.client.util.HintTypeEnum.HintType;
 import com.joebotics.simmer.client.util.MouseModeEnum.MouseMode;
 
+import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
 
@@ -3393,7 +3396,49 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
    
 	private CircuitLibrary createCircuitLibrary(Vector<AbstractCircuitElement>	elmList){
 		CircuitLibrary circuit = new CircuitLibrary();
-		
+		//loop through the elmlist creating components and connection. 
+		//all the properties of connection cannot be filled because we have to have 
+		//all the components first found.
+		for(int i=0; i < elmList.size();i++){
+			AbstractCircuitElement elm = elmList.get(i);
+			if (!elm.isWire()){
+				CircuitComponent component = new CircuitComponent();
+				double uuid=Math.random();
+				component.setUUID(uuid);
+				component.setTypeClassName(elm.getClass().getName());
+				component.setBoundedBox(elm.getBoundingBox());
+				component.setTypeClass(elm.getClass());
+				circuit.put(uuid, component);
+			}
+			else {
+				Connection connection = new Connection();
+				double uuid=Math.random();
+				connection.setUUID(uuid);
+				
+				circuit.put(uuid, connection);
+			}
+			
+		}
+		//now for each connetion find a componenet that intersects its bounding box
+		for (Map.Entry<Double, Identifiable> entry : circuit.entrySet()) {
+			if (entry.getValue() instanceof CircuitComponent) continue;
+			Connection connection =(Connection) entry.getValue();
+			int i=0;
+			for (Map.Entry<Double, Identifiable> insideEntry : circuit.entrySet()){
+				if (i==2) continue;
+				if (insideEntry.getValue() instanceof CircuitComponent) {
+					if (connection.getBoundedBox().intersects(insideEntry.getValue().getBoundedBox())){
+						if (i==0){
+							connection.setSide1UUID(insideEntry.getKey());
+													}
+						else {
+							connection.setSide1UUID(insideEntry.getKey());
+						}
+						i++;
+					}
+				}
+			}
+		}		
 		return circuit;
 	}
 }
