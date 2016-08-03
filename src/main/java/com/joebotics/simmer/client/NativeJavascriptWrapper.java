@@ -1,18 +1,22 @@
 package com.joebotics.simmer.client;
 
 import java.util.Map;
+import java.util.Vector;
+
+import com.joebotics.simmer.client.breadboard.CircuitLibrary;
+import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
 
 /**
  * Created by joe on 7/20/16.
  */
 public class NativeJavascriptWrapper {
 
-    public static abstract class EventBusHandler{
-        public abstract Object handleEvent(String ns, Map<String, Object> evt);
-    }
+    public static native void  EventBus()/*-{
+		$wnd.busInSimmer =  $wnd.parent.globalBus; 
+	}-*/;
 
-    public static native void log(Object ... params) /*-{
-        $wnd.console.log(params);
+    public static native void fire(String evt, CircuitLibrary	elmList) /*-{
+       $wnd.busInSimmer.fire(evt, elmList);
     }-*/;
 
 }
