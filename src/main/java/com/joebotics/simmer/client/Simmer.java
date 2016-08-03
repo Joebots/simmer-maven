@@ -25,7 +25,6 @@ package com.joebotics.simmer.client;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.*;
@@ -40,10 +39,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.*;
-import com.joebotics.simmer.client.breadboard.CircuitComponent;
 import com.joebotics.simmer.client.breadboard.CircuitLibrary;
-import com.joebotics.simmer.client.breadboard.Connection;
-import com.joebotics.simmer.client.breadboard.Identifiable;
 import com.joebotics.simmer.client.elcomp.*;
 import com.joebotics.simmer.client.gui.impl.*;
 import com.joebotics.simmer.client.gui.util.*;
@@ -51,18 +47,16 @@ import com.joebotics.simmer.client.util.*;
 import com.joebotics.simmer.client.util.HintTypeEnum.HintType;
 import com.joebotics.simmer.client.util.MouseModeEnum.MouseMode;
 
-import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
-
-import static com.google.gwt.event.dom.client.KeyCodes.*;
-
-public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHandler, MouseUpHandler, MouseOutHandler, ClickHandler, DoubleClickHandler, ContextMenuHandler, NativePreviewHandler
+	//MouseDownHandler, MouseWheelHandler, MouseMoveHandler, MouseUpHandler, MouseOutHandler, ClickHandler, DoubleClickHandler, ContextMenuHandler, Event.NativePreviewHandler
+public class Simmer
 {
 
 //	public static final double				freqMult			= Math.PI * 2 * 4;
 	private static String					muString			= "u";
 	public static final String				ohmString			= "ohm";
+	private final SimmerController simmerController = new SimmerController(this);
 
 	private int								circuitBottom;
 	private double							circuitMatrix[][], circuitRightSide[], origRightSide[], origMatrix[][];
@@ -164,6 +158,10 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 	public boolean							analyzeFlag;
 	public boolean							dragging;
 	public boolean							mouseDragging;
+
+	public static ScrollValuePopup getScrollValuePopup() {
+		return scrollValuePopup;
+	}
 
 	public void init() {
 
@@ -733,11 +731,11 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		}
 
 		// fire circuit working event here
-	CircuitLibrary circuit =createCircuitLibrary(elmList);
+		CircuitLibrary circuit = createCircuitLibrary(elmList);
 		NativeJavascriptWrapper.fire("closed_circuit_signal", circuit);
 	}
 
-	private boolean anySelectedButMouse() {
+	protected boolean anySelectedButMouse() {
 		for (int i = 0; i != elmList.size(); i++)
 			if (getElm(i) != mouseElm && getElm(i).isSelected())
 				return true;
@@ -981,7 +979,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		}
 	}
 
-	private void centreCircuit() {
+	protected void centreCircuit() {
 		// void handleResize() {
 		// winSize = cv.getSize();
 		// if (winSize.width == 0)
@@ -1034,7 +1032,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		loadFileInput = newlf;
 	}
 
-	private boolean dialogIsShowing() {
+	protected boolean dialogIsShowing() {
 		if (getEditDialog() != null && getEditDialog().isShowing())
 			return true;
 		if (exportAsUrlDialog != null && exportAsUrlDialog.isShowing())
@@ -1054,20 +1052,20 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		return false;
 	}
 
-	private int distanceSq(int x1, int y1, int x2, int y2) {
+	protected int distanceSq(int x1, int y1, int x2, int y2) {
 		x2 -= x1;
 		y2 -= y1;
 		return x2 * x2 + y2 * y2;
 	}
 
-	private void doMainMenuChecks() {
+	protected void doMainMenuChecks() {
 		int c = mainMenuItems.size();
 		int i;
 		for (i = 0; i < c; i++)
 			mainMenuItems.get(i).setState(mainMenuItemNames.get(i) == mouseModeStr);
 	}
 
-	private boolean doSwitch(int x, int y) {
+	protected boolean doSwitch(int x, int y) {
 		if (mouseElm == null || !(mouseElm instanceof SwitchElm))
 			return false;
 		SwitchElm se = (SwitchElm) mouseElm;
@@ -1184,19 +1182,19 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 	}
 
 	// this is the file generation logic!  :)
-    private void doExportAsLocalFile() {
+    protected void doExportAsLocalFile() {
         String dump = dumpCircuit();
         exportAsLocalFileDialog = new ExportAsLocalFileDialog(dump);
         exportAsLocalFileDialog.show();
     }
 
-    private void doExportAsText() {
+    protected void doExportAsText() {
         String dump = dumpCircuit();
         exportAsTextDialog = new ExportAsTextDialog(dump);
         exportAsTextDialog.show();
     }
 
-    private void doExportAsUrl() {
+    protected void doExportAsUrl() {
         String start[] = Location.getHref().split("\\?");
         String dump = dumpCircuit();
         dump = dump.replace(' ', '+');
@@ -1239,6 +1237,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		String shortcut = "";
 		AbstractCircuitElement elm = CircuitElementFactory.constructElement(t, 0, 0);
 		CheckboxMenuItem mi;
+
 		// register(c, elm);
 		if (elm != null) {
 			if (elm.needsShortcut()) {
@@ -1257,33 +1256,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		mainMenuItems.add(mi);
 		mainMenuItemNames.add(t);
 		return mi;
-	}
-
-	public CheckboxMenuItem getConventionCheckItem() {
-		return conventionCheckItem;
-	}
-
-	public CheckboxMenuItem getDotsCheckItem() {
-		return dotsCheckItem;
-	}
-
-	public AbstractCircuitElement getElm(int n) {
-		if (n >= elmList.size())
-			return null;
-
-		return elmList.elementAt(n);
-	}
-
-	public Vector<AbstractCircuitElement> getElmList() {
-		return elmList;
-	}
-
-	public CheckboxMenuItem getEuroResistorCheckItem() {
-		return euroResistorCheckItem;
-	}
-
-	public int getGridSize() {
-		return gridSize;
 	}
 
 	private String getHint() {
@@ -1364,14 +1336,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 
 	}
 
-	public MouseMode getMouseMode() {
-		return mouseMode;
-	}
-
-	public Vector<CircuitNode> getNodeList() {
-		return nodeList;
-	}
-
 	public int getrand(int x) {
 		int q = random.nextInt();
 		if (q < 0)
@@ -1411,50 +1375,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		}
 	}
 
-	public CheckboxMenuItem getShowValuesCheckItem() {
-		return showValuesCheckItem;
-	}
-
-	public CheckboxMenuItem getSmallGridCheckItem() {
-		return smallGridCheckItem;
-	}
-
-	public Checkbox getStoppedCheck() {
-		return stoppedCheck;
-	}
-
-	public double getT() {
-		return t;
-	}
-
-	public double getTimeStep() {
-		return timeStep;
-	}
-
-	public CheckboxMenuItem getVoltsCheckItem() {
-		return voltsCheckItem;
-	}
-
-	private EditMenu editMenu;
-
-    public EditMenu getEditMenu(){return editMenu;};
-
-	private MenuBar buildEditMenu() {
-		editMenu = new EditMenu(this);
-		return editMenu;
-	}
-
-    public int getScopeCount(){
-        return this.scopeCount;
-    }
-
-    public Scope[] getScopes(){
-        return scopes;
-    }
-
-    public Scope getScope(int idx){
-        return scopes[idx];
-    }
 
 	/** Options Menu **/
     private CheckboxMenuItem				powerCheckItem;
@@ -1476,43 +1396,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
             powerLabel.setStyleName("disabled", true);
             powerBar.disable();
         }
-    }
-    private CheckboxMenuItem setConventionCheckItem(CheckboxMenuItem conventionCheckItem) {
-        this.conventionCheckItem = conventionCheckItem;
-        return conventionCheckItem;
-    }
-
-    private CheckboxMenuItem setDotsCheckItem(CheckboxMenuItem dotsCheckItem) {
-        this.dotsCheckItem = dotsCheckItem;
-        return dotsCheckItem;
-    }
-
-    // public void setElmList(Vector<AbstractCircuitElement> elmList) {
-    // this.elmList = elmList;
-    // }
-
-    private CheckboxMenuItem setEuroResistorCheckItem(CheckboxMenuItem euroResistorCheckItem) {
-        this.euroResistorCheckItem = euroResistorCheckItem;
-        return euroResistorCheckItem;
-    }
-
-    public CheckboxMenuItem getPrintableCheckItem() {
-        return printableCheckItem;
-    }
-
-    private CheckboxMenuItem setPrintableCheckItem(CheckboxMenuItem printableCheckItem) {
-        this.printableCheckItem = printableCheckItem;
-        return printableCheckItem;
-    }
-
-    protected CheckboxMenuItem setShowValuesCheckItem(CheckboxMenuItem showValuesCheckItem) {
-        this.showValuesCheckItem = showValuesCheckItem;
-        return showValuesCheckItem;
-    }
-
-    protected CheckboxMenuItem setSmallGridCheckItem(CheckboxMenuItem smallGridCheckItem) {
-        this.smallGridCheckItem = smallGridCheckItem;
-        return smallGridCheckItem;
     }
 
     private void enableItems() {
@@ -1569,19 +1452,19 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 
 
 	private void bindEventHandlers() {
-		cv.addMouseDownHandler(this);
-		cv.addMouseMoveHandler(this);
-		cv.addMouseUpHandler(this);
-		cv.addClickHandler(this);
-		cv.addDoubleClickHandler(this);
-		cv.addDomHandler(this, ContextMenuEvent.getType());
+		cv.addMouseDownHandler(simmerController);
+		cv.addMouseMoveHandler(simmerController);
+		cv.addMouseUpHandler(simmerController);
+		cv.addClickHandler(simmerController);
+		cv.addDoubleClickHandler(simmerController);
+		cv.addDomHandler(simmerController, ContextMenuEvent.getType());
 		menuBar.addDomHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				doMainMenuChecks();
 			}
 		}, ClickEvent.getType());
-		Event.addNativePreviewHandler(this);
-		cv.addMouseWheelHandler(this);
+		Event.addNativePreviewHandler(simmerController);
+		cv.addMouseWheelHandler(simmerController);
 	}
 
 	/** sidebar **/
@@ -1597,8 +1480,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
     protected void setStoppedCheck(Checkbox stoppedCheck) {
         this.stoppedCheck = stoppedCheck;
     }
-
-
 
     public void setiFrameHeight() {
         if (iFrame == null)
@@ -1638,10 +1519,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
             setiFrameHeight();
         } else
             verticalPanel.add(w);
-    }
-
-    public void setIFrame(Frame iFrame){
-        this.iFrame = iFrame;
     }
 
     private void createSideBar() {
@@ -1836,189 +1713,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		return (a > b) ? a : b;
 	}
 
-	// IES - remove interaction
-	public void menuPerformed(String menu, String item) {
-
-	    Window.alert("menu: " + menu + "\titem: " + item);
-
-		if (item == "about")
-			aboutBox = new AboutBox(Launcher.versionString);
-
-        if (item == "importfromlocalfile") {
-			editMenu.pushUndo();
-			loadFileInput.click();
-		}
-
-		if (item == "importfromtext") {
-			importFromTextDialog = new ImportFromTextDialog(this);
-		}
-
-		if (item == "exportasurl") {
-			doExportAsUrl();
-		}
-
-		if (item == "exportaslocalfile")
-			doExportAsLocalFile();
-
-		if (item == "exportastext")
-			doExportAsText();
-
-        if ((menu == "elm" || menu == "scopepop") && contextPanel != null)
-			contextPanel.hide();
-
-        if (menu == "options" && item == "other")
-			editMenu.doEdit(new EditOptions(this));
-		// public void actionPerformed(ActionEvent e) {
-		// String ac = e.getActionCommand();
-		// if (e.getSource() == resetButton) {
-		// int i;
-		//
-		// // on IE, drawImage() stops working inexplicably every once in
-		// // a while. Recreating it fixes the problem, so we do that here.
-		// dbimage = main.createImage(winSize.width, winSize.height);
-		//
-		// for (i = 0; i != elmList.size(); i++)
-		// getElm(i).reset();
-		// // IES - removal of scopes
-		// // for (i = 0; i != scopeCount; i++)
-		// // scopes[i].resetGraph();
-		// analyzeFlag = true;
-		// t = 0;
-		// stoppedCheck.setState(false);
-		// cv.repaint();
-		// }
-		// if (e.getSource() == dumpMatrixButton)
-		// dumpMatrix = true;
-		// IES - remove import export
-		// if (e.getSource() == exportItem)
-		// doExport(false);
-		// if (e.getSource() == optionsItem)
-		// doEdit(new EditOptions(this));
-		// if (e.getSource() == importItem)
-		// doImport();
-		// if (e.getSource() == exportLinkItem)
-		// doExport(true);
-		if (item == "undo")
-			editMenu.doUndo();
-
-		if (item == "redo")
-			editMenu.doRedo();
-
-		if (item == "cut") {
-			if (menu != "elm")
-				menuElm = null;
-
-			editMenu.doCut();
-		}
-		if (item == "copy") {
-			if (menu != "elm")
-				menuElm = null;
-
-			editMenu.doCopy();
-		}
-
-		if (item == "paste")
-			editMenu.doPaste();
-
-		if (item == "selectAll")
-			editMenu.doSelectAll();
-
-        if (item == "selectNone")
-            editMenu.doSelectNone();
-
-		if (item == "centrecircuit") {
-			editMenu.pushUndo();
-			centreCircuit();
-		}
-		if (item == "stackAll")
-			stackAll();
-		if (item == "unstackAll")
-			unstackAll();
-		if (menu == "elm" && item == "edit")
-			editMenu.doEdit(menuElm);
-		if (item == "delete") {
-			if (menu == "elm")
-				menuElm = null;
-			editMenu.doDelete();
-		}
-
-		if (item == "viewInScope" && menuElm != null) {
-			int i;
-			for (i = 0; i != scopeCount; i++){
-				if (scopes[i].getElm() == null){
-					break;
-                }
-            }
-
-			if (i == scopeCount) {
-
-			    if (scopeCount == scopes.length)
-					return;
-
-                scopeCount++;
-				scopes[i] = new Scope(this);
-				scopes[i].setPosition(i);
-				// handleResize();
-			}
-
-			scopes[i].setElm(menuElm);
-		}
-		if (menu == "scopepop") {
-			editMenu.pushUndo();
-			if (item == "remove")
-				scopes[menuScope].setElm(null);
-			if (item == "speed2")
-				scopes[menuScope].speedUp();
-			if (item == "speed1/2")
-				scopes[menuScope].slowDown();
-			if (item == "scale")
-				scopes[menuScope].adjustScale(.5);
-			if (item == "maxscale")
-				scopes[menuScope].adjustScale(1e-50);
-			if (item == "stack")
-				stackScope(menuScope);
-			if (item == "unstack")
-				unstackScope(menuScope);
-			if (item == "selecty")
-				scopes[menuScope].selectY();
-			if (item == "reset")
-				scopes[menuScope].resetGraph();
-			if (item.indexOf("show") == 0 || item == "plotxy")
-				scopes[menuScope].handleMenu(item);
-			// cv.repaint();
-		}
-		if (menu == "circuits" && item.indexOf("setup ") == 0) {
-			editMenu.pushUndo();
-			readSetupFile(item.substring(6), "", true);
-		}
-
-		// IES: Moved from itemStateChanged()
-		if (menu == "main") {
-			if (contextPanel != null)
-				contextPanel.hide();
-			// MenuItem mmi = (MenuItem) mi;
-			// int prevMouseMode = mouseMode;
-			setMouseMode(MouseMode.ADD_ELM);
-			String s = item;
-			if (s.length() > 0)
-				mouseModeStr = s;
-			if (s.compareTo("DragAll") == 0)
-				setMouseMode(MouseMode.DRAG_ALL);
-			else if (s.compareTo("DragRow") == 0)
-				setMouseMode(MouseMode.DRAG_ROW);
-			else if (s.compareTo("DragColumn") == 0)
-				setMouseMode(MouseMode.DRAG_COLUMN);
-			else if (s.compareTo("DragSelected") == 0)
-				setMouseMode(MouseMode.DRAG_SELECTED);
-			else if (s.compareTo("DragPost") == 0)
-				setMouseMode(MouseMode.DRAG_POST);
-			else if (s.compareTo("Select") == 0)
-				setMouseMode(MouseMode.SELECT);
-
-			tempMouseMode = mouseMode;
-		}
-	}
-
 	int min(int a, int b) {
 		return (a < b) ? a : b;
 	}
@@ -2081,358 +1775,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		analyzeFlag = true;
 		// cv.repaint();
 	}
-
-	// public void mouseClicked(MouseEvent e) {
-	public void onClick(ClickEvent e) {
-		e.preventDefault();
-
-		if ((e.getNativeButton() == NativeEvent.BUTTON_MIDDLE))
-			scrollValues(e.getNativeEvent().getClientX(), e.getNativeEvent().getClientY(), 0);
-	}
-
-	public int getScopeSelected(){return scopeSelected;}
-
-	public void onContextMenu(ContextMenuEvent e) {
-		e.preventDefault();
-		int x, y;
-		menuElm = mouseElm;
-		menuScope = -1;
-
-		if (scopeSelected != -1) {
-			MenuBar m = scopes[scopeSelected].getMenu();
-
-            Window.alert(scopeSelected + " " + m);
-
-			menuScope = scopeSelected;
-			if (m != null) {
-				contextPanel = new PopupPanel(true);
-				contextPanel.add(m);
-				y = Math.max(0, Math.min(e.getNativeEvent().getClientY(), cv.getCoordinateSpaceHeight() - 400));
-				contextPanel.setPopupPosition(e.getNativeEvent().getClientX(), y);
-				contextPanel.show();
-			}
-		} else if (mouseElm != null) {
-			elmScopeMenuItem.setEnabled(mouseElm.canViewInScope());
-			elmEditMenuItem.setEnabled(mouseElm.getEditInfo(0) != null);
-			contextPanel = new PopupPanel(true);
-			contextPanel.add(elmMenuBar);
-			contextPanel.setPopupPosition(e.getNativeEvent().getClientX(), e.getNativeEvent().getClientY());
-			contextPanel.show();
-		} else {
-			doMainMenuChecks();
-			contextPanel = new PopupPanel(true);
-			contextPanel.add(mainMenuBar);
-			x = Math.max(0, Math.min(e.getNativeEvent().getClientX(), cv.getCoordinateSpaceWidth() - 400));
-			y = Math.max(0, Math.min(e.getNativeEvent().getClientY(), cv.getCoordinateSpaceHeight() - 450));
-			contextPanel.setPopupPosition(x, y);
-			contextPanel.show();
-		}
-	}
-
-	public void onDoubleClick(DoubleClickEvent e) {
-		e.preventDefault();
-
-		// if (!didSwitch && mouseElm != null)
-		if (mouseElm != null)
-			editMenu.doEdit(mouseElm);
-	}
-
-	public void onMouseDown(MouseDownEvent e) {
-		e.preventDefault();
-
-		// IES - hack to only handle left button events in the web version.
-		if (e.getNativeButton() != NativeEvent.BUTTON_LEFT)
-			return;
-
-		mouseDragging = true;
-
-		if (e.getNativeButton() == NativeEvent.BUTTON_LEFT) {
-			// // left mouse
-			tempMouseMode = mouseMode;
-			// if ((ex & MouseEvent.ALT_DOWN_MASK) != 0 &&
-			// (ex & MouseEvent.META_DOWN_MASK) != 0)
-			if (e.isAltKeyDown() && e.isMetaKeyDown())
-				tempMouseMode = MouseMode.DRAG_COLUMN;
-			// else if ((ex & MouseEvent.ALT_DOWN_MASK) != 0 &&
-			// (ex & MouseEvent.SHIFT_DOWN_MASK) != 0)
-			else if (e.isAltKeyDown() && e.isShiftKeyDown())
-				tempMouseMode = MouseMode.DRAG_ROW;
-			// else if ((ex & MouseEvent.SHIFT_DOWN_MASK) != 0)
-			else if (e.isShiftKeyDown())
-				tempMouseMode = MouseMode.SELECT;
-			// else if ((ex & MouseEvent.ALT_DOWN_MASK) != 0)
-			else if (e.isAltKeyDown())
-				tempMouseMode = MouseMode.DRAG_ALL;
-			else if (e.isControlKeyDown() || e.isMetaKeyDown())
-				tempMouseMode = MouseMode.DRAG_POST;
-		}
-
-		// IES - Grab resize handles in select mode if they are far enough apart
-		// and you are on top of them
-		if (tempMouseMode == MouseMode.SELECT
-				&& mouseElm != null
-				&& distanceSq(mouseElm.getX1(), mouseElm.getY1(), mouseElm.getX2(), mouseElm.getY2()) >= 256
-				&& (distanceSq(e.getX(), e.getY(), mouseElm.getX1(), mouseElm.getY1()) <= Display.POSTGRABSQ || distanceSq(e.getX(), e.getY(), mouseElm.getX2(), mouseElm.getY2()) <= Display.POSTGRABSQ)
-				&& !anySelectedButMouse())
-			tempMouseMode = MouseMode.DRAG_POST;
-
-		if (tempMouseMode != MouseMode.SELECT && tempMouseMode != MouseMode.DRAG_SELECTED)
-			editMenu.doSelectNone();
-
-		if (doSwitch(e.getX(), e.getY())) {
-			return;
-		}
-
-		editMenu.pushUndo();
-		initDragX = e.getX();
-		initDragY = e.getY();
-		dragging = true;
-		if (tempMouseMode != MouseMode.ADD_ELM)
-			return;
-
-		int x0 = snapGrid(e.getX());
-		int y0 = snapGrid(e.getY());
-		if (!circuitArea.contains(x0, y0))
-			return;
-
-		dragElm = CircuitElementFactory.constructElement(mouseModeStr, x0, y0);
-	}
-
-	public void onMouseMove(MouseMoveEvent e) {
-		e.preventDefault();
-		if (mouseDragging) {
-			mouseDragged(e);
-			return;
-		}
-		// The following is in the original, but seems not to work/be needed for
-		// GWT
-		// if (e.getNativeButton()==NativeEvent.BUTTON_LEFT)
-		// return;
-		AbstractCircuitElement newMouseElm = null;
-		int x = e.getX();
-		int y = e.getY();
-		dragX = snapGrid(x);
-		dragY = snapGrid(y);
-		draggingPost = -1;
-		int i;
-		// AbstractCircuitElement origMouse = mouseElm;
-
-		mousePost = -1;
-		plotXElm = plotYElm = null;
-		if (mouseElm != null && (distanceSq(x, y, mouseElm.getX1(), mouseElm.getY1()) <= Display.POSTGRABSQ || distanceSq(x, y, mouseElm.getX2(), mouseElm.getY2()) <= Display.POSTGRABSQ)) {
-			newMouseElm = mouseElm;
-		} else {
-			int bestDist = 100000;
-			int bestArea = 100000;
-			for (i = 0; i != elmList.size(); i++) {
-				AbstractCircuitElement ce = getElm(i);
-				if (ce.getBoundingBox().contains(x, y)) {
-					int j;
-					int area = ce.getBoundingBox().width * ce.getBoundingBox().height;
-					int jn = ce.getPostCount();
-					if (jn > 2)
-						jn = 2;
-					for (j = 0; j != jn; j++) {
-						Point pt = ce.getPost(j);
-						int dist = distanceSq(x, y, pt.getX(), pt.getY());
-
-						// if multiple elements have overlapping bounding boxes,
-						// we prefer selecting elements that have posts close
-						// to the mouse pointer and that have a small bounding
-						// box area.
-						if (dist <= bestDist && area <= bestArea) {
-							bestDist = dist;
-							bestArea = area;
-							newMouseElm = ce;
-						}
-					}
-					if (ce.getPostCount() == 0)
-						newMouseElm = ce;
-				}
-			} // for
-		}
-		scopeSelected = -1;
-		if (newMouseElm == null) {
-			for (i = 0; i != scopeCount; i++) {
-				Scope s = scopes[i];
-				if (s.getRect().contains(x, y)) {
-					newMouseElm = s.getElm();
-					if (s.isPlotXY()) {
-						plotXElm = s.getElm();
-						plotYElm = s.getyElm();
-					}
-					scopeSelected = i;
-				}
-			}
-			// // the mouse pointer was not in any of the bounding boxes, but we
-			// // might still be close to a post
-			for (i = 0; i != elmList.size(); i++) {
-				AbstractCircuitElement ce = getElm(i);
-				if (mouseMode == MouseMode.DRAG_POST) {
-					if (distanceSq(ce.getX1(), ce.getY1(), x, y) < 26) {
-						newMouseElm = ce;
-						break;
-					}
-					if (distanceSq(ce.getX2(), ce.getY2(), x, y) < 26) {
-						newMouseElm = ce;
-						break;
-					}
-				}
-				int j;
-				int jn = ce.getPostCount();
-				for (j = 0; j != jn; j++) {
-					Point pt = ce.getPost(j);
-					// int dist = distanceSq(x, y, pt.x, pt.y);
-					if (distanceSq(pt.getX(), pt.getY(), x, y) < 26) {
-						newMouseElm = ce;
-						mousePost = j;
-						break;
-					}
-				}
-			}
-		} else {
-			mousePost = -1;
-			// look for post close to the mouse pointer
-			for (i = 0; i != newMouseElm.getPostCount(); i++) {
-				Point pt = newMouseElm.getPost(i);
-				if (distanceSq(pt.getX(), pt.getY(), x, y) < 26)
-					mousePost = i;
-			}
-		}
-		// if (mouseElm != origMouse)
-		// cv.repaint();
-		setMouseElm(newMouseElm);
-	}
-
-	public void onMouseOut(MouseOutEvent e) {
-		scopeSelected = -1;
-		mouseElm = plotXElm = plotYElm = null;
-	}
-
-	public void onMouseUp(MouseUpEvent e) {
-		e.preventDefault();
-		mouseDragging = false;
-		tempMouseMode = mouseMode;
-		selectedArea = null;
-		dragging = false;
-		boolean circuitChanged = false;
-		if (heldSwitchElm != null) {
-			heldSwitchElm.mouseUp();
-			heldSwitchElm = null;
-			circuitChanged = true;
-		}
-		if (dragElm != null) {
-			// if the element is zero size then don't create it
-			// IES - and disable any previous selection
-			if (dragElm.getX1() == dragElm.getX2() && dragElm.getY1() == dragElm.getY2()) {
-				dragElm.delete();
-				if (mouseMode == MouseMode.SELECT || mouseMode == MouseMode.DRAG_SELECTED)
-					editMenu.doSelectNone();
-			} else {
-				elmList.addElement(dragElm);
-				// fire component added
-
-				circuitChanged = true;
-			}
-			dragElm = null;
-		}
-		if (circuitChanged)
-			needAnalyze();
-		if (dragElm != null)
-			dragElm.delete();
-		dragElm = null;
-		// cv.repaint();
-	}
-
-	public void onMouseWheel(MouseWheelEvent e) {
-		e.preventDefault();
-		scrollValues(e.getNativeEvent().getClientX(), e.getNativeEvent().getClientY(), e.getDeltaY());
-		if (mouseElm instanceof MouseWheelHandler)
-			((MouseWheelHandler) mouseElm).onMouseWheel(e);
-	}
-
-	public void onPreviewNativeEvent(NativePreviewEvent e) {
-		int cc = e.getNativeEvent().getCharCode();
-		int t = e.getTypeInt();
-		int code = e.getNativeEvent().getKeyCode();
-		if (dialogIsShowing()) {
-			if (scrollValuePopup != null && scrollValuePopup.isShowing() && (t & Event.ONKEYDOWN) != 0) {
-				if (code == KEY_ESCAPE || code == KEY_SPACE)
-					scrollValuePopup.close(false);
-				if (code == KEY_ENTER)
-					scrollValuePopup.close(true);
-			}
-			if (getEditDialog() != null && getEditDialog().isShowing() && (t & Event.ONKEYDOWN) != 0) {
-				if (code == KEY_ESCAPE)
-					getEditDialog().closeDialog();
-				if (code == KEY_ENTER) {
-					getEditDialog().apply();
-					getEditDialog().closeDialog();
-				}
-			}
-			return;
-		}
-		if ((t & Event.ONKEYDOWN) != 0) {
-
-			if (code == KEY_BACKSPACE || code == KEY_DELETE) {
-				editMenu.doDelete();
-				e.cancel();
-			}
-			if (code == KEY_ESCAPE) {
-				setMouseMode(MouseMode.SELECT);
-				mouseModeStr = MessageI18N.getLocale("Select");
-				tempMouseMode = mouseMode;
-				e.cancel();
-			}
-			if (e.getNativeEvent().getCtrlKey() || e.getNativeEvent().getMetaKey()) {
-				if (code == KEY_C) {
-					menuPerformed("key", "copy");
-					e.cancel();
-				}
-				if (code == KEY_X) {
-					menuPerformed("key", "cut");
-					e.cancel();
-				}
-				if (code == KEY_V) {
-					menuPerformed("key", "paste");
-					e.cancel();
-				}
-				if (code == KEY_Z) {
-					menuPerformed("key", "undo");
-					e.cancel();
-				}
-				if (code == KEY_Y) {
-					menuPerformed("key", "redo");
-					e.cancel();
-				}
-				if (code == KEY_A) {
-					menuPerformed("key", "selectAll");
-					e.cancel();
-				}
-			}
-		}
-		if ((t & Event.ONKEYPRESS) != 0) {
-			if (cc > 32 && cc < 127) {
-				String c = shortcuts[cc];
-				e.cancel();
-				if (c == null)
-					return;
-				setMouseMode(MouseMode.ADD_ELM);
-				mouseModeStr = c;
-				tempMouseMode = mouseMode;
-			}
-			if (cc == 32) {
-				setMouseMode(MouseMode.SELECT);
-				mouseModeStr = MessageI18N.getLocale("Select");
-				tempMouseMode = mouseMode;
-				e.cancel();
-			}
-		}
-	}
-
-	public String[] getShortcuts(){
-	    return this.shortcuts;
-    }
 
 	private void processSetupList(byte b[], int len, final boolean openDefault) {
 		MenuBar currentMenuBar;
@@ -2781,14 +2123,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		lastIterTime = lit;
 	}
 
-	private void scrollValues(int x, int y, int deltay) {
-		if (mouseElm != null && !dialogIsShowing()){
-			if (mouseElm instanceof ResistorElm || mouseElm instanceof CapacitorElm || mouseElm instanceof InductorElm) {
-				scrollValuePopup = new ScrollValuePopup(x, y, deltay, mouseElm, this);
-			}
-		}
-	}
-
 	private void selectArea(int x, int y) {
 		int x1 = min(x, initDragX);
 		int x2 = max(x, initDragX);
@@ -2828,10 +2162,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 
 	}
 
-	public Rectangle getCircuitArea(){
-		return circuitArea;
-	}
-
 	private void setGrid() {
 		gridSize = (getSmallGridCheckItem().getState()) ? 8 : 16;
 		gridMask = ~(gridSize - 1);
@@ -2861,7 +2191,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		}
 	}
 
-	private void setMouseMode(MouseMode addElm) {
+	protected void setMouseMode(MouseMode addElm) {
 		mouseMode = addElm;
 		if (addElm == MouseMode.ADD_ELM) {
 			cv.addStyleName("cursorCross");
@@ -2870,18 +2200,6 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 			cv.addStyleName("cursorPointer");
 			cv.removeStyleName("cursorCross");
 		}
-	}
-
-	private void setNodeList(Vector<CircuitNode> nodeList) {
-		this.nodeList = nodeList;
-	}
-
-	public void setT(double t) {
-		this.t = t;
-	}
-
-	public void setTimeStep(double timeStep) {
-		this.timeStep = timeStep;
 	}
 
 	private void setupScopes() {
@@ -2946,16 +2264,11 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		}
 	}
 
-	protected CheckboxMenuItem setVoltsCheckItem(CheckboxMenuItem voltsCheckItem) {
-		this.voltsCheckItem = voltsCheckItem;
-		return voltsCheckItem;
-	}
-
 	public int snapGrid(int x) {
 		return (x + gridRound) & gridMask;
 	}
 
-	private void stackAll() {
+	protected void stackAll() {
 		int i;
 		for (i = 0; i != scopeCount; i++) {
 			scopes[i].setPosition(0);
@@ -2963,7 +2276,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		}
 	}
 
-	private void stackScope(int s) {
+	protected void stackScope(int s) {
 		if (s == 0) {
 			if (scopeCount < 2)
 				return;
@@ -3103,7 +2416,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		// cv.repaint();
 	}
 
-	private void unstackAll() {
+	protected void unstackAll() {
 		int i;
 		for (i = 0; i != scopeCount; i++) {
 			scopes[i].setPosition(i);
@@ -3111,7 +2424,7 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		}
 	}
 
-	private void unstackScope(int s) {
+	protected void unstackScope(int s) {
 		if (s == 0) {
 			if (scopeCount < 2)
 				return;
@@ -3325,6 +2638,367 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 		int vn = getNodeList().size() + vs;
 		stampRightSide(vn, v);
 	}
+   
+	private CircuitLibrary createCircuitLibrary(Vector<AbstractCircuitElement>	elmList){
+		CircuitLibrary circuit = new CircuitLibrary();
+		//loop through the elmlist creating components and connection. 
+		//all the properties of connection cannot be filled because we have to have 
+		//all the components first found.
+//		for(int i=0; i < elmList.size();i++){
+//			AbstractCircuitElement elm = elmList.get(i);
+//			if (!elm.isWire()){
+//				CircuitComponent component = new CircuitComponent();
+//				double uuid=Math.random();
+//				component.setUUID(uuid);
+//				component.setTypeClassName(elm.getClass().getName());
+//				component.setBoundedBox(elm.getBoundingBox());
+//				component.setTypeClass(elm.getClass());
+//				circuit.put(uuid, component);
+//			}
+//			else {
+//				Connection connection = new Connection();
+//				double uuid=Math.random();
+//				connection.setUUID(uuid);
+//
+//				circuit.put(uuid, connection);
+//			}
+//
+//		}
+		//now for each connetion find a componenet that intersects its bounding box
+//		for (Map.Entry<Double, Identifiable> entry : circuit.entrySet()) {
+//			if (entry.getValue() instanceof CircuitComponent) continue;
+//			Connection connection =(Connection) entry.getValue();
+//			int i=0;
+//			for (Map.Entry<Double, Identifiable> insideEntry : circuit.entrySet()){
+//				if (i==2) break;
+//				if (insideEntry.getValue() instanceof CircuitComponent) {
+//					if (connection.getBoundedBox().intersects(insideEntry.getValue().getBoundedBox())){
+//						if (i==0){
+//							connection.setSide1UUID(insideEntry.getKey());
+//													}
+//						else {
+//							connection.setSide1UUID(insideEntry.getKey());
+//						}
+//						i++;
+//					}
+//				}
+//			}
+//		}
+		
+		return circuit;
+	}
+
+	public SimmerController getSimmerController(){
+		return this.simmerController;
+	}
+
+	public LoadFile getLoadFileInput(){
+		return this.loadFileInput;
+	}
+
+	public void setImportFromTextDialog(ImportFromTextDialog dialog){
+		this.importFromTextDialog = dialog;
+	}
+
+	public void setIFrame(Frame iFrame){
+		this.iFrame = iFrame;
+	}
+
+	public MouseMode getMouseMode() {
+		return mouseMode;
+	}
+
+	public Vector<CircuitNode> getNodeList() {
+		return nodeList;
+	}
+
+	private CheckboxMenuItem setConventionCheckItem(CheckboxMenuItem conventionCheckItem) {
+		this.conventionCheckItem = conventionCheckItem;
+		return conventionCheckItem;
+	}
+
+	private CheckboxMenuItem setDotsCheckItem(CheckboxMenuItem dotsCheckItem) {
+		this.dotsCheckItem = dotsCheckItem;
+		return dotsCheckItem;
+	}
+
+	// public void setElmList(Vector<AbstractCircuitElement> elmList) {
+	// this.elmList = elmList;
+	// }
+
+	private CheckboxMenuItem setEuroResistorCheckItem(CheckboxMenuItem euroResistorCheckItem) {
+		this.euroResistorCheckItem = euroResistorCheckItem;
+		return euroResistorCheckItem;
+	}
+
+	public CheckboxMenuItem getPrintableCheckItem() {
+		return printableCheckItem;
+	}
+
+	private CheckboxMenuItem setPrintableCheckItem(CheckboxMenuItem printableCheckItem) {
+		this.printableCheckItem = printableCheckItem;
+		return printableCheckItem;
+	}
+
+	protected CheckboxMenuItem setShowValuesCheckItem(CheckboxMenuItem showValuesCheckItem) {
+		this.showValuesCheckItem = showValuesCheckItem;
+		return showValuesCheckItem;
+	}
+
+	protected CheckboxMenuItem setSmallGridCheckItem(CheckboxMenuItem smallGridCheckItem) {
+		this.smallGridCheckItem = smallGridCheckItem;
+		return smallGridCheckItem;
+	}
+
+	private MenuBar buildEditMenu() {
+		editMenu = new EditMenu(this);
+		return editMenu;
+	}
+
+	public CheckboxMenuItem getShowValuesCheckItem() {
+		return showValuesCheckItem;
+	}
+
+	public CheckboxMenuItem getSmallGridCheckItem() {
+		return smallGridCheckItem;
+	}
+
+	public Checkbox getStoppedCheck() {
+		return stoppedCheck;
+	}
+
+	public double getT() {
+		return t;
+	}
+
+	public double getTimeStep() {
+		return timeStep;
+	}
+
+	public CheckboxMenuItem getVoltsCheckItem() {
+		return voltsCheckItem;
+	}
+
+	private EditMenu editMenu;
+
+	public EditMenu getEditMenu(){
+		return editMenu;
+	};
+
+	public int getScopeCount(){
+		return this.scopeCount;
+	}
+
+	public Scope[] getScopes(){
+		return scopes;
+	}
+
+	public Scope getScope(int idx){
+		return scopes[idx];
+	}
+
+
+	protected void setAboutBox(AboutBox aboutBox){
+		this.aboutBox = aboutBox;
+	}
+
+	public int getScopeSelected(){
+		return scopeSelected;
+	}
+
+	public String[] getShortcuts(){
+		return this.shortcuts;
+	}
+
+	protected void setScrollValuePopup(ScrollValuePopup popup){
+		Simmer.scrollValuePopup = popup;
+	}
+
+	protected AbstractCircuitElement getMouseElm(){
+		return mouseElm;
+	}
+
+	protected AbstractCircuitElement getDragElm(){
+		return this.dragElm;
+	}
+
+	protected void setMouseDragging(boolean state){
+		this.mouseDragging = state;
+	}
+
+	protected boolean isMouseDragging(){
+		return this.mouseDragging;
+	}
+
+	protected void setDragging(boolean state){
+		this.dragging = state;
+	}
+
+	protected void setDragElm(AbstractCircuitElement elm){
+		this.dragElm = elm;
+	}
+
+	protected void setPlotXElm(AbstractCircuitElement elm){
+		this.plotXElm = elm;
+	}
+
+	protected void setPlotYElm(AbstractCircuitElement elm){
+		this.plotYElm = elm;
+	}
+
+	protected void setScopeSelected(int nbr){
+		this.scopeSelected = nbr;
+	}
+
+	public Rectangle getCircuitArea(){
+		return circuitArea;
+	}
+
+
+	private void setNodeList(Vector<CircuitNode> nodeList) {
+		this.nodeList = nodeList;
+	}
+
+	public void setT(double t) {
+		this.t = t;
+	}
+
+	public void setTimeStep(double timeStep) {
+		this.timeStep = timeStep;
+	}
+
+	protected CheckboxMenuItem setVoltsCheckItem(CheckboxMenuItem voltsCheckItem) {
+		this.voltsCheckItem = voltsCheckItem;
+		return voltsCheckItem;
+	}
+
+	public MenuItem getElmScopeMenuItem() {
+		return elmScopeMenuItem;
+	}
+
+	public int getMousePost() {
+		return mousePost;
+	}
+
+	public SwitchElm getHeldSwitchElm() {
+		return heldSwitchElm;
+	}
+
+	public Canvas getCv() {
+		return cv;
+	}
+
+	public Rectangle getSelectedArea() {
+		return selectedArea;
+	}
+
+	public int getDragY() {
+		return dragY;
+	}
+
+	public int getMenuScope() {
+		return menuScope;
+	}
+
+	public void setScopeCount(int cnt){
+		this.scopeCount = cnt;
+	}
+
+	public MenuItem getElmEditMenuItem() {
+		return elmEditMenuItem;
+	}
+
+	public int getInitDragY() {
+		return initDragY;
+	}
+
+	public int getDraggingPost() {
+		return draggingPost;
+	}
+
+	public String getMouseModeStr() {
+		return mouseModeStr;
+	}
+
+	public MouseMode getTempMouseMode() {
+		return tempMouseMode;
+	}
+
+	public int getInitDragX() {
+		return initDragX;
+	}
+
+	public MenuBar getElmMenuBar() {
+		return elmMenuBar;
+	}
+
+	public MenuBar getMainMenuBar() {
+		return mainMenuBar;
+	}
+
+	public AbstractCircuitElement getMenuElm() {
+		return menuElm;
+	}
+
+	public PopupPanel getContextPanel() {
+		return contextPanel;
+	}
+
+	public int getDragX() {
+		return dragX;
+	}
+
+	public void setMousePost(int mousePost) {
+		this.mousePost = mousePost;
+	}
+
+	public void setHeldSwitchElm(SwitchElm heldSwitchElm) {
+		this.heldSwitchElm = heldSwitchElm;
+	}
+
+	public void setSelectedArea(Rectangle selectedArea) {
+		this.selectedArea = selectedArea;
+	}
+
+	public void setDragY(int dragY) {
+		this.dragY = dragY;
+	}
+
+	public void setMenuScope(int menuScope) {
+		this.menuScope = menuScope;
+	}
+
+	public void setInitDragY(int initDragY) {
+		this.initDragY = initDragY;
+	}
+
+	public void setDraggingPost(int draggingPost) {
+		this.draggingPost = draggingPost;
+	}
+
+	public void setMouseModeStr(String mouseModeStr) {
+		this.mouseModeStr = mouseModeStr;
+	}
+
+	public void setTempMouseMode(MouseMode tempMouseMode) {
+		this.tempMouseMode = tempMouseMode;
+	}
+
+	public void setInitDragX(int initDragX) {
+		this.initDragX = initDragX;
+	}
+
+	public void setMenuElm(AbstractCircuitElement menuElm) {
+		this.menuElm = menuElm;
+	}
+
+	public void setContextPanel(PopupPanel contextPanel) {
+		this.contextPanel = contextPanel;
+	}
+
+	public void setDragX(int dragX) {
+		this.dragX = dragX;
+	}
 
 	public void setConverged(boolean converged) {
 		this.converged = converged;
@@ -3341,53 +3015,31 @@ public class Simmer implements MouseDownHandler, MouseWheelHandler, MouseMoveHan
 	public AbstractCircuitElement getPlotYElm() {
 		return plotYElm;
 	}
-   
-	private CircuitLibrary createCircuitLibrary(Vector<AbstractCircuitElement>	elmList){
-		CircuitLibrary circuit = new CircuitLibrary();
-		//loop through the elmlist creating components and connection. 
-		//all the properties of connection cannot be filled because we have to have 
-		//all the components first found.
-		for(int i=0; i < elmList.size();i++){
-			AbstractCircuitElement elm = elmList.get(i);
-			if (!elm.isWire()){
-				CircuitComponent component = new CircuitComponent();
-				double uuid=Math.random();
-				component.setUUID(uuid);
-				component.setTypeClassName(elm.getClass().getName());
-				component.setBoundedBox(elm.getBoundingBox());
-				component.setTypeClass(elm.getClass());
-				circuit.put(uuid, component);
-			}
-			else {
-				Connection connection = new Connection();
-				double uuid=Math.random();
-				connection.setUUID(uuid);
-				
-				circuit.put(uuid, connection);
-			}
-			
-		}
-		//now for each connetion find a componenet that intersects its bounding box
-		for (Map.Entry<Double, Identifiable> entry : circuit.entrySet()) {
-			if (entry.getValue() instanceof CircuitComponent) continue;
-			Connection connection =(Connection) entry.getValue();
-			int i=0;
-			for (Map.Entry<Double, Identifiable> insideEntry : circuit.entrySet()){
-				if (i==2) break;
-				if (insideEntry.getValue() instanceof CircuitComponent) {
-					if (connection.getBoundedBox().intersects(insideEntry.getValue().getBoundedBox())){
-						if (i==0){
-							connection.setSide1UUID(insideEntry.getKey());
-													}
-						else {
-							connection.setSide1UUID(insideEntry.getKey());
-						}
-						i++;
-					}
-				}
-			}
-		}	
-		
-		return circuit;
+
+	public CheckboxMenuItem getConventionCheckItem() {
+		return conventionCheckItem;
+	}
+
+	public CheckboxMenuItem getDotsCheckItem() {
+		return dotsCheckItem;
+	}
+
+	public AbstractCircuitElement getElm(int n) {
+		if (n >= elmList.size())
+			return null;
+
+		return elmList.elementAt(n);
+	}
+
+	public Vector<AbstractCircuitElement> getElmList() {
+		return elmList;
+	}
+
+	public CheckboxMenuItem getEuroResistorCheckItem() {
+		return euroResistorCheckItem;
+	}
+
+	public int getGridSize() {
+		return gridSize;
 	}
 }

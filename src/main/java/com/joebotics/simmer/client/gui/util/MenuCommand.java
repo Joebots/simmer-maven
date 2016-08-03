@@ -32,7 +32,7 @@ public class MenuCommand implements Command {
 	}
 
 	public void execute() {
-		Launcher.mysim.menuPerformed(menuName, itemName);
+		Launcher.mysim.getSimmerController().menuPerformed(menuName, itemName);
 	}
 
 }
