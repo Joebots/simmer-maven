@@ -60,6 +60,7 @@ public class FindPathInfo {
 					continue;
 			}
 			if (type == VOLTAGE) {
+
 				if (!(ce.isWire() || ce instanceof VoltageElm))
 					continue;
 			}

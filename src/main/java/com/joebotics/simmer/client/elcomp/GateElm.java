@@ -83,11 +83,13 @@ abstract class GateElm extends AbstractCircuitElement {
 		GraphicsUtil.drawThickLine(g, getLead2(), getPoint2());
 		g.setColor(needsHighlight() ? selectColor : lightGrayColor);
 		GraphicsUtil.drawThickPolygon(g, gatePoly);
+
 		if (linePoints != null)
 			for (i = 0; i != linePoints.length - 1; i++)
 				GraphicsUtil.drawThickLine(g, linePoints[i], linePoints[i + 1]);
 		if (isInverting())
 			GraphicsUtil.drawThickCircle(g, pcircle.getX(), pcircle.getY(), 3);
+
 		setCurcount(updateDotCount(getCurrent(), getCurcount()));
 		drawDots(g, getLead2(), getPoint2(), getCurcount());
 		drawPosts(g);

@@ -9,15 +9,15 @@ import java.util.Map;
  */
 public class EventBus {
 
-    public static native void evtBusFire(String ns, JavaScriptObject evt) /*-{
+    public static native void fire(String ns, Map<String, Object> evt) /*-{
         $wnd.globalBus.fire(ns, evt);
     }-*/;
 
-    public static native void evtBusBind(String ns, JavaScriptObject evt) /*-{
-        var entry = $entry(function(amt) {
-            that.@mypackage.Account::add(I)(amt);
-        });
-
-        $wnd.globalBus.bind(ns, entry);
-    }-*/;
+//    public static native void evtBusBind(String ns, JavaScriptObject evt) /*-{
+//        var entry = $entry(function(amt) {
+//            that.@mypackage.Account::add(I)(amt);
+//        });
+//
+//        $wnd.globalBus.bind(ns, entry);
+//    }-*/;
 }

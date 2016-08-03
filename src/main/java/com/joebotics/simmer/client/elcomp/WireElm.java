@@ -31,7 +31,6 @@ import com.joebotics.simmer.client.util.StringTokenizer;
 
 public class WireElm extends AbstractCircuitElement {
 	static final int FLAG_SHOWCURRENT = 1;
-
 	static final int FLAG_SHOWVOLTAGE = 2;
 
 	public WireElm(int xx, int yy) {

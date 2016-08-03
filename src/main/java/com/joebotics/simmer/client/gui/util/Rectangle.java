@@ -18,7 +18,10 @@ package com.joebotics.simmer.client.gui.util;
 
 // Via http://grepcode.com/file_/repository.grepcode.com/java/root/jdk/openjdk/6-b14/java/awt/Rectangle.java/?v=source
 
-public class Rectangle {
+import java.io.Serializable;
+
+public class Rectangle implements Serializable{
+
 	public int height;
 	public int width;
 	public int x;

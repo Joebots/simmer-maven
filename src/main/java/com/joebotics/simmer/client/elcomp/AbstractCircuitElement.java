@@ -36,7 +36,12 @@ import com.joebotics.simmer.client.gui.util.Rectangle;
 import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.MouseModeEnum.MouseMode;
 
+import java.util.UUID;
+
 public abstract class AbstractCircuitElement implements Editable {
+
+	private double uuid = Math.random();
+
 	protected static Color colorScale[];
 	protected static int colorScaleCount = 32;
 	public static double currentMult, powerMult;
@@ -564,19 +569,18 @@ public abstract class AbstractCircuitElement implements Editable {
 
 	// TODO: Badger: utils
 	protected void drawPost(Graphics g, int x0, int y0, int n) {
-		if (sim.dragElm == null && !needsHighlight()
-				&& sim.getCircuitNode(n).links.size() == 2)
+		if (sim.dragElm == null && !needsHighlight() && sim.getCircuitNode(n).links.size() == 2)
 			return;
-		if (sim.getMouseMode() == MouseMode.DRAG_ROW
-				|| sim.getMouseMode() == MouseMode.DRAG_COLUMN)
+
+		if (sim.getMouseMode() == MouseMode.DRAG_ROW || sim.getMouseMode() == MouseMode.DRAG_COLUMN)
 			return;
+
 		drawPost(g, x0, y0);
 	}
 
 	// TODO: Badger: utils
 	public void drawPosts(Graphics g) {
-		int i;
-		for (i = 0; i != getPostCount(); i++) {
+		for (int i = 0; i != getPostCount(); i++) {
 			Point p = getPost(i);
 			drawPost(g, p.getX(), p.getY(), nodes[i]);
 		}
@@ -587,9 +591,10 @@ public abstract class AbstractCircuitElement implements Editable {
 		if (s == null)
 			return;
 		g.setFont(unitsFont);
+
 		// FontMetrics fm = g.getFontMetrics();
 		int w = (int) g.getContext().measureText(s).getWidth();
-		;
+
 		g.setColor(whiteColor);
 		int ya = (int) g.getCurrentFontSize() / 2;
 		int xc, yc;
@@ -872,9 +877,9 @@ public abstract class AbstractCircuitElement implements Editable {
 		return selected;
 	}
 
-	public boolean isWire() {
-		return false;
-	}
+//	public boolean isWire() {
+//		return false;
+//	}
 
 	public void move(int dx, int dy) {
 		x1 += dx;
@@ -1132,4 +1137,18 @@ public abstract class AbstractCircuitElement implements Editable {
 		 */
 		return cc + cadd;
 	}
+
+
+	public double getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(double uuid) {
+		this.uuid = uuid;
+	}
+
+	public boolean isWire(){
+		return (this instanceof WireElm);
+	}
+
 }
