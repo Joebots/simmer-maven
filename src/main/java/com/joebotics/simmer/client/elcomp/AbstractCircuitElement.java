@@ -431,7 +431,7 @@ public abstract class AbstractCircuitElement implements Editable {
 	// TODO: Badger: utils
 	protected void doDots(Graphics g) {
 		updateDotCount();
-		if (sim.dragElm != this)
+		if (sim.getDragElm() != this)
 			drawDots(g, point1, point2, curcount);
 	}
 	
@@ -569,7 +569,7 @@ public abstract class AbstractCircuitElement implements Editable {
 
 	// TODO: Badger: utils
 	protected void drawPost(Graphics g, int x0, int y0, int n) {
-		if (sim.dragElm == null && !needsHighlight() && sim.getCircuitNode(n).links.size() == 2)
+		if (sim.getDragElm() == null && !needsHighlight() && sim.getCircuitNode(n).links.size() == 2)
 			return;
 
 		if (sim.getMouseMode() == MouseMode.DRAG_ROW || sim.getMouseMode() == MouseMode.DRAG_COLUMN)

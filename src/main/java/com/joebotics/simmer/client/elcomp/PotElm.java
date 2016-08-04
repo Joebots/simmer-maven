@@ -152,7 +152,7 @@ public class PotElm extends AbstractCircuitElement implements Command, MouseWhee
 		curcount1 = updateDotCount(current1, curcount1);
 		curcount2 = updateDotCount(current2, curcount2);
 		curcount3 = updateDotCount(current3, curcount3);
-		if (sim.dragElm != this) {
+		if (sim.getDragElm() != this) {
 			drawDots(g, getPoint1(), midpoint, curcount1);
 			drawDots(g, getPoint2(), midpoint, curcount2);
 			drawDots(g, post3, corner2, curcount3);
@@ -167,7 +167,7 @@ public class PotElm extends AbstractCircuitElement implements Command, MouseWhee
 	}
 
 	public void execute() {
-		sim.analyzeFlag = true;
+		sim.setAnalyzeFlag(true);
 		setPoints();
 	}
 	public int getDumpType() {

@@ -82,7 +82,7 @@ public class AMElm extends AbstractCircuitElement {
 		drawWaveform(g, getPoint2());
 		drawPosts(g);
 		setCurcount(updateDotCount(-getCurrent(), getCurcount()));
-		if (sim.dragElm != this)
+		if (sim.getDragElm() != this)
 			drawDots(g, getPoint1(), getLead1(), getCurcount());
 	}
 

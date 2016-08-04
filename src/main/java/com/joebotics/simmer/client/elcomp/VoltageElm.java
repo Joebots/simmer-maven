@@ -106,7 +106,7 @@ public class VoltageElm extends AbstractCircuitElement {
 			drawWaveform(g, ps1);
 		}
 		updateDotCount();
-		if (sim.dragElm != this) {
+		if (sim.getDragElm() != this) {
 			if (waveform == WF_DC)
 				drawDots(g, getPoint1(), getPoint2(), getCurcount());
 			else {

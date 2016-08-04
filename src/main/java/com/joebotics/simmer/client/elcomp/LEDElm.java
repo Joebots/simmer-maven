@@ -54,7 +54,7 @@ public class LEDElm extends DiodeElm {
 	}
 
 	public void draw(Graphics g) {
-		if (needsHighlight() || this == sim.dragElm) {
+		if (needsHighlight() || this == sim.getDragElm()) {
 			super.draw(g);
 			return;
 		}

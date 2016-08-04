@@ -193,7 +193,7 @@ public class MosfetElm extends AbstractCircuitElement {
 			g.setFont(unitsFont);
 			drawCenteredText(g, s, getX2() + 2, getY2(), false);
 		}
-		if ((needsHighlight() || sim.dragElm == this) && getDy() == 0) {
+		if ((needsHighlight() || sim.getDragElm() == this) && getDy() == 0) {
 			g.setColor(Color.white);
 			g.setFont(unitsFont);
 			int ds = sign(getDx());

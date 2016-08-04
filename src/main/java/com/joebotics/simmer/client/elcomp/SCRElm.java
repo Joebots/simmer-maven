@@ -128,7 +128,7 @@ public class SCRElm extends AbstractCircuitElement {
 		curcount_a = updateDotCount(ia, curcount_a);
 		curcount_c = updateDotCount(ic, curcount_c);
 		curcount_g = updateDotCount(ig, curcount_g);
-		if (sim.dragElm != this) {
+		if (sim.getDragElm() != this) {
 			drawDots(g, getPoint1(), getLead2(), curcount_a);
 			drawDots(g, getPoint2(), getLead2(), curcount_c);
 			drawDots(g, gate[1], gate[0], curcount_g);

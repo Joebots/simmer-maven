@@ -125,7 +125,7 @@ public class TransLineElm extends AbstractCircuitElement {
 
 		curCount1 = updateDotCount(-current1, curCount1);
 		curCount2 = updateDotCount(current2, curCount2);
-		if (sim.dragElm != this) {
+		if (sim.getDragElm() != this) {
 			drawDots(g, posts[0], inner[0], curCount1);
 			drawDots(g, posts[2], inner[2], -curCount1);
 			drawDots(g, posts[1], inner[1], -curCount2);

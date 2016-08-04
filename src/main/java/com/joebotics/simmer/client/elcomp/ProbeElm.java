@@ -48,7 +48,7 @@ public class ProbeElm extends AbstractCircuitElement {
 		int hs = 8;
 		setBbox(getPoint1(), getPoint2(), hs);
 		boolean selected = (needsHighlight() || sim.getPlotYElm() == this);
-		double len = (selected || sim.dragElm == this) ? 16 : getDn() - 32;
+		double len = (selected || sim.getDragElm() == this) ? 16 : getDn() - 32;
 		calcLeads((int) len);
 		setVoltageColor(g, getVolts()[0]);
 		if (selected)

@@ -104,7 +104,7 @@ public class SweepElm extends AbstractCircuitElement {
 
 		drawPosts(g);
 		setCurcount(updateDotCount(-getCurrent(), getCurcount()));
-		if (sim.dragElm != this)
+		if (sim.getDragElm() != this)
 			drawDots(g, getPoint1(), getLead1(), getCurcount());
 	}
 

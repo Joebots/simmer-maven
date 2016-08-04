@@ -138,7 +138,7 @@ public class TriodeElm extends AbstractCircuitElement {
 		curcountp = updateDotCount(currentp, curcountp);
 		curcountc = updateDotCount(currentc, curcountc);
 		curcountg = updateDotCount(currentg, curcountg);
-		if (sim.dragElm != this) {
+		if (sim.getDragElm() != this) {
 			drawDots(g, plate[0], midgrid, curcountp);
 			drawDots(g, midgrid, midcath, curcountc);
 			drawDots(g, midcath, cath[1], curcountc + 8);

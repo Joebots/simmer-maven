@@ -135,7 +135,7 @@ public class EditMenu extends MenuBar{
         if (!hasDeleted) {
             for (i = simmer.getElmList().size() - 1; i >= 0; i--) {
                 AbstractCircuitElement ce = simmer.getElm(i);
-                if (ce == simmer.mouseElm) {
+                if (ce == simmer.getMouseElm()) {
                     ce.delete();
                     simmer.getElmList().removeElementAt(i);
                     hasDeleted = true;

@@ -87,7 +87,7 @@ public class LampElm extends AbstractCircuitElement {
 		setVoltageColor(g, (v1 + v2) * .5);
 		GraphicsUtil.drawThickLine(g, filament[0], filament[1]);
 		updateDotCount();
-		if (sim.dragElm != this) {
+		if (sim.getDragElm() != this) {
 			drawDots(g, getPoint1(), getLead1(), getCurcount());
 			double cc = getCurcount() + (getDn() - 16) / 2;
 			drawDots(g, getLead1(), filament[0], cc);

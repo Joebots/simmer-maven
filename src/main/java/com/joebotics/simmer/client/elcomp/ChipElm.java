@@ -395,7 +395,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 	}
 
 	public void setPoints() {
-		if (getX2() - getX1() > sizeX * cspc2 && this == sim.dragElm)
+		if (getX2() - getX1() > sizeX * cspc2 && this == sim.getDragElm())
 			setSize(2);
 //		int hs = cspc;
 		int x0 = getX1() + cspc2;

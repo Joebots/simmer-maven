@@ -303,7 +303,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         int cc = e.getNativeEvent().getCharCode();
         int t = e.getTypeInt();
         int code = e.getNativeEvent().getKeyCode();
-        if (simmer.dialogIsShowing()) {
+        if (dialogIsShowing()) {
             if (Simmer.getScrollValuePopup() != null && Simmer.getScrollValuePopup().isShowing() && (t & Event.ONKEYDOWN) != 0) {
                 if (code == KeyCodes.KEY_ESCAPE || code == KeyCodes.KEY_SPACE)
                     Simmer.getScrollValuePopup().close(false);
@@ -536,11 +536,31 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
     protected void scrollValues(int x, int y, int deltay) {
         AbstractCircuitElement mouseElm = simmer.getMouseElm();
 
-        if (mouseElm != null && !simmer.dialogIsShowing()){
+        if (mouseElm != null && !dialogIsShowing()){
             if (mouseElm instanceof ResistorElm || mouseElm instanceof CapacitorElm || mouseElm instanceof InductorElm) {
                 simmer.setScrollValuePopup(new ScrollValuePopup(x, y, deltay, mouseElm, simmer));
             }
         }
+    }
+
+    public boolean dialogIsShowing() {
+        if (simmer.getEditDialog() != null && simmer.getEditDialog().isShowing())
+            return true;
+        if (simmer.getExportAsLocalFileDialog() != null && simmer.getExportAsLocalFileDialog().isShowing())
+            return true;
+        if (simmer.getExportAsTextDialog() != null && simmer.getExportAsTextDialog().isShowing())
+            return true;
+        if (simmer.getExportAsLocalFileDialog() != null && simmer.getExportAsLocalFileDialog().isShowing())
+            return true;
+        if (simmer.getContextPanel() != null && simmer.getContextPanel().isShowing())
+            return true;
+        if (simmer.getScrollValuePopup() != null && simmer.getScrollValuePopup().isShowing())
+            return true;
+        if (simmer.getAboutBox() != null && simmer.getAboutBox().isShowing())
+            return true;
+        if (simmer.getImportFromTextDialog() != null && simmer.getImportFromTextDialog().isShowing())
+            return true;
+        return false;
     }
 
 }

@@ -208,7 +208,7 @@ public class OpAmpElm extends AbstractCircuitElement {
 
 	public void setPoints() {
 		super.setPoints();
-		if (getDn() > 150 && this == sim.dragElm)
+		if (getDn() > 150 && this == sim.getDragElm())
 			setSize(2);
 		int ww = opwidth;
 		if (ww > getDn() / 2)

@@ -83,7 +83,7 @@ public class CapacitorElm extends AbstractCircuitElement {
 		GraphicsUtil.drawThickLine(g, plate2[0], plate2[1]);
 
 		updateDotCount();
-		if (sim.dragElm != this) {
+		if (sim.getDragElm() != this) {
 			drawDots(g, getPoint1(), getLead1(), getCurcount());
 			drawDots(g, getPoint2(), getLead2(), -getCurcount());
 		}

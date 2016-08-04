@@ -77,38 +77,18 @@ public class Simmer
 	private int								dragX, dragY, initDragX, initDragY;
 	private boolean							dumpMatrix;
 	private boolean							converged;
-	
-	private static AboutBox 				aboutBox;
-	private static EditDialog 				editDialog;
-	private static ExportAsLocalFileDialog	exportAsLocalFileDialog;
-	private static ExportAsTextDialog		exportAsTextDialog;
-	private static ExportAsUrlDialog		exportAsUrlDialog;
-	private static ImportFromTextDialog 	importFromTextDialog;
-	private static ScrollValuePopup			scrollValuePopup;
 
 	private Context2d						backcontext;
 	private Canvas							backcv;
+	private Canvas							cv;
 	private Rectangle						circuitArea;
 	private RowInfo							circuitRowInfo[];
 	
 	private PopupPanel						contextPanel;
-
 	private String							ctrlMetaKey;
-	private Canvas							cv;
 	private Context2d						cvcontext;
 
-	private Vector<AbstractCircuitElement>	elmList;
-
-    private CheckboxMenuItem                conventionCheckItem;
-    private CheckboxMenuItem				euroResistorCheckItem;
-    private CheckboxMenuItem				dotsCheckItem;
-    private CheckboxMenuItem				showValuesCheckItem;
-    private CheckboxMenuItem				smallGridCheckItem;
-    private CheckboxMenuItem				voltsCheckItem;
-
-	private MenuBar							fileMenuBar;
 	private boolean							isMac;
-	private MouseMode						mouseMode			= MouseMode.SELECT;
 	private int								mousePost			= -1;
 	private int								scopeColCount[];
 	private int								scopeCount;
@@ -118,43 +98,66 @@ public class Simmer
 	private int								scopeSelected		= -1;
 	private int								subIterations;
 	private double							t;
-	private MouseMode						tempMouseMode		= MouseMode.SELECT;
 
-	public AbstractCircuitElement			mouseElm			= null;
-	private DockLayoutPanel					layoutPanel;
 	private LoadFile loadFileInput;
-	private MenuBar							mainMenuBar;
 
 	private Vector<CircuitNode>				nodeList;
-	private MenuBar							menuBar;
-
-	private AbstractCircuitElement			menuElm;
 
 	private long							mytime				= 0;
-	private MenuBar							optionsMenuBar;
 
+	private static AboutBox 				aboutBox;
+	private static EditDialog 				editDialog;
+	private static ExportAsLocalFileDialog	exportAsLocalFileDialog;
+	private static ExportAsTextDialog		exportAsTextDialog;
+	private static ExportAsUrlDialog		exportAsUrlDialog;
+	private static ImportFromTextDialog 	importFromTextDialog;
+	private static ScrollValuePopup			scrollValuePopup;
+
+    private CheckboxMenuItem                conventionCheckItem;
+    private CheckboxMenuItem				euroResistorCheckItem;
+    private CheckboxMenuItem				dotsCheckItem;
+    private CheckboxMenuItem				showValuesCheckItem;
+    private CheckboxMenuItem				smallGridCheckItem;
+    private CheckboxMenuItem				voltsCheckItem;
+	private MouseMode						mouseMode			= MouseMode.SELECT;
+	private MouseMode						tempMouseMode		= MouseMode.SELECT;
+	private DockLayoutPanel					layoutPanel;
+	private MenuBar							mainMenuBar;
+	private MenuBar							menuBar;
+	private MenuBar							optionsMenuBar;
+	private MenuBar							transScopeMenuBar;
+	private Scrollbar						speedBar;
+
+	private AbstractCircuitElement			menuElm;
 	private AbstractCircuitElement			plotXElm, plotYElm;
+	private AbstractCircuitElement			stopElm;
+	private AbstractCircuitElement			voltageSources[];
+	private AbstractCircuitElement			dragElm;
+	private AbstractCircuitElement			mouseElm;
+	private Vector<AbstractCircuitElement>	elmList;
 
 	private Random							random;
 
 	private Rectangle						selectedArea;
 	private String							shortcuts[];
-
-	private Scrollbar						speedBar;
 	private String							startCircuit		= null;
 	private String							startCircuitText	= null;
 	private String							startLabel			= null;
-	private AbstractCircuitElement			stopElm;
 	private String							stopMessage;
-	private double							timeStep;
-	private MenuBar							transScopeMenuBar;
-	private Vector<String>					undoStack, redoStack;
-	private AbstractCircuitElement			voltageSources[];
 
-	public AbstractCircuitElement			dragElm;
-	public boolean							analyzeFlag;
-	public boolean							dragging;
-	public boolean							mouseDragging;
+	private double							timeStep;
+	private Vector<String>					undoStack, redoStack;
+	private boolean							analyzeFlag;
+	private boolean							dragging;
+	private boolean							mouseDragging;
+
+	public ImportFromTextDialog getImportFromTextDialog() {
+		return importFromTextDialog;
+	}
+
+	public AboutBox getAboutBox() {
+		return aboutBox;
+	}
 
 	public void init() {
 
@@ -909,30 +912,7 @@ public class Simmer
 	}
     /** Scope.java **/
 
-    private CheckboxMenuItem				scopeFreqMenuItem;
-    private CheckboxMenuItem				scopeIbMenuItem;
-    private CheckboxMenuItem				scopeIcMenuItem;
-    private CheckboxMenuItem				scopeIeMenuItem;
-    private CheckboxMenuItem				scopeIMenuItem;
-    private CheckboxMenuItem				scopeMaxMenuItem;
-    private MenuBar							scopeMenuBar;
-    private CheckboxMenuItem				scopeMinMenuItem;
-    private CheckboxMenuItem				scopePowerMenuItem;
-
-    private CheckboxMenuItem				scopeResistMenuItem;
     private Scope							scopes[];
-    private CheckboxMenuItem				scopeScaleMenuItem;
-    private MenuItem						scopeSelectYMenuItem;
-
-    private CheckboxMenuItem				scopeVbcMenuItem;
-    private CheckboxMenuItem				scopeVbeMenuItem;
-
-    private CheckboxMenuItem				scopeVceIcMenuItem;
-    private CheckboxMenuItem				scopeVceMenuItem;
-
-    private CheckboxMenuItem				scopeVIMenuItem;
-    private CheckboxMenuItem				scopeVMenuItem;
-    private CheckboxMenuItem				scopeXYMenuItem;
 
 	private MenuBar buildScopeMenu(boolean t) {
 		MenuBar m = new MenuBar(true);
@@ -945,25 +925,25 @@ public class Simmer
 		m.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Unstack"), new MenuCommand("scopepop", "unstack")));
 		m.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Reset"), new MenuCommand("scopepop", "reset")));
 		if (t) {
-			m.addItem(scopeIbMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Ib"), new MenuCommand("scopepop", "showib")));
-			m.addItem(scopeIcMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Ic"), new MenuCommand("scopepop", "showic")));
-			m.addItem(scopeIeMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Ie"), new MenuCommand("scopepop", "showie")));
-			m.addItem(scopeVbeMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Vbe"), new MenuCommand("scopepop", "showvbe")));
-			m.addItem(scopeVbcMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Vbc"), new MenuCommand("scopepop", "showvbc")));
-			m.addItem(scopeVceMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Vce"), new MenuCommand("scopepop", "showvce")));
-			m.addItem(scopeVceIcMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Vce_vs_Ic"), new MenuCommand("scopepop", "showvcevsic")));
+			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Ib"), new MenuCommand("scopepop", "showib")));
+			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Ic"), new MenuCommand("scopepop", "showic")));
+			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Ie"), new MenuCommand("scopepop", "showie")));
+			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Vbe"), new MenuCommand("scopepop", "showvbe")));
+			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Vbc"), new MenuCommand("scopepop", "showvbc")));
+			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Vce"), new MenuCommand("scopepop", "showvce")));
+			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Vce_vs_Ic"), new MenuCommand("scopepop", "showvcevsic")));
 		} else {
-			m.addItem(scopeVMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Voltage"), new MenuCommand("scopepop", "showvoltage")));
-			m.addItem(scopeIMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Current"), new MenuCommand("scopepop", "showcurrent")));
-			m.addItem(scopePowerMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Power_Consumed"), new MenuCommand("scopepop", "showpower")));
-			m.addItem(scopeScaleMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Scale"), new MenuCommand("scopepop", "showscale")));
-			m.addItem(scopeMaxMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Peak_Value"), new MenuCommand("scopepop", "showpeak")));
-			m.addItem(scopeMinMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Negative_Peak_Value"), new MenuCommand("scopepop", "shownegpeak")));
-			m.addItem(scopeFreqMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Frequency"), new MenuCommand("scopepop", "showfreq")));
-			m.addItem(scopeVIMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_V_vs_I"), new MenuCommand("scopepop", "showvvsi")));
-			m.addItem(scopeXYMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Plot_X/Y"), new MenuCommand("scopepop", "plotxy")));
-			m.addItem(scopeSelectYMenuItem = new CheckboxAlignedMenuItem(MessageI18N.getLocale("Select_Y"), new MenuCommand("scopepop", "selecty")));
-			m.addItem(scopeResistMenuItem = new CheckboxMenuItem(MessageI18N.getLocale("Show_Resistance"), new MenuCommand("scopepop", "showresistance")));
+			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Voltage"), new MenuCommand("scopepop", "showvoltage")));
+			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Current"), new MenuCommand("scopepop", "showcurrent")));
+			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Power_Consumed"), new MenuCommand("scopepop", "showpower")));
+			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Scale"), new MenuCommand("scopepop", "showscale")));
+			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Peak_Value"), new MenuCommand("scopepop", "showpeak")));
+			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Negative_Peak_Value"), new MenuCommand("scopepop", "shownegpeak")));
+			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Frequency"), new MenuCommand("scopepop", "showfreq")));
+			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_V_vs_I"), new MenuCommand("scopepop", "showvvsi")));
+			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Plot_X/Y"), new MenuCommand("scopepop", "plotxy")));
+			m.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Select_Y"), new MenuCommand("scopepop", "selecty")));
+			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Resistance"), new MenuCommand("scopepop", "showresistance")));
 		}
 		return m;
 	}
@@ -981,16 +961,6 @@ public class Simmer
 	}
 
 	protected void centreCircuit() {
-		// void handleResize() {
-		// winSize = cv.getSize();
-		// if (winSize.width == 0)
-		// return;
-		// dbimage = main.createImage(winSize.width, winSize.height);
-		// int h = winSize.height / 5;
-		/*
-		 * if (h < 128 && winSize.height > 300) h = 128;
-		 */
-		// circuitArea = new Rectangle(0, 0, winSize.width, winSize.height-h);
 		int i;
 		int minx = 1000, maxx = 0, miny = 1000, maxy = 0;
 		for (i = 0; i != elmList.size(); i++) {
@@ -1031,26 +1001,6 @@ public class Simmer
 		verticalPanel.insert(newlf, idx);
 		verticalPanel.remove(idx + 1);
 		loadFileInput = newlf;
-	}
-
-	protected boolean dialogIsShowing() {
-		if (getEditDialog() != null && getEditDialog().isShowing())
-			return true;
-		if (exportAsUrlDialog != null && exportAsUrlDialog.isShowing())
-			return true;
-		if (exportAsTextDialog != null && exportAsTextDialog.isShowing())
-			return true;
-		if (exportAsLocalFileDialog != null && exportAsLocalFileDialog.isShowing())
-			return true;
-		if (contextPanel != null && contextPanel.isShowing())
-			return true;
-		if (scrollValuePopup != null && scrollValuePopup.isShowing())
-			return true;
-		if (aboutBox != null && aboutBox.isShowing())
-			return true;
-		if (importFromTextDialog != null && importFromTextDialog.isShowing())
-			return true;
-		return false;
 	}
 
 	protected int distanceSq(int x1, int y1, int x2, int y2) {
@@ -1181,52 +1131,6 @@ public class Simmer
 
 		return allowed;
 	}
-
-	// this is the file generation logic!  :)
-    protected void doExportAsLocalFile() {
-        String dump = dumpCircuit();
-        exportAsLocalFileDialog = new ExportAsLocalFileDialog(dump);
-        exportAsLocalFileDialog.show();
-    }
-
-    protected void doExportAsText() {
-        String dump = dumpCircuit();
-        exportAsTextDialog = new ExportAsTextDialog(dump);
-        exportAsTextDialog.show();
-    }
-
-    protected void doExportAsUrl() {
-        String start[] = Location.getHref().split("\\?");
-        String dump = dumpCircuit();
-        dump = dump.replace(' ', '+');
-        dump = start[0] + "?cct=" + URL.encode(dump);
-        exportAsUrlDialog = new ExportAsUrlDialog(dump);
-        exportAsUrlDialog.show();
-    }
-
-	public String dumpCircuit() {
-		int i;
-		int f = (getDotsCheckItem().getState()) ? 1 : 0;
-		f |= (getSmallGridCheckItem().getState()) ? 2 : 0;
-		f |= (getVoltsCheckItem().getState()) ? 0 : 4;
-		f |= (getPowerCheckItem().getState()) ? 8 : 0;
-		f |= (getShowValuesCheckItem().getState()) ? 0 : 16;
-		// 32 = linear scale in afilter
-		String dump = "$ " + f + " " + getTimeStep() + " " + getIterCount() + " " + currentBar.getValue() + " " + AbstractCircuitElement.voltageRange + " " + powerBar.getValue() + "\n";
-
-		for (i = 0; i != elmList.size(); i++)
-			dump += getElm(i).dump() + "\n";
-
-		for (i = 0; i != scopeCount; i++) {
-			String d = scopes[i].dump();
-			if (d != null)
-				dump += d + "\n";
-		}
-		if (hintType != HintType.HINT_UNSET)
-			dump += "h " + hintType + " " + hintItem1 + " " + hintItem2 + "\n";
-		return dump;
-	}
-	// end file generation logic
 
 	public CircuitNode getCircuitNode(int n) {
 		if (n >= getNodeList().size())
@@ -2599,11 +2503,11 @@ public class Simmer
 		Simmer.scrollValuePopup = popup;
 	}
 
-	protected AbstractCircuitElement getMouseElm(){
+	public AbstractCircuitElement getMouseElm(){
 		return mouseElm;
 	}
 
-	protected AbstractCircuitElement getDragElm(){
+	public AbstractCircuitElement getDragElm(){
 		return this.dragElm;
 	}
 
@@ -2924,4 +2828,7 @@ public class Simmer
 		Simmer.exportAsLocalFileDialog = exportAsLocalFileDialog;
 	}
 
+	public void setAnalyzeFlag(boolean analyzeFlag) {
+		this.analyzeFlag = analyzeFlag;
+	}
 }

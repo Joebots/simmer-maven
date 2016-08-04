@@ -174,7 +174,7 @@ public class TransistorElm extends AbstractCircuitElement {
 		setPowerColor(g, true);
 		g.fillPolygon(rectPoly);
 
-		if ((needsHighlight() || sim.dragElm == this) && getDy() == 0) {
+		if ((needsHighlight() || sim.getDragElm() == this) && getDy() == 0) {
 			g.setColor(Color.white);
 			// IES
 			// g.setFont(unitsFont);
