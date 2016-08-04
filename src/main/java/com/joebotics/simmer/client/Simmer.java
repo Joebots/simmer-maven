@@ -57,6 +57,7 @@ public class Simmer
 	private static String					muString			= "u";
 	public static final String				ohmString			= "ohm";
 	private final SimmerController simmerController = new SimmerController(this);
+	private final FileOps fileOps = new FileOps(this);
 
 	private int								circuitBottom;
 	private double							circuitMatrix[][], circuitRightSide[], origRightSide[], origMatrix[][];
@@ -77,13 +78,14 @@ public class Simmer
 	private boolean							dumpMatrix;
 	private boolean							converged;
 	
-	private static AboutBox aboutBox;
-	private static EditDialog editDialog;
+	private static AboutBox 				aboutBox;
+	private static EditDialog 				editDialog;
 	private static ExportAsLocalFileDialog	exportAsLocalFileDialog;
 	private static ExportAsTextDialog		exportAsTextDialog;
 	private static ExportAsUrlDialog		exportAsUrlDialog;
-	private static ImportFromTextDialog importFromTextDialog;
+	private static ImportFromTextDialog 	importFromTextDialog;
 	private static ScrollValuePopup			scrollValuePopup;
+
 	private Context2d						backcontext;
 	private Canvas							backcv;
 	private Rectangle						circuitArea;
@@ -144,11 +146,6 @@ public class Simmer
 	private String							startLabel			= null;
 	private AbstractCircuitElement			stopElm;
 	private String							stopMessage;
-	private final Timer						timer				= new Timer() {
-																	public void run() {
-																		updateCircuit();
-																	}
-																};
 	private double							timeStep;
 	private MenuBar							transScopeMenuBar;
 	private Vector<String>					undoStack, redoStack;
@@ -159,10 +156,6 @@ public class Simmer
 	public boolean							dragging;
 	public boolean							mouseDragging;
 
-	public static ScrollValuePopup getScrollValuePopup() {
-		return scrollValuePopup;
-	}
-
 	public void init() {
 
 		boolean printable = false;
@@ -171,6 +164,12 @@ public class Simmer
 
 		AbstractCircuitElement.initClass(this);
 		QueryParameters qp = new QueryParameters();
+
+		Timer timer	= new Timer() {
+			public void run() {
+				updateCircuit();
+			}
+		};
 
 		try {
 			String cct = qp.getValue("cct");
@@ -183,6 +182,7 @@ public class Simmer
 			printable = qp.getBooleanValue("whiteBackground", false);
 			convention = qp.getBooleanValue("conventionalCurrent", true);
 		} catch (Exception e) {
+			//log(e);
 		}
 
 		String os = Navigator.getPlatform();
@@ -269,16 +269,17 @@ public class Simmer
 		transScopeMenuBar = buildScopeMenu(true);
 		scopeMenuBar = buildScopeMenu(false);
 
+
 		if (startCircuitText != null) {
-			getSetupList(false);
-			readSetup(startCircuitText, false);
+			fileOps.getSetupList(false);
+			fileOps.readSetup(startCircuitText, false);
 		} else {
-			readSetup(null, 0, false, false);
+			fileOps.readSetup(null, 0, false, false);
 			if (stopMessage == null && startCircuit != null) {
-				getSetupList(false);
-				readSetupFile(startCircuit, startLabel, true);
+				fileOps.getSetupList(false);
+				fileOps.readSetupFile(startCircuit, startLabel, true);
 			} else
-				getSetupList(true);
+				fileOps.getSetupList(true);
 		}
 
 		editMenu.enableUndoRedo();
@@ -1328,7 +1329,7 @@ public class Simmer
 		return null;
 	}
 
-	private double getIterCount() {
+	public double getIterCount() {
 		if (speedBar.getValue() == 0)
 			return 0;
 
@@ -1341,38 +1342,6 @@ public class Simmer
 		if (q < 0)
 			q = -q;
 		return q % x;
-	}
-
-	private void getSetupList(final boolean openDefault) {
-
-		String url = GWT.getModuleBaseURL();
-		url = url.substring(0,url.indexOf("circuitjs1"));
-		url = url +  "setuplist.txt" + "?v=" + random.nextInt();
-		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
-		try {
-			requestBuilder.sendRequest(null, new RequestCallback() {
-				public void onError(Request request, Throwable exception) {
-					GWT.log(MessageI18N.getLocale("File_Error_Response"), exception);
-				}
-
-				public void onResponseReceived(Request request, Response response) {
-					// processing goes here
-					if (response.getStatusCode() == Response.SC_OK) {
-						String text = response.getText();
-						processSetupList(text.getBytes(), text.length(), openDefault);
-						// end or processing
-					} else
-						GWT.log(MessageI18N.getLocale("Bad_file_server_response") + response.getStatusText());
-				}
-			});
-		} catch (RequestException e) {
-			GWT.log(MessageI18N.getLocale("failed_file_reading"), e);
-		}
-		
-		String s = "";
-		if( s != null && s.isEmpty() && Character.isUpperCase(s.charAt(0))){
-			
-		}
 	}
 
 
@@ -1398,7 +1367,7 @@ public class Simmer
         }
     }
 
-    private void enableItems() {
+    public void enableItems() {
         // if (powerCheckItem.getState()) {
         // powerBar.enable();
         // powerLabel.enable();
@@ -1557,28 +1526,6 @@ public class Simmer
 		iFrame.getElement().setAttribute("scrolling","no");
 	}
     /** end sidebar **/
-
-	private void loadFileFromURL(String url, final boolean centre) {
-		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
-		try {
-			requestBuilder.sendRequest(null, new RequestCallback() {
-				public void onError(Request request, Throwable exception) {
-					GWT.log(MessageI18N.getLocale("File_Error_Response"), exception);
-				}
-
-				public void onResponseReceived(Request request, Response response) {
-					if (response.getStatusCode() == Response.SC_OK) {
-						String text = response.getText();
-						readSetup(text.getBytes(), text.length(), false, centre);
-					} else
-						GWT.log(MessageI18N.getLocale("Bad_file_server_response") + response.getStatusText());
-				}
-			});
-		} catch (RequestException e) {
-			GWT.log(MessageI18N.getLocale("failed_file_reading"), e);
-		}
-
-	}
 
 	public int locateElm(AbstractCircuitElement elm) {
 		int i;
@@ -1817,157 +1764,12 @@ public class Simmer
 						startCircuit = file;
 						startLabel = title;
 						if (openDefault && stopMessage == null)
-							readSetupFile(startCircuit, startLabel, true);
+							fileOps.readSetupFile(startCircuit, startLabel, true);
 					}
 				}
 			}
 			p += l;
 		}
-	}
-
-	private void readHint(StringTokenizer st) {
-		hintType = hintType.getHintFromValue(new Integer(st.nextToken()).intValue());
-		hintItem1 = hintType.getHintFromValue(new Integer(st.nextToken()).intValue());
-		hintItem2 = hintType.getHintFromValue(new Integer(st.nextToken()).intValue());
-	}
-
-	private void readOptions(StringTokenizer st) {
-		int flags = new Integer(st.nextToken()).intValue();
-		// IES - remove inteaction
-		getDotsCheckItem().setState((flags & 1) != 0);
-		getSmallGridCheckItem().setState((flags & 2) != 0);
-		getVoltsCheckItem().setState((flags & 4) == 0);
-		getPowerCheckItem().setState((flags & 8) == 8);
-		getShowValuesCheckItem().setState((flags & 16) == 0);
-		setTimeStep(new Double(st.nextToken()).doubleValue());
-		double sp = new Double(st.nextToken()).doubleValue();
-		int sp2 = (int) (Math.log(10 * sp) * 24 + 61.5);
-		// int sp2 = (int) (Math.log(sp)*24+1.5);
-		speedBar.setValue(sp2);
-		currentBar.setValue(new Integer(st.nextToken()).intValue());
-		AbstractCircuitElement.voltageRange = new Double(st.nextToken()).doubleValue();
-
-		try {
-			powerBar.setValue(new Integer(st.nextToken()).intValue());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		setGrid();
-	}
-
-	private void readSetup(byte b[], int len, boolean retain, boolean centre) {
-		int i;
-		if (!retain) {
-			for (i = 0; i != elmList.size(); i++) {
-				AbstractCircuitElement ce = getElm(i);
-				ce.delete();
-			}
-			elmList.removeAllElements();
-			hintType = HintType.HINT_UNSET;
-			setTimeStep(5e-6);
-			getDotsCheckItem().setState(false);
-			getSmallGridCheckItem().setState(false);
-			getPowerCheckItem().setState(false);
-			getVoltsCheckItem().setState(true);
-			getShowValuesCheckItem().setState(true);
-			setGrid();
-			speedBar.setValue(117); // 57
-			currentBar.setValue(50);
-			powerBar.setValue(50);
-			AbstractCircuitElement.voltageRange = 5;
-			scopeCount = 0;
-		}
-		// cv.repaint();
-		for (int p = 0; p < len;) {
-			int l;
-			int linelen = len - p; // IES - changed to allow the last line to
-									// not end with a delim.
-			for (l = 0; l != len - p; l++)
-				if (b[l + p] == '\n' || b[l + p] == '\r') {
-					linelen = l++;
-					if (l + p < b.length && b[l + p] == '\n')
-						l++;
-					break;
-				}
-			String line = new String(b, p, linelen);
-			StringTokenizer st = new StringTokenizer(line, " +\t\n\r\f");
-			while (st.hasMoreTokens()) {
-				String type = st.nextToken();
-				int tint = type.charAt(0);
-				try {
-					if (tint == 'o') {
-						Scope sc = new Scope(this);
-						sc.setPosition(scopeCount);
-						sc.undump(st);
-						scopes[scopeCount++] = sc;
-						break;
-					}
-					if (tint == 'h') {
-						readHint(st);
-						break;
-					}
-					if (tint == '$') {
-						readOptions(st);
-						break;
-					}
-					if (tint == '%' || tint == '?' || tint == 'B') {
-						// ignore afilter-specific stuff
-						break;
-					}
-					if (tint >= '0' && tint <= '9')
-						tint = new Integer(type).intValue();
-					int x1 = new Integer(st.nextToken()).intValue();
-					int y1 = new Integer(st.nextToken()).intValue();
-					int x2 = new Integer(st.nextToken()).intValue();
-					int y2 = new Integer(st.nextToken()).intValue();
-					int f = new Integer(st.nextToken()).intValue();
-
-					AbstractCircuitElement newce = CircuitElementFactory.createCircuitElement(tint, x1, y1, x2, y2, f, st);
-					if (newce == null) {
-						System.out.println(MessageI18N.getLocale("unrecognized_dump_type_") + type);
-						break;
-					}
-					newce.setPoints();
-					elmList.addElement(newce);
-					// } catch (java.lang.reflect.InvocationTargetException ee)
-					// {
-					// ee.getTargetException().printStackTrace();
-					// break;
-				} catch (Exception ee) {
-					ee.printStackTrace();
-					break;
-				}
-				break;
-			}
-			p += l;
-
-		}
-		setPowerBarEnable();
-		enableItems();
-		// if (!retain)
-		// handleResize(); // for scopes
-		needAnalyze();
-		if (centre)
-			centreCircuit();
-	}
-
-	public void readSetup(String text, boolean centre) {
-		readSetup(text, false, centre);
-	}
-
-	public void readSetup(String text, boolean retain, boolean centre) {
-		readSetup(text.getBytes(), text.length(), retain, centre);
-	}
-
-	public void readSetupFile(String str, String title, boolean centre) {
-		t = 0;
-		System.out.println(str);
-		// try {
-		// TODO: Maybe think about some better approach to cache management!
-		String url = GWT.getModuleBaseURL();
-		url = url.substring(0,url.indexOf("circuitjs1"));
-		url = url+ "circuits/" + str + "?v=" + random.nextInt();
-		loadFileFromURL(url, centre);
 	}
 
 	public void removeZeroLengthElements() {
@@ -2155,30 +1957,13 @@ public class Simmer
 			backcv.setCoordinateSpaceHeight(height);
 		}
 		int h = height / 5;
-		/*
-		 * if (h < 128 && winSize.height > 300) h = 128;
-		 */
 		circuitArea = new Rectangle(0, 0, width, height - h);
-
 	}
 
-	private void setGrid() {
+	public void setGrid() {
 		gridSize = (getSmallGridCheckItem().getState()) ? 8 : 16;
 		gridMask = ~(gridSize - 1);
 		gridRound = gridSize / 2 - 1;
-	}
-
-	public void setGridSize(int gridSize) {
-		this.gridSize = gridSize;
-	}
-
-	public void setMenuSelection() {
-		if (menuElm != null) {
-			if (menuElm.isSelected())
-				return;
-			editMenu.doSelectNone();
-			menuElm.setSelected(true);
-		}
 	}
 
 	public void setMouseElm(AbstractCircuitElement ce) {
@@ -3042,4 +2827,101 @@ public class Simmer
 	public int getGridSize() {
 		return gridSize;
 	}
+
+	public void setHintType(HintType hintType) {
+		this.hintType = hintType;
+	}
+
+	public Scrollbar getSpeedBar() {
+		return speedBar;
+	}
+
+	public Scrollbar getCurrentBar() {
+		return currentBar;
+	}
+
+	public Scrollbar getPowerBar() {
+		return powerBar;
+	}
+
+	public Random getRandom() {
+		return random;
+	}
+
+	public HintType getHintType() {
+		return hintType;
+	}
+
+	public HintType getHintItem1() {
+		return hintItem1;
+	}
+
+	public HintType getHintItem2() {
+		return hintItem2;
+	}
+
+	public MenuBar getMenuBar() {
+		return menuBar;
+	}
+
+	public String getStartCircuit() {
+		return startCircuit;
+	}
+
+	public void setStartCircuit(String startCircuit) {
+		this.startCircuit = startCircuit;
+	}
+
+	public void setStartLabel(String startLabel) {
+		this.startLabel = startLabel;
+	}
+
+	public String getStopMessage() {
+		return stopMessage;
+	}
+
+	public String getStartLabel() {
+		return startLabel;
+	}
+
+	public FileOps getFileOps() {
+		return fileOps;
+	}
+
+	public void setHintItem2(HintType hintItem2) {
+		this.hintItem2 = hintItem2;
+	}
+
+	public void setHintItem1(HintType hintItem1) {
+		this.hintItem1 = hintItem1;
+	}
+
+	public static ScrollValuePopup getScrollValuePopup() {
+		return scrollValuePopup;
+	}
+
+	public ExportAsUrlDialog getExportAsUrlDialog() {
+		return exportAsUrlDialog;
+	}
+
+	public void setExportAsUrlDialog(ExportAsUrlDialog exportAsUrlDialog) {
+		Simmer.exportAsUrlDialog = exportAsUrlDialog;
+	}
+
+	public void setExportAsTextDialog(ExportAsTextDialog exportAsTextDialog) {
+		Simmer.exportAsTextDialog = exportAsTextDialog;
+	}
+
+	public ExportAsTextDialog getExportAsTextDialog() {
+		return exportAsTextDialog;
+	}
+
+	public ExportAsLocalFileDialog getExportAsLocalFileDialog() {
+		return exportAsLocalFileDialog;
+	}
+
+	public void setExportAsLocalFileDialog(ExportAsLocalFileDialog exportAsLocalFileDialog) {
+		Simmer.exportAsLocalFileDialog = exportAsLocalFileDialog;
+	}
+
 }

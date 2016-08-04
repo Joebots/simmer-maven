@@ -68,7 +68,7 @@ public class EditMenu extends MenuBar{
 
     public void pushUndo() {
         redoStack.clear();
-        String circuit = simmer.dumpCircuit();
+        String circuit = simmer.getFileOps().dumpCircuit();
 
         if (undoStack.size() > 0 && circuit.compareTo(undoStack.get(undoStack.size()-1)) == 0)
             return;
@@ -78,20 +78,20 @@ public class EditMenu extends MenuBar{
     }
 
     public void doRedo() {
-        String circuit = simmer.dumpCircuit();
+        String circuit = simmer.getFileOps().dumpCircuit();
         if (redoStack.size() == 0)
             return;
 
         undoStack.add(circuit);
         String s = redoStack.remove(redoStack.size() - 1);
-        simmer.readSetup(s, false);
+        simmer.getFileOps().readSetup(s, false);
         enableUndoRedo();
     }
 
     public void doCopy() {
         int i;
         clipboard = "";
-        simmer.setMenuSelection();
+        setMenuSelection();
         for (i = simmer.getElmList().size() - 1; i >= 0; i--) {
             AbstractCircuitElement ce = simmer.getElm(i);
             if (ce.isSelected())
@@ -103,7 +103,7 @@ public class EditMenu extends MenuBar{
     public void doCut() {
         int i;
         pushUndo();
-        simmer.setMenuSelection();
+        setMenuSelection();
         clipboard = "";
         for (i = simmer.getElmList().size() - 1; i >= 0; i--) {
             AbstractCircuitElement ce = simmer.getElm(i);
@@ -120,7 +120,7 @@ public class EditMenu extends MenuBar{
     public void doDelete() {
         int i;
         pushUndo();
-        simmer.setMenuSelection();
+        setMenuSelection();
         boolean hasDeleted = false;
 
         for (i = simmer.getElmList().size() - 1; i >= 0; i--) {
@@ -177,7 +177,7 @@ public class EditMenu extends MenuBar{
                 oldbb = bb;
         }
         int oldsz = simmer.getElmList().size();
-        simmer.readSetup(clipboard, true, false);
+        simmer.getFileOps().readSetup(clipboard, true, false);
 
         // select new items
         Rectangle newbb = null;
@@ -216,9 +216,9 @@ public class EditMenu extends MenuBar{
     public void doUndo() {
         if (undoStack.size() == 0)
             return;
-        redoStack.add(simmer.dumpCircuit());
+        redoStack.add(simmer.getFileOps().dumpCircuit());
         String s = undoStack.remove(undoStack.size() - 1);
-        simmer.readSetup(s, false);
+        simmer.getFileOps().readSetup(s, false);
         enableUndoRedo();
     }
 
@@ -233,6 +233,19 @@ public class EditMenu extends MenuBar{
         for (int i = 0; i != simmer.getElmList().size(); i++) {
             AbstractCircuitElement ce = simmer.getElm(i);
             ce.setSelected(false);
+        }
+    }
+
+
+    public void setMenuSelection() {
+
+        AbstractCircuitElement menuElm = simmer.getMenuElm();
+
+        if (menuElm != null) {
+            if (menuElm.isSelected())
+                return;
+            this.doSelectNone();
+            menuElm.setSelected(true);
         }
     }
 }

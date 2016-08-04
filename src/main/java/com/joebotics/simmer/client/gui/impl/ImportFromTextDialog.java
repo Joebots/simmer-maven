@@ -61,7 +61,7 @@ public class ImportFromTextDialog extends DialogBox {
 				// s=s.replace("<br>", "\r");
 				s = textArea.getText();
 				if (s != null)
-					sim.readSetup(s, true);
+					sim.getFileOps().readSetup(s, true);
 			}
 		});
 		hp.add(cancelButton = new Button("Cancel"));

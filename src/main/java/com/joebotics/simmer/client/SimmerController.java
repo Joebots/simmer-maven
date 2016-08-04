@@ -138,6 +138,10 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         simmer.setDragElm(CircuitElementFactory.constructElement(simmer.getMouseModeStr(), x0, y0));
     }
 
+    public native void log(String message) /*-{
+        $wnd.console.log(message);
+    }-*/;
+
     public void onMouseMove(MouseMoveEvent e) {
         e.preventDefault();
         if (simmer.isMouseDragging()) {
@@ -391,14 +395,14 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         }
 
         if (item == "exportasurl") {
-            simmer.doExportAsUrl();
+            simmer.getFileOps().doExportAsUrl();
         }
 
         if (item == "exportaslocalfile")
-            simmer.doExportAsLocalFile();
+            simmer.getFileOps().doExportAsLocalFile();
 
         if (item == "exportastext")
-            simmer.doExportAsText();
+            simmer.getFileOps().doExportAsText();
 
         if ((menu == "elm" || menu == "scopepop") && simmer.getContextPanel() != null)
             simmer.getContextPanel().hide();
@@ -498,7 +502,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         }
         if (menu == "circuits" && item.indexOf("setup ") == 0) {
             simmer.getEditMenu().pushUndo();
-            simmer.readSetupFile(item.substring(6), "", true);
+            simmer.getFileOps().readSetupFile(item.substring(6), "", true);
         }
 
         // IES: Moved from itemStateChanged()
