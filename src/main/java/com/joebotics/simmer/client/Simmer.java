@@ -24,19 +24,11 @@ package com.joebotics.simmer.client;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.*;
-import com.google.gwt.http.client.*;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.*;
 import com.joebotics.simmer.client.breadboard.CircuitLibrary;
@@ -49,11 +41,9 @@ import com.joebotics.simmer.client.util.MouseModeEnum.MouseMode;
 
 import java.util.Random;
 import java.util.Vector;
-	//MouseDownHandler, MouseWheelHandler, MouseMoveHandler, MouseUpHandler, MouseOutHandler, ClickHandler, DoubleClickHandler, ContextMenuHandler, Event.NativePreviewHandler
+
 public class Simmer
 {
-
-//	public static final double				freqMult			= Math.PI * 2 * 4;
 	private static String					muString			= "u";
 	public static final String				ohmString			= "ohm";
 	private final SimmerController simmerController = new SimmerController(this);
@@ -122,10 +112,9 @@ public class Simmer
 	private MouseMode						mouseMode			= MouseMode.SELECT;
 	private MouseMode						tempMouseMode		= MouseMode.SELECT;
 	private DockLayoutPanel					layoutPanel;
-	private MenuBar							mainMenuBar;
+	private MenuBar popupDrawMenu;
 	private MenuBar							menuBar;
 	private MenuBar							optionsMenuBar;
-	private MenuBar							transScopeMenuBar;
 	private Scrollbar						speedBar;
 
 	private AbstractCircuitElement			menuElm;
@@ -205,32 +194,22 @@ public class Simmer
 
 		// main.setLayout(new CircuitLayout());
 		layoutPanel = new DockLayoutPanel(Unit.PX);
-
-		MenuBar drawMenuBar = new MenuBar(true);
-		drawMenuBar.setAutoOpen(true);
+		verticalPanel = new VerticalPanel();
 
 		menuBar = new MenuBar();
 		menuBar.addItem(MessageI18N.getLocale("File"), new FileMenu());
-		menuBar.addItem(MessageI18N.getLocale("Edit"), buildEditMenu());
-		menuBar.addItem(MessageI18N.getLocale("Draw"), drawMenuBar);
-		menuBar.addItem(MessageI18N.getLocale("Scopes"), new ScopesMenu());
-		menuBar.addItem(MessageI18N.getLocale("Options"), buildOptionsMenu());
-		verticalPanel = new VerticalPanel();
+		menuBar.addItem(MessageI18N.getLocale("Edit"), editMenu = new EditMenu(this));
+		menuBar.addItem(MessageI18N.getLocale("Draw"), new DrawMenu(this, true));
+		menuBar.addItem(MessageI18N.getLocale("Scopes"), new ScopeStackMenu());
+		menuBar.addItem(MessageI18N.getLocale("Options"), new OptionsMenuBar(this));
 
-//		optionsMenuBar = m = new MenuBar(true);
+		popupDrawMenu = new DrawMenu(this, true);
 
 		getVoltsCheckItem().setState(true);
 		getShowValuesCheckItem().setState(true);
 		getEuroResistorCheckItem().setState(euro);
 		getPrintableCheckItem().setState(printable);
 		getConventionCheckItem().setState(convention);
-
-		mainMenuBar = new DrawMenu(this, true);
-		mainMenuBar.setAutoOpen(true);
-		//buildDrawMenu(mainMenuBar);
-
-		// popup
-		//buildDrawMenu(drawMenuBar);
 
 		layoutPanel.addNorth(menuBar, Display.MENUBARHEIGHT);
 		layoutPanel.addEast(verticalPanel, Display.VERTICALPANELWIDTH);
@@ -253,7 +232,6 @@ public class Simmer
 		setGrid();
 
 		elmList = new Vector<AbstractCircuitElement>();
-		// setupList = new Vector();
 		undoStack = new Vector<String>();
 		redoStack = new Vector<String>();
 
@@ -262,22 +240,19 @@ public class Simmer
 		scopeCount = 0;
 
 		random = new Random();
-		// cv.setBackground(Color.black);
-		// cv.setForeground(Color.lightGray);
 
 		// element popup menu
-		elmMenuBar = buildElementPopupMenu();
-		// main.add(elmMenu);
-
-		transScopeMenuBar = buildScopeMenu(true);
-		scopeMenuBar = buildScopeMenu(false);
-
+		elmMenuBar = new ElementPopupMenu();
 
 		if (startCircuitText != null) {
+
 			fileOps.getSetupList(false);
 			fileOps.readSetup(startCircuitText, false);
+
 		} else {
+
 			fileOps.readSetup(null, 0, false, false);
+
 			if (stopMessage == null && startCircuit != null) {
 				fileOps.getSetupList(false);
 				fileOps.readSetupFile(startCircuit, startLabel, true);
@@ -288,6 +263,7 @@ public class Simmer
 		editMenu.enableUndoRedo();
 		setiFrameHeight();
 		bindEventHandlers();
+
 		// setup timer
 		timer.scheduleRepeating(FASTTIMER);
 		NativeJavascriptWrapper.EventBus();
@@ -531,7 +507,6 @@ public class Simmer
 				}
 			}
 		}
-		// System.out.println(MessageI18N.getLocale("ac6"));
 
 		// simplify the matrix; this speeds things up quite a bit
 		for (i = 0; i != matrixSize; i++) {
@@ -749,205 +724,10 @@ public class Simmer
     private Vector<String>					mainMenuItemNames	= new Vector<String>();
     private Vector<CheckboxMenuItem>		mainMenuItems		= new Vector<CheckboxMenuItem>();
 
-	private void buildDrawMenu(MenuBar mainMenuBar) {
-		mainMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Wire"), "WireElm"));
-		mainMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Resistor"), "ResistorElm"));
-
-		// Passive Components
-		MenuBar passMenuBar = new MenuBar(true);
-		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Capacitor"), "CapacitorElm"));
-		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Inductor"), "InductorElm"));
-		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Switch"), "SwitchElm"));
-		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Push_Switch"), "PushSwitchElm"));
-		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_SPDT_Switch"), "Switch2Elm"));
-		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Potentiometer"), "PotElm"));
-		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Transformer"), "TransformerElm"));
-		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Tapped_Transformer"), "TappedTransformerElm"));
-		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Transmission_Line"), "TransLineElm"));
-		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Relay"), "RelayElm"));
-		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Memristor"), "MemristorElm"));
-		passMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Spark_Gap"), "SparkGapElm"));
-		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Passive_Components")), passMenuBar);
-
-		// Inputs and Sources
-		MenuBar inputMenuBar = new MenuBar(true);
-		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Ground"), "GroundElm"));
-		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Voltage_Source_(2-terminal)"), "DCVoltageElm"));
-		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_A/C_Voltage_Source_(2-terminal)"), "ACVoltageElm"));
-		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Voltage_Source_(1-terminal)"), "RailElm"));
-		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_A/C_Voltage_Source_(1-terminal)"), "ACRailElm"));
-		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Square_Wave_Source_(1-terminal)"), "SquareRailElm"));
-		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Clock"), "ClockElm"));
-		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_A/C_Sweep"), "SweepElm"));
-		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Variable_Voltage"), "VarRailElm"));
-		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Antenna"), "AntennaElm"));
-		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_AM_Source"), "AMElm"));
-		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_FM_Source"), "FMElm"));
-		inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Current_Source"), "CurrentElm"));
-
-		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Inputs_and_Sources")), inputMenuBar);
-
-		// Outputs and Labels
-		MenuBar outputMenuBar = new MenuBar(true);
-		outputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Analog_Output"), "OutputElm"));
-		outputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_LED"), "LEDElm"));
-		outputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Lamp_(beta)"), "LampElm"));
-		outputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Text"), "TextElm"));
-		outputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Box"), "BoxElm"));
-		outputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Scope_Probe"), "ProbeElm"));
-		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Outputs_and_Labels")), outputMenuBar);
-		
-		// Active Components
-		MenuBar activeMenuBar = new MenuBar(true);
-		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Diode"), "DiodeElm"));
-		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Zener_Diode"), "ZenerElm"));
-		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Transistor_(bipolar_NPN)"), "NTransistorElm"));
-		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Transistor_(bipolar_PNP)"), "PTransistorElm"));
-		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_MOSFET_(N-Channel)"), "NMosfetElm"));
-		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_MOSFET_(P-Channel)"), "PMosfetElm"));
-		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_JFET_(N-Channel)"), "NJfetElm"));
-		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_JFET_(P-Channel)"), "PJfetElm"));
-		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_SCR"), "SCRElm"));
-		// activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Varactor/Varicap"),
-		// MessageI18N.getLocale("VaractorElm"));
-		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Tunnel_Diode"), "TunnelDiodeElm"));
-		activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Triode"), "TriodeElm"));
-		// activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Diac"), MessageI18N.getLocale("DiacElm"));
-		// activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Triac"), MessageI18N.getLocale("TriacElm"));
-		// activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Photoresistor"),
-		// MessageI18N.getLocale("PhotoResistorElm"));
-		// activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Thermistor"),
-		// MessageI18N.getLocale("ThermistorElm"));
-		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Active_Components")), activeMenuBar);
-		
-		// Active Building Blocks
-		MenuBar activeBlocMenuBar = new MenuBar(true);
-		activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Op_Amp_(-_on_top)"), "OpAmpElm"));
-		activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Op_Amp_(+_on_top)"), "OpAmpSwapElm"));
-		activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Analog_Switch_(SPST)"), "AnalogSwitchElm"));
-		activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Analog_Switch_(SPDT)"), "AnalogSwitch2Elm"));
-		activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Tristate_Buffer"), "TriStateElm"));
-		activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Schmitt_Trigger"), "SchmittElm"));
-		activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Schmitt_Trigger_(Inverting)"), "InvertingSchmittElm"));
-		activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_CCII+"), "CC2Elm"));
-		activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_CCII-"), "CC2NegElm"));
-		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Active_Building_Blocks")), activeBlocMenuBar);
-		
-		// Logic Gates, Input and Output
-		MenuBar gateMenuBar = new MenuBar(true);
-		gateMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Logic_Input"), "LogicInputElm"));
-		gateMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Logic_Output"), "LogicOutputElm"));
-		gateMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Inverter"), "InverterElm"));
-		gateMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_NAND_Gate"), "NandGateElm"));
-		gateMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_NOR_Gate"), "NorGateElm"));
-		gateMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_AND_Gate"), "AndGateElm"));
-		gateMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_OR_Gate"), "OrGateElm"));
-		gateMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_XOR_Gate"), "XorGateElm"));
-		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Logic_Gates_Input_and_Output")), gateMenuBar);
-
-		// Digital Chips
-		MenuBar chipMenuBar = new MenuBar(true);
-		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_D_Flip-Flop"), "DFlipFlopElm"));
-		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_JK_Flip-Flop"), "JKFlipFlopElm"));
-		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_T_Flip-Flop"), "TFlipFlopElm"));
-		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_7_Segment_LED"), "SevenSegElm"));
-		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_7_Segment_Decoder"), "SevenSegDecoderElm"));
-		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Multiplexer"), "MultiplexerElm"));
-		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Demultiplexer"), "DeMultiplexerElm"));
-		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_SIPO_shift_register"), "SipoShiftElm"));
-		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_PISO_shift_register"), "PisoShiftElm"));
-		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Counter"), "CounterElm"));
-		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Decade_Counter"), "DecadeElm"));
-		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Latch"), "LatchElm"));
-		// chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Static_RAM"), MessageI18N.getLocale("SRAMElm"));
-		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Sequence_generator"), "SeqGenElm"));
-		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Full_Adder"), "FullAdderElm"));
-		chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Half_Adder"), "HalfAdderElm"));
-		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Digital_Chips")), chipMenuBar);
-		
-		// Analog and Hybrid Chips
-		MenuBar achipMenuBar = new MenuBar(true);
-		achipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_555_Timer"), "TimerElm"));
-		achipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Phase_Comparator"), "PhaseCompElm"));
-		achipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_DAC"), "DACElm"));
-		achipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_ADC"), "ADCElm"));
-		achipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_VCO"), "VCOElm"));
-		achipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Monostable"), "MonostableElm"));
-		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Analog_and_Hybrid_Chips")), achipMenuBar);
-		
-		// Drag
-		MenuBar otherMenuBar = new MenuBar(true);
-		CheckboxMenuItem mi;
-		otherMenuBar.addItem(mi = getClassCheckItem(MessageI18N.getLocale("Drag_All"), "DragAll"));
-		mi.addShortcut("(Alt-drag)");
-		otherMenuBar.addItem(mi = getClassCheckItem(MessageI18N.getLocale("Drag_Row"), "DragRow"));
-		mi.addShortcut("(S-right)");
-		otherMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Drag_Column"), "DragColumn"));
-		otherMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Drag_Selected"), "DragSelected"));
-		otherMenuBar.addItem(mi = getClassCheckItem(MessageI18N.getLocale("Drag_Post"), "DragPost"));
-		mi.addShortcut("(" + ctrlMetaKey + "-drag)");
-
-		mainMenuBar.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Drag")), otherMenuBar);
-
-		mainMenuBar.addItem(mi = getClassCheckItem("Select/Drag Sel", "Select"));
-		mi.addShortcut("(space or Shift-drag)");
-	}
-
-    private MenuBar							elmMenuBar;
-    private MenuItem						elmCopyMenuItem;
-    private MenuItem						elmCutMenuItem;
-    private MenuItem						elmDeleteMenuItem;
-    private MenuItem						elmEditMenuItem;
-    private MenuItem						elmScopeMenuItem;
-	private MenuBar buildElementPopupMenu(){
-		MenuBar elmMenuBar = new MenuBar(true);
-
-		elmMenuBar.addItem(elmEditMenuItem = new MenuItem(MessageI18N.getLocale("Edit"), new MenuCommand("elm", "edit")));
-		elmMenuBar.addItem(elmScopeMenuItem = new MenuItem(MessageI18N.getLocale("View_in_Scope"), new MenuCommand("elm", "viewInScope")));
-		elmMenuBar.addItem(elmCutMenuItem = new MenuItem(MessageI18N.getLocale("Cut"), new MenuCommand("elm", "cut")));
-		elmMenuBar.addItem(elmCopyMenuItem = new MenuItem(MessageI18N.getLocale("Copy"), new MenuCommand("elm", "copy")));
-		elmMenuBar.addItem(elmDeleteMenuItem = new MenuItem(MessageI18N.getLocale("Delete"), new MenuCommand("elm", "delete")));
-
-		return elmMenuBar;
-	}
+    private ElementPopupMenu							elmMenuBar;
     /** Scope.java **/
 
     private Scope							scopes[];
-
-	private MenuBar buildScopeMenu(boolean t) {
-		MenuBar m = new MenuBar(true);
-		m.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Remove"), new MenuCommand("scopepop", "remove")));
-		m.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Speed_2x"), new MenuCommand("scopepop", "speed2")));
-		m.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Speed_1/2x"), new MenuCommand("scopepop", "speed1/2")));
-		m.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Scale_2x"), new MenuCommand("scopepop", "scale")));
-		m.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Max_Scale"), new MenuCommand("scopepop", "maxscale")));
-		m.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Stack"), new MenuCommand("scopepop", "stack")));
-		m.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Unstack"), new MenuCommand("scopepop", "unstack")));
-		m.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Reset"), new MenuCommand("scopepop", "reset")));
-		if (t) {
-			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Ib"), new MenuCommand("scopepop", "showib")));
-			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Ic"), new MenuCommand("scopepop", "showic")));
-			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Ie"), new MenuCommand("scopepop", "showie")));
-			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Vbe"), new MenuCommand("scopepop", "showvbe")));
-			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Vbc"), new MenuCommand("scopepop", "showvbc")));
-			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Vce"), new MenuCommand("scopepop", "showvce")));
-			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Vce_vs_Ic"), new MenuCommand("scopepop", "showvcevsic")));
-		} else {
-			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Voltage"), new MenuCommand("scopepop", "showvoltage")));
-			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Current"), new MenuCommand("scopepop", "showcurrent")));
-			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Power_Consumed"), new MenuCommand("scopepop", "showpower")));
-			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Scale"), new MenuCommand("scopepop", "showscale")));
-			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Peak_Value"), new MenuCommand("scopepop", "showpeak")));
-			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Negative_Peak_Value"), new MenuCommand("scopepop", "shownegpeak")));
-			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Frequency"), new MenuCommand("scopepop", "showfreq")));
-			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_V_vs_I"), new MenuCommand("scopepop", "showvvsi")));
-			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Plot_X/Y"), new MenuCommand("scopepop", "plotxy")));
-			m.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Select_Y"), new MenuCommand("scopepop", "selecty")));
-			m.addItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Resistance"), new MenuCommand("scopepop", "showresistance")));
-		}
-		return m;
-	}
-	// end scope.java
 
 	private void calcCircuitBottom() {
 		int i;
@@ -990,19 +770,6 @@ public class Simmer
 		circuitBottom = 0;
 	}
 
-	public void createNewLoadFile() {
-		// This is a hack to fix what IMHO is a bug in the <INPUT FILE element
-		// reloading the same file doesn't create a change event so importing
-		// the same file twice
-		// doesn't work unless you destroy the original input element and
-		// replace it with a new one
-		int idx = verticalPanel.getWidgetIndex(loadFileInput);
-		LoadFile newlf = new LoadFile(this);
-		verticalPanel.insert(newlf, idx);
-		verticalPanel.remove(idx + 1);
-		loadFileInput = newlf;
-	}
-
 	protected int distanceSq(int x1, int y1, int x2, int y2) {
 		x2 -= x1;
 		y2 -= y1;
@@ -1027,140 +794,10 @@ public class Simmer
 		return true;
 	}
 
-	private void dragAll(int x, int y) {
-		int dx = x - dragX;
-		int dy = y - dragY;
-		if (dx == 0 && dy == 0)
-			return;
-		int i;
-		for (i = 0; i != elmList.size(); i++) {
-			AbstractCircuitElement ce = getElm(i);
-			ce.move(dx, dy);
-		}
-		removeZeroLengthElements();
-	}
-
-	private void dragColumn(int x, int y) {
-		int dx = x - dragX;
-		if (dx == 0)
-			return;
-		int i;
-		for (i = 0; i != elmList.size(); i++) {
-			AbstractCircuitElement ce = getElm(i);
-			if (ce.getX1() == dragX)
-				ce.movePoint(0, dx, 0);
-			if (ce.getX2() == dragX)
-				ce.movePoint(1, dx, 0);
-		}
-		removeZeroLengthElements();
-	}
-
-	private void dragPost(int x, int y) {
-		if (draggingPost == -1) {
-			draggingPost = (distanceSq(mouseElm.getX1(), mouseElm.getY1(), x, y) > distanceSq(mouseElm.getX2(), mouseElm.getY2(), x, y)) ? 1 : 0;
-		}
-		int dx = x - dragX;
-		int dy = y - dragY;
-		if (dx == 0 && dy == 0)
-			return;
-		mouseElm.movePoint(draggingPost, dx, dy);
-		needAnalyze();
-	}
-
-	private void dragRow(int x, int y) {
-		int dy = y - dragY;
-		if (dy == 0)
-			return;
-		int i;
-		for (i = 0; i != elmList.size(); i++) {
-			AbstractCircuitElement ce = getElm(i);
-			if (ce.getY1() == dragY)
-				ce.movePoint(0, 0, dy);
-			if (ce.getY2() == dragY)
-				ce.movePoint(1, 0, dy);
-		}
-		removeZeroLengthElements();
-	}
-
-	private boolean dragSelected(int x, int y) {
-		boolean me = false;
-		if (mouseElm != null && !mouseElm.isSelected())
-			mouseElm.setSelected(me = true);
-
-		// snap grid, unless we're only dragging text elements
-		int i;
-		for (i = 0; i != elmList.size(); i++) {
-			AbstractCircuitElement ce = getElm(i);
-			if (ce.isSelected() && !(ce instanceof GraphicElm))
-				break;
-		}
-		if (i != elmList.size()) {
-			x = snapGrid(x);
-			y = snapGrid(y);
-		}
-
-		int dx = x - dragX;
-		int dy = y - dragY;
-		if (dx == 0 && dy == 0) {
-			// don't leave mouseElm selected if we selected it above
-			if (me)
-				mouseElm.setSelected(false);
-			return false;
-		}
-		boolean allowed = true;
-
-		// check if moves are allowed
-		for (i = 0; allowed && i != elmList.size(); i++) {
-			AbstractCircuitElement ce = getElm(i);
-			if (ce.isSelected() && !ce.allowMove(dx, dy))
-				allowed = false;
-		}
-
-		if (allowed) {
-			for (i = 0; i != elmList.size(); i++) {
-				AbstractCircuitElement ce = getElm(i);
-				if (ce.isSelected())
-					ce.move(dx, dy);
-			}
-			needAnalyze();
-		}
-
-		// don't leave mouseElm selected if we selected it above
-		if (me)
-			mouseElm.setSelected(false);
-
-		return allowed;
-	}
-
 	public CircuitNode getCircuitNode(int n) {
 		if (n >= getNodeList().size())
 			return null;
 		return getNodeList().elementAt(n);
-	}
-
-	private CheckboxMenuItem getClassCheckItem(String s, String t) {
-		String shortcut = "";
-		AbstractCircuitElement elm = CircuitElementFactory.constructElement(t, 0, 0);
-		CheckboxMenuItem mi;
-
-		// register(c, elm);
-		if (elm != null) {
-			if (elm.needsShortcut()) {
-				shortcut += (char) elm.getShortcut();
-				shortcuts[elm.getShortcut()] = t;
-			}
-			elm.delete();
-		}
-
-		if (shortcut == "")
-			mi = new CheckboxMenuItem(s);
-		else
-			mi = new CheckboxMenuItem(s, shortcut);
-		
-		mi.setScheduledCommand(new MenuCommand("main", t));
-		mainMenuItems.add(mi);
-		mainMenuItemNames.add(t);
-		return mi;
 	}
 
 	private String getHint() {
@@ -1256,7 +893,7 @@ public class Simmer
         return powerCheckItem;
     }
 
-    private CheckboxMenuItem setPowerCheckItem(CheckboxMenuItem powerCheckItem) {
+    public CheckboxMenuItem setPowerCheckItem(CheckboxMenuItem powerCheckItem) {
         this.powerCheckItem = powerCheckItem;
         return powerCheckItem;
     }
@@ -1281,48 +918,7 @@ public class Simmer
         // }
         // enableUndoRedo();
     }
-
-
-    private MenuBar buildOptionsMenu() {
-		
-		MenuBar optionsMenuBar = new MenuBar(true);
-		optionsMenuBar.addItem(setDotsCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Current"))));
-		getDotsCheckItem().setState(true);
-		optionsMenuBar.addItem(setVoltsCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Voltage"), new Command() {
-			public void execute() {
-				if (getVoltsCheckItem().getState())
-					getPowerCheckItem().setState(false);
-				setPowerBarEnable();
-			}
-		})));
-		optionsMenuBar.addItem(setPowerCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Power"), new Command() {
-			public void execute() {
-				if (getPowerCheckItem().getState())
-					getVoltsCheckItem().setState(false);
-				setPowerBarEnable();
-			}
-		})));
-		optionsMenuBar.addItem(setShowValuesCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Values"))));
-		// m.add(conductanceCheckItem = getCheckItem(MessageI18N.getLocale("Show_Conductance")));
-		optionsMenuBar.addItem(setSmallGridCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("Small_Grid"), new Command() {
-			public void execute() {
-				setGrid();
-			}
-		})));
-		optionsMenuBar.addItem(setEuroResistorCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("European_Resistors"))));
-		optionsMenuBar.addItem(setPrintableCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("White_Background"), new Command() {
-			public void execute() {
-				for (int i = 0; i < scopeCount; i++)
-					scopes[i].setRect(scopes[i].getRect());
-			}
-		})));
-		optionsMenuBar.addItem(setConventionCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("Conventional_Current_Motion"))));
-		optionsMenuBar.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Other_Options..."), new MenuCommand("options", "other")));
-		
-		return optionsMenuBar;
-	}
 	/** end options menu **/
-
 
 	private void bindEventHandlers() {
 		cv.addMouseDownHandler(simmerController);
@@ -1366,14 +962,7 @@ public class Simmer
                     cumheight += 12;
             }
         }
-        // int
-        // ih=RootLayoutPanel.get().getOffsetHeight()-(iFrame.getAbsoluteTop()-RootLayoutPanel.get().getAbsoluteTop());
         int ih = RootLayoutPanel.get().getOffsetHeight() - Display.MENUBARHEIGHT - cumheight;
-        // GWT.log(MessageI18N.getLocale("Root_OH=")+RootLayoutPanel.get().getOffsetHeight());
-        // GWT.log(MessageI18N.getLocale("iF_top=")+iFrame.getAbsoluteTop() );
-        // GWT.log(MessageI18N.getLocale("RP_top=")+RootLayoutPanel.get().getAbsoluteTop());
-        // GWT.log(MessageI18N.getLocale("ih=")+ih);
-        // GWT.log(MessageI18N.getLocale("if_left=")+iFrame.getAbsoluteLeft());
         if (ih < 0)
             ih = 0;
         iFrame.setHeight(ih + "px");
@@ -1568,128 +1157,9 @@ public class Simmer
 		return (a < b) ? a : b;
 	}
 
-	public void mouseDragged(MouseMoveEvent e) {
-		// ignore right mouse button with no modifiers (needed on PC)
-		if (e.getNativeButton() == NativeEvent.BUTTON_RIGHT) {
-			if (!(e.isMetaKeyDown() || e.isShiftKeyDown() || e.isControlKeyDown() || e.isAltKeyDown()))
-				return;
-		}
-
-		if (!circuitArea.contains(e.getX(), e.getY()))
-			return;
-		if (dragElm != null)
-			dragElm.drag(e.getX(), e.getY());
-
-		boolean success = true;
-		switch (tempMouseMode) {
-			case DRAG_ALL:
-				dragAll(snapGrid(e.getX()), snapGrid(e.getY()));
-				break;
-			case DRAG_ROW:
-				dragRow(snapGrid(e.getX()), snapGrid(e.getY()));
-				break;
-			case DRAG_COLUMN:
-				dragColumn(snapGrid(e.getX()), snapGrid(e.getY()));
-				break;
-			case DRAG_POST:
-				if (mouseElm != null)
-					dragPost(snapGrid(e.getX()), snapGrid(e.getY()));
-				break;
-			case SELECT:
-				if (mouseElm == null)
-					selectArea(e.getX(), e.getY());
-				else {
-					tempMouseMode = MouseMode.DRAG_SELECTED;
-					success = dragSelected(e.getX(), e.getY());
-				}
-				break;
-			case DRAG_SELECTED:
-				success = dragSelected(e.getX(), e.getY());
-				break;
-			case ADD_ELM:
-				break;
-		}
-		dragging = true;
-		if (success) {
-			if (tempMouseMode == MouseMode.DRAG_SELECTED && mouseElm instanceof GraphicElm) {
-				dragX = e.getX();
-				dragY = e.getY();
-			} else {
-				dragX = snapGrid(e.getX());
-				dragY = snapGrid(e.getY());
-			}
-		}
-		// cv.repaint(pause);
-	}
-
 	public void needAnalyze() {
 		analyzeFlag = true;
 		// cv.repaint();
-	}
-
-	private void processSetupList(byte b[], int len, final boolean openDefault) {
-		MenuBar currentMenuBar;
-		MenuBar stack[] = new MenuBar[6];
-		int stackptr = 0;
-		currentMenuBar = new MenuBar(true);
-		currentMenuBar.setAutoOpen(true);
-		menuBar.addItem(MessageI18N.getLocale("Circuits"), currentMenuBar);
-		stack[stackptr++] = currentMenuBar;
-		int p;
-		for (p = 0; p < len;) {
-			int l;
-			for (l = 0; l != len - p; l++)
-				if (b[l + p] == '\n') {
-					l++;
-					break;
-				}
-			String line = new String(b, p, l - 1);
-			if (line.charAt(0) == '#')
-				;
-			else if (line.charAt(0) == '+') {
-				// MenuBar n = new Menu(line.substring(1));
-				MenuBar n = new MenuBar(true);
-				n.setAutoOpen(true);
-				currentMenuBar.addItem(line.substring(1), n);
-				currentMenuBar = stack[stackptr++] = n;
-			} else if (line.charAt(0) == '-') {
-				currentMenuBar = stack[--stackptr - 1];
-			} else {
-				int i = line.indexOf(' ');
-				if (i > 0) {
-					String title = line.substring(i + 1);
-					boolean first = false;
-					if (line.charAt(0) == '>')
-						first = true;
-					String file = line.substring(first ? 1 : 0, i);
-					// menu.add(getMenuItem(title, MessageI18N.getLocale("setup_") + file));
-					currentMenuBar.addItem(new MenuItem(title, new MenuCommand("circuits", "setup " + file)));
-					if (first && startCircuit == null) {
-						startCircuit = file;
-						startLabel = title;
-						if (openDefault && stopMessage == null)
-							fileOps.readSetupFile(startCircuit, startLabel, true);
-					}
-				}
-			}
-			p += l;
-		}
-	}
-
-	public void removeZeroLengthElements() {
-		int i;
-		// boolean changed = false;
-		for (i = elmList.size() - 1; i >= 0; i--) {
-			AbstractCircuitElement ce = getElm(i);
-			if (ce.getX1() == ce.getX2() && ce.getY1() == ce.getY2()) {
-				elmList.removeElementAt(i);
-				// fire component removed event
-				// {source: simmer, component: elmList.getElementAt(i)}
-				ce.delete();
-				// changed = true;
-			}
-		}
-		needAnalyze();
 	}
 
 	public void resetAction() {
@@ -1829,23 +1299,10 @@ public class Simmer
 		lastIterTime = lit;
 	}
 
-	private void selectArea(int x, int y) {
-		int x1 = min(x, initDragX);
-		int x2 = max(x, initDragX);
-		int y1 = min(y, initDragY);
-		int y2 = max(y, initDragY);
-		selectedArea = new Rectangle(x1, y1, x2 - x1, y2 - y1);
-		int i;
-		for (i = 0; i != elmList.size(); i++) {
-			AbstractCircuitElement ce = getElm(i);
-			ce.selectRect(selectedArea);
-		}
-	}
-
 	public void setCanvasSize() {
 		int width, height;
-		width = (int) RootLayoutPanel.get().getOffsetWidth();
-		height = (int) RootLayoutPanel.get().getOffsetHeight();
+		width = RootLayoutPanel.get().getOffsetWidth();
+		height = RootLayoutPanel.get().getOffsetHeight();
 		height = height - Display.MENUBARHEIGHT;
 		width = width - Display.VERTICALPANELWIDTH;
 		if (cv != null) {
@@ -1951,10 +1408,6 @@ public class Simmer
 			if (!r.equals(s.getRect()))
 				s.setRect(r);
 		}
-	}
-
-	public int snapGrid(int x) {
-		return (x + gridRound) & gridMask;
 	}
 
 	protected void stackAll() {
@@ -2401,21 +1854,17 @@ public class Simmer
 		return nodeList;
 	}
 
-	private CheckboxMenuItem setConventionCheckItem(CheckboxMenuItem conventionCheckItem) {
+	public CheckboxMenuItem setConventionCheckItem(CheckboxMenuItem conventionCheckItem) {
 		this.conventionCheckItem = conventionCheckItem;
 		return conventionCheckItem;
 	}
 
-	private CheckboxMenuItem setDotsCheckItem(CheckboxMenuItem dotsCheckItem) {
+	public CheckboxMenuItem setDotsCheckItem(CheckboxMenuItem dotsCheckItem) {
 		this.dotsCheckItem = dotsCheckItem;
 		return dotsCheckItem;
 	}
 
-	// public void setElmList(Vector<AbstractCircuitElement> elmList) {
-	// this.elmList = elmList;
-	// }
-
-	private CheckboxMenuItem setEuroResistorCheckItem(CheckboxMenuItem euroResistorCheckItem) {
+	public CheckboxMenuItem setEuroResistorCheckItem(CheckboxMenuItem euroResistorCheckItem) {
 		this.euroResistorCheckItem = euroResistorCheckItem;
 		return euroResistorCheckItem;
 	}
@@ -2424,7 +1873,7 @@ public class Simmer
 		return printableCheckItem;
 	}
 
-	private CheckboxMenuItem setPrintableCheckItem(CheckboxMenuItem printableCheckItem) {
+	public CheckboxMenuItem setPrintableCheckItem(CheckboxMenuItem printableCheckItem) {
 		this.printableCheckItem = printableCheckItem;
 		return printableCheckItem;
 	}
@@ -2437,11 +1886,6 @@ public class Simmer
 	protected CheckboxMenuItem setSmallGridCheckItem(CheckboxMenuItem smallGridCheckItem) {
 		this.smallGridCheckItem = smallGridCheckItem;
 		return smallGridCheckItem;
-	}
-
-	private MenuBar buildEditMenu() {
-		editMenu = new EditMenu(this);
-		return editMenu;
 	}
 
 	public CheckboxMenuItem getShowValuesCheckItem() {
@@ -2485,7 +1929,6 @@ public class Simmer
 	public Scope getScope(int idx){
 		return scopes[idx];
 	}
-
 
 	protected void setAboutBox(AboutBox aboutBox){
 		this.aboutBox = aboutBox;
@@ -2543,7 +1986,6 @@ public class Simmer
 		return circuitArea;
 	}
 
-
 	private void setNodeList(Vector<CircuitNode> nodeList) {
 		this.nodeList = nodeList;
 	}
@@ -2559,10 +2001,6 @@ public class Simmer
 	protected CheckboxMenuItem setVoltsCheckItem(CheckboxMenuItem voltsCheckItem) {
 		this.voltsCheckItem = voltsCheckItem;
 		return voltsCheckItem;
-	}
-
-	public MenuItem getElmScopeMenuItem() {
-		return elmScopeMenuItem;
 	}
 
 	public int getMousePost() {
@@ -2593,8 +2031,16 @@ public class Simmer
 		this.scopeCount = cnt;
 	}
 
+	public ElementPopupMenu getElmMenuBar() {
+		return elmMenuBar;
+	}
+
 	public MenuItem getElmEditMenuItem() {
-		return elmEditMenuItem;
+		return elmMenuBar.getElmEditMenuItem();
+	}
+
+	public MenuItem getElmScopeMenuItem() {
+		return elmMenuBar.getElmScopeMenuItem();
 	}
 
 	public int getInitDragY() {
@@ -2617,12 +2063,8 @@ public class Simmer
 		return initDragX;
 	}
 
-	public MenuBar getElmMenuBar() {
-		return elmMenuBar;
-	}
-
-	public MenuBar getMainMenuBar() {
-		return mainMenuBar;
+	public MenuBar getPopupDrawMenu() {
+		return popupDrawMenu;
 	}
 
 	public AbstractCircuitElement getMenuElm() {
@@ -2830,5 +2272,21 @@ public class Simmer
 
 	public void setAnalyzeFlag(boolean analyzeFlag) {
 		this.analyzeFlag = analyzeFlag;
+	}
+
+	public VerticalPanel getVerticalPanel() {
+		return verticalPanel;
+	}
+
+	public void setLoadFileInput(LoadFile loadFileInput) {
+		this.loadFileInput = loadFileInput;
+	}
+
+	public int getGridRound() {
+		return gridRound;
+	}
+
+	public int getGridMask() {
+		return gridMask;
 	}
 }

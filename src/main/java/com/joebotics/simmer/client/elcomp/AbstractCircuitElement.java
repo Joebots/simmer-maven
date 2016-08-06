@@ -437,8 +437,8 @@ public abstract class AbstractCircuitElement implements Editable {
 	
 	// TODO: Badger: utils
 	public void drag(int xx, int yy) {
-		xx = sim.snapGrid(xx);
-		yy = sim.snapGrid(yy);
+		xx = sim.getSimmerController().snapGrid(xx);
+		yy = sim.getSimmerController().snapGrid(yy);
 		if (noDiagonal) {
 			if (Math.abs(x1 - xx) < Math.abs(y1 - yy)) {
 				xx = x1;

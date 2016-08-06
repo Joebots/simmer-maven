@@ -13,9 +13,12 @@ import com.joebotics.simmer.client.elcomp.ResistorElm;
 import com.joebotics.simmer.client.gui.impl.*;
 import com.joebotics.simmer.client.gui.util.Display;
 import com.joebotics.simmer.client.gui.util.Point;
+import com.joebotics.simmer.client.gui.util.Rectangle;
 import com.joebotics.simmer.client.util.CircuitElementFactory;
 import com.joebotics.simmer.client.util.MessageI18N;
 import com.joebotics.simmer.client.util.MouseModeEnum;
+
+import java.util.List;
 
 public class SimmerController implements MouseDownHandler, MouseWheelHandler, MouseMoveHandler, MouseUpHandler, MouseOutHandler, ClickHandler, DoubleClickHandler, ContextMenuHandler, Event.NativePreviewHandler {
     private final Simmer simmer;
@@ -60,7 +63,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         } else {
             simmer.doMainMenuChecks();
             simmer.setContextPanel(new PopupPanel(true));
-            simmer.getContextPanel().add(simmer.getMainMenuBar());
+            simmer.getContextPanel().add(simmer.getPopupDrawMenu());
             x = Math.max(0, Math.min(e.getNativeEvent().getClientX(), simmer.getCv().getCoordinateSpaceWidth() - 400));
             y = Math.max(0, Math.min(e.getNativeEvent().getClientY(), simmer.getCv().getCoordinateSpaceHeight() - 450));
             simmer.getContextPanel().setPopupPosition(x, y);
@@ -130,8 +133,8 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             return;
         }
 
-        int x0 = simmer.snapGrid(e.getX());
-        int y0 = simmer.snapGrid(e.getY());
+        int x0 = snapGrid(e.getX());
+        int y0 = snapGrid(e.getY());
         if (!simmer.getCircuitArea().contains(x0, y0))
             return;
 
@@ -142,24 +145,230 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         $wnd.console.log(message);
     }-*/;
 
+    public int snapGrid(int x) {
+        return (x + simmer.getGridRound()) & simmer.getGridMask();
+    }
+
+    public boolean dragSelected(int x, int y) {
+        boolean me = false;
+        AbstractCircuitElement mouseElm = simmer.getMouseElm();
+        List<AbstractCircuitElement> elmList = simmer.getElmList();
+
+        if (mouseElm != null && !mouseElm.isSelected())
+            mouseElm.setSelected(me = true);
+
+        // snap grid, unless we're only dragging text elements
+        int i;
+        for (i = 0; i != elmList.size(); i++) {
+            AbstractCircuitElement ce = simmer.getElm(i);
+            if (ce.isSelected() && !(ce instanceof GraphicElm))
+                break;
+        }
+        if (i != elmList.size()) {
+            x = snapGrid(x);
+            y = snapGrid(y);
+        }
+
+        int dx = x - simmer.getDragX();
+        int dy = y - simmer.getDragY();
+        if (dx == 0 && dy == 0) {
+            // don't leave mouseElm selected if we selected it above
+            if (me)
+                mouseElm.setSelected(false);
+            return false;
+        }
+        boolean allowed = true;
+
+        // check if moves are allowed
+        for (i = 0; allowed && i != elmList.size(); i++) {
+            AbstractCircuitElement ce = simmer.getElm(i);
+            if (ce.isSelected() && !ce.allowMove(dx, dy))
+                allowed = false;
+        }
+
+        if (allowed) {
+            for (i = 0; i != elmList.size(); i++) {
+                AbstractCircuitElement ce = simmer.getElm(i);
+
+                if (ce.isSelected())
+                    ce.move(dx, dy);
+            }
+
+            simmer.needAnalyze();
+        }
+
+        // don't leave mouseElm selected if we selected it above
+        if (me)
+            mouseElm.setSelected(false);
+
+        return allowed;
+    }
+
+    public void dragRow(int x, int y) {
+        int dy = y - simmer.getDragY();
+        if (dy == 0)
+            return;
+        int i;
+        for (i = 0; i != simmer.getElmList().size(); i++) {
+            AbstractCircuitElement ce = simmer.getElm(i);
+            if (ce.getY1() == simmer.getDragY())
+                ce.movePoint(0, 0, dy);
+            if (ce.getY2() == simmer.getDragY())
+                ce.movePoint(1, 0, dy);
+        }
+        
+        removeZeroLengthElements();
+    }
+
+
+    public void selectArea(int x, int y) {
+        int initDragX = simmer.getInitDragX();
+        int initDragY = simmer.getInitDragY();
+
+        int x1 = simmer.min(x, initDragX);
+        int x2 = simmer.max(x, initDragX);
+        int y1 = simmer.min(y, initDragY);
+        int y2 = simmer.max(y, initDragY);
+//        selectedArea = new Rectangle(x1, y1, x2 - x1, y2 - y1);
+
+        simmer.setSelectedArea(new Rectangle(x1, y1, x2-x1, y2-y1));
+        for (int i = 0; i != simmer.getElmList().size(); i++) {
+            AbstractCircuitElement ce = simmer.getElm(i);
+            ce.selectRect(simmer.getSelectedArea());
+        }
+    }
+
+    public void dragPost(int x, int y) {
+        int draggingPost = simmer.getDraggingPost();
+        AbstractCircuitElement mouseElm  = simmer.getMouseElm();
+
+        if (draggingPost == -1) {
+            draggingPost = (simmer.distanceSq(mouseElm.getX1(), mouseElm.getY1(), x, y) > simmer.distanceSq(mouseElm.getX2(), mouseElm.getY2(), x, y)) ? 1 : 0;
+        }
+        int dx = x - simmer.getDragX();
+        int dy = y - simmer.getDragY();
+        if (dx == 0 && dy == 0)
+            return;
+        mouseElm.movePoint(draggingPost, dx, dy);
+        simmer.needAnalyze();
+    }
+
+
+    public void dragColumn(int x, int y) {
+        int dragX = simmer.getDragX();
+        int dx = x - dragX;
+        if (dx == 0)
+            return;
+        int i;
+        for (i = 0; i != simmer.getElmList().size(); i++) {
+            AbstractCircuitElement ce = simmer.getElm(i);
+            if (ce.getX1() == dragX)
+                ce.movePoint(0, dx, 0);
+            if (ce.getX2() == dragX)
+                ce.movePoint(1, dx, 0);
+        }
+        removeZeroLengthElements();
+    }
+
+    public void dragAll(int x, int y) {
+        int dragX = simmer.getDragX();
+        int dragY = simmer.getDragY();
+
+        int dx = x - dragX;
+        int dy = y - dragY;
+        if (dx == 0 && dy == 0)
+            return;
+        int i;
+        for (i = 0; i != simmer.getElmList().size(); i++) {
+            AbstractCircuitElement ce = simmer.getElm(i);
+            ce.move(dx, dy);
+        }
+        
+        removeZeroLengthElements();
+    }
+
+
+    public void mouseDragged(MouseMoveEvent e) {
+        // ignore right mouse button with no modifiers (needed on PC)
+        if (e.getNativeButton() == NativeEvent.BUTTON_RIGHT) {
+            if (!(e.isMetaKeyDown() || e.isShiftKeyDown() || e.isControlKeyDown() || e.isAltKeyDown()))
+                return;
+        }
+
+        Rectangle circuitArea = simmer.getCircuitArea();
+        AbstractCircuitElement dragElm = simmer.getDragElm();
+        AbstractCircuitElement mouseElm = simmer.getMouseElm();
+
+        if (!circuitArea.contains(e.getX(), e.getY()))
+            return;
+
+        if (dragElm != null)
+            dragElm.drag(e.getX(), e.getY());
+
+        boolean success = true;
+        switch (simmer.getTempMouseMode()) {
+            case DRAG_ALL:
+                dragAll(snapGrid(e.getX()), snapGrid(e.getY()));
+                break;
+
+            case DRAG_ROW:
+                dragRow(snapGrid(e.getX()), snapGrid(e.getY()));
+                break;
+
+            case DRAG_COLUMN:
+                dragColumn(snapGrid(e.getX()), snapGrid(e.getY()));
+                break;
+
+            case DRAG_POST:
+                if (mouseElm != null)
+                    dragPost(snapGrid(e.getX()), snapGrid(e.getY()));
+                break;
+
+            case SELECT:
+                if (mouseElm == null)
+                    selectArea(e.getX(), e.getY());
+                else {
+                    simmer.setTempMouseMode(MouseModeEnum.MouseMode.DRAG_SELECTED);
+                    success = dragSelected(e.getX(), e.getY());
+                }
+
+                break;
+
+            case DRAG_SELECTED:
+                success = dragSelected(e.getX(), e.getY());
+                break;
+
+            case ADD_ELM:
+                break;
+        }
+
+        simmer.setDragging(true);
+
+        if (success) {
+            if (simmer.getTempMouseMode() == MouseModeEnum.MouseMode.DRAG_SELECTED && mouseElm instanceof GraphicElm) {
+                simmer.setDragX(e.getX());
+                simmer.setDragY(e.getY());
+            } else {
+                simmer.setDragX(snapGrid(e.getX()));
+                simmer.setDragY(snapGrid(e.getY()));
+            }
+        }
+    }
+
     public void onMouseMove(MouseMoveEvent e) {
         e.preventDefault();
         if (simmer.isMouseDragging()) {
-            simmer.mouseDragged(e);
+            mouseDragged(e);
             return;
         }
-        // The following is in the original, but seems not to work/be needed for
-        // GWT
-        // if (e.getNativeButton()==NativeEvent.BUTTON_LEFT)
-        // return;
+
         AbstractCircuitElement newMouseElm = null;
         int x = e.getX();
         int y = e.getY();
-        simmer.setDragX(simmer.snapGrid(x));
-        simmer.setDragY(simmer.snapGrid(y));
+        simmer.setDragX(snapGrid(x));
+        simmer.setDragY(snapGrid(y));
         simmer.setDraggingPost(-1);
         int i;
-        // AbstractCircuitElement origMouse = mouseElm;
 
         simmer.setMousePost(-1);
         simmer.setPlotXElm(null);
@@ -444,10 +653,13 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         }
         if (item == "stackAll")
             simmer.stackAll();
+
         if (item == "unstackAll")
             simmer.unstackAll();
+
         if (menu == "elm" && item == "edit")
             simmer.getEditMenu().doEdit(simmer.getMenuElm());
+
         if (item == "delete") {
             if (menu == "elm")
                 simmer.setMenuElm(null);
@@ -563,4 +775,20 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         return false;
     }
 
+    public void removeZeroLengthElements() {
+        int i;
+        // boolean changed = false;
+        for (i = simmer.getElmList().size() - 1; i >= 0; i--) {
+            AbstractCircuitElement ce = simmer.getElm(i);
+            if (ce.getX1() == ce.getX2() && ce.getY1() == ce.getY2()) {
+                simmer.getElmList().removeElementAt(i);
+                // fire component removed event
+                // {source: simmer, component: elmList.getElementAt(i)}
+                ce.delete();
+                // changed = true;
+            }
+        }
+        
+        simmer.needAnalyze();
+    }
 }

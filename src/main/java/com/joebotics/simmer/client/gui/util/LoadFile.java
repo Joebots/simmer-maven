@@ -45,7 +45,7 @@ public class LoadFile extends FileUpload implements ChangeHandler {
 
 	static public void doLoadCallback(String s) {
 		sim.getFileOps().readSetup(s, false);
-		sim.createNewLoadFile();
+		sim.getFileOps().createNewLoadFile();
 	}
 
 	static public final native boolean isSupported()

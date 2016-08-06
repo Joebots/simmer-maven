@@ -10,6 +10,7 @@ import com.joebotics.simmer.client.gui.impl.ExportAsLocalFileDialog;
 import com.joebotics.simmer.client.gui.impl.ExportAsTextDialog;
 import com.joebotics.simmer.client.gui.impl.ExportAsUrlDialog;
 import com.joebotics.simmer.client.gui.impl.Scope;
+import com.joebotics.simmer.client.gui.util.LoadFile;
 import com.joebotics.simmer.client.gui.util.MenuCommand;
 import com.joebotics.simmer.client.util.CircuitElementFactory;
 import com.joebotics.simmer.client.util.HintTypeEnum;
@@ -248,6 +249,7 @@ public class FileOps {
                     }
                     if (tint >= '0' && tint <= '9')
                         tint = new Integer(type).intValue();
+
                     int x1 = new Integer(st.nextToken()).intValue();
                     int y1 = new Integer(st.nextToken()).intValue();
                     int x2 = new Integer(st.nextToken()).intValue();
@@ -292,13 +294,25 @@ public class FileOps {
 
     protected void readSetupFile(String str, String title, boolean centre) {
         simmer.setT(0);
-        System.out.println(str);
         // try {
         // TODO: Maybe think about some better approach to cache management!
         String url = GWT.getModuleBaseURL();
         url = url.substring(0, url.indexOf("circuitjs1"));
         url = url + "circuits/" + str + "?v=" + simmer.getRandom().nextInt();
         loadFileFromURL(url, centre);
+    }
+
+    public void createNewLoadFile() {
+        // This is a hack to fix what IMHO is a bug in the <INPUT FILE element
+        // reloading the same file doesn't create a change event so importing
+        // the same file twice
+        // doesn't work unless you destroy the original input element and
+        // replace it with a new one
+        int idx = simmer.getVerticalPanel().getWidgetIndex(simmer.getLoadFileInput());
+        LoadFile newlf = new LoadFile(simmer);
+        simmer.getVerticalPanel().insert(newlf, idx);
+        simmer.getVerticalPanel().remove(idx + 1);
+        simmer.setLoadFileInput(newlf);
     }
 
     public void loadFileFromURL(String url, final boolean centre) {

@@ -8,9 +8,9 @@ import com.joebotics.simmer.client.util.MessageI18N;
 /**
  * Created by joe on 7/16/16.
  */
-public class ScopesMenu extends MenuBar {
+public class ScopeStackMenu extends MenuBar {
 
-    public ScopesMenu() {
+    public ScopeStackMenu() {
         super(true);
         this.addItem(new MenuItem(MessageI18N.getLocale("Stack_All"), new MenuCommand("scopes", "stackAll")));
         this.addItem(new MenuItem(MessageI18N.getLocale("Unstack_All"), new MenuCommand("scopes", "unstackAll")));

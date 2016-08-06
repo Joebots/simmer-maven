@@ -53,7 +53,7 @@ public class OpAmpElm extends AbstractCircuitElement {
 		maxOut = 15;
 		minOut = -15;
 		gbw = 1e6;
-		setSize(sim.getSmallGridCheckItem().getState() ? 1 : 2);
+		setSize(sim.getSmallGridCheckItem() != null && sim.getSmallGridCheckItem().getState() ? 1 : 2);
 		setGain();
 	}
 

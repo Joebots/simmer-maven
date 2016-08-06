@@ -198,7 +198,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 			bits = (this instanceof DecadeElm) ? 10 : 4;
 		setNoDiagonal(true);
 		setupPins();
-		setSize(sim.getSmallGridCheckItem().getState() ? 1 : 2);
+		setSize(sim.getSmallGridCheckItem() != null && sim.getSmallGridCheckItem().getState() ? 1 : 2);
 	}
 	public ChipElm(int xa, int ya, int xb, int yb, int f, StringTokenizer st) {
 		super(xa, ya, xb, yb, f);
@@ -233,13 +233,13 @@ public abstract class ChipElm extends AbstractCircuitElement {
 	}
 
 	public void drag(int xx, int yy) {
-		yy = sim.snapGrid(yy);
+		yy = sim.getSimmerController().snapGrid(yy);
 		if (xx < getX1()) {
 			xx = getX1();
 			yy = getY1();
 		} else {
 			setY1(setY2(yy));
-			setX2(sim.snapGrid(xx));
+			setX2(sim.getSimmerController().snapGrid(xx));
 		}
 		setPoints();
 	}

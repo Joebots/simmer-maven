@@ -16,12 +16,13 @@ import java.util.Vector;
  */
 public class DrawMenu extends MenuBar{
     
-    private Vector<String> mainMenuItemNames	= new Vector<String>();
+    private Vector<String>                  mainMenuItemNames	= new Vector<String>();
     private Vector<CheckboxMenuItem>		mainMenuItems		= new Vector<CheckboxMenuItem>();
     private Simmer simmer;
 
     public DrawMenu(Simmer simmer, boolean vertical){
         super(vertical);
+        setAutoOpen(true);
         this.simmer = simmer;
         this.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Wire"), "WireElm"));
         this.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Resistor"), "ResistorElm"));
@@ -57,7 +58,6 @@ public class DrawMenu extends MenuBar{
         inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_AM_Source"), "AMElm"));
         inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_FM_Source"), "FMElm"));
         inputMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Current_Source"), "CurrentElm"));
-
         this.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Inputs_and_Sources")), inputMenuBar);
 
         // Outputs and Labels
@@ -81,19 +81,18 @@ public class DrawMenu extends MenuBar{
         activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_JFET_(N-Channel)"), "NJfetElm"));
         activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_JFET_(P-Channel)"), "PJfetElm"));
         activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_SCR"), "SCRElm"));
-        // activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Varactor/Varicap"),
-        // MessageI18N.getLocale("VaractorElm"));
+        activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Varactor/Varicap"), "VaractorElm"));
         activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Tunnel_Diode"), "TunnelDiodeElm"));
         activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Triode"), "TriodeElm"));
-        // activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Diac"), MessageI18N.getLocale("DiacElm"));
-        // activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Triac"), MessageI18N.getLocale("TriacElm"));
-        // activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Photoresistor"),
-        // MessageI18N.getLocale("PhotoResistorElm"));
-        // activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Thermistor"),
-        // MessageI18N.getLocale("ThermistorElm"));
+
+        // missing i18n defs for property names
+//        activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Diac"), "DiacElm"));
+//        activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Triac"), "TriacElm"));
+//        activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Photoresistor"), "PhotoResistorElm"));
+//        activeMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Thermistor"), "ThermistorElm"));
         this.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Active_Components")), activeMenuBar);
 
-        // Active Building Blocks
+//        // Active Building Blocks
         MenuBar activeBlocMenuBar = new MenuBar(true);
         activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Op_Amp_(-_on_top)"), "OpAmpElm"));
         activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Op_Amp_(+_on_top)"), "OpAmpSwapElm"));
@@ -105,8 +104,8 @@ public class DrawMenu extends MenuBar{
         activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_CCII+"), "CC2Elm"));
         activeBlocMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_CCII-"), "CC2NegElm"));
         this.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getLocale("Active_Building_Blocks")), activeBlocMenuBar);
-
-        // Logic Gates, Input and Output
+//
+//        // Logic Gates, Input and Output
         MenuBar gateMenuBar = new MenuBar(true);
         gateMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Logic_Input"), "LogicInputElm"));
         gateMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Logic_Output"), "LogicOutputElm"));
@@ -132,7 +131,10 @@ public class DrawMenu extends MenuBar{
         chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Counter"), "CounterElm"));
         chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Decade_Counter"), "DecadeElm"));
         chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Latch"), "LatchElm"));
-        // chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Static_RAM"), MessageI18N.getLocale("SRAMElm"));
+
+        // missing i18n key
+        //chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Static_RAM"), "SRAMElm");
+
         chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Sequence_generator"), "SeqGenElm"));
         chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Full_Adder"), "FullAdderElm"));
         chipMenuBar.addItem(getClassCheckItem(MessageI18N.getLocale("Add_Half_Adder"), "HalfAdderElm"));
@@ -170,11 +172,10 @@ public class DrawMenu extends MenuBar{
     }
 
     private CheckboxMenuItem getClassCheckItem(String s, String t) {
-        // try {
-        // Class c = Class.forName(t);
         String shortcut = "";
         AbstractCircuitElement elm = CircuitElementFactory.constructElement(t, 0, 0);
         CheckboxMenuItem mi;
+
         // register(c, elm);
         if (elm != null) {
             if (elm.needsShortcut()) {
@@ -183,11 +184,6 @@ public class DrawMenu extends MenuBar{
             }
             elm.delete();
         }
-        // else
-        // GWT.log(MessageI18N.getLocale("Coudn't_create_class:_")+t);
-        // } catch (Exception ee) {
-        // ee.printStackTrace();
-        // }
         if (shortcut == "")
             mi = new CheckboxMenuItem(s);
         else

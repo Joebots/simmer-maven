@@ -76,8 +76,8 @@ public class TransLineElm extends AbstractCircuitElement {
 	}
 
 	public void drag(int xx, int yy) {
-		xx = sim.snapGrid(xx);
-		yy = sim.snapGrid(yy);
+		xx = sim.getSimmerController().snapGrid(xx);
+		yy = sim.getSimmerController().snapGrid(yy);
 		int w1 = max(sim.getGridSize(), abs(yy - getY1()));
 		int w2 = max(sim.getGridSize(), abs(xx - getX1()));
 		if (w1 > w2) {
