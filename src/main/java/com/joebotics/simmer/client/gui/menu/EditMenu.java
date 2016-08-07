@@ -1,16 +1,21 @@
-package com.joebotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui.menu;
 
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.joebotics.simmer.client.Simmer;
 import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
+import com.joebotics.simmer.client.gui.dialog.EditDialog;
+import com.joebotics.simmer.client.gui.Editable;
 import com.joebotics.simmer.client.gui.util.MenuCommand;
 import com.joebotics.simmer.client.gui.util.Rectangle;
 import com.joebotics.simmer.client.util.MessageI18N;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.google.gwt.user.client.Window.*;
 
 /**
  * Created by joe on 7/16/16.
@@ -65,7 +70,14 @@ public class EditMenu extends MenuBar{
         undoItem.setEnabled(undoStack.size() > 0);
     }
 
+    private native void log( String msgs )/*-{
+        $wnd.console.log(msgs)
+    }-*/;
+
     public void pushUndo() {
+
+        log("pushUndo");
+
         redoStack.clear();
         String circuit = simmer.getFileOps().dumpCircuit();
 
@@ -76,8 +88,21 @@ public class EditMenu extends MenuBar{
         enableUndoRedo();
     }
 
+
+    public void doUndo() {
+
+        if (undoStack.size() == 0)
+            return;
+
+        redoStack.add(simmer.getFileOps().dumpCircuit());
+        String s = undoStack.remove(undoStack.size() - 1);
+        simmer.getFileOps().readSetup(s, false);
+        enableUndoRedo();
+    }
+
     public void doRedo() {
         String circuit = simmer.getFileOps().dumpCircuit();
+
         if (redoStack.size() == 0)
             return;
 
@@ -212,15 +237,6 @@ public class EditMenu extends MenuBar{
         simmer.needAnalyze();
     }
 
-    public void doUndo() {
-        if (undoStack.size() == 0)
-            return;
-        redoStack.add(simmer.getFileOps().dumpCircuit());
-        String s = undoStack.remove(undoStack.size() - 1);
-        simmer.getFileOps().readSetup(s, false);
-        enableUndoRedo();
-    }
-
     public void doSelectAll() {
         for (int i = 0; i != simmer.getElmList().size(); i++) {
             AbstractCircuitElement ce = simmer.getElm(i);
@@ -241,8 +257,10 @@ public class EditMenu extends MenuBar{
         AbstractCircuitElement menuElm = simmer.getSelectedCircuitElement();
 
         if (menuElm != null) {
+
             if (menuElm.isSelected())
                 return;
+
             this.doSelectNone();
             menuElm.setSelected(true);
         }

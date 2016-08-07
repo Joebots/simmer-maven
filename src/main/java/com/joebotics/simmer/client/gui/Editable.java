@@ -1,4 +1,4 @@
-package com.joebotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui;
 
 
 

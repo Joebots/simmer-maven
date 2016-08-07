@@ -17,9 +17,11 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.joebotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui;
 
 import com.google.gwt.user.client.ui.TextBox;
+import com.joebotics.simmer.client.gui.widget.Checkbox;
+import com.joebotics.simmer.client.gui.widget.Choice;
 
 public class EditInfo {
 

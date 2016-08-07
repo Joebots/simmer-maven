@@ -1,4 +1,4 @@
-package com.joebotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui.menu;
 
 import com.google.gwt.user.client.ui.MenuBar;
 import com.joebotics.simmer.client.Simmer;
@@ -13,7 +13,7 @@ public class MainMenuBar extends MenuBar {
     private DrawMenu drawMenu;
     private FileMenu fileMenu;
     private ScopeStackMenu scopeStackMenu;
-    private OptionsMenuBar optionsMenuBar;
+    private OptionsMenu optionsMenuBar;
 
     public MainMenuBar(Simmer simmer){
         MenuBar menuBar = this;
@@ -21,7 +21,7 @@ public class MainMenuBar extends MenuBar {
         menuBar.addItem(MessageI18N.getMessage("Edit"), editMenu = new EditMenu(simmer));
         menuBar.addItem(MessageI18N.getMessage("Draw"), drawMenu = new DrawMenu(simmer, true));
         menuBar.addItem(MessageI18N.getMessage("Scopes"), scopeStackMenu = new ScopeStackMenu());
-        menuBar.addItem(MessageI18N.getMessage("Options"), optionsMenuBar = new OptionsMenuBar(simmer));
+        menuBar.addItem(MessageI18N.getMessage("Options"), optionsMenuBar = new OptionsMenu(simmer));
     }
 
     public EditMenu getEditMenu() {
@@ -40,7 +40,7 @@ public class MainMenuBar extends MenuBar {
         return scopeStackMenu;
     }
 
-    public OptionsMenuBar getOptionsMenuBar() {
+    public OptionsMenu getOptionsMenuBar() {
         return optionsMenuBar;
     }
 }

@@ -1,4 +1,4 @@
-package com.joebotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -6,6 +6,7 @@ import com.google.gwt.user.client.ui.*;
 import com.joebotics.simmer.client.Simmer;
 import com.joebotics.simmer.client.gui.util.Display;
 import com.joebotics.simmer.client.gui.util.LoadFile;
+import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.util.MessageI18N;
 
 /**
@@ -18,7 +19,7 @@ public class SidePanel extends VerticalPanel{
     private Label powerLabel;
     private Button resetButton;
     private Scrollbar                       currentBar;
-    private Checkbox						stoppedCheck;
+    private Checkbox stoppedCheck;
     private Frame iFrame;
     private Scrollbar						speedBar;
 

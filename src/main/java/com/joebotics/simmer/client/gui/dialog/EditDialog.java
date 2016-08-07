@@ -17,7 +17,7 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.joebotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui.dialog;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -39,6 +39,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.joebotics.simmer.client.Simmer;
+import com.joebotics.simmer.client.gui.EditInfo;
+import com.joebotics.simmer.client.gui.Editable;
 
 // class EditDialog extends Dialog implements AdjustmentListener,
 // ActionListener, ItemListener {

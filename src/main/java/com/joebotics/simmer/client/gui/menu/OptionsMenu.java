@@ -1,18 +1,17 @@
-package com.joebotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui.menu;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.joebotics.simmer.client.Simmer;
-import com.joebotics.simmer.client.gui.impl.CheckboxAlignedMenuItem;
-import com.joebotics.simmer.client.gui.impl.CheckboxMenuItem;
-import com.joebotics.simmer.client.gui.impl.Scope;
+import com.joebotics.simmer.client.gui.widget.CheckboxAlignedMenuItem;
+import com.joebotics.simmer.client.gui.widget.CheckboxMenuItem;
 import com.joebotics.simmer.client.gui.util.MenuCommand;
 import com.joebotics.simmer.client.util.MessageI18N;
 
 /**
  * Created by joe on 8/5/16.
  */
-public class OptionsMenuBar extends MenuBar {
+public class OptionsMenu extends MenuBar {
 
     private Command voltageHandler = new Command() {
         @Override
@@ -47,7 +46,7 @@ public class OptionsMenuBar extends MenuBar {
     };
 
     private Simmer simmer;
-    private CheckboxMenuItem                conventionCheckItem = new CheckboxMenuItem(MessageI18N.getMessage("Conventional_Current_Motion"), new MenuCommand("options", "other"));
+    private CheckboxMenuItem conventionCheckItem = new CheckboxMenuItem(MessageI18N.getMessage("Conventional_Current_Motion"), new MenuCommand("options", "other"));
     private CheckboxMenuItem				euroResistorCheckItem = new CheckboxMenuItem(MessageI18N.getMessage("European_Resistors"));
     private CheckboxMenuItem				dotsCheckItem = new CheckboxMenuItem(MessageI18N.getMessage("Show_Current"));
     private CheckboxMenuItem				showValuesCheckItem = new CheckboxMenuItem(MessageI18N.getMessage("Show_Values"));
@@ -55,9 +54,9 @@ public class OptionsMenuBar extends MenuBar {
     private CheckboxMenuItem				voltsCheckItem = new CheckboxMenuItem(MessageI18N.getMessage("Show_Voltage"), voltageHandler);
     private CheckboxMenuItem				powerCheckItem = new CheckboxMenuItem(MessageI18N.getMessage("Show_Power"), powerHandler);
     private CheckboxMenuItem                backgroundCheckItem = new CheckboxMenuItem(MessageI18N.getMessage("White_Background"), backgroundHandler);
-    private CheckboxAlignedMenuItem         otherOptions = new CheckboxAlignedMenuItem(MessageI18N.getMessage("Other_Options..."), new MenuCommand("options", "other"));
+    private CheckboxAlignedMenuItem otherOptions = new CheckboxAlignedMenuItem(MessageI18N.getMessage("Other_Options..."), new MenuCommand("options", "other"));
 
-    public OptionsMenuBar(Simmer simmer) {
+    public OptionsMenu(Simmer simmer) {
         super(true);
         this.simmer = simmer;
         layout();

@@ -1,4 +1,4 @@
-package com.joebotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui.menu;
 
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;

@@ -88,7 +88,7 @@ import com.joebotics.simmer.client.elcomp.chips.SevenSegElm;
 import com.joebotics.simmer.client.elcomp.chips.SipoShiftElm;
 import com.joebotics.simmer.client.elcomp.chips.TFlipFlopElm;
 import com.joebotics.simmer.client.elcomp.chips.TimerElm;
-import com.joebotics.simmer.client.gui.impl.BoxElm;
+import com.joebotics.simmer.client.elcomp.BoxElm;
 
 public class CircuitElementFactory {
 	

@@ -17,47 +17,44 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.joebotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui.dialog;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class ExportAsLocalFileDialog extends DialogBox {
+public class ExportAsTextDialog extends DialogBox {
 
-	static public final native boolean downloadIsSupported()
-	/*-{
-		return !!(("download" in $doc.createElement("a")));
-	 }-*/;
+	VerticalPanel vp;
 
-	static public final native String getBlobUrl(String data)
-	/*-{
-		var datain=[""];
-		datain[0]=data;
-		var blob=new Blob(datain, {type: 'text/plain' } );
-		var url = URL.createObjectURL(blob);
-		return url;
-	}-*/;
-
-	private VerticalPanel vp;
-
-	public ExportAsLocalFileDialog(String data) {
+	public ExportAsTextDialog(String s) {
 		super();
+		// RichTextArea tb;
+		TextArea ta;
 		Button okButton;
-		Anchor a;
-		String url;
+		Label la2;
+//		SafeHtml html;
 		vp = new VerticalPanel();
 		setWidget(vp);
-		setText("Export as Local File");
-		vp.add(new Label("Click on the link below to save your circuit"));
-		url = getBlobUrl(data);
-		a = new Anchor("my circuit.txt", url);
-		a.getElement().setAttribute("Download", "my circuit.txt");
-		vp.add(a);
+		setText("Export as Text");
+		vp.add(new Label("Text file for this circuit is..."));
+		// vp.add(tb = new RichTextArea());
+		// html=SafeHtmlUtils.fromString(s);
+		// html=SafeHtmlUtils.fromTrustedString(html.asString().replace("\n",
+		// "<BR>"));
+		// tb.setHTML(html);
+		vp.add(ta = new TextArea());
+		ta.setWidth("300px");
+		ta.setHeight("200px");
+		ta.setText(s);
+		vp.add(la2 = new Label(
+				"To save this file select it all (eg click in text and type control-A) and copy to your clipboard (eg control-C) before pasting to an empty text file (eg on Windows Notepad) and saving as a new file.",
+				true));
+		la2.setWidth("300px");
 		vp.add(okButton = new Button("OK"));
 		okButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {

@@ -17,17 +17,26 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.joebotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui.widget;
 
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.MenuItem;
+import com.google.gwt.user.client.ui.CheckBox;
 
-public class CheckboxAlignedMenuItem extends MenuItem {
+public class Checkbox extends CheckBox {
+	public Checkbox(String s) {
+		super(s);
+	}
 
-	public CheckboxAlignedMenuItem(String s, Command cmd) {
-		super(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml
-				+ "&nbsp;</div>" + s), cmd);
+	public Checkbox(String s, boolean b) {
+		super(s);
+		this.setValue(b);
+	}
+
+	public boolean getState() {
+		return this.getValue();
+	}
+
+	public void setState(boolean s) {
+		this.setValue(s);
 	}
 
 }

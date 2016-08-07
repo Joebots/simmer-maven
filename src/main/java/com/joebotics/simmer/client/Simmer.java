@@ -32,7 +32,12 @@ import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.*;
 import com.joebotics.simmer.client.breadboard.CircuitLibrary;
 import com.joebotics.simmer.client.elcomp.*;
-import com.joebotics.simmer.client.gui.impl.*;
+import com.joebotics.simmer.client.gui.*;
+import com.joebotics.simmer.client.gui.dialog.*;
+import com.joebotics.simmer.client.gui.menu.DrawMenu;
+import com.joebotics.simmer.client.gui.menu.ElementPopupMenu;
+import com.joebotics.simmer.client.gui.menu.MainMenuBar;
+import com.joebotics.simmer.client.gui.menu.ScrollValuePopup;
 import com.joebotics.simmer.client.gui.util.*;
 import com.joebotics.simmer.client.integration.NativeJavascriptWrapper;
 import com.joebotics.simmer.client.util.*;
@@ -43,8 +48,9 @@ import java.util.Vector;
 
 public class Simmer
 {
-	private static String					muString			= "u";
+	public static final String				muString			= "u";
 	public static final String				ohmString			= "ohm";
+
 	private final SimmerController simmerController = new SimmerController(this);
 	private final FileOps fileOps = new FileOps(this);
 	private SidePanel sidePanel = new SidePanel(this);
@@ -95,13 +101,13 @@ public class Simmer
 
 	private long							mytime				= 0;
 
-	private static AboutBox 				aboutBox;
-	private static EditDialog 				editDialog;
-	private static ExportAsLocalFileDialog	exportAsLocalFileDialog;
-	private static ExportAsTextDialog		exportAsTextDialog;
-	private static ExportAsUrlDialog		exportAsUrlDialog;
-	private static ImportFromTextDialog 	importFromTextDialog;
-	private static ScrollValuePopup			scrollValuePopup;
+	private static AboutBox aboutBox;
+	private static EditDialog editDialog;
+	private static ExportAsLocalFileDialog exportAsLocalFileDialog;
+	private static ExportAsTextDialog exportAsTextDialog;
+	private static ExportAsUrlDialog exportAsUrlDialog;
+	private static ImportFromTextDialog importFromTextDialog;
+	private static ScrollValuePopup scrollValuePopup;
 
 	private MouseMode						mouseMode			= MouseMode.SELECT;
 	private MouseMode						tempMouseMode		= MouseMode.SELECT;
@@ -128,6 +134,9 @@ public class Simmer
 	private boolean							analyzeFlag;
 	private boolean							dragging;
 	private boolean							mouseDragging;
+
+	private ElementPopupMenu							elmMenuBar;
+	private Scope							scopes[];
 
 	public ImportFromTextDialog getImportFromTextDialog() {
 		return importFromTextDialog;
@@ -702,9 +711,6 @@ public class Simmer
 				return true;
 		return false;
 	}
-
-    private ElementPopupMenu							elmMenuBar;
-    private Scope							scopes[];
 
 	private void calcCircuitBottom() {
 		int i;
@@ -1434,22 +1440,32 @@ public class Simmer
 		 * mouseElm.x+10, mouseElm.y); }
 		 */
 		if (dragElm != null && (dragElm.getX1() != dragElm.getX2() || dragElm.getY1() != dragElm.getY2())) {
+
 			dragElm.draw(g);
 			dragElm.drawHandles(g, Color.cyan);
 		}
+
 		g.setFont(oldfont);
 		int ct = scopeCount;
+
 		if (stopMessage != null)
 			ct = 0;
+
 		for (i = 0; i != ct; i++)
 			scopes[i].draw(g);
+
 		g.setColor(AbstractCircuitElement.whiteColor);
+
 		if (stopMessage != null) {
 			g.drawString(stopMessage, 10, circuitArea.height - 10);
+
 		} else {
+
 			if (circuitBottom == 0)
 				calcCircuitBottom();
+
 			String info[] = new String[10];
+
 			if (mouseElm != null) {
 				if (mousePost == -1)
 					mouseElm.getInfo(info);
@@ -1459,6 +1475,7 @@ public class Simmer
 				info[0] = "t = " + AbstractCircuitElement.getUnitText(t, "s");
 				// AbstractCircuitElement.showFormat.setMinimumFractionDigits(0);
 			}
+
 			if (hintType != HintType.HINT_UNSET) {
 				for (i = 0; info[i] != null; i++)
 					;
@@ -1468,6 +1485,7 @@ public class Simmer
 				else
 					info[i] = s;
 			}
+
 			int x = 0;
 			if (ct != 0)
 				x = scopes[ct - 1].rightEdge() + 20;
@@ -1477,6 +1495,7 @@ public class Simmer
 			// count lines of data
 			for (i = 0; info[i] != null; i++)
 				;
+
 			if (badnodes > 0)
 				info[i++] = badnodes + ((badnodes == 1) ? MessageI18N.getMessage("_bad_connection") : MessageI18N.getMessage("_bad_connections"));
 
@@ -1486,6 +1505,7 @@ public class Simmer
 			int ybase = cv.getCoordinateSpaceHeight() - 15 * i - 5;
 			ybase = MathUtil.min(ybase, circuitArea.height);
 			ybase = MathUtil.max(ybase, circuitBottom);
+
 			for (i = 0; info[i] != null; i++)
 				g.drawString(info[i], x, ybase + 15 * (i + 1));
 		}
@@ -1570,10 +1590,6 @@ public class Simmer
 		this.importFromTextDialog = dialog;
 	}
 
-	public void setIFrame(Frame iFrame){
-//		this.iFrame = iFrame;
-	}
-
 	public MouseMode getMouseMode() {
 		return mouseMode;
 	}
@@ -1581,10 +1597,6 @@ public class Simmer
 	public Vector<CircuitNode> getNodeList() {
 		return nodeList;
 	}
-
-//	public Checkbox getStoppedCheck() {
-////		return stoppedCheck;
-//	}
 
 	public double getT() {
 		return t;
@@ -1833,18 +1845,6 @@ public class Simmer
 		this.hintType = hintType;
 	}
 
-//	public Scrollbar getSpeedBar() {
-//		return speedBar;
-//	}
-
-//	public Scrollbar getCurrentBar() {
-//		return currentBar;
-//	}
-
-//	public Scrollbar getPowerBar() {
-//		return powerBar;
-//	}
-
 	public HintType getHintType() {
 		return hintType;
 	}
@@ -1924,10 +1924,6 @@ public class Simmer
 	public void setAnalyzeFlag(boolean analyzeFlag) {
 		this.analyzeFlag = analyzeFlag;
 	}
-
-//	public VerticalPanel getVerticalPanel() {
-//		return verticalPanel;
-//	}
 
 	public void setLoadFileInput(LoadFile loadFileInput) {
 		this.loadFileInput = loadFileInput;

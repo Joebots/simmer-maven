@@ -23,9 +23,8 @@ package com.joebotics.simmer.client.elcomp;
 //import java.util.StringTokenizer;
 import java.util.Vector;
 
-import com.joebotics.simmer.client.gui.impl.Checkbox;
-import com.joebotics.simmer.client.gui.impl.EditInfo;
-import com.joebotics.simmer.client.gui.impl.GraphicElm;
+import com.joebotics.simmer.client.gui.widget.Checkbox;
+import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Font;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.util.StringTokenizer;

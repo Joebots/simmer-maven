@@ -17,7 +17,7 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.joebotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui.menu;
 
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
@@ -35,6 +35,7 @@ import com.joebotics.simmer.client.elcomp.CapacitorElm;
 import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
 import com.joebotics.simmer.client.elcomp.InductorElm;
 import com.joebotics.simmer.client.elcomp.ResistorElm;
+import com.joebotics.simmer.client.gui.EditInfo;
 
 public class ScrollValuePopup extends PopupPanel implements MouseOutHandler,
 		MouseWheelHandler, MouseDownHandler {
@@ -124,8 +125,7 @@ public class ScrollValuePopup extends PopupPanel implements MouseOutHandler,
 	}
 
 	public void onMouseDown(MouseDownEvent e) {
-		if (e.getNativeButton() == NativeEvent.BUTTON_LEFT
-				|| e.getNativeButton() == NativeEvent.BUTTON_MIDDLE)
+		if (e.getNativeButton() == NativeEvent.BUTTON_LEFT || e.getNativeButton() == NativeEvent.BUTTON_MIDDLE)
 			close(true);
 		else
 			close(false);

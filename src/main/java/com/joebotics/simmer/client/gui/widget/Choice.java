@@ -17,26 +17,21 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.joebotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui.widget;
 
-import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.ListBox;
 
-public class Checkbox extends CheckBox {
-	public Checkbox(String s) {
-		super(s);
+public class Choice extends ListBox {
+
+	public Choice() {
+		super();
 	}
 
-	public Checkbox(String s, boolean b) {
-		super(s);
-		this.setValue(b);
+	public void add(String s) {
+		this.addItem(s);
 	}
 
-	public boolean getState() {
-		return this.getValue();
+	public void select(int i) {
+		this.setSelectedIndex(i);
 	}
-
-	public void setState(boolean s) {
-		this.setValue(s);
-	}
-
 }

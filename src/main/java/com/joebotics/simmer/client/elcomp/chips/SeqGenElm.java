@@ -20,8 +20,8 @@
 package com.joebotics.simmer.client.elcomp.chips;
 
 import com.joebotics.simmer.client.elcomp.ChipElm;
-import com.joebotics.simmer.client.gui.impl.Checkbox;
-import com.joebotics.simmer.client.gui.impl.EditInfo;
+import com.joebotics.simmer.client.gui.widget.Checkbox;
+import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 //import java.awt.*;

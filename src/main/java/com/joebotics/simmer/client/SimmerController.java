@@ -6,11 +6,11 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
-import com.joebotics.simmer.client.elcomp.CapacitorElm;
-import com.joebotics.simmer.client.elcomp.InductorElm;
-import com.joebotics.simmer.client.elcomp.ResistorElm;
-import com.joebotics.simmer.client.gui.impl.*;
+import com.joebotics.simmer.client.elcomp.*;
+import com.joebotics.simmer.client.gui.*;
+import com.joebotics.simmer.client.gui.dialog.AboutBox;
+import com.joebotics.simmer.client.gui.dialog.ImportFromTextDialog;
+import com.joebotics.simmer.client.gui.menu.ScrollValuePopup;
 import com.joebotics.simmer.client.gui.util.Display;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.gui.util.Rectangle;
@@ -23,6 +23,7 @@ import java.util.List;
 
 public class SimmerController implements MouseDownHandler, MouseWheelHandler, MouseMoveHandler, MouseUpHandler, MouseOutHandler, ClickHandler, DoubleClickHandler, ContextMenuHandler, Event.NativePreviewHandler {
     private final Simmer simmer;
+    private boolean dragStarted = false;
 
     public SimmerController(Simmer simmer) {
         this.simmer = simmer;
@@ -36,15 +37,29 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
     }
 
     public void onContextMenu(ContextMenuEvent e) {
+
         e.preventDefault();
         int x, y;
         simmer.setSelectedCircuitElement(simmer.getMouseElm());
         simmer.setMenuScope(-1);
 
         if (simmer.getScopeSelected() != -1) {
-            MenuBar m = simmer.getScopes()[simmer.getScopeSelected()].getMenu();
+            log("onContextMenu:" + simmer.getScopeSelected() + e.getRelativeElement());
 
-            Window.alert(simmer.getScopeSelected() + " " + m);
+            MenuBar m = null;
+
+            try {
+                Scope scope = simmer.getScope(simmer.getScopeSelected());
+                log("scope:" + scope);
+                log("menu:" + scope.getMenu());
+                 m = simmer.getScopes()[simmer.getScopeSelected()].getMenu();
+            }
+            catch(Throwable t){
+                log("CAUGHT AN ERROR");
+                log(simmer.getScopes().length + "\t" + simmer.getScopeSelected());
+                t.printStackTrace();
+            }
+            log(m + "");
 
             simmer.setMenuScope(simmer.getScopeSelected());
             if (m != null) {
@@ -89,6 +104,11 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
 
         simmer.setMouseDragging(true);
 
+        if( dragStarted == false ){
+            dragStarted = true;
+            simmer.getMainMenuBar().getEditMenu().pushUndo();
+        }
+
         if (e.getNativeButton() == NativeEvent.BUTTON_LEFT) {
             // // left mouse
             simmer.setTempMouseMode(simmer.getMouseMode());
@@ -130,6 +150,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         simmer.setInitDragX(e.getX());
         simmer.setInitDragY(e.getY());
         simmer.setDragging(true);
+
         if (simmer.getTempMouseMode() != MouseModeEnum.MouseMode.ADD_ELM) {
             return;
         }
@@ -221,7 +242,6 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         removeZeroLengthElements();
     }
 
-
     public void selectArea(int x, int y) {
         int initDragX = simmer.getInitDragX();
         int initDragY = simmer.getInitDragY();
@@ -253,7 +273,6 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         mouseElm.movePoint(draggingPost, dx, dy);
         simmer.needAnalyze();
     }
-
 
     public void dragColumn(int x, int y) {
         int dragX = simmer.getDragX();
@@ -287,7 +306,6 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         
         removeZeroLengthElements();
     }
-
 
     public void mouseDragged(MouseMoveEvent e) {
         // ignore right mouse button with no modifiers (needed on PC)
@@ -358,6 +376,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
 
     public void onMouseMove(MouseMoveEvent e) {
         e.preventDefault();
+
         if (simmer.isMouseDragging()) {
             mouseDragged(e);
             return;
@@ -469,23 +488,30 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
 
     public void onMouseUp(MouseUpEvent e) {
         e.preventDefault();
+
+        dragStarted = false;
         simmer.setMouseDragging(false);
         simmer.setTempMouseMode(simmer.getMouseMode());
         simmer.setSelectedArea(null);
         simmer.setDragging(false);
         boolean circuitChanged = false;
+
         if (simmer.getHeldSwitchElm() != null) {
             simmer.getHeldSwitchElm().mouseUp();
             simmer.setHeldSwitchElm(null);
             circuitChanged = true;
         }
+
+
         if (simmer.getDragElm() != null) {
             // if the element is zero size then don't create it
             // IES - and disable any previous selection
             if (simmer.getDragElm().getX1() == simmer.getDragElm().getX2() && simmer.getDragElm().getY1() == simmer.getDragElm().getY2()) {
                 simmer.getDragElm().delete();
+
                 if (simmer.getMouseMode() == MouseModeEnum.MouseMode.SELECT || simmer.getMouseMode() == MouseModeEnum.MouseMode.DRAG_SELECTED)
                     simmer.getMainMenuBar().getEditMenu().doSelectNone();
+
             } else {
                 simmer.getElmList().addElement(simmer.getDragElm());
                 // fire component added
@@ -494,10 +520,15 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             }
             simmer.setDragElm(null);
         }
-        if (circuitChanged)
+
+        if (circuitChanged) {
             simmer.needAnalyze();
-        if (simmer.getDragElm() != null)
+        }
+
+        if (simmer.getDragElm() != null){
             simmer.getDragElm().delete();
+        }
+
         simmer.setDragElm(null);
         // cv.repaint();
     }
@@ -513,6 +544,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         int cc = e.getNativeEvent().getCharCode();
         int t = e.getTypeInt();
         int code = e.getNativeEvent().getKeyCode();
+
         if (dialogIsShowing()) {
             if (Simmer.getScrollValuePopup() != null && Simmer.getScrollValuePopup().isShowing() && (t & Event.ONKEYDOWN) != 0) {
                 if (code == KeyCodes.KEY_ESCAPE || code == KeyCodes.KEY_SPACE)
@@ -536,12 +568,14 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
                 simmer.getMainMenuBar().getEditMenu().doDelete();
                 e.cancel();
             }
+
             if (code == KeyCodes.KEY_ESCAPE) {
                 simmer.setMouseMode(MouseModeEnum.MouseMode.SELECT);
                 simmer.setMouseModeStr(MessageI18N.getMessage("Select"));
                 simmer.setTempMouseMode(simmer.getMouseMode());
                 e.cancel();
             }
+
             if (e.getNativeEvent().getCtrlKey() || e.getNativeEvent().getMetaKey()) {
                 if (code == KeyCodes.KEY_C) {
                     menuPerformed("key", "copy");
@@ -573,8 +607,10 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             if (cc > 32 && cc < 127) {
                 String c = simmer.getShortcuts()[cc];
                 e.cancel();
+
                 if (c == null)
                     return;
+
                 simmer.setMouseMode(MouseModeEnum.MouseMode.ADD_ELM);
                 simmer.setMouseModeStr(c);
                 simmer.setTempMouseMode(simmer.getMouseMode());
@@ -590,7 +626,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
 
     public void menuPerformed(String menu, String item) {
 
-        Window.alert("menu: " + menu + "\titem: " + item);
+        log("menu: " + menu + "\titem: " + item);
 
         if (item == "about")
             simmer.setAboutBox(new AboutBox(Launcher.versionString));
@@ -614,8 +650,8 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         if (item == "exportastext")
             simmer.getFileOps().doExportAsText();
 
-        if ((menu == "elm" || menu == "scopepop") && simmer.getContextPanel() != null)
-            simmer.getContextPanel().hide();
+//        if ((menu == "elm" || menu == "scopepop") && simmer.getContextPanel() != null)
+//            simmer.getContextPanel().hide();
 
         if (menu == "options" && item == "other")
             simmer.getMainMenuBar().getEditMenu().doEdit(new EditOptions(simmer));

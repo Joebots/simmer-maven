@@ -25,8 +25,8 @@ package com.joebotics.simmer.client.elcomp;
 
 import com.google.gwt.i18n.client.NumberFormat;
 import com.joebotics.simmer.client.Simmer;
-import com.joebotics.simmer.client.gui.impl.EditInfo;
-import com.joebotics.simmer.client.gui.impl.Editable;
+import com.joebotics.simmer.client.gui.EditInfo;
+import com.joebotics.simmer.client.gui.Editable;
 import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Font;
 import com.joebotics.simmer.client.gui.util.Graphics;
@@ -35,8 +35,6 @@ import com.joebotics.simmer.client.gui.util.Polygon;
 import com.joebotics.simmer.client.gui.util.Rectangle;
 import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.MouseModeEnum.MouseMode;
-
-import java.util.UUID;
 
 public abstract class AbstractCircuitElement implements Editable {
 
@@ -221,7 +219,7 @@ public abstract class AbstractCircuitElement implements Editable {
 		if (va < 1e-6)
 			return s.format(v * 1e9) + " n" + u;
 		if (va < 1e-3)
-			return s.format(v * 1e6) + " " + Simmer.getMuString() + u;
+			return s.format(v * 1e6) + " " + Simmer.muString + u;
 		if (va < 1)
 			return s.format(v * 1e3) + " m" + u;
 		if (va < 1e3)

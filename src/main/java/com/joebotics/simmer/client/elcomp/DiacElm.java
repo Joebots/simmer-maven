@@ -20,7 +20,7 @@
 package com.joebotics.simmer.client.elcomp;
 
 import com.joebotics.simmer.client.Simmer;
-import com.joebotics.simmer.client.gui.impl.EditInfo;
+import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.StringTokenizer;

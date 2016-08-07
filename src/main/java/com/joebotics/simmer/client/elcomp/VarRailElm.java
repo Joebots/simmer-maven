@@ -24,8 +24,8 @@ package com.joebotics.simmer.client.elcomp;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.user.client.ui.Label;
-import com.joebotics.simmer.client.gui.impl.EditInfo;
-import com.joebotics.simmer.client.gui.impl.Scrollbar;
+import com.joebotics.simmer.client.gui.EditInfo;
+import com.joebotics.simmer.client.gui.Scrollbar;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 public class VarRailElm extends RailElm implements MouseWheelHandler {

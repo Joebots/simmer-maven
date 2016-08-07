@@ -17,7 +17,7 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.joebotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui;
 
 //import java.awt.*;
 //import java.awt.image.*;
@@ -35,6 +35,7 @@ import com.joebotics.simmer.client.elcomp.MemristorElm;
 import com.joebotics.simmer.client.elcomp.OutputElm;
 import com.joebotics.simmer.client.elcomp.ProbeElm;
 import com.joebotics.simmer.client.elcomp.TransistorElm;
+import com.joebotics.simmer.client.gui.menu.ScopePopupMenu;
 import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Rectangle;
@@ -85,9 +86,8 @@ public class Scope {
     public Scope(Simmer s) {
 		simmer = s;
 
-		scopeMenuBar = new ScopePopupMenu(true);
-
-		transScopeMenuBar = new ScopePopupMenu(false);
+		transScopeMenuBar = new ScopePopupMenu(true);
+		scopeMenuBar = new ScopePopupMenu(false);
 
 		rect = new Rectangle(0, 0, 1, 1);
 		imageCanvas = Canvas.createIfSupported();
@@ -573,7 +573,14 @@ public class Scope {
 		return elm;
 	}
 
+	public native void log(String msg)/*-{
+		$wnd.console.log(msg);
+	}-*/;
+
 	public MenuBar getMenu() {
+
+		log( elm + "<-- ELM");
+
 		if (elm == null)
 			return null;
 
@@ -589,6 +596,8 @@ public class Scope {
 			return transScopeMenuBar;
 
 		} else {
+
+			log(scopeMenuBar.getScopeVMenuItem() + "<--getScopeVMenuItem");
             scopeMenuBar.getScopeVMenuItem().setState(showV && value == 0);
             scopeMenuBar.getScopeIMenuItem().setState(showI && value == 0);
             scopeMenuBar.getScopeScaleMenuItem().setState(showScale);
@@ -712,8 +721,7 @@ public class Scope {
 		showFreq = lockScale = showMin = showMax = false;
 		plot2d = false;
 		// no showI for Output
-		if (elm != null
-				&& (elm instanceof OutputElm || elm instanceof LogicOutputElm || elm instanceof ProbeElm))
+		if (elm != null && (elm instanceof OutputElm || elm instanceof LogicOutputElm || elm instanceof ProbeElm))
 			showI = false;
 
 		value = ivalue = 0;

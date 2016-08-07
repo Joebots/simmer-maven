@@ -1,7 +1,10 @@
-package com.joebotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui.menu;
 
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
+import com.joebotics.simmer.client.gui.widget.CheckboxAlignedMenuItem;
+import com.joebotics.simmer.client.gui.widget.CheckboxMenuItem;
+import com.joebotics.simmer.client.gui.Scope;
 import com.joebotics.simmer.client.gui.util.MenuCommand;
 import com.joebotics.simmer.client.util.MessageI18N;
 
@@ -9,11 +12,11 @@ import com.joebotics.simmer.client.util.MessageI18N;
  * Created by joe on 7/17/16.
  */
 public class ScopePopupMenu extends MenuBar{
-    private Scope							scopes[];
+    private Scope scopes[];
 
     private MenuBar                         scopeMenuBar;
     private MenuItem                        scopeSelectYMenuItem;
-    private CheckboxMenuItem				scopeFreqMenuItem;
+    private CheckboxMenuItem scopeFreqMenuItem;
     private CheckboxMenuItem				scopeIbMenuItem;
     private CheckboxMenuItem				scopeIcMenuItem;
     private CheckboxMenuItem				scopeIeMenuItem;

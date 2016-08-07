@@ -17,21 +17,32 @@
     along with CircuitJS1.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.joebotics.simmer.client.gui.impl;
+package com.joebotics.simmer.client.gui;
 
-import com.google.gwt.user.client.ui.ListBox;
+import com.joebotics.simmer.client.Simmer;
+import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
 
-public class Choice extends ListBox {
+public class EditOptions implements Editable {
+	private Simmer sim;
 
-	public Choice() {
-		super();
+	public EditOptions(Simmer s) {
+		sim = s;
 	}
 
-	public void add(String s) {
-		this.addItem(s);
+	public EditInfo getEditInfo(int n) {
+		if (n == 0)
+			return new EditInfo("Time step size (s)", sim.getTimeStep(), 0, 0);
+		if (n == 1)
+			return new EditInfo("Range for voltage color (V)",
+					AbstractCircuitElement.voltageRange, 0, 0);
+
+		return null;
 	}
 
-	public void select(int i) {
-		this.setSelectedIndex(i);
+	public void setEditValue(int n, EditInfo ei) {
+		if (n == 0 && ei.value > 0)
+			sim.setTimeStep(ei.value);
+		if (n == 1 && ei.value > 0)
+			AbstractCircuitElement.voltageRange = ei.value;
 	}
 }
