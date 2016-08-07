@@ -72,7 +72,7 @@ public class ResistorElm extends AbstractCircuitElement {
 		grad.addColorStop(0, getVoltageColor(g, v1).getHexValue());
 		grad.addColorStop(1.0, getVoltageColor(g, v2).getHexValue());
 		g.getContext().setStrokeStyle(grad);
-		if (!sim.getEuroResistorCheckItem().getState()) {
+		if (!sim.getMainMenuBar().getOptionsMenuBar().getEuroResistorCheckItem().getState()) {
 			// // draw zigzag
 			// for (i = 0; i != segments; i++) {
 			// int nx = 0;
@@ -116,7 +116,7 @@ public class ResistorElm extends AbstractCircuitElement {
 			g.getContext().strokeRect(0, -hs, len, 2.0 * hs);
 		}
 		g.getContext().restore();
-		if (sim.getShowValuesCheckItem().getState()) {
+		if (sim.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().getState()) {
 			String s = getShortUnitText(getResistance(), "");
 			drawValues(g, s, hs);
 		}

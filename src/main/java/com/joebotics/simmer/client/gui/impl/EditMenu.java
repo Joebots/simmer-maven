@@ -11,7 +11,6 @@ import com.joebotics.simmer.client.util.MessageI18N;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.joebotics.simmer.client.gui.impl.Editable;
 
 /**
  * Created by joe on 7/16/16.
@@ -52,7 +51,7 @@ public class EditMenu extends MenuBar{
         m.addItem(selectAllItem = new MenuItem(SafeHtmlUtils.fromTrustedString(sn), new MenuCommand("edit", "selectAll")));
         sn = edithtml + "Select None</div>";
         m.addItem( new MenuItem(SafeHtmlUtils.fromTrustedString(sn), new MenuCommand("edit", "selectNone")));
-        m.addItem(new MenuItem(MessageI18N.getLocale("Centre_Circuit"), new MenuCommand("edit", "centrecircuit")));
+        m.addItem(new MenuItem(MessageI18N.getMessage("Centre_Circuit"), new MenuCommand("edit", "centrecircuit")));
 
         pasteItem.setEnabled(false);
     }
@@ -239,7 +238,7 @@ public class EditMenu extends MenuBar{
 
     public void setMenuSelection() {
 
-        AbstractCircuitElement menuElm = simmer.getMenuElm();
+        AbstractCircuitElement menuElm = simmer.getSelectedCircuitElement();
 
         if (menuElm != null) {
             if (menuElm.isSelected())

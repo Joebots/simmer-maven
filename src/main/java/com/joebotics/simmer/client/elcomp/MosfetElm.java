@@ -180,7 +180,7 @@ public class MosfetElm extends AbstractCircuitElement {
 			setVoltageColor(g, pnp == 1 ? getVolts()[1] : getVolts()[2]);
 			g.fillPolygon(arrowPoly);
 		}
-		if (sim.getPowerCheckItem().getState())
+		if (sim.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState())
 			g.setColor(Color.gray);
 		setVoltageColor(g, getVolts()[0]);
 		GraphicsUtil.drawThickLine(g, getPoint1(), gate[1]);

@@ -16,11 +16,11 @@ public class ElementPopupMenu extends MenuBar {
     public ElementPopupMenu(){
         super(true);
         MenuBar elmMenuBar = this;
-        elmMenuBar.addItem(elmEditMenuItem = new MenuItem(MessageI18N.getLocale("Edit"), new MenuCommand("elm", "edit")));
-        elmMenuBar.addItem(elmScopeMenuItem = new MenuItem(MessageI18N.getLocale("View_in_Scope"), new MenuCommand("elm", "viewInScope")));
-        elmMenuBar.addItem(new MenuItem(MessageI18N.getLocale("Cut"), new MenuCommand("elm", "cut")));
-        elmMenuBar.addItem(new MenuItem(MessageI18N.getLocale("Copy"), new MenuCommand("elm", "copy")));
-        elmMenuBar.addItem(new MenuItem(MessageI18N.getLocale("Delete"), new MenuCommand("elm", "delete")));
+        elmMenuBar.addItem(elmEditMenuItem = new MenuItem(MessageI18N.getMessage("Edit"), new MenuCommand("elm", "edit")));
+        elmMenuBar.addItem(elmScopeMenuItem = new MenuItem(MessageI18N.getMessage("View_in_Scope"), new MenuCommand("elm", "viewInScope")));
+        elmMenuBar.addItem(new MenuItem(MessageI18N.getMessage("Cut"), new MenuCommand("elm", "cut")));
+        elmMenuBar.addItem(new MenuItem(MessageI18N.getMessage("Copy"), new MenuCommand("elm", "copy")));
+        elmMenuBar.addItem(new MenuItem(MessageI18N.getMessage("Delete"), new MenuCommand("elm", "delete")));
     }
 
     public MenuItem getElmEditMenuItem() {

@@ -1,4 +1,4 @@
-package com.joebotics.simmer.client;
+package com.joebotics.simmer.client.integration;
 
 import com.google.gwt.core.client.JavaScriptObject;
 

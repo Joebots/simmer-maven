@@ -174,7 +174,7 @@ public class VoltageElm extends AbstractCircuitElement {
 			break;
 		}
 		}
-		if (sim.getShowValuesCheckItem().getState()) {
+		if (sim.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().getState()) {
 			String s = getShortUnitText(frequency, "Hz");
 			if (getDx() == 0 || getDy() == 0)
 				drawValues(g, s, circleSize);

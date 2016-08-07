@@ -1,4 +1,4 @@
-package com.joebotics.simmer.client;
+package com.joebotics.simmer.client.integration;
 
 import java.util.Map;
 import java.util.Vector;

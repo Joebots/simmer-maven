@@ -198,7 +198,9 @@ public abstract class ChipElm extends AbstractCircuitElement {
 			bits = (this instanceof DecadeElm) ? 10 : 4;
 		setNoDiagonal(true);
 		setupPins();
-		setSize(sim.getSmallGridCheckItem() != null && sim.getSmallGridCheckItem().getState() ? 1 : 2);
+
+		if( sim.getMainMenuBar() != null )
+			setSize(sim.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem() != null && sim.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().getState() ? 1 : 2);
 	}
 	public ChipElm(int xa, int ya, int xb, int yb, int f, StringTokenizer st) {
 		super(xa, ya, xb, yb, f);
@@ -263,7 +265,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 			p.curcount = updateDotCount(p.getCurrent(), p.curcount);
 			drawDots(g, b, a, p.curcount);
 			if (p.isBubble()) {
-				g.setColor(sim.getPrintableCheckItem().getState() ? Color.white
+				g.setColor(sim.getMainMenuBar().getOptionsMenuBar().getBackgroundCheckItem().getState() ? Color.white
 						: Color.black);
 				GraphicsUtil.drawThickCircle(g, p.bubbleX, p.bubbleY, 1);
 				g.setColor(lightGrayColor);

@@ -77,8 +77,7 @@ public class SevenSegElm extends ChipElm {
 	}
 
 	void setColor(Graphics g, int p) {
-		g.setColor(getPins()[p].isValue() ? Color.red : sim.getPrintableCheckItem()
-				.getState() ? Color.white : darkred);
+		g.setColor(getPins()[p].isValue() ? Color.red : sim.getMainMenuBar().getOptionsMenuBar().getBackgroundCheckItem().getState() ? Color.white : darkred);
 	}
 
 	public void setupPins() {

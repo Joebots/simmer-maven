@@ -15,6 +15,7 @@ import com.joebotics.simmer.client.gui.util.Display;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.gui.util.Rectangle;
 import com.joebotics.simmer.client.util.CircuitElementFactory;
+import com.joebotics.simmer.client.util.MathUtil;
 import com.joebotics.simmer.client.util.MessageI18N;
 import com.joebotics.simmer.client.util.MouseModeEnum;
 
@@ -37,7 +38,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
     public void onContextMenu(ContextMenuEvent e) {
         e.preventDefault();
         int x, y;
-        simmer.setMenuElm(simmer.getMouseElm());
+        simmer.setSelectedCircuitElement(simmer.getMouseElm());
         simmer.setMenuScope(-1);
 
         if (simmer.getScopeSelected() != -1) {
@@ -113,8 +114,8 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         // and you are on top of them
         if (simmer.getTempMouseMode() == MouseModeEnum.MouseMode.SELECT
                 && simmer.getMouseElm() != null
-                && simmer.distanceSq(simmer.getMouseElm().getX1(), simmer.getMouseElm().getY1(), simmer.getMouseElm().getX2(), simmer.getMouseElm().getY2()) >= 256
-                && (simmer.distanceSq(e.getX(), e.getY(), simmer.getMouseElm().getX1(), simmer.getMouseElm().getY1()) <= Display.POSTGRABSQ || simmer.distanceSq(e.getX(), e.getY(), simmer.getMouseElm().getX2(), simmer.getMouseElm().getY2()) <= Display.POSTGRABSQ)
+                && MathUtil.distanceSq(simmer.getMouseElm().getX1(), simmer.getMouseElm().getY1(), simmer.getMouseElm().getX2(), simmer.getMouseElm().getY2()) >= 256
+                && (MathUtil.distanceSq(e.getX(), e.getY(), simmer.getMouseElm().getX1(), simmer.getMouseElm().getY1()) <= Display.POSTGRABSQ || MathUtil.distanceSq(e.getX(), e.getY(), simmer.getMouseElm().getX2(), simmer.getMouseElm().getY2()) <= Display.POSTGRABSQ)
                 && !simmer.anySelectedButMouse())
             simmer.setTempMouseMode(MouseModeEnum.MouseMode.DRAG_POST);
 
@@ -225,10 +226,10 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         int initDragX = simmer.getInitDragX();
         int initDragY = simmer.getInitDragY();
 
-        int x1 = simmer.min(x, initDragX);
-        int x2 = simmer.max(x, initDragX);
-        int y1 = simmer.min(y, initDragY);
-        int y2 = simmer.max(y, initDragY);
+        int x1 = MathUtil.min(x, initDragX);
+        int x2 = MathUtil.max(x, initDragX);
+        int y1 = MathUtil.min(y, initDragY);
+        int y2 = MathUtil.max(y, initDragY);
 //        selectedArea = new Rectangle(x1, y1, x2 - x1, y2 - y1);
 
         simmer.setSelectedArea(new Rectangle(x1, y1, x2-x1, y2-y1));
@@ -243,7 +244,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         AbstractCircuitElement mouseElm  = simmer.getMouseElm();
 
         if (draggingPost == -1) {
-            draggingPost = (simmer.distanceSq(mouseElm.getX1(), mouseElm.getY1(), x, y) > simmer.distanceSq(mouseElm.getX2(), mouseElm.getY2(), x, y)) ? 1 : 0;
+            draggingPost = (MathUtil.distanceSq(mouseElm.getX1(), mouseElm.getY1(), x, y) > MathUtil.distanceSq(mouseElm.getX2(), mouseElm.getY2(), x, y)) ? 1 : 0;
         }
         int dx = x - simmer.getDragX();
         int dy = y - simmer.getDragY();
@@ -374,7 +375,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         simmer.setPlotXElm(null);
         simmer.setPlotYElm(null);
 
-        if (simmer.getMouseElm() != null && (simmer.distanceSq(x, y, simmer.getMouseElm().getX1(), simmer.getMouseElm().getY1()) <= Display.POSTGRABSQ || simmer.distanceSq(x, y, simmer.getMouseElm().getX2(), simmer.getMouseElm().getY2()) <= Display.POSTGRABSQ)) {
+        if (simmer.getMouseElm() != null && (MathUtil.distanceSq(x, y, simmer.getMouseElm().getX1(), simmer.getMouseElm().getY1()) <= Display.POSTGRABSQ || MathUtil.distanceSq(x, y, simmer.getMouseElm().getX2(), simmer.getMouseElm().getY2()) <= Display.POSTGRABSQ)) {
             newMouseElm = simmer.getMouseElm();
         } else {
             int bestDist = 100000;
@@ -389,7 +390,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
                         jn = 2;
                     for (j = 0; j != jn; j++) {
                         Point pt = ce.getPost(j);
-                        int dist = simmer.distanceSq(x, y, pt.getX(), pt.getY());
+                        int dist = MathUtil.distanceSq(x, y, pt.getX(), pt.getY());
 
                         // if multiple elements have overlapping bounding boxes,
                         // we prefer selecting elements that have posts close
@@ -424,11 +425,11 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             for (i = 0; i != simmer.getElmList().size(); i++) {
                 AbstractCircuitElement ce = simmer.getElm(i);
                 if (simmer.getMouseMode() == MouseModeEnum.MouseMode.DRAG_POST) {
-                    if (simmer.distanceSq(ce.getX1(), ce.getY1(), x, y) < 26) {
+                    if (MathUtil.distanceSq(ce.getX1(), ce.getY1(), x, y) < 26) {
                         newMouseElm = ce;
                         break;
                     }
-                    if (simmer.distanceSq(ce.getX2(), ce.getY2(), x, y) < 26) {
+                    if (MathUtil.distanceSq(ce.getX2(), ce.getY2(), x, y) < 26) {
                         newMouseElm = ce;
                         break;
                     }
@@ -438,7 +439,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
                 for (j = 0; j != jn; j++) {
                     Point pt = ce.getPost(j);
                     // int dist = distanceSq(x, y, pt.x, pt.y);
-                    if (simmer.distanceSq(pt.getX(), pt.getY(), x, y) < 26) {
+                    if (MathUtil.distanceSq(pt.getX(), pt.getY(), x, y) < 26) {
                         newMouseElm = ce;
                         simmer.setMousePost(j);
                         break;
@@ -450,7 +451,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             // look for post close to the mouse pointer
             for (i = 0; i != newMouseElm.getPostCount(); i++) {
                 Point pt = newMouseElm.getPost(i);
-                if (simmer.distanceSq(pt.getX(), pt.getY(), x, y) < 26)
+                if (MathUtil.distanceSq(pt.getX(), pt.getY(), x, y) < 26)
                     simmer.setMousePost(i);
             }
         }
@@ -537,7 +538,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             }
             if (code == KeyCodes.KEY_ESCAPE) {
                 simmer.setMouseMode(MouseModeEnum.MouseMode.SELECT);
-                simmer.setMouseModeStr(MessageI18N.getLocale("Select"));
+                simmer.setMouseModeStr(MessageI18N.getMessage("Select"));
                 simmer.setTempMouseMode(simmer.getMouseMode());
                 e.cancel();
             }
@@ -580,7 +581,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             }
             if (cc == 32) {
                 simmer.setMouseMode(MouseModeEnum.MouseMode.SELECT);
-                simmer.setMouseModeStr(MessageI18N.getLocale("Select"));
+                simmer.setMouseModeStr(MessageI18N.getMessage("Select"));
                 simmer.setTempMouseMode(simmer.getMouseMode());
                 e.cancel();
             }
@@ -658,16 +659,16 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             simmer.unstackAll();
 
         if (menu == "elm" && item == "edit")
-            simmer.getEditMenu().doEdit(simmer.getMenuElm());
+            simmer.getEditMenu().doEdit(simmer.getSelectedCircuitElement());
 
         if (item == "delete") {
             if (menu == "elm")
-                simmer.setMenuElm(null);
+                simmer.setSelectedCircuitElement(null);
 
             simmer.getEditMenu().doDelete();
         }
 
-        if (item == "viewInScope" && simmer.getMenuElm() != null) {
+        if (item == "viewInScope" && simmer.getSelectedCircuitElement() != null) {
             int i;
             for (i = 0; i != simmer.getScopeCount(); i++){
                 if (simmer.getScope(i).getElm() == null){
@@ -686,7 +687,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
                 // handleResize();
             }
 
-            simmer.getScope(i).setElm(simmer.getMenuElm());
+            simmer.getScope(i).setElm(simmer.getSelectedCircuitElement());
         }
         if (menu == "scopepop") {
             simmer.getEditMenu().pushUndo();

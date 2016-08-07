@@ -26,7 +26,6 @@ import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.*;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window.Navigator;
@@ -35,11 +34,11 @@ import com.joebotics.simmer.client.breadboard.CircuitLibrary;
 import com.joebotics.simmer.client.elcomp.*;
 import com.joebotics.simmer.client.gui.impl.*;
 import com.joebotics.simmer.client.gui.util.*;
+import com.joebotics.simmer.client.integration.NativeJavascriptWrapper;
 import com.joebotics.simmer.client.util.*;
 import com.joebotics.simmer.client.util.HintTypeEnum.HintType;
 import com.joebotics.simmer.client.util.MouseModeEnum.MouseMode;
 
-import java.util.Random;
 import java.util.Vector;
 
 public class Simmer
@@ -103,29 +102,21 @@ public class Simmer
 	private static ImportFromTextDialog 	importFromTextDialog;
 	private static ScrollValuePopup			scrollValuePopup;
 
-    private CheckboxMenuItem                conventionCheckItem;
-    private CheckboxMenuItem				euroResistorCheckItem;
-    private CheckboxMenuItem				dotsCheckItem;
-    private CheckboxMenuItem				showValuesCheckItem;
-    private CheckboxMenuItem				smallGridCheckItem;
-    private CheckboxMenuItem				voltsCheckItem;
 	private MouseMode						mouseMode			= MouseMode.SELECT;
 	private MouseMode						tempMouseMode		= MouseMode.SELECT;
 	private DockLayoutPanel					layoutPanel;
-	private MenuBar popupDrawMenu;
-	private MenuBar							menuBar;
-	private MenuBar							optionsMenuBar;
+	private DrawMenu popupDrawMenu;
+	private DrawMenu menuBarDrawMenu;
+
 	private Scrollbar						speedBar;
 
-	private AbstractCircuitElement			menuElm;
+	private AbstractCircuitElement 			selectedCircuitElement;
 	private AbstractCircuitElement			plotXElm, plotYElm;
 	private AbstractCircuitElement			stopElm;
 	private AbstractCircuitElement			voltageSources[];
 	private AbstractCircuitElement			dragElm;
 	private AbstractCircuitElement			mouseElm;
 	private Vector<AbstractCircuitElement>	elmList;
-
-	private Random							random;
 
 	private Rectangle						selectedArea;
 	private String							shortcuts[];
@@ -147,6 +138,9 @@ public class Simmer
 	public AboutBox getAboutBox() {
 		return aboutBox;
 	}
+
+	private MainMenuBar mainMenuBar;
+	private EditMenu editMenu;
 
 	public void init() {
 
@@ -195,23 +189,16 @@ public class Simmer
 		// main.setLayout(new CircuitLayout());
 		layoutPanel = new DockLayoutPanel(Unit.PX);
 		verticalPanel = new VerticalPanel();
-
-		menuBar = new MenuBar();
-		menuBar.addItem(MessageI18N.getLocale("File"), new FileMenu());
-		menuBar.addItem(MessageI18N.getLocale("Edit"), editMenu = new EditMenu(this));
-		menuBar.addItem(MessageI18N.getLocale("Draw"), new DrawMenu(this, true));
-		menuBar.addItem(MessageI18N.getLocale("Scopes"), new ScopeStackMenu());
-		menuBar.addItem(MessageI18N.getLocale("Options"), new OptionsMenuBar(this));
-
 		popupDrawMenu = new DrawMenu(this, true);
+		mainMenuBar = new MainMenuBar(this);
 
-		getVoltsCheckItem().setState(true);
-		getShowValuesCheckItem().setState(true);
-		getEuroResistorCheckItem().setState(euro);
-		getPrintableCheckItem().setState(printable);
-		getConventionCheckItem().setState(convention);
+		getMainMenuBar().getOptionsMenuBar().getVoltsCheckItem().setState(true);
+		getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().setState(true);
+		getMainMenuBar().getOptionsMenuBar().getEuroResistorCheckItem().setState(euro);
+//		getPrintableCheckItem().setState(printable);
+		getMainMenuBar().getOptionsMenuBar().getConventionCheckItem().setState(convention);
 
-		layoutPanel.addNorth(menuBar, Display.MENUBARHEIGHT);
+		layoutPanel.addNorth(mainMenuBar, Display.MENUBARHEIGHT);
 		layoutPanel.addEast(verticalPanel, Display.VERTICALPANELWIDTH);
 //        SideBar sideBar = new SideBar(this);
 //        layoutPanel.addEast(sideBar, Display.VERTICALPANELWIDTH);
@@ -219,7 +206,7 @@ public class Simmer
 		RootLayoutPanel.get().add(layoutPanel);
 		cv = Canvas.createIfSupported();
 		if (cv == null) {
-			RootPanel.get().add(new Label(MessageI18N.getLocale("Not_working._You_need_a_browser_that_supports_the_CANVAS_element.")));
+			RootPanel.get().add(new Label(MessageI18N.getMessage("Not_working._You_need_a_browser_that_supports_the_CANVAS_element.")));
 			return;
 		}
 		layoutPanel.add(cv);
@@ -238,8 +225,6 @@ public class Simmer
 		scopes = new Scope[20];
 		scopeColCount = new int[20];
 		scopeCount = 0;
-
-		random = new Random();
 
 		// element popup menu
 		elmMenuBar = new ElementPopupMenu();
@@ -260,7 +245,7 @@ public class Simmer
 				fileOps.getSetupList(true);
 		}
 
-		editMenu.enableUndoRedo();
+		mainMenuBar.getEditMenu().enableUndoRedo();
 		setiFrameHeight();
 		bindEventHandlers();
 
@@ -446,7 +431,7 @@ public class Simmer
 			// connect unconnected nodes
 			for (i = 0; i != getNodeList().size(); i++)
 				if (!closure[i] && !getCircuitNode(i).internal) {
-					System.out.println(MessageI18N.getLocale("node_") + i + MessageI18N.getLocale("_unconnected"));
+					System.out.println(MessageI18N.getMessage("node_") + i + MessageI18N.getMessage("_unconnected"));
 					stampResistor(0, i, 1e8);
 					closure[i] = true;
 					changed = true;
@@ -462,7 +447,7 @@ public class Simmer
 				// first try findPath with maximum depth of 5, to avoid
 				// slowdowns
 				if (!fpi.findPath(ce.getNode(0), 5) && !fpi.findPath(ce.getNode(0))) {
-					System.out.println(ce + MessageI18N.getLocale("_no_path"));
+					System.out.println(ce + MessageI18N.getMessage("_no_path"));
 					ce.reset();
 				}
 			}
@@ -470,7 +455,7 @@ public class Simmer
 			if (ce instanceof CurrentElm) {
 				FindPathInfo fpi = new FindPathInfo(FindPathInfo.INDUCT, ce, ce.getNode(1), getNodeList().size(), getElmList());
 				if (!fpi.findPath(ce.getNode(0))) {
-					stop(MessageI18N.getLocale("No_path_for_current_source!"), ce);
+					stop(MessageI18N.getMessage("No_path_for_current_source!"), ce);
 
 					// fire circuit broken event here
 					// {source: simmer, component: ce, message: "No_path_for_current_source"}
@@ -482,7 +467,7 @@ public class Simmer
 			if ((ce instanceof VoltageElm && ce.getPostCount() == 2) || ce instanceof WireElm) {
 				FindPathInfo fpi = new FindPathInfo(FindPathInfo.VOLTAGE, ce, ce.getNode(1), getNodeList().size(), getElmList());
 				if (fpi.findPath(ce.getNode(0))) {
-					stop(MessageI18N.getLocale("Voltage_source/wire_loop_with_no_resistance!"), ce);
+					stop(MessageI18N.getMessage("Voltage_source/wire_loop_with_no_resistance!"), ce);
 
 					// fire circuit broken event here
 					// {source: simmer, component: ce, message: "Voltage_source/wire_loop_with_no_resistance!"}
@@ -493,12 +478,12 @@ public class Simmer
 			if (ce instanceof CapacitorElm) {
 				FindPathInfo fpi = new FindPathInfo(FindPathInfo.SHORT, ce, ce.getNode(1), getNodeList().size(), getElmList());
 				if (fpi.findPath(ce.getNode(0))) {
-					System.out.println(ce + MessageI18N.getLocale("_shorted"));
+					System.out.println(ce + MessageI18N.getMessage("_shorted"));
 					ce.reset();
 				} else {
 					fpi = new FindPathInfo(FindPathInfo.CAP_V, ce, ce.getNode(1), getNodeList().size(), getElmList());
 					if (fpi.findPath(ce.getNode(0))) {
-						stop(MessageI18N.getLocale("Capacitor_loop_with_no_resistance!"), ce);
+						stop(MessageI18N.getMessage("Capacitor_loop_with_no_resistance!"), ce);
 
 						// fire circuit broken event here
 						// {source: simmer, component: ce, message: "Capacitor_loop_with_no_resistance!"}
@@ -514,7 +499,7 @@ public class Simmer
 			double qv = 0;
 			RowInfo re = circuitRowInfo[i];
 			/*
-			 * System.out.println(MessageI18N.getLocale("row_") + i + "_" + re.lsChanges + "_" +
+			 * System.out.println(MessageI18N.getMessage("row_") + i + "_" + re.lsChanges + "_" +
 			 * re.rsChanges + "_" + re.dropRow);
 			 */
 			if (re.isLsChanges() || re.isDropRow() || re.isRsChanges())
@@ -549,16 +534,16 @@ public class Simmer
 				
 				break;
 			}
-			// System.out.println(MessageI18N.getLocale("line_") + i + "_" + qp + "_" + qm + "_" + j);
+			// System.out.println(MessageI18N.getMessage("line_") + i + "_" + qp + "_" + qm + "_" + j);
 			/*
 			 * if (qp != -1 && circuitRowInfo[qp].lsChanges) {
-			 * System.out.println(MessageI18N.getLocale("lschanges")); continue; } if (qm != -1 &&
-			 * circuitRowInfo[qm].lsChanges) { System.out.println(MessageI18N.getLocale("lschanges"));
+			 * System.out.println(MessageI18N.getMessage("lschanges")); continue; } if (qm != -1 &&
+			 * circuitRowInfo[qm].lsChanges) { System.out.println(MessageI18N.getMessage("lschanges"));
 			 * continue; }
 			 */
 			if (j == matrixSize) {
 				if (qp == -1) {
-					stop(MessageI18N.getLocale("Matrix_error"), null);
+					stop(MessageI18N.getMessage("Matrix_error"), null);
 
 					// fire circuit broken event here
 					// {source: simmer, component: ce, message: "Matrix_error"}
@@ -572,33 +557,33 @@ public class Simmer
 					for (k = 0; elt.getType() == RowInfo.ROW_EQUAL && k < 100; k++) {
 						// follow the chain
 						/*
-						 * System.out.println(MessageI18N.getLocale("following_equal_chain_from_") + i
-						 * + "_" + qp + MessageI18N.getLocale("_to_") + elt.nodeEq);
+						 * System.out.println(MessageI18N.getMessage("following_equal_chain_from_") + i
+						 * + "_" + qp + MessageI18N.getMessage("_to_") + elt.nodeEq);
 						 */
 						qp = elt.getNodeEq();
 						elt = circuitRowInfo[qp];
 					}
 					if (elt.getType() == RowInfo.ROW_EQUAL) {
 						// break equal chains
-						// System.out.println(MessageI18N.getLocale("Break_equal_chain"));
+						// System.out.println(MessageI18N.getMessage("Break_equal_chain"));
 						elt.setType(RowInfo.ROW_NORMAL);
 						continue;
 					}
 					if (elt.getType() != RowInfo.ROW_NORMAL) {
-						System.out.println(MessageI18N.getLocale("type_already_") + elt.getType() + MessageI18N.getLocale("_for_") + qp + "!");
+						System.out.println(MessageI18N.getMessage("type_already_") + elt.getType() + MessageI18N.getMessage("_for_") + qp + "!");
 						continue;
 					}
 					elt.setType(RowInfo.ROW_CONST);
 					elt.setValue((circuitRightSide[i] + rsadd) / qv);
 					circuitRowInfo[i].setDropRow(true);
-					// System.out.println(qp + MessageI18N.getLocale("_*_") + qv + MessageI18N.getLocale("_=_const_") +
+					// System.out.println(qp + MessageI18N.getMessage("_*_") + qv + MessageI18N.getMessage("_=_const_") +
 					// elt.value);
 					i = -1; // start over from scratch
 				} else if (circuitRightSide[i] + rsadd == 0) {
 					// we found a row with only two nonzero entries, and one
 					// is the negative of the other; the values are equal
 					if (elt.getType() != RowInfo.ROW_NORMAL) {
-						// System.out.println(MessageI18N.getLocale("swapping"));
+						// System.out.println(MessageI18N.getMessage("swapping"));
 						int qq = qm;
 						qm = qp;
 						qp = qq;
@@ -607,14 +592,14 @@ public class Simmer
 							// we should follow the chain here, but this
 							// hardly ever happens so it's not worth worrying
 							// about
-							System.out.println(MessageI18N.getLocale("swap_failed"));
+							System.out.println(MessageI18N.getMessage("swap_failed"));
 							continue;
 						}
 					}
 					elt.setType(RowInfo.ROW_EQUAL);
 					elt.setNodeEq(qm);
 					circuitRowInfo[i].setDropRow(true);
-					// System.out.println(qp + MessageI18N.getLocale("_=_") + qm);
+					// System.out.println(qp + MessageI18N.getMessage("_=_") + qm);
 				}
 			}
 		}
@@ -625,7 +610,7 @@ public class Simmer
 			RowInfo elt = circuitRowInfo[i];
 			if (elt.getType() == RowInfo.ROW_NORMAL) {
 				elt.setMapCol(nn++);
-				// System.out.println(MessageI18N.getLocale("col_") + i + MessageI18N.getLocale("_maps_to_") + elt.mapCol);
+				// System.out.println(MessageI18N.getMessage("col_") + i + MessageI18N.getMessage("_maps_to_") + elt.mapCol);
 				continue;
 			}
 			if (elt.getType() == RowInfo.ROW_EQUAL) {
@@ -652,10 +637,10 @@ public class Simmer
 					elt.setType(e2.getType());
 					elt.setValue(e2.getValue());
 					elt.setMapCol(-1);
-					// System.out.println(i + MessageI18N.getLocale("_=_[late]const_") + elt.value);
+					// System.out.println(i + MessageI18N.getMessage("_=_[late]const_") + elt.value);
 				} else {
 					elt.setMapCol(e2.getMapCol());
-					// System.out.println(i + MessageI18N.getLocale("_maps_to:_") + e2.mapCol);
+					// System.out.println(i + MessageI18N.getMessage("_maps_to:_") + e2.mapCol);
 				}
 			}
 		}
@@ -673,7 +658,7 @@ public class Simmer
 			}
 			newrs[ii] = circuitRightSide[i];
 			rri.setMapRow(ii);
-			// System.out.println(MessageI18N.getLocale("Row_") + i + MessageI18N.getLocale("_maps_to_") + ii);
+			// System.out.println(MessageI18N.getMessage("Row_") + i + MessageI18N.getMessage("_maps_to_") + ii);
 			for (j = 0; j != matrixSize; j++) {
 				RowInfo ri = circuitRowInfo[j];
 				if (ri.getType() == RowInfo.ROW_CONST)
@@ -700,8 +685,8 @@ public class Simmer
 		// if a matrix is linear, we can do the lu_factor here instead of
 		// needing to do it every frame
 		if (!circuitNonLinear) {
-			if (!lu_factor(circuitMatrix, circuitMatrixSize, circuitPermute)) {
-				stop(MessageI18N.getLocale("Singular_matrix!"), null);
+			if (!MathUtil.lu_factor(circuitMatrix, circuitMatrixSize, circuitPermute)) {
+				stop(MessageI18N.getMessage("Singular_matrix!"), null);
 
 				// fire circuit broken event here?
 				// {source: simmer, component: ce, message: "Singular_matrix!"}
@@ -711,7 +696,7 @@ public class Simmer
 
 		// fire circuit working event here
 		CircuitLibrary circuit = createCircuitLibrary(elmList);
-		NativeJavascriptWrapper.fire("closed_circuit_signal", circuit);
+//		NativeJavascriptWrapper.fire("closed_circuit_signal", circuit);
 	}
 
 	protected boolean anySelectedButMouse() {
@@ -721,12 +706,7 @@ public class Simmer
 		return false;
 	}
 
-    private Vector<String>					mainMenuItemNames	= new Vector<String>();
-    private Vector<CheckboxMenuItem>		mainMenuItems		= new Vector<CheckboxMenuItem>();
-
     private ElementPopupMenu							elmMenuBar;
-    /** Scope.java **/
-
     private Scope							scopes[];
 
 	private void calcCircuitBottom() {
@@ -748,19 +728,22 @@ public class Simmer
 			// centered text causes problems when trying to center the circuit,
 			// so we special-case it here
 			if (!ce.isCenteredText()) {
-				minx = min(ce.getX1(), min(ce.getX2(), minx));
-				maxx = max(ce.getX1(), max(ce.getX2(), maxx));
+				minx = MathUtil.min(ce.getX1(), MathUtil.min(ce.getX2(), minx));
+				maxx = MathUtil.max(ce.getX1(), MathUtil.max(ce.getX2(), maxx));
 			}
-			miny = min(ce.getY1(), min(ce.getY2(), miny));
-			maxy = max(ce.getY1(), max(ce.getY2(), maxy));
+			miny = MathUtil.min(ce.getY1(), MathUtil.min(ce.getY2(), miny));
+			maxy = MathUtil.max(ce.getY1(), MathUtil.max(ce.getY2(), maxy));
 		}
 		// center circuit; we don't use snapGrid() because that rounds
 		int dx = gridMask & ((circuitArea.width - (maxx - minx)) / 2 - minx);
 		int dy = gridMask & ((circuitArea.height - (maxy - miny)) / 2 - miny);
+
 		if (dx + minx < 0)
 			dx = gridMask & (-minx);
+
 		if (dy + miny < 0)
 			dy = gridMask & (-miny);
+
 		for (i = 0; i != elmList.size(); i++) {
 			AbstractCircuitElement ce = getElm(i);
 			ce.move(dx, dy);
@@ -770,17 +753,10 @@ public class Simmer
 		circuitBottom = 0;
 	}
 
-	protected int distanceSq(int x1, int y1, int x2, int y2) {
-		x2 -= x1;
-		y2 -= y1;
-		return x2 * x2 + y2 * y2;
-	}
-
 	protected void doMainMenuChecks() {
-		int c = mainMenuItems.size();
-		int i;
-		for (i = 0; i < c; i++)
-			mainMenuItems.get(i).setState(mainMenuItemNames.get(i) == mouseModeStr);
+		int c = mainMenuBar.getDrawMenu().getMainMenuItems().size();
+		for (int i = 0; i < c; i++)
+			mainMenuBar.getDrawMenu().getMainMenuItems().get(i).setState(mainMenuBar.getDrawMenu().getMainMenuItemNames().get(i) == mouseModeStr);
 	}
 
 	protected boolean doSwitch(int x, int y) {
@@ -878,28 +854,8 @@ public class Simmer
 
 	}
 
-	public int getrand(int x) {
-		int q = random.nextInt();
-		if (q < 0)
-			q = -q;
-		return q % x;
-	}
-
-
-	/** Options Menu **/
-    private CheckboxMenuItem				powerCheckItem;
-
-    public CheckboxMenuItem getPowerCheckItem() {
-        return powerCheckItem;
-    }
-
-    public CheckboxMenuItem setPowerCheckItem(CheckboxMenuItem powerCheckItem) {
-        this.powerCheckItem = powerCheckItem;
-        return powerCheckItem;
-    }
-
     public void setPowerBarEnable() {
-        if (getPowerCheckItem().getState()) {
+        if (getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState()) {
             powerLabel.setStyleName("disabled", false);
             powerBar.enable();
         } else {
@@ -927,7 +883,7 @@ public class Simmer
 		cv.addClickHandler(simmerController);
 		cv.addDoubleClickHandler(simmerController);
 		cv.addDomHandler(simmerController, ContextMenuEvent.getType());
-		menuBar.addDomHandler(new ClickHandler() {
+		mainMenuBar.addDomHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				doMainMenuChecks();
 			}
@@ -939,7 +895,6 @@ public class Simmer
 	/** sidebar **/
     private Scrollbar						powerBar;
     private Label							powerLabel;
-    private CheckboxMenuItem				printableCheckItem;
     private VerticalPanel					verticalPanel;
     private Button							resetButton;
     private Scrollbar                       currentBar;
@@ -984,32 +939,32 @@ public class Simmer
     }
 
     private void createSideBar() {
-		verticalPanel.add(resetButton = new Button(MessageI18N.getLocale("Reset")));
+		verticalPanel.add(resetButton = new Button(MessageI18N.getMessage("Reset")));
 		resetButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				resetAction();
 			}
 		});
-		// dumpMatrixButton = new Button(MessageI18N.getLocale("Dump_Matrix"));
+		// dumpMatrixButton = new Button(MessageI18N.getMessage("Dump_Matrix"));
 		// main.add(dumpMatrixButton);// IES for debugging
-		setStoppedCheck(new Checkbox(MessageI18N.getLocale("Stopped")));
+		setStoppedCheck(new Checkbox(MessageI18N.getMessage("Stopped")));
 		verticalPanel.add(getStoppedCheck());
 
 		if (LoadFile.isSupported())
 			verticalPanel.add(loadFileInput = new LoadFile(this));
 
 		Label l;
-		verticalPanel.add(l = new Label(MessageI18N.getLocale("Simulation_Speed")));
-		l.addStyleName(MessageI18N.getLocale("topSpace"));
+		verticalPanel.add(l = new Label(MessageI18N.getMessage("Simulation_Speed")));
+		l.addStyleName(MessageI18N.getMessage("topSpace"));
 
 		// was max of 140
 		verticalPanel.add(speedBar = new Scrollbar(Scrollbar.HORIZONTAL, 3, 1, 0, 260));
 
-		verticalPanel.add(l = new Label(MessageI18N.getLocale("Current_Speed")));
+		verticalPanel.add(l = new Label(MessageI18N.getMessage("Current_Speed")));
 		l.addStyleName("topSpace");
 		currentBar = new Scrollbar(Scrollbar.HORIZONTAL, 50, 1, 1, 100);
 		verticalPanel.add(currentBar);
-		verticalPanel.add(powerLabel = new Label(MessageI18N.getLocale("Power_Brightness")));
+		verticalPanel.add(powerLabel = new Label(MessageI18N.getMessage("Power_Brightness")));
 		powerLabel.addStyleName("topSpace");
 		verticalPanel.add(powerBar = new Scrollbar(Scrollbar.HORIZONTAL, 50, 1, 1, 100));
 		setPowerBarEnable();
@@ -1021,145 +976,14 @@ public class Simmer
     /** end sidebar **/
 
 	public int locateElm(AbstractCircuitElement elm) {
-		int i;
-		for (i = 0; i != elmList.size(); i++)
+		for (int i = 0; i != elmList.size(); i++)
 			if (elm == elmList.elementAt(i))
 				return i;
 		return -1;
 	}
 
-	// factors a matrix into upper and lower triangular matrices by
-	// gaussian elimination. On entry, a[0..n-1][0..n-1] is the
-	// matrix to be factored. ipvt[] returns an integer vector of pivot
-	// indices, used in the lu_solve() routine.
-	private boolean lu_factor(double a[][], int n, int ipvt[]) {
-		double scaleFactors[];
-		int i, j, k;
-
-		scaleFactors = new double[n];
-
-		// divide each row by its largest element, keeping track of the
-		// scaling factors
-		for (i = 0; i != n; i++) {
-			double largest = 0;
-			for (j = 0; j != n; j++) {
-				double x = Math.abs(a[i][j]);
-				if (x > largest)
-					largest = x;
-			}
-			// if all zeros, it's a singular matrix
-			if (largest == 0)
-				return false;
-			scaleFactors[i] = 1.0 / largest;
-		}
-
-		// use Crout's method; loop through the columns
-		for (j = 0; j != n; j++) {
-
-			// calculate upper triangular elements for this column
-			for (i = 0; i != j; i++) {
-				double q = a[i][j];
-				for (k = 0; k != i; k++)
-					q -= a[i][k] * a[k][j];
-				a[i][j] = q;
-			}
-
-			// calculate lower triangular elements for this column
-			double largest = 0;
-			int largestRow = -1;
-			for (i = j; i != n; i++) {
-				double q = a[i][j];
-				for (k = 0; k != j; k++)
-					q -= a[i][k] * a[k][j];
-				a[i][j] = q;
-				double x = Math.abs(q);
-				if (x >= largest) {
-					largest = x;
-					largestRow = i;
-				}
-			}
-
-			// pivoting
-			if (j != largestRow) {
-				double x;
-				for (k = 0; k != n; k++) {
-					x = a[largestRow][k];
-					a[largestRow][k] = a[j][k];
-					a[j][k] = x;
-				}
-				scaleFactors[largestRow] = scaleFactors[j];
-			}
-
-			// keep track of row interchanges
-			ipvt[j] = largestRow;
-
-			// avoid zeros
-			if (a[j][j] == 0.0) {
-				System.out.println(MessageI18N.getLocale("avoided_zero"));
-				a[j][j] = 1e-18;
-			}
-
-			if (j != n - 1) {
-				double mult = 1.0 / a[j][j];
-				for (i = j + 1; i != n; i++)
-					a[i][j] *= mult;
-			}
-		}
-
-		return true;
-	}
-
-	// Solves the set of n linear equations using a LU factorization
-	// previously performed by lu_factor. On input, b[0..n-1] is the right
-	// hand side of the equations, and on output, contains the solution.
-	private void lu_solve(double a[][], int n, int ipvt[], double b[]) {
-		int i;
-
-		// find first nonzero b element
-		for (i = 0; i != n; i++) {
-			int row = ipvt[i];
-
-			double swap = b[row];
-			b[row] = b[i];
-			b[i] = swap;
-			if (swap != 0)
-				break;
-		}
-
-		int bi = i++;
-		for (; i < n; i++) {
-			int row = ipvt[i];
-			int j;
-			double tot = b[row];
-
-			b[row] = b[i];
-			// forward substitution using the lower triangular matrix
-			for (j = bi; j < i; j++)
-				tot -= a[i][j] * b[j];
-			b[i] = tot;
-		}
-		for (i = n - 1; i >= 0; i--) {
-			double tot = b[i];
-
-			// back-substitution using the upper triangular matrix
-			int j;
-			for (j = i + 1; j != n; j++)
-				tot -= a[i][j] * b[j];
-			b[i] = tot / a[i][i];
-		}
-	}
-
-	int max(int a, int b) {
-		return (a > b) ? a : b;
-	}
-
-	int min(int a, int b) {
-		return (a < b) ? a : b;
-	}
-
 	public void needAnalyze() {
 		analyzeFlag = true;
-		// cv.repaint();
 	}
 
 	public void resetAction() {
@@ -1221,7 +1045,7 @@ public class Simmer
 					for (i = 0; i != circuitMatrixSize; i++) {
 						double x = circuitMatrix[i][j];
 						if (Double.isNaN(x) || Double.isInfinite(x)) {
-							stop(MessageI18N.getLocale("nan/infinite_matrix!"), null);
+							stop(MessageI18N.getMessage("nan/infinite_matrix!"), null);
 
 							// fire circuit broken event here
 							// {source: simmer, component: ce, message: "nan/infinite_matrix!"}
@@ -1240,15 +1064,15 @@ public class Simmer
 				if (circuitNonLinear) {
 					if (converged && subiter > 0)
 						break;
-					if (!lu_factor(circuitMatrix, circuitMatrixSize, circuitPermute)) {
-						stop(MessageI18N.getLocale("Singular_matrix!"), null);
+					if (!MathUtil.lu_factor(circuitMatrix, circuitMatrixSize, circuitPermute)) {
+						stop(MessageI18N.getMessage("Singular_matrix!"), null);
 
 						// fire circuit broken event here
 						// {source: simmer, component: ce, message: "Singular_matrix!"}
 						return;
 					}
 				}
-				lu_solve(circuitMatrix, circuitMatrixSize, circuitPermute, circuitRightSide);
+				MathUtil.lu_solve(circuitMatrix, circuitMatrixSize, circuitPermute, circuitRightSide);
 
 				for (j = 0; j != circuitMatrixFullSize; j++) {
 					RowInfo ri = circuitRowInfo[j];
@@ -1274,7 +1098,7 @@ public class Simmer
 						}
 					} else {
 						int ji = j - (getNodeList().size() - 1);
-						// System.out.println(MessageI18N.getLocale("setting_vsrc_") + ji + MessageI18N.getLocale("_to_") +
+						// System.out.println(MessageI18N.getMessage("setting_vsrc_") + ji + MessageI18N.getMessage("_to_") +
 						// res);
 						voltageSources[ji].setCurrent(ji, res);
 					}
@@ -1283,9 +1107,9 @@ public class Simmer
 					break;
 			}
 			if (subiter > 5)
-				System.out.print(MessageI18N.getLocale("converged_after_") + subiter + MessageI18N.getLocale("_iterations")+"\n");
+				System.out.print(MessageI18N.getMessage("converged_after_") + subiter + MessageI18N.getMessage("_iterations")+"\n");
 			if (subiter == subiterCount) {
-				stop(MessageI18N.getLocale("Convergence_failed!"), null);
+				stop(MessageI18N.getMessage("Convergence_failed!"), null);
 				break;
 			}
 			t += getTimeStep();
@@ -1322,7 +1146,7 @@ public class Simmer
 	}
 
 	public void setGrid() {
-		gridSize = (getSmallGridCheckItem().getState()) ? 8 : 16;
+		gridSize = (getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().getState()) ? 8 : 16;
 		gridMask = ~(gridSize - 1);
 		gridRound = gridSize / 2 - 1;
 	}
@@ -1376,7 +1200,7 @@ public class Simmer
 		for (i = 0; i != scopeCount; i++)
 			scopeColCount[i] = 0;
 		for (i = 0; i != scopeCount; i++) {
-			pos = max(scopes[i].getPosition(), pos);
+			pos = MathUtil.max(scopes[i].getPosition(), pos);
 			scopeColCount[scopes[i].getPosition()]++;
 		}
 		int colct = pos + 1;
@@ -1459,13 +1283,13 @@ public class Simmer
 				i = circuitRowInfo[i - 1].getMapRow();
 				RowInfo ri = circuitRowInfo[j - 1];
 				if (ri.getType() == RowInfo.ROW_CONST) {
-					// System.out.println(MessageI18N.getLocale("Stamping_constant_") + i + "_" + j +
+					// System.out.println(MessageI18N.getMessage("Stamping_constant_") + i + "_" + j +
 					// "_" + x);
 					circuitRightSide[i] -= x * ri.getValue();
 					return;
 				}
 				j = ri.getMapCol();
-				// System.out.println(MessageI18N.getLocale("stamping_") + i + "_" + j + "_" + x);
+				// System.out.println(MessageI18N.getMessage("stamping_") + i + "_" + j + "_" + x);
 			} else {
 				i--;
 				j--;
@@ -1483,7 +1307,7 @@ public class Simmer
 	public void stampResistor(int n1, int n2, double r) {
 		double r0 = 1 / r;
 		if (Double.isNaN(r0) || Double.isInfinite(r0)) {
-			System.out.print(MessageI18N.getLocale("bad_resistance_") + r + "_" + r0 + "\n");
+			System.out.print(MessageI18N.getMessage("bad_resistance_") + r + "_" + r0 + "\n");
 			int a = 0;
 			a /= a;
 		}
@@ -1495,7 +1319,7 @@ public class Simmer
 
 	// indicate that the value on the right side of row i changes in doStep()
 	public void stampRightSide(int i) {
-		// System.out.println(MessageI18N.getLocale("rschanges_true_") + (i-1));
+		// System.out.println(MessageI18N.getMessage("rschanges_true_") + (i-1));
 		if (i > 0)
 			circuitRowInfo[i - 1].setRsChanges(true);
 	}
@@ -1506,7 +1330,7 @@ public class Simmer
 		if (i > 0) {
 			if (circuitNeedsMap) {
 				i = circuitRowInfo[i - 1].getMapRow();
-				// System.out.println(MessageI18N.getLocale("stamping_") + i + "_" + x);
+				// System.out.println(MessageI18N.getMessage("stamping_") + i + "_" + x);
 			} else
 				i--;
 			circuitRightSide[i] += x;
@@ -1597,7 +1421,7 @@ public class Simmer
 		// RenderingHints.VALUE_ANTIALIAS_ON);
 		Graphics g = new Graphics(backcontext);
 		AbstractCircuitElement.selectColor = Color.cyan;
-		if (getPrintableCheckItem().getState()) {
+		if (mainMenuBar.getOptionsMenuBar().getBackgroundCheckItem().getState()) {
 			AbstractCircuitElement.whiteColor = Color.black;
 			AbstractCircuitElement.lightGrayColor = Color.black;
 			g.setColor(Color.white);
@@ -1625,7 +1449,7 @@ public class Simmer
 				double c = currentBar.getValue();
 				c = java.lang.Math.exp(c / 3.5 - 14.2);
 				AbstractCircuitElement.currentMult = 1.7 * inc * c;
-				if (!getConventionCheckItem().getState())
+				if (!getMainMenuBar().getOptionsMenuBar().getConventionCheckItem().getState())
 					AbstractCircuitElement.currentMult = -AbstractCircuitElement.currentMult;
 			}
 
@@ -1648,7 +1472,7 @@ public class Simmer
 		g.setFont(oldfont);
 		// mydrawstarttime = System.currentTimeMillis();
 		for (i = 0; i != elmList.size(); i++) {
-			if (getPowerCheckItem().getState())
+			if (getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState())
 				g.setColor(Color.gray);
 			/*
 			 * else if (conductanceCheckItem.getState())
@@ -1743,21 +1567,21 @@ public class Simmer
 			int x = 0;
 			if (ct != 0)
 				x = scopes[ct - 1].rightEdge() + 20;
-			x = max(x, cv.getCoordinateSpaceWidth() * 2 / 3);
+			x = MathUtil.max(x, cv.getCoordinateSpaceWidth() * 2 / 3);
 			// x=cv.getCoordinateSpaceWidth()*2/3;
 
 			// count lines of data
 			for (i = 0; info[i] != null; i++)
 				;
 			if (badnodes > 0)
-				info[i++] = badnodes + ((badnodes == 1) ? MessageI18N.getLocale("_bad_connection") : MessageI18N.getLocale("_bad_connections"));
+				info[i++] = badnodes + ((badnodes == 1) ? MessageI18N.getMessage("_bad_connection") : MessageI18N.getMessage("_bad_connections"));
 
 			// find where to show data; below circuit, not too high unless we
 			// need it
 			// int ybase = winSize.height-15*i-5;
 			int ybase = cv.getCoordinateSpaceHeight() - 15 * i - 5;
-			ybase = min(ybase, circuitArea.height);
-			ybase = max(ybase, circuitBottom);
+			ybase = MathUtil.min(ybase, circuitArea.height);
+			ybase = MathUtil.max(ybase, circuitBottom);
 			for (i = 0; info[i] != null; i++)
 				g.drawString(info[i], x, ybase + 15 * (i + 1));
 		}
@@ -1854,48 +1678,6 @@ public class Simmer
 		return nodeList;
 	}
 
-	public CheckboxMenuItem setConventionCheckItem(CheckboxMenuItem conventionCheckItem) {
-		this.conventionCheckItem = conventionCheckItem;
-		return conventionCheckItem;
-	}
-
-	public CheckboxMenuItem setDotsCheckItem(CheckboxMenuItem dotsCheckItem) {
-		this.dotsCheckItem = dotsCheckItem;
-		return dotsCheckItem;
-	}
-
-	public CheckboxMenuItem setEuroResistorCheckItem(CheckboxMenuItem euroResistorCheckItem) {
-		this.euroResistorCheckItem = euroResistorCheckItem;
-		return euroResistorCheckItem;
-	}
-
-	public CheckboxMenuItem getPrintableCheckItem() {
-		return printableCheckItem;
-	}
-
-	public CheckboxMenuItem setPrintableCheckItem(CheckboxMenuItem printableCheckItem) {
-		this.printableCheckItem = printableCheckItem;
-		return printableCheckItem;
-	}
-
-	protected CheckboxMenuItem setShowValuesCheckItem(CheckboxMenuItem showValuesCheckItem) {
-		this.showValuesCheckItem = showValuesCheckItem;
-		return showValuesCheckItem;
-	}
-
-	protected CheckboxMenuItem setSmallGridCheckItem(CheckboxMenuItem smallGridCheckItem) {
-		this.smallGridCheckItem = smallGridCheckItem;
-		return smallGridCheckItem;
-	}
-
-	public CheckboxMenuItem getShowValuesCheckItem() {
-		return showValuesCheckItem;
-	}
-
-	public CheckboxMenuItem getSmallGridCheckItem() {
-		return smallGridCheckItem;
-	}
-
 	public Checkbox getStoppedCheck() {
 		return stoppedCheck;
 	}
@@ -1908,11 +1690,7 @@ public class Simmer
 		return timeStep;
 	}
 
-	public CheckboxMenuItem getVoltsCheckItem() {
-		return voltsCheckItem;
-	}
 
-	private EditMenu editMenu;
 
 	public EditMenu getEditMenu(){
 		return editMenu;
@@ -1998,11 +1776,6 @@ public class Simmer
 		this.timeStep = timeStep;
 	}
 
-	protected CheckboxMenuItem setVoltsCheckItem(CheckboxMenuItem voltsCheckItem) {
-		this.voltsCheckItem = voltsCheckItem;
-		return voltsCheckItem;
-	}
-
 	public int getMousePost() {
 		return mousePost;
 	}
@@ -2067,8 +1840,8 @@ public class Simmer
 		return popupDrawMenu;
 	}
 
-	public AbstractCircuitElement getMenuElm() {
-		return menuElm;
+	public AbstractCircuitElement getSelectedCircuitElement() {
+		return selectedCircuitElement;
 	}
 
 	public PopupPanel getContextPanel() {
@@ -2119,8 +1892,8 @@ public class Simmer
 		this.initDragX = initDragX;
 	}
 
-	public void setMenuElm(AbstractCircuitElement menuElm) {
-		this.menuElm = menuElm;
+	public void setSelectedCircuitElement(AbstractCircuitElement selectedCircuitElement) {
+		this.selectedCircuitElement = selectedCircuitElement;
 	}
 
 	public void setContextPanel(PopupPanel contextPanel) {
@@ -2147,14 +1920,6 @@ public class Simmer
 		return plotYElm;
 	}
 
-	public CheckboxMenuItem getConventionCheckItem() {
-		return conventionCheckItem;
-	}
-
-	public CheckboxMenuItem getDotsCheckItem() {
-		return dotsCheckItem;
-	}
-
 	public AbstractCircuitElement getElm(int n) {
 		if (n >= elmList.size())
 			return null;
@@ -2164,10 +1929,6 @@ public class Simmer
 
 	public Vector<AbstractCircuitElement> getElmList() {
 		return elmList;
-	}
-
-	public CheckboxMenuItem getEuroResistorCheckItem() {
-		return euroResistorCheckItem;
 	}
 
 	public int getGridSize() {
@@ -2190,10 +1951,6 @@ public class Simmer
 		return powerBar;
 	}
 
-	public Random getRandom() {
-		return random;
-	}
-
 	public HintType getHintType() {
 		return hintType;
 	}
@@ -2206,8 +1963,8 @@ public class Simmer
 		return hintItem2;
 	}
 
-	public MenuBar getMenuBar() {
-		return menuBar;
+	public MainMenuBar getMainMenuBar() {
+		return mainMenuBar;
 	}
 
 	public String getStartCircuit() {

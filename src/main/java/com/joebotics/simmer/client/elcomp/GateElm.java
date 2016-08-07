@@ -51,7 +51,9 @@ abstract class GateElm extends AbstractCircuitElement {
 		super(xx, yy);
 		setNoDiagonal(true);
 		inputCount = 2;
-		setSize(sim.getSmallGridCheckItem() != null && sim.getSmallGridCheckItem().getState() ? 1 : 2);
+
+		if( sim.getMainMenuBar() != null )
+			setSize(sim.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem() != null && sim.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().getState() ? 1 : 2);
 	}
 
 	public GateElm(int xa, int ya, int xb, int yb, int f, StringTokenizer st) {

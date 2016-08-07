@@ -534,13 +534,12 @@ public abstract class AbstractCircuitElement implements Editable {
 
 	// TODO: Badger: utils
 	protected void drawDots(Graphics g, Point pa, Point pb, double pos) {
-		if (sim.getStoppedCheck().getState() || pos == 0
-				|| !sim.getDotsCheckItem().getState())
+		if (sim.getStoppedCheck().getState() || pos == 0 || !sim.getMainMenuBar().getOptionsMenuBar().getDotsCheckItem().getState())
 			return;
 		int dx = pb.getX() - pa.getX();
 		int dy = pb.getY() - pa.getY();
 		double dn = Math.sqrt(dx * dx + dy * dy);
-		g.setColor(sim.getConventionCheckItem().getState() ? Color.yellow
+		g.setColor(sim.getMainMenuBar().getOptionsMenuBar().getConventionCheckItem().getState() ? Color.yellow
 				: Color.cyan);
 		int ds = 16;
 		pos %= ds;
@@ -759,8 +758,8 @@ public abstract class AbstractCircuitElement implements Editable {
 		if (needsHighlight()) {
 			return (selectColor);
 		}
-		if (!sim.getVoltsCheckItem().getState()) {
-			if (!sim.getPowerCheckItem().getState()) // &&
+		if (!sim.getMainMenuBar().getOptionsMenuBar().getVoltsCheckItem().getState()) {
+			if (!sim.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState()) // &&
 												// !conductanceCheckItem.getState())
 				return (whiteColor);
 			return (g.getLastColor());
@@ -1057,7 +1056,7 @@ public abstract class AbstractCircuitElement implements Editable {
 		 * if (conductanceCheckItem.getState()) { setConductanceColor(g,
 		 * current/getVoltageDiff()); return; }
 		 */
-		if (!sim.getPowerCheckItem().getState())
+		if (!sim.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState())
 			return;
 		setPowerColor(g, getPower());
 	}

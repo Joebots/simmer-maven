@@ -117,7 +117,7 @@ public class Scope {
 
 	void clear2dView() {
 		if (imageContext != null) {
-			if (simmer.getPrintableCheckItem().getState()) {
+			if (simmer.getMainMenuBar().getOptionsMenuBar().getBackgroundCheckItem().getState()) {
 				imageContext.setFillStyle("#ffffff");
 			} else {
 				imageContext.setFillStyle("#000000");
@@ -473,7 +473,7 @@ public class Scope {
 		if (alphadiv > 2) {
 			alphadiv = 0;
 			imageContext.setGlobalAlpha(0.01);
-			if (simmer.getPrintableCheckItem().getState()) {
+			if (simmer.getMainMenuBar().getOptionsMenuBar().getBackgroundCheckItem().getState()) {
 				imageContext.setFillStyle("#ffffff");
 			} else {
 				imageContext.setFillStyle("#000000");
@@ -505,7 +505,7 @@ public class Scope {
 			draw_ox = x2;
 			draw_oy = y2;
 		}
-		if (simmer.getPrintableCheckItem().getState()) {
+		if (simmer.getMainMenuBar().getOptionsMenuBar().getBackgroundCheckItem().getState()) {
 			imageContext.setStrokeStyle("#000000");
 		} else {
 			imageContext.setStrokeStyle("#ffffff");

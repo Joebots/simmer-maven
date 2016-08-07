@@ -65,7 +65,7 @@ public class CurrentElm extends AbstractCircuitElement {
 		g.fillPolygon(arrow);
 		setBbox(getPoint1(), getPoint2(), cr);
 		doDots(g);
-		if (sim.getShowValuesCheckItem().getState()) {
+		if (sim.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().getState()) {
 			String s = getShortUnitText(currentValue, "A");
 			if (getDx() == 0 || getDy() == 0)
 				drawValues(g, s, cr);

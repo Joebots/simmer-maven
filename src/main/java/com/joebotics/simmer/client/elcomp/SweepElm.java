@@ -96,7 +96,7 @@ public class SweepElm extends AbstractCircuitElement {
 			ox = xc + i;
 			oy = yy;
 		}
-		if (sim.getShowValuesCheckItem().getState()) {
+		if (sim.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().getState()) {
 			String s = getShortUnitText(frequency, "Hz");
 			if (getDx() == 0 || getDy() == 0)
 				drawValues(g, s, circleSize);

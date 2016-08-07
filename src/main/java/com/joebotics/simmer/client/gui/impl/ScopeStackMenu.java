@@ -12,8 +12,8 @@ public class ScopeStackMenu extends MenuBar {
 
     public ScopeStackMenu() {
         super(true);
-        this.addItem(new MenuItem(MessageI18N.getLocale("Stack_All"), new MenuCommand("scopes", "stackAll")));
-        this.addItem(new MenuItem(MessageI18N.getLocale("Unstack_All"), new MenuCommand("scopes", "unstackAll")));
+        this.addItem(new MenuItem(MessageI18N.getMessage("Stack_All"), new MenuCommand("scopes", "stackAll")));
+        this.addItem(new MenuItem(MessageI18N.getMessage("Unstack_All"), new MenuCommand("scopes", "unstackAll")));
     }
 
 }

@@ -73,7 +73,7 @@ public class CapacitorElm extends AbstractCircuitElement {
 		GraphicsUtil.drawThickLine(g, getPoint1(), getLead1());
 		setPowerColor(g, false);
 		GraphicsUtil.drawThickLine(g, plate1[0], plate1[1]);
-		if (sim.getPowerCheckItem().getState())
+		if (sim.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState())
 			g.setColor(Color.gray);
 
 		// draw second lead and plate
@@ -88,7 +88,7 @@ public class CapacitorElm extends AbstractCircuitElement {
 			drawDots(g, getPoint2(), getLead2(), -getCurcount());
 		}
 		drawPosts(g);
-		if (sim.getShowValuesCheckItem().getState()) {
+		if (sim.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().getState()) {
 			String s = getShortUnitText(capacitance, "F");
 			drawValues(g, s, hs);
 		}

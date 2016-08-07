@@ -90,38 +90,38 @@ public class OptionsMenu extends MenuBar {
     private MenuBar buildOptionsMenu() {
 
         MenuBar optionsMenuBar = new MenuBar(true);
-        optionsMenuBar.addItem(setDotsCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Current"))));
+        optionsMenuBar.addItem(setDotsCheckItem(new CheckboxMenuItem(MessageI18N.getMessage("Show_Current"))));
         simmer.getDotsCheckItem().setState(true);
-        optionsMenuBar.addItem(simmer.setVoltsCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Voltage"), new Command() {
+        optionsMenuBar.addItem(simmer.setVoltsCheckItem(new CheckboxMenuItem(MessageI18N.getMessage("Show_Voltage"), new Command() {
             public void execute() {
                 if (simmer.getVoltsCheckItem().getState())
                     getPowerCheckItem().setState(false);
                 setPowerBarEnable();
             }
         })));
-        optionsMenuBar.addItem(setPowerCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Power"), new Command() {
+        optionsMenuBar.addItem(setPowerCheckItem(new CheckboxMenuItem(MessageI18N.getMessage("Show_Power"), new Command() {
             public void execute() {
                 if (getPowerCheckItem().getState())
                     simmer.getVoltsCheckItem().setState(false);
                 setPowerBarEnable();
             }
         })));
-        optionsMenuBar.addItem(setShowValuesCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("Show_Values"))));
-        // m.add(conductanceCheckItem = getCheckItem(MessageI18N.getLocale("Show_Conductance")));
-        optionsMenuBar.addItem(setSmallGridCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("Small_Grid"), new Command() {
+        optionsMenuBar.addItem(setShowValuesCheckItem(new CheckboxMenuItem(MessageI18N.getMessage("Show_Values"))));
+        // m.add(conductanceCheckItem = getCheckItem(MessageI18N.getMessage("Show_Conductance")));
+        optionsMenuBar.addItem(setSmallGridCheckItem(new CheckboxMenuItem(MessageI18N.getMessage("Small_Grid"), new Command() {
             public void execute() {
                 simmer.setGrid();
             }
         })));
-        optionsMenuBar.addItem(setEuroResistorCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("European_Resistors"))));
-        optionsMenuBar.addItem(setPrintableCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("White_Background"), new Command() {
+        optionsMenuBar.addItem(setEuroResistorCheckItem(new CheckboxMenuItem(MessageI18N.getMessage("European_Resistors"))));
+        optionsMenuBar.addItem(setPrintableCheckItem(new CheckboxMenuItem(MessageI18N.getMessage("White_Background"), new Command() {
             public void execute() {
                 for (int i = 0; i < simmer.getScopeCount(); i++)
                     simmer.getScope(i).setRect(simmer.getScope(i).getRect());
             }
         })));
-        optionsMenuBar.addItem(setConventionCheckItem(new CheckboxMenuItem(MessageI18N.getLocale("Conventional_Current_Motion"))));
-        optionsMenuBar.addItem(new CheckboxAlignedMenuItem(MessageI18N.getLocale("Other_Options..."), new MenuCommand("options", "other")));
+        optionsMenuBar.addItem(setConventionCheckItem(new CheckboxMenuItem(MessageI18N.getMessage("Conventional_Current_Motion"))));
+        optionsMenuBar.addItem(new CheckboxAlignedMenuItem(MessageI18N.getMessage("Other_Options..."), new MenuCommand("options", "other")));
 
         return optionsMenuBar;
     }

@@ -8,7 +8,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.joebotics.simmer.client.Simmer;
 import com.joebotics.simmer.client.gui.util.Display;
-import com.joebotics.simmer.client.gui.util.LoadFile;
 import com.joebotics.simmer.client.util.MessageI18N;
 
 /**
@@ -33,35 +32,35 @@ public class SideBar extends VerticalPanel{
     public SideBar(final Simmer simmer) {
         this.simmer = simmer;
 
-        this.add(resetButton = new Button(MessageI18N.getLocale("Reset")));
+        this.add(resetButton = new Button(MessageI18N.getMessage("Reset")));
 
         resetButton.addClickHandler(new ClickHandler(){
             public void onClick(ClickEvent event){
                 simmer.resetAction();
             }
         });
-        // dumpMatrixButton = new Button(MessageI18N.getLocale("Dump_Matrix"));
+        // dumpMatrixButton = new Button(MessageI18N.getMessage("Dump_Matrix"));
         // main.add(dumpMatrixButton);// IES for debugging
-        stoppedCheck = new Checkbox(MessageI18N.getLocale("Stopped"));
+        stoppedCheck = new Checkbox(MessageI18N.getMessage("Stopped"));
         this.add(stoppedCheck);
 
 //        if (LoadFile.isSupported())
 //            this.add(loadFileInput = new LoadFile(this));
 
         Label l;
-        this.add(l = new Label(MessageI18N.getLocale("Simulation_Speed")));
-        l.addStyleName(MessageI18N.getLocale("topSpace"));
+        this.add(l = new Label(MessageI18N.getMessage("Simulation_Speed")));
+        l.addStyleName(MessageI18N.getMessage("topSpace"));
 
         // was max of 140
         speedBar = new Scrollbar(Scrollbar.HORIZONTAL, 3, 1, 0, 260);
         this.add(speedBar);
 
-        this.add(l = new Label(MessageI18N.getLocale("Current_Speed")));
+        this.add(l = new Label(MessageI18N.getMessage("Current_Speed")));
         l.addStyleName("topSpace")
         ;
         currentBar = new Scrollbar(Scrollbar.HORIZONTAL, 50, 1, 1, 100);
         this.add(currentBar);
-        this.add(powerLabel = new Label(MessageI18N.getLocale("Power_Brightness")));
+        this.add(powerLabel = new Label(MessageI18N.getMessage("Power_Brightness")));
         powerLabel.addStyleName("topSpace");
         this.add(powerBar = new Scrollbar(Scrollbar.HORIZONTAL, 50, 1, 1, 100));
 

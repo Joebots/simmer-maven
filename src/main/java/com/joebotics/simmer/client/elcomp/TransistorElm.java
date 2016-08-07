@@ -159,7 +159,7 @@ public class TransistorElm extends AbstractCircuitElement {
 		g.fillPolygon(arrowPoly);
 		// draw base
 		setVoltageColor(g, getVolts()[0]);
-		if (sim.getPowerCheckItem().getState())
+		if (sim.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState())
 			g.setColor(Color.gray);
 		GraphicsUtil.drawThickLine(g, getPoint1(), base);
 		// draw dots

@@ -93,7 +93,7 @@ public class PotElm extends AbstractCircuitElement implements Command, MouseWhee
 		int segments = 16;
 		int i;
 		int ox = 0;
-		int hs = sim.getEuroResistorCheckItem().getState() ? 6 : 8;
+		int hs = sim.getMainMenuBar().getOptionsMenuBar().getEuroResistorCheckItem().getState() ? 6 : 8;
 		double v1 = getVolts()[0];
 		double v2 = getVolts()[1];
 		double v3 = getVolts()[2];
@@ -102,7 +102,7 @@ public class PotElm extends AbstractCircuitElement implements Command, MouseWhee
 		setPowerColor(g, true);
 		double segf = 1. / segments;
 		int divide = (int) (segments * position);
-		if (!sim.getEuroResistorCheckItem().getState()) {
+		if (!sim.getMainMenuBar().getOptionsMenuBar().getEuroResistorCheckItem().getState()) {
 			// draw zigzag
 			for (i = 0; i != segments; i++) {
 				int nx = 0;

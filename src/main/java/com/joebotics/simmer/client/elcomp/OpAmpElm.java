@@ -19,6 +19,7 @@
 
 package com.joebotics.simmer.client.elcomp;
 
+import com.joebotics.simmer.client.util.MathUtil;
 import com.joebotics.simmer.client.gui.impl.EditInfo;
 import com.joebotics.simmer.client.gui.util.Font;
 import com.joebotics.simmer.client.gui.util.Graphics;
@@ -53,7 +54,10 @@ public class OpAmpElm extends AbstractCircuitElement {
 		maxOut = 15;
 		minOut = -15;
 		gbw = 1e6;
-		setSize(sim.getSmallGridCheckItem() != null && sim.getSmallGridCheckItem().getState() ? 1 : 2);
+
+		if( sim.getMainMenuBar() != null )
+			setSize(sim.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem() != null && sim.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().getState() ? 1 : 2);
+
 		setGain();
 	}
 
@@ -84,10 +88,10 @@ public class OpAmpElm extends AbstractCircuitElement {
 		double x = 0;
 		int vn = sim.getNodeList().size() + getVoltSource();
 		double dx = 0;
-		if (vd >= maxOut / gain && (lastvd >= 0 || sim.getrand(4) == 1)) {
+		if (vd >= maxOut / gain && (lastvd >= 0 || MathUtil.getrand(4) == 1)) {
 			dx = 1e-4;
 			x = maxOut - dx * maxOut / gain;
-		} else if (vd <= minOut / gain && (lastvd <= 0 || sim.getrand(4) == 1)) {
+		} else if (vd <= minOut / gain && (lastvd <= 0 || MathUtil.getrand(4) == 1)) {
 			dx = 1e-4;
 			x = minOut - dx * minOut / gain;
 		} else

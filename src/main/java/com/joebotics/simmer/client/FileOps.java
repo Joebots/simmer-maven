@@ -47,11 +47,11 @@ public class FileOps {
 
     public String dumpCircuit() {
         int i;
-        int f = (simmer.getDotsCheckItem().getState()) ? 1 : 0;
-        f |= (simmer.getSmallGridCheckItem().getState()) ? 2 : 0;
-        f |= (simmer.getVoltsCheckItem().getState()) ? 0 : 4;
-        f |= (simmer.getPowerCheckItem().getState()) ? 8 : 0;
-        f |= (simmer.getShowValuesCheckItem().getState()) ? 0 : 16;
+        int f = (simmer.getMainMenuBar().getOptionsMenuBar().getDotsCheckItem().getState()) ? 1 : 0;
+        f |= (simmer.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().getState()) ? 2 : 0;
+        f |= (simmer.getMainMenuBar().getOptionsMenuBar().getVoltsCheckItem().getState()) ? 0 : 4;
+        f |= (simmer.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState()) ? 8 : 0;
+        f |= (simmer.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().getState()) ? 0 : 16;
         // 32 = linear scale in afilter
         String dump = "$ " + f + " " + simmer.getTimeStep() + " " + simmer.getIterCount() + " " + simmer.getCurrentBar().getValue() + " " + AbstractCircuitElement.voltageRange + " " + simmer.getPowerBar().getValue() + "\n";
 
@@ -76,7 +76,7 @@ public class FileOps {
         int stackptr = 0;
         currentMenuBar = new MenuBar(true);
         currentMenuBar.setAutoOpen(true);
-        simmer.getMenuBar().addItem(MessageI18N.getLocale("Circuits"), currentMenuBar);
+        simmer.getMainMenuBar().addItem(MessageI18N.getMessage("Circuits"), currentMenuBar);
         stack[stackptr++] = currentMenuBar;
         int p;
         for (p = 0; p < len; ) {
@@ -105,7 +105,7 @@ public class FileOps {
                     if (line.charAt(0) == '>')
                         first = true;
                     String file = line.substring(first ? 1 : 0, i);
-                    // menu.add(getMenuItem(title, MessageI18N.getLocale("setup_") + file));
+                    // menu.add(getMenuItem(title, MessageI18N.getMessage("setup_") + file));
                     currentMenuBar.addItem(new MenuItem(title, new MenuCommand("circuits", "setup " + file)));
                     if (first && simmer.getStartCircuit() == null) {
                         simmer.setStartCircuit(file);
@@ -128,11 +128,11 @@ public class FileOps {
     public void readOptions(StringTokenizer st) {
         int flags = new Integer(st.nextToken()).intValue();
         // IES - remove inteaction
-        simmer.getDotsCheckItem().setState((flags & 1) != 0);
-        simmer.getSmallGridCheckItem().setState((flags & 2) != 0);
-        simmer.getVoltsCheckItem().setState((flags & 4) == 0);
-        simmer.getPowerCheckItem().setState((flags & 8) == 8);
-        simmer.getShowValuesCheckItem().setState((flags & 16) == 0);
+        simmer.getMainMenuBar().getOptionsMenuBar().getDotsCheckItem().setState((flags & 1) != 0);
+        simmer.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().setState((flags & 2) != 0);
+        simmer.getMainMenuBar().getOptionsMenuBar().getVoltsCheckItem().setState((flags & 4) == 0);
+        simmer.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().setState((flags & 8) == 8);
+        simmer.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().setState((flags & 16) == 0);
         simmer.setTimeStep(new Double(st.nextToken()).doubleValue());
         double sp = new Double(st.nextToken()).doubleValue();
         int sp2 = (int) (Math.log(10 * sp) * 24 + 61.5);
@@ -157,12 +157,12 @@ public class FileOps {
 
         String url = GWT.getModuleBaseURL();
         url = url.substring(0,url.indexOf("circuitjs1"));
-        url = url +  "setuplist.txt" + "?v=" + simmer.getRandom().nextInt();
+        url = url +  "setuplist.txt" + "?v=" + Math.random();
         RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
         try {
             requestBuilder.sendRequest(null, new RequestCallback() {
                 public void onError(Request request, Throwable exception) {
-                    GWT.log(MessageI18N.getLocale("File_Error_Response"), exception);
+                    GWT.log(MessageI18N.getMessage("File_Error_Response"), exception);
                 }
 
                 public void onResponseReceived(Request request, Response response) {
@@ -172,11 +172,11 @@ public class FileOps {
                         processSetupList(text.getBytes(), text.length(), openDefault);
                         // end or processing
                     } else
-                        GWT.log(MessageI18N.getLocale("Bad_file_server_response") + response.getStatusText());
+                        GWT.log(MessageI18N.getMessage("Bad_file_server_response") + response.getStatusText());
                 }
             });
         } catch (RequestException e) {
-            GWT.log(MessageI18N.getLocale("failed_file_reading"), e);
+            GWT.log(MessageI18N.getMessage("failed_file_reading"), e);
         }
 
         String s = "";
@@ -197,11 +197,11 @@ public class FileOps {
             simmer.getElmList().removeAllElements();
             simmer.setHintType(HintTypeEnum.HintType.HINT_UNSET);
             simmer.setTimeStep(5e-6);
-            simmer.getDotsCheckItem().setState(false);
-            simmer.getSmallGridCheckItem().setState(false);
-            simmer.getPowerCheckItem().setState(false);
-            simmer.getVoltsCheckItem().setState(true);
-            simmer.getShowValuesCheckItem().setState(true);
+            simmer.getMainMenuBar().getOptionsMenuBar().getDotsCheckItem().setState(false);
+            simmer.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().setState(false);
+            simmer.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().setState(false);
+            simmer.getMainMenuBar().getOptionsMenuBar().getVoltsCheckItem().setState(true);
+            simmer.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().setState(true);
             simmer.setGrid();
             simmer.getSpeedBar().setValue(117); // 57
             simmer.getCurrentBar().setValue(50);
@@ -259,7 +259,7 @@ public class FileOps {
                     AbstractCircuitElement newce = CircuitElementFactory.createCircuitElement(tint, x1, y1, x2, y2, f, st);
 
                     if (newce == null) {
-                        System.out.println(MessageI18N.getLocale("unrecognized_dump_type_") + type);
+                        System.out.println(MessageI18N.getMessage("unrecognized_dump_type_") + type);
                         break;
                     }
                     newce.setPoints();
@@ -298,7 +298,7 @@ public class FileOps {
         // TODO: Maybe think about some better approach to cache management!
         String url = GWT.getModuleBaseURL();
         url = url.substring(0, url.indexOf("circuitjs1"));
-        url = url + "circuits/" + str + "?v=" + simmer.getRandom().nextInt();
+        url = url + "circuits/" + str + "?v=" + Math.random();
         loadFileFromURL(url, centre);
     }
 
@@ -321,7 +321,7 @@ public class FileOps {
         try {
             requestBuilder.sendRequest(null, new RequestCallback() {
                 public void onError(Request request, Throwable exception) {
-                    GWT.log(MessageI18N.getLocale("File_Error_Response"), exception);
+                    GWT.log(MessageI18N.getMessage("File_Error_Response"), exception);
                 }
 
                 public void onResponseReceived(Request request, Response response) {
@@ -329,11 +329,11 @@ public class FileOps {
                         String text = response.getText();
                         readSetup(text.getBytes(), text.length(), false, centre);
                     } else
-                        GWT.log(MessageI18N.getLocale("Bad_file_server_response") + response.getStatusText());
+                        GWT.log(MessageI18N.getMessage("Bad_file_server_response") + response.getStatusText());
                 }
             });
         } catch (RequestException e) {
-            GWT.log(MessageI18N.getLocale("failed_file_reading"), e);
+            GWT.log(MessageI18N.getMessage("failed_file_reading"), e);
         }
 
     }
