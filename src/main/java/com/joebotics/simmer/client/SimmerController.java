@@ -44,24 +44,10 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         simmer.setMenuScope(-1);
 
         if (simmer.getScopeSelected() != -1) {
-            log("onContextMenu:" + simmer.getScopeSelected() + e.getRelativeElement());
 
-            MenuBar m = null;
-
-            try {
-                Scope scope = simmer.getScope(simmer.getScopeSelected());
-                log("scope:" + scope);
-                log("menu:" + scope.getMenu());
-                 m = simmer.getScopes()[simmer.getScopeSelected()].getMenu();
-            }
-            catch(Throwable t){
-                log("CAUGHT AN ERROR");
-                log(simmer.getScopes().length + "\t" + simmer.getScopeSelected());
-                t.printStackTrace();
-            }
-            log(m + "");
-
+            MenuBar m = simmer.getScope(simmer.getScopeSelected()).getMenu();
             simmer.setMenuScope(simmer.getScopeSelected());
+
             if (m != null) {
                 simmer.setContextPanel(new PopupPanel(true));
                 simmer.getContextPanel().add(m);

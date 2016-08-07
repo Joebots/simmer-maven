@@ -40,8 +40,7 @@ import com.joebotics.simmer.client.gui.EditInfo;
 public class ScrollValuePopup extends PopupPanel implements MouseOutHandler,
 		MouseWheelHandler, MouseDownHandler {
 
-	static final double e12[] = { 1.0, 1.2, 1.5, 1.8, 2.2, 2.7, 3.3, 3.9, 4.7,
-			5.6, 6.8, 8.2 };
+	static final double e12[] = { 1.0, 1.2, 1.5, 1.8, 2.2, 2.7, 3.3, 3.9, 4.7, 5.6, 6.8, 8.2 };
 	static final int labMax = 5;
 	int currentidx;
 	int deltaY;

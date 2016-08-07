@@ -30,7 +30,10 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.*;
+import com.joebotics.simmer.client.breadboard.CircuitComponent;
 import com.joebotics.simmer.client.breadboard.CircuitLibrary;
+import com.joebotics.simmer.client.breadboard.Connection;
+import com.joebotics.simmer.client.breadboard.Identifiable;
 import com.joebotics.simmer.client.elcomp.*;
 import com.joebotics.simmer.client.gui.*;
 import com.joebotics.simmer.client.gui.dialog.*;
@@ -44,6 +47,7 @@ import com.joebotics.simmer.client.util.*;
 import com.joebotics.simmer.client.util.HintTypeEnum.HintType;
 import com.joebotics.simmer.client.util.MouseModeEnum.MouseMode;
 
+import java.util.Map;
 import java.util.Vector;
 
 public class Simmer
@@ -309,6 +313,7 @@ public class Simmer
 			cn.x = (int) pt.getX();
 			cn.y = (int) pt.getY();
 			getNodeList().addElement(cn);
+
 		} else {
 			// otherwise allocate extra node for ground
 			CircuitNode cn = new CircuitNode();
@@ -392,9 +397,11 @@ public class Simmer
 		circuitMatrixSize = circuitMatrixFullSize = matrixSize;
 		circuitRowInfo = new RowInfo[matrixSize];
 		circuitPermute = new int[matrixSize];
+
 		// int vs = 0;
 		for (i = 0; i != matrixSize; i++)
 			circuitRowInfo[i] = new RowInfo();
+
 		circuitNeedsMap = false;
 
 		// stamp linear circuit elements
@@ -688,8 +695,6 @@ public class Simmer
 
 		circuitNeedsMap = true;
 
-		// if a matrix is linear, we can do the lu_factor here instead of
-		// needing to do it every frame
 		if (!circuitNonLinear) {
 			if (!MathUtil.lu_factor(circuitMatrix, circuitMatrixSize, circuitPermute)) {
 				stop(MessageI18N.getMessage("Singular_matrix!"), null);
@@ -702,7 +707,7 @@ public class Simmer
 
 		// fire circuit working event here
 		CircuitLibrary circuit = createCircuitLibrary(elmList);
-//		NativeJavascriptWrapper.fire("closed_circuit_signal", circuit);
+		NativeJavascriptWrapper.fire("closed_circuit_signal", circuit);
 	}
 
 	protected boolean anySelectedButMouse() {
@@ -1534,47 +1539,48 @@ public class Simmer
 		//loop through the elmlist creating components and connection. 
 		//all the properties of connection cannot be filled because we have to have 
 		//all the components first found.
-//		for(int i=0; i < elmList.size();i++){
-//			AbstractCircuitElement elm = elmList.get(i);
-//			if (!elm.isWire()){
-//				CircuitComponent component = new CircuitComponent();
-//				double uuid=Math.random();
-//				component.setUUID(uuid);
-//				component.setTypeClassName(elm.getClass().getName());
-//				component.setBoundedBox(elm.getBoundingBox());
-//				component.setTypeClass(elm.getClass());
-//				circuit.put(uuid, component);
-//			}
-//			else {
-//				Connection connection = new Connection();
-//				double uuid=Math.random();
-//				connection.setUUID(uuid);
-//
-//				circuit.put(uuid, connection);
-//			}
-//
-//		}
-		//now for each connetion find a componenet that intersects its bounding box
-//		for (Map.Entry<Double, Identifiable> entry : circuit.entrySet()) {
-//			if (entry.getValue() instanceof CircuitComponent) continue;
-//			Connection connection =(Connection) entry.getValue();
-//			int i=0;
-//			for (Map.Entry<Double, Identifiable> insideEntry : circuit.entrySet()){
-//				if (i==2) break;
-//				if (insideEntry.getValue() instanceof CircuitComponent) {
-//					if (connection.getBoundedBox().intersects(insideEntry.getValue().getBoundedBox())){
-//						if (i==0){
-//							connection.setSide1UUID(insideEntry.getKey());
-//													}
-//						else {
-//							connection.setSide1UUID(insideEntry.getKey());
-//						}
-//						i++;
-//					}
-//				}
-//			}
-//		}
-		
+		/*
+		for(int i=0; i < elmList.size();i++){
+			AbstractCircuitElement elm = elmList.get(i);
+			if (!elm.isWire()){
+				CircuitComponent component = new CircuitComponent();
+				double uuid=Math.random();
+				component.setUUID(uuid);
+				component.setTypeClassName(elm.getClass().getName());
+				component.setBoundedBox(elm.getBoundingBox());
+				component.setTypeClass(elm.getClass());
+				circuit.put(uuid, component);
+			}
+			else {
+				Connection connection = new Connection();
+				double uuid=Math.random();
+				connection.setUUID(uuid);
+
+				circuit.put(uuid, connection);
+			}
+
+		}
+//		now for each connetion find a componenet that intersects its bounding box
+		for (Map.Entry<Double, Identifiable> entry : circuit.entrySet()) {
+			if (entry.getValue() instanceof CircuitComponent) continue;
+			Connection connection =(Connection) entry.getValue();
+			int i=0;
+			for (Map.Entry<Double, Identifiable> insideEntry : circuit.entrySet()){
+				if (i==2) break;
+				if (insideEntry.getValue() instanceof CircuitComponent) {
+					if (connection.getBoundedBox().intersects(insideEntry.getValue().getBoundedBox())){
+						if (i==0){
+							connection.setSide1UUID(insideEntry.getKey());
+													}
+						else {
+							connection.setSide1UUID(insideEntry.getKey());
+						}
+						i++;
+					}
+				}
+			}
+		}
+		*/
 		return circuit;
 	}
 

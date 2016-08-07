@@ -6,10 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 
-
-
-
-
 public class CircuitLibrary extends HashMap<Double,Identifiable> {
 
    List<Connection> getConnectionsFor(CircuitComponent component){

@@ -12,11 +12,10 @@ import com.joebotics.simmer.client.util.MessageI18N;
  * Created by joe on 7/17/16.
  */
 public class ScopePopupMenu extends MenuBar{
-    private Scope scopes[];
 
-    private MenuBar                         scopeMenuBar;
+//    private MenuBar                         scopeMenuBar;
     private MenuItem                        scopeSelectYMenuItem;
-    private CheckboxMenuItem scopeFreqMenuItem;
+    private CheckboxMenuItem                scopeFreqMenuItem;
     private CheckboxMenuItem				scopeIbMenuItem;
     private CheckboxMenuItem				scopeIcMenuItem;
     private CheckboxMenuItem				scopeIeMenuItem;
@@ -67,14 +66,6 @@ public class ScopePopupMenu extends MenuBar{
             m.addItem(scopeSelectYMenuItem = new CheckboxAlignedMenuItem(MessageI18N.getMessage("Select_Y"), new MenuCommand("scopepop", "selecty")));
             m.addItem(scopeResistMenuItem = new CheckboxMenuItem(MessageI18N.getMessage("Show_Resistance"), new MenuCommand("scopepop", "showresistance")));
         }
-    }
-
-    public Scope[] getScopes() {
-        return scopes;
-    }
-
-    public MenuBar getScopeMenuBar() {
-        return scopeMenuBar;
     }
 
     public MenuItem getScopeSelectYMenuItem() {

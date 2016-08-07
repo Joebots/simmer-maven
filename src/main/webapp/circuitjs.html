@@ -9,59 +9,17 @@
     <!-- Titles are optional, but useful -->
     <title></title>
 
-<style>
-.disabled {
-	color: lightgray
-}
-.topSpace {
-	margin-top: 12px;
-}
-.cursorPointer {
-   cursor: default;
-}
-.cursorCross {
-   cursor: crosshair;
-}
-.gwt-MenuItem-disabled {
-	color: lightgray;
-}
-.offScreen {
-	position: absolute;
-	right: 101%;
-	overflow: hidden;
-}
-.gwt-Frame{
-	scrolling="no";
-	border: 0px !important;
-}
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ=" crossorigin="anonymous"></script>
 
-.gwt-MenuItem {
-	font-size: 12px !important;
-}
+      <script language="javascript">
 
-.gwt-MenuBar-horizontal {
-	font-size: 12px !important;
-	}
-	
-.gwt-Label-selected {
-	font-size: 1.3em;
-	font-weight: 700;
-	border-top: 1px solid black;
-	border-bottom: 1px solid black;
-}
-.gwt-Label-1off {
-	color: DarkGray;
-}
+      $(function() {
+        var globalBus = window.parent.globalBus;
+        console.log(globalBus);
+      });
 
-.gwt-Label-2off {
-	font-size:0.8em;
-	color: LightGray;
-}
+    </script>
 
-.gwt-Label-current {
-}
-
-</style>
 </head>
   <body>
    
@@ -73,7 +31,7 @@
     
     <!-- Include a history iframe to enable full GWT history support -->
     <!-- (the id must be exactly as shown)                           -->
-    <iframe src="javascript:''" id="__gwt_historyFrame" style="width:0;height:0;border:0"></iframe>
+    <iframe src="javascript:''" id="__gwt_historyFrame" style="width:0px;height:0px;border:0"></iframe>
     
   </body>
  </html>

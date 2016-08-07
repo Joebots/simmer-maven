@@ -12,11 +12,12 @@ import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
 public class NativeJavascriptWrapper {
 
     public static native void EventBus()/*-{
-		$wnd.busInSimmer =  $wnd.parent.globalBus; 
+		$wnd.busInSimmer =  $wnd.parent.globalBus;
+        $wnd.console.log("busInSimmer", $wnd.busInSimmer)
 	}-*/;
 
-    public static native void fire(String evt, CircuitLibrary	elmList) /*-{
-        $wnd.console.log(evt, $wnd.parent);
+    public static native void fire(String evt, Object data) /*-{
+        $wnd.console.log(evt, data);
        //$wnd.busInSimmer.fire(evt, elmList);
     }-*/;
 
