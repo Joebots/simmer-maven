@@ -75,18 +75,18 @@ public class PotElm extends AbstractCircuitElement implements Command, MouseWhee
 	}
 
 	void createSlider() {
-		sim.addWidgetToVerticalPanel(label = new Label(sliderText));
+		sim.getSidePanel().addWidgetToVerticalPanel(label = new Label(sliderText));
 		label.addStyleName("topSpace");
 		int value = (int) (position * 100);
-		sim.addWidgetToVerticalPanel(slider = new Scrollbar(
+		sim.getSidePanel().addWidgetToVerticalPanel(slider = new Scrollbar(
 				Scrollbar.HORIZONTAL, value, 1, 0, 101, this, this));
 		// simmer.verticalPanel.validate();
 		// slider.addAdjustmentListener(this);
 	}
 
 	public void delete() {
-		sim.removeWidgetFromVerticalPanel(label);
-		sim.removeWidgetFromVerticalPanel(slider);
+		sim.getSidePanel().removeWidgetFromVerticalPanel(label);
+		sim.getSidePanel().removeWidgetFromVerticalPanel(slider);
 	}
 
 	public void draw(Graphics g) {
@@ -213,7 +213,7 @@ public class PotElm extends AbstractCircuitElement implements Command, MouseWhee
 		if (n == 1) {
 			sliderText = ei.textf.getText();
 			label.setText(sliderText);
-			sim.setiFrameHeight();
+			sim.getSidePanel().setiFrameHeight();
 		}
 	}
 

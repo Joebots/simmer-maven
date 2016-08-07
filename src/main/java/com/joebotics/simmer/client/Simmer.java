@@ -47,6 +47,7 @@ public class Simmer
 	public static final String				ohmString			= "ohm";
 	private final SimmerController simmerController = new SimmerController(this);
 	private final FileOps fileOps = new FileOps(this);
+	private SidePanel sidePanel = new SidePanel(this);
 
 	private int								circuitBottom;
 	private double							circuitMatrix[][], circuitRightSide[], origRightSide[], origMatrix[][];
@@ -106,9 +107,6 @@ public class Simmer
 	private MouseMode						tempMouseMode		= MouseMode.SELECT;
 	private DockLayoutPanel					layoutPanel;
 	private DrawMenu popupDrawMenu;
-	private DrawMenu menuBarDrawMenu;
-
-	private Scrollbar						speedBar;
 
 	private AbstractCircuitElement 			selectedCircuitElement;
 	private AbstractCircuitElement			plotXElm, plotYElm;
@@ -140,7 +138,6 @@ public class Simmer
 	}
 
 	private MainMenuBar mainMenuBar;
-	private EditMenu editMenu;
 
 	public void init() {
 
@@ -188,7 +185,7 @@ public class Simmer
 
 		// main.setLayout(new CircuitLayout());
 		layoutPanel = new DockLayoutPanel(Unit.PX);
-		verticalPanel = new VerticalPanel();
+		sidePanel = new SidePanel(this);
 		popupDrawMenu = new DrawMenu(this, true);
 		mainMenuBar = new MainMenuBar(this);
 
@@ -199,7 +196,7 @@ public class Simmer
 		getMainMenuBar().getOptionsMenuBar().getConventionCheckItem().setState(convention);
 
 		layoutPanel.addNorth(mainMenuBar, Display.MENUBARHEIGHT);
-		layoutPanel.addEast(verticalPanel, Display.VERTICALPANELWIDTH);
+		layoutPanel.addEast(sidePanel, Display.VERTICALPANELWIDTH);
 //        SideBar sideBar = new SideBar(this);
 //        layoutPanel.addEast(sideBar, Display.VERTICALPANELWIDTH);
 
@@ -215,7 +212,7 @@ public class Simmer
 		backcv = Canvas.createIfSupported();
 		backcontext = backcv.getContext2d();
 		setCanvasSize();
-		createSideBar();
+		sidePanel.createSideBar();
 		setGrid();
 
 		elmList = new Vector<AbstractCircuitElement>();
@@ -246,7 +243,7 @@ public class Simmer
 		}
 
 		mainMenuBar.getEditMenu().enableUndoRedo();
-		setiFrameHeight();
+		sidePanel.setiFrameHeight();
 		bindEventHandlers();
 
 		// setup timer
@@ -847,22 +844,12 @@ public class Simmer
 	}
 
 	public double getIterCount() {
-		if (speedBar.getValue() == 0)
+		if (sidePanel.getSpeedBar().getValue() == 0)
 			return 0;
 
-		return .1 * Math.exp((speedBar.getValue() - 61) / 24.);
+		return .1 * Math.exp((sidePanel.getSpeedBar().getValue() - 61) / 24.);
 
 	}
-
-    public void setPowerBarEnable() {
-        if (getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState()) {
-            powerLabel.setStyleName("disabled", false);
-            powerBar.enable();
-        } else {
-            powerLabel.setStyleName("disabled", true);
-            powerBar.disable();
-        }
-    }
 
     public void enableItems() {
         // if (powerCheckItem.getState()) {
@@ -892,89 +879,6 @@ public class Simmer
 		cv.addMouseWheelHandler(simmerController);
 	}
 
-	/** sidebar **/
-    private Scrollbar						powerBar;
-    private Label							powerLabel;
-    private VerticalPanel					verticalPanel;
-    private Button							resetButton;
-    private Scrollbar                       currentBar;
-    private Checkbox						stoppedCheck;
-    private Frame							iFrame;
-
-    protected void setStoppedCheck(Checkbox stoppedCheck) {
-        this.stoppedCheck = stoppedCheck;
-    }
-
-    public void setiFrameHeight() {
-        if (iFrame == null)
-            return;
-        int i;
-        int cumheight = 0;
-        for (i = 0; i < verticalPanel.getWidgetIndex(iFrame); i++) {
-            if (verticalPanel.getWidget(i) != loadFileInput) {
-                cumheight = cumheight + verticalPanel.getWidget(i).getOffsetHeight();
-                if (verticalPanel.getWidget(i).getStyleName().contains("topSpace"))
-                    cumheight += 12;
-            }
-        }
-        int ih = RootLayoutPanel.get().getOffsetHeight() - Display.MENUBARHEIGHT - cumheight;
-        if (ih < 0)
-            ih = 0;
-        iFrame.setHeight(ih + "px");
-    }
-
-    public void removeWidgetFromVerticalPanel(Widget w) {
-        verticalPanel.remove(w);
-        if (iFrame != null)
-            setiFrameHeight();
-    }
-
-    public void addWidgetToVerticalPanel(Widget w) {
-        if (iFrame != null) {
-            int i = verticalPanel.getWidgetIndex(iFrame);
-            verticalPanel.insert(w, i);
-            setiFrameHeight();
-        } else
-            verticalPanel.add(w);
-    }
-
-    private void createSideBar() {
-		verticalPanel.add(resetButton = new Button(MessageI18N.getMessage("Reset")));
-		resetButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				resetAction();
-			}
-		});
-		// dumpMatrixButton = new Button(MessageI18N.getMessage("Dump_Matrix"));
-		// main.add(dumpMatrixButton);// IES for debugging
-		setStoppedCheck(new Checkbox(MessageI18N.getMessage("Stopped")));
-		verticalPanel.add(getStoppedCheck());
-
-		if (LoadFile.isSupported())
-			verticalPanel.add(loadFileInput = new LoadFile(this));
-
-		Label l;
-		verticalPanel.add(l = new Label(MessageI18N.getMessage("Simulation_Speed")));
-		l.addStyleName(MessageI18N.getMessage("topSpace"));
-
-		// was max of 140
-		verticalPanel.add(speedBar = new Scrollbar(Scrollbar.HORIZONTAL, 3, 1, 0, 260));
-
-		verticalPanel.add(l = new Label(MessageI18N.getMessage("Current_Speed")));
-		l.addStyleName("topSpace");
-		currentBar = new Scrollbar(Scrollbar.HORIZONTAL, 50, 1, 1, 100);
-		verticalPanel.add(currentBar);
-		verticalPanel.add(powerLabel = new Label(MessageI18N.getMessage("Power_Brightness")));
-		powerLabel.addStyleName("topSpace");
-		verticalPanel.add(powerBar = new Scrollbar(Scrollbar.HORIZONTAL, 50, 1, 1, 100));
-		setPowerBarEnable();
-		verticalPanel.add(iFrame = new Frame("iframe.html"));
-		iFrame.setWidth(Display.VERTICALPANELWIDTH + "px");
-		iFrame.setHeight("100 px");
-		iFrame.getElement().setAttribute("scrolling","no");
-	}
-    /** end sidebar **/
-
 	public int locateElm(AbstractCircuitElement elm) {
 		for (int i = 0; i != elmList.size(); i++)
 			if (elm == elmList.elementAt(i))
@@ -997,7 +901,7 @@ public class Simmer
         // TODO: Will need to do IE bug fix here?
 		analyzeFlag = true;
 		t = 0;
-		getStoppedCheck().setState(false);
+		sidePanel.getStoppedCheck().setState(false);
 	}
 
 	private void runCircuit() {
@@ -1377,7 +1281,7 @@ public class Simmer
 		stopMessage = s;
 		circuitMatrix = null;
 		stopElm = ce;
-		getStoppedCheck().setState(true);
+		sidePanel.getStoppedCheck().setState(true);
 		analyzeFlag = false;
 		// cv.repaint();
 	}
@@ -1431,7 +1335,7 @@ public class Simmer
 			g.setColor(Color.black);
 		}
 		g.fillRect(0, 0, g.getContext().getCanvas().getWidth(), g.getContext().getCanvas().getHeight());
-		if (!getStoppedCheck().getState()) {
+		if (!sidePanel.getStoppedCheck().getState()) {
 			try {
 				runCircuit();
 			} catch (Exception e) {
@@ -1442,11 +1346,11 @@ public class Simmer
 			}
 		}
 		long sysTime = System.currentTimeMillis();
-		if (!getStoppedCheck().getState()) {
+		if (!sidePanel.getStoppedCheck().getState()) {
 
 			if (lastTime != 0) {
 				int inc = (int) (sysTime - lastTime);
-				double c = currentBar.getValue();
+				double c = sidePanel.getCurrentBar().getValue();
 				c = java.lang.Math.exp(c / 3.5 - 14.2);
 				AbstractCircuitElement.currentMult = 1.7 * inc * c;
 				if (!getMainMenuBar().getOptionsMenuBar().getConventionCheckItem().getState())
@@ -1464,7 +1368,7 @@ public class Simmer
 			// steps = 0;
 			secTime = sysTime;
 		}
-		AbstractCircuitElement.powerMult = Math.exp((powerBar.getValue() / 4.762) - 7);
+		AbstractCircuitElement.powerMult = Math.exp((sidePanel.getPowerBar().getValue() / 4.762) - 7);
 
 		int i;
 		// Font oldfont = g.getFont();
@@ -1667,7 +1571,7 @@ public class Simmer
 	}
 
 	public void setIFrame(Frame iFrame){
-		this.iFrame = iFrame;
+//		this.iFrame = iFrame;
 	}
 
 	public MouseMode getMouseMode() {
@@ -1678,9 +1582,9 @@ public class Simmer
 		return nodeList;
 	}
 
-	public Checkbox getStoppedCheck() {
-		return stoppedCheck;
-	}
+//	public Checkbox getStoppedCheck() {
+////		return stoppedCheck;
+//	}
 
 	public double getT() {
 		return t;
@@ -1689,12 +1593,6 @@ public class Simmer
 	public double getTimeStep() {
 		return timeStep;
 	}
-
-
-
-	public EditMenu getEditMenu(){
-		return editMenu;
-	};
 
 	public int getScopeCount(){
 		return this.scopeCount;
@@ -1774,10 +1672,6 @@ public class Simmer
 
 	public void setTimeStep(double timeStep) {
 		this.timeStep = timeStep;
-	}
-
-	public int getMousePost() {
-		return mousePost;
 	}
 
 	public SwitchElm getHeldSwitchElm() {
@@ -1939,17 +1833,17 @@ public class Simmer
 		this.hintType = hintType;
 	}
 
-	public Scrollbar getSpeedBar() {
-		return speedBar;
-	}
+//	public Scrollbar getSpeedBar() {
+//		return speedBar;
+//	}
 
-	public Scrollbar getCurrentBar() {
-		return currentBar;
-	}
+//	public Scrollbar getCurrentBar() {
+//		return currentBar;
+//	}
 
-	public Scrollbar getPowerBar() {
-		return powerBar;
-	}
+//	public Scrollbar getPowerBar() {
+//		return powerBar;
+//	}
 
 	public HintType getHintType() {
 		return hintType;
@@ -2031,9 +1925,9 @@ public class Simmer
 		this.analyzeFlag = analyzeFlag;
 	}
 
-	public VerticalPanel getVerticalPanel() {
-		return verticalPanel;
-	}
+//	public VerticalPanel getVerticalPanel() {
+//		return verticalPanel;
+//	}
 
 	public void setLoadFileInput(LoadFile loadFileInput) {
 		this.loadFileInput = loadFileInput;
@@ -2045,5 +1939,9 @@ public class Simmer
 
 	public int getGridMask() {
 		return gridMask;
+	}
+
+	public SidePanel getSidePanel() {
+		return sidePanel;
 	}
 }

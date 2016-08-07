@@ -61,7 +61,7 @@ public class ScrollValuePopup extends PopupPanel implements MouseOutHandler,
 		myElm = e;
 		deltaY = 0;
 		sim = s;
-		sim.getEditMenu().pushUndo();
+		sim.getMainMenuBar().getEditMenu().pushUndo();
 		vp = new VerticalPanel();
 		setWidget(vp);
 		setupValues();

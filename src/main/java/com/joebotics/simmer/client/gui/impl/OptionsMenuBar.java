@@ -19,7 +19,7 @@ public class OptionsMenuBar extends MenuBar {
         public void execute() {
             if (simmer.getMainMenuBar().getOptionsMenuBar().getVoltsCheckItem().getState())
                 simmer.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().setState(false);
-            simmer.setPowerBarEnable();
+            simmer.getSidePanel().setPowerBarEnable();
         }
     };
 
@@ -28,7 +28,7 @@ public class OptionsMenuBar extends MenuBar {
         public void execute() {
             if (simmer.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState())
                 simmer.getMainMenuBar().getOptionsMenuBar().getVoltsCheckItem().setState(false);
-            simmer.setPowerBarEnable();
+            simmer.getSidePanel().setPowerBarEnable();
         }
     };
 

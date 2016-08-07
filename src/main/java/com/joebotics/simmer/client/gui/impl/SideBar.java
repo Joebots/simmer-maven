@@ -64,7 +64,7 @@ public class SideBar extends VerticalPanel{
         powerLabel.addStyleName("topSpace");
         this.add(powerBar = new Scrollbar(Scrollbar.HORIZONTAL, 50, 1, 1, 100));
 
-        simmer.setPowerBarEnable();
+        simmer.getSidePanel().setPowerBarEnable();
 
         iFrame = new Frame("iframe.html");
         this.add(iFrame);

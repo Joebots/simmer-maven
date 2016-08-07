@@ -53,7 +53,7 @@ public class FileOps {
         f |= (simmer.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState()) ? 8 : 0;
         f |= (simmer.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().getState()) ? 0 : 16;
         // 32 = linear scale in afilter
-        String dump = "$ " + f + " " + simmer.getTimeStep() + " " + simmer.getIterCount() + " " + simmer.getCurrentBar().getValue() + " " + AbstractCircuitElement.voltageRange + " " + simmer.getPowerBar().getValue() + "\n";
+        String dump = "$ " + f + " " + simmer.getTimeStep() + " " + simmer.getIterCount() + " " + simmer.getSidePanel().getCurrentBar().getValue() + " " + AbstractCircuitElement.voltageRange + " " + simmer.getSidePanel().getPowerBar().getValue() + "\n";
 
         log("elmList.size=" + simmer.getElmList().size() + "\tscope count:" + simmer.getScopeCount());
 
@@ -137,12 +137,12 @@ public class FileOps {
         double sp = new Double(st.nextToken()).doubleValue();
         int sp2 = (int) (Math.log(10 * sp) * 24 + 61.5);
         // int sp2 = (int) (Math.log(sp)*24+1.5);
-        simmer.getSpeedBar().setValue(sp2);
-        simmer.getCurrentBar().setValue(new Integer(st.nextToken()).intValue());
+        simmer.getSidePanel().getSpeedBar().setValue(sp2);
+        simmer.getSidePanel().getCurrentBar().setValue(new Integer(st.nextToken()).intValue());
         AbstractCircuitElement.voltageRange = new Double(st.nextToken()).doubleValue();
 
         try {
-            simmer.getPowerBar().setValue(new Integer(st.nextToken()).intValue());
+            simmer.getSidePanel().getPowerBar().setValue(new Integer(st.nextToken()).intValue());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -203,9 +203,9 @@ public class FileOps {
             simmer.getMainMenuBar().getOptionsMenuBar().getVoltsCheckItem().setState(true);
             simmer.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().setState(true);
             simmer.setGrid();
-            simmer.getSpeedBar().setValue(117); // 57
-            simmer.getCurrentBar().setValue(50);
-            simmer.getPowerBar().setValue(50);
+            simmer.getSidePanel().getSpeedBar().setValue(117); // 57
+            simmer.getSidePanel().getCurrentBar().setValue(50);
+            simmer.getSidePanel().getPowerBar().setValue(50);
             AbstractCircuitElement.voltageRange = 5;
             simmer.setScopeCount(0);
         }
@@ -274,7 +274,7 @@ public class FileOps {
             p += l;
 
         }
-        simmer.setPowerBarEnable();
+        simmer.getSidePanel().setPowerBarEnable();
         simmer.enableItems();
         // if (!retain)
         // handleResize(); // for scopes
@@ -308,10 +308,10 @@ public class FileOps {
         // the same file twice
         // doesn't work unless you destroy the original input element and
         // replace it with a new one
-        int idx = simmer.getVerticalPanel().getWidgetIndex(simmer.getLoadFileInput());
+        int idx = simmer.getSidePanel().getWidgetIndex(simmer.getLoadFileInput());
         LoadFile newlf = new LoadFile(simmer);
-        simmer.getVerticalPanel().insert(newlf, idx);
-        simmer.getVerticalPanel().remove(idx + 1);
+        simmer.getSidePanel().insert(newlf, idx);
+        simmer.getSidePanel().remove(idx + 1);
         simmer.setLoadFileInput(newlf);
     }
 

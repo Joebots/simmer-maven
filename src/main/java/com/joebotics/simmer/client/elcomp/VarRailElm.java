@@ -50,17 +50,17 @@ public class VarRailElm extends RailElm implements MouseWheelHandler {
 
 	void createSlider() {
 		waveform = WF_VAR;
-		sim.addWidgetToVerticalPanel(label = new Label(sliderText));
+		sim.getSidePanel().addWidgetToVerticalPanel(label = new Label(sliderText));
 		label.addStyleName("topSpace");
 		int value = (int) ((frequency - bias) * 100 / (maxVoltage - bias));
-		sim.addWidgetToVerticalPanel(slider = new Scrollbar(
+		sim.getSidePanel().addWidgetToVerticalPanel(slider = new Scrollbar(
 				Scrollbar.HORIZONTAL, value, 1, 0, 101, null, this));
 		// simmer.verticalPanel.validate();
 	}
 
 	public void delete() {
-		sim.removeWidgetFromVerticalPanel(label);
-		sim.removeWidgetFromVerticalPanel(slider);
+		sim.getSidePanel().removeWidgetFromVerticalPanel(label);
+		sim.getSidePanel().removeWidgetFromVerticalPanel(slider);
 	}
 
 	public String dump() {
@@ -106,7 +106,7 @@ public class VarRailElm extends RailElm implements MouseWheelHandler {
 		if (n == 2) {
 			sliderText = ei.textf.getText();
 			label.setText(sliderText);
-			sim.setiFrameHeight();
+			sim.getSidePanel().setiFrameHeight();
 		}
 	}
 

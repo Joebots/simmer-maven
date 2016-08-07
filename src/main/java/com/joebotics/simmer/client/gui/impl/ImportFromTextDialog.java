@@ -55,7 +55,7 @@ public class ImportFromTextDialog extends DialogBox {
 		okButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				String s;
-				sim.getEditMenu().pushUndo();
+				sim.getMainMenuBar().getEditMenu().pushUndo();
 				closeDialog();
 				// s=textBox.getHTML();
 				// s=s.replace("<br>", "\r");

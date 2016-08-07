@@ -77,7 +77,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
 
         // if (!didSwitch && mouseElm != null)
         if (simmer.getMouseElm() != null)
-            simmer.getEditMenu().doEdit(simmer.getMouseElm());
+            simmer.getMainMenuBar().getEditMenu().doEdit(simmer.getMouseElm());
     }
 
     public void onMouseDown(MouseDownEvent e) {
@@ -120,13 +120,13 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             simmer.setTempMouseMode(MouseModeEnum.MouseMode.DRAG_POST);
 
         if (simmer.getTempMouseMode() != MouseModeEnum.MouseMode.SELECT && simmer.getTempMouseMode() != MouseModeEnum.MouseMode.DRAG_SELECTED)
-            simmer.getEditMenu().doSelectNone();
+            simmer.getMainMenuBar().getEditMenu().doSelectNone();
 
         if (simmer.doSwitch(e.getX(), e.getY())) {
             return;
         }
 
-        simmer.getEditMenu().pushUndo();
+        simmer.getMainMenuBar().getEditMenu().pushUndo();
         simmer.setInitDragX(e.getX());
         simmer.setInitDragY(e.getY());
         simmer.setDragging(true);
@@ -485,7 +485,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             if (simmer.getDragElm().getX1() == simmer.getDragElm().getX2() && simmer.getDragElm().getY1() == simmer.getDragElm().getY2()) {
                 simmer.getDragElm().delete();
                 if (simmer.getMouseMode() == MouseModeEnum.MouseMode.SELECT || simmer.getMouseMode() == MouseModeEnum.MouseMode.DRAG_SELECTED)
-                    simmer.getEditMenu().doSelectNone();
+                    simmer.getMainMenuBar().getEditMenu().doSelectNone();
             } else {
                 simmer.getElmList().addElement(simmer.getDragElm());
                 // fire component added
@@ -533,7 +533,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         if ((t & Event.ONKEYDOWN) != 0) {
 
             if (code == KeyCodes.KEY_BACKSPACE || code == KeyCodes.KEY_DELETE) {
-                simmer.getEditMenu().doDelete();
+                simmer.getMainMenuBar().getEditMenu().doDelete();
                 e.cancel();
             }
             if (code == KeyCodes.KEY_ESCAPE) {
@@ -596,7 +596,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             simmer.setAboutBox(new AboutBox(Launcher.versionString));
 
         if (item == "importfromlocalfile") {
-            simmer.getEditMenu().pushUndo();
+            simmer.getMainMenuBar().getEditMenu().pushUndo();
             simmer.getLoadFileInput().click();
         }
 
@@ -618,38 +618,38 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             simmer.getContextPanel().hide();
 
         if (menu == "options" && item == "other")
-            simmer.getEditMenu().doEdit(new EditOptions(simmer));
+            simmer.getMainMenuBar().getEditMenu().doEdit(new EditOptions(simmer));
 
         if (item == "undo")
-            simmer.getEditMenu().doUndo();
+            simmer.getMainMenuBar().getEditMenu().doUndo();
 
         if (item == "redo")
-            simmer.getEditMenu().doRedo();
+            simmer.getMainMenuBar().getEditMenu().doRedo();
 
         if (item == "cut") {
             if (menu != "elm")
                 simmer.setMouseElm(null);
 
-            simmer.getEditMenu().doCut();
+            simmer.getMainMenuBar().getEditMenu().doCut();
         }
         if (item == "copy") {
             if (menu != "elm")
                 simmer.setMouseElm(null);
 
-            simmer.getEditMenu().doCopy();
+            simmer.getMainMenuBar().getEditMenu().doCopy();
         }
 
         if (item == "paste")
-            simmer.getEditMenu().doPaste();
+            simmer.getMainMenuBar().getEditMenu().doPaste();
 
         if (item == "selectAll")
-            simmer.getEditMenu().doSelectAll();
+            simmer.getMainMenuBar().getEditMenu().doSelectAll();
 
         if (item == "selectNone")
-            simmer.getEditMenu().doSelectNone();
+            simmer.getMainMenuBar().getEditMenu().doSelectNone();
 
         if (item == "centrecircuit") {
-            simmer.getEditMenu().pushUndo();
+            simmer.getMainMenuBar().getEditMenu().pushUndo();
             simmer.centreCircuit();
         }
         if (item == "stackAll")
@@ -659,13 +659,13 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             simmer.unstackAll();
 
         if (menu == "elm" && item == "edit")
-            simmer.getEditMenu().doEdit(simmer.getSelectedCircuitElement());
+            simmer.getMainMenuBar().getEditMenu().doEdit(simmer.getSelectedCircuitElement());
 
         if (item == "delete") {
             if (menu == "elm")
                 simmer.setSelectedCircuitElement(null);
 
-            simmer.getEditMenu().doDelete();
+            simmer.getMainMenuBar().getEditMenu().doDelete();
         }
 
         if (item == "viewInScope" && simmer.getSelectedCircuitElement() != null) {
@@ -690,7 +690,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             simmer.getScope(i).setElm(simmer.getSelectedCircuitElement());
         }
         if (menu == "scopepop") {
-            simmer.getEditMenu().pushUndo();
+            simmer.getMainMenuBar().getEditMenu().pushUndo();
             if (item == "remove")
                 simmer.getScope(simmer.getMenuScope()).setElm(null);
             if (item == "speed2")
@@ -714,7 +714,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             // cv.repaint();
         }
         if (menu == "circuits" && item.indexOf("setup ") == 0) {
-            simmer.getEditMenu().pushUndo();
+            simmer.getMainMenuBar().getEditMenu().pushUndo();
             simmer.getFileOps().readSetupFile(item.substring(6), "", true);
         }
 

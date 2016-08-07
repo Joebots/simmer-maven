@@ -534,7 +534,7 @@ public abstract class AbstractCircuitElement implements Editable {
 
 	// TODO: Badger: utils
 	protected void drawDots(Graphics g, Point pa, Point pb, double pos) {
-		if (sim.getStoppedCheck().getState() || pos == 0 || !sim.getMainMenuBar().getOptionsMenuBar().getDotsCheckItem().getState())
+		if (sim.getSidePanel().getStoppedCheck().getState() || pos == 0 || !sim.getMainMenuBar().getOptionsMenuBar().getDotsCheckItem().getState())
 			return;
 		int dx = pb.getX() - pa.getX();
 		int dy = pb.getY() - pa.getY();
@@ -1123,7 +1123,7 @@ public abstract class AbstractCircuitElement implements Editable {
 
 	protected double updateDotCount(double cur, double cc) {
 
-		if (sim.getStoppedCheck().getState())
+		if (sim.getSidePanel().getStoppedCheck().getState())
 			return cc;
 		double cadd = cur * currentMult;
 		/*

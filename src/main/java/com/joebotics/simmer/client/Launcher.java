@@ -67,7 +67,7 @@ public class Launcher implements EntryPoint {
 
 			public void onResize(ResizeEvent event) {
 				mysim.setCanvasSize();
-				mysim.setiFrameHeight();
+				mysim.getSidePanel().setiFrameHeight();
 
 			}
 		});
