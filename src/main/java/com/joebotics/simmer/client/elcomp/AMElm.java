@@ -86,15 +86,14 @@ public class AMElm extends AbstractCircuitElement {
 			drawDots(g, getPoint1(), getLead1(), getCurcount());
 	}
 
-	void drawWaveform(Graphics g, Point center) {
+	private void drawWaveform(Graphics g, Point center) {
 		g.setColor(needsHighlight() ? selectColor : Color.gray);
 		setPowerColor(g, false);
 		int xc = center.getX();
 		int yc = center.getY();
 		GraphicsUtil.drawThickCircle(g, xc, yc, circleSize);
 //		int wl = 8;
-		adjustBbox(xc - circleSize, yc - circleSize, xc + circleSize, yc
-				+ circleSize);
+		adjustBbox(xc - circleSize, yc - circleSize, xc + circleSize, yc + circleSize);
 	}
 
 	public String dump() {
@@ -137,8 +136,8 @@ public class AMElm extends AbstractCircuitElement {
 
 	double getVoltage() {
 		double w = 2 * pi * (sim.getT() - freqTimeZero);
-		return ((Math.sin(w * signalfreq) + 1) / 2) * Math.sin(w * carrierfreq)
-				* maxVoltage;
+
+		return ((Math.sin(w * signalfreq) + 1) / 2) * Math.sin(w * carrierfreq) * maxVoltage;
 	}
 
 	public double getVoltageDiff() {
@@ -161,8 +160,10 @@ public class AMElm extends AbstractCircuitElement {
 	public void setEditValue(int n, EditInfo ei) {
 		if (n == 0)
 			maxVoltage = ei.value;
+
 		if (n == 1)
 			carrierfreq = ei.value;
+
 		if (n == 2)
 			signalfreq = ei.value;
 	}

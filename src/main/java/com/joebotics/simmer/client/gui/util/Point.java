@@ -61,4 +61,12 @@ public class Point implements Serializable{
 	public void setY(int y) {
 		this.y = y;
 	}
+
+	public String coords(){
+		return "x:" + x + ",y:" + y;
+	}
+
+	public String toString(){
+		return super.toString() + "::x=" + x + ",y=" + y;
+	}
 }

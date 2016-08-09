@@ -251,7 +251,6 @@ public class EditMenu extends MenuBar{
         }
     }
 
-
     public void setMenuSelection() {
 
         AbstractCircuitElement menuElm = simmer.getSelectedCircuitElement();

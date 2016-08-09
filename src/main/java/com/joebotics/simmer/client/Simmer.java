@@ -30,10 +30,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.*;
-import com.joebotics.simmer.client.breadboard.CircuitComponent;
-import com.joebotics.simmer.client.breadboard.CircuitLibrary;
-import com.joebotics.simmer.client.breadboard.Connection;
-import com.joebotics.simmer.client.breadboard.Identifiable;
+import com.joebotics.simmer.client.breadboard.CircuitInterpreter;
 import com.joebotics.simmer.client.elcomp.*;
 import com.joebotics.simmer.client.gui.*;
 import com.joebotics.simmer.client.gui.dialog.*;
@@ -47,7 +44,6 @@ import com.joebotics.simmer.client.util.*;
 import com.joebotics.simmer.client.util.HintTypeEnum.HintType;
 import com.joebotics.simmer.client.util.MouseModeEnum.MouseMode;
 
-import java.util.Map;
 import java.util.Vector;
 
 public class Simmer
@@ -55,26 +51,31 @@ public class Simmer
 	public static final String				muString			= "u";
 	public static final String				ohmString			= "ohm";
 
-	private final SimmerController simmerController = new SimmerController(this);
-	private final FileOps fileOps = new FileOps(this);
-	private SidePanel sidePanel = new SidePanel(this);
+	private final 	SimmerController simmerController = new SimmerController(this);
+	private final 	FileOps fileOps = new FileOps(this);
+	private 	SidePanel sidePanel = new SidePanel(this);
 
-	private int								circuitBottom;
 	private double							circuitMatrix[][], circuitRightSide[], origRightSide[], origMatrix[][];
 	private int								circuitMatrixSize, circuitMatrixFullSize;
+	private int								circuitPermute[];
+	private int								circuitBottom;
 	private boolean							circuitNeedsMap;
 	private boolean							circuitNonLinear;
-	private int								circuitPermute[];
-	private final int						FASTTIMER = 40;
+
 	private int								gridMask;
 	private int								gridRound;
 	private int								gridSize;
-	private SwitchElm heldSwitchElm;
+
+	private final int						FASTTIMER = 40;
+	private SwitchElm 						heldSwitchElm;
+
 	private HintType						hintType			= HintType.HINT_UNSET;
 	private HintType						hintItem1			= HintType.HINT_UNSET;
 	private HintType						hintItem2			= HintType.HINT_UNSET;
+
 	private int								draggingPost;
 	private int								dragX, dragY, initDragX, initDragY;
+
 	private boolean							dumpMatrix;
 	private boolean							converged;
 
@@ -88,22 +89,20 @@ public class Simmer
 	private String							ctrlMetaKey;
 	private Context2d						cvcontext;
 
-	private boolean							isMac;
+	private String							mouseModeStr		= "Select";
 	private int								mousePost			= -1;
 	private int								scopeColCount[];
 	private int								scopeCount;
-	private long							lastTime			= 0, lastFrameTime, lastIterTime, secTime = 0;
 	private int								menuScope			= -1;
-	private String							mouseModeStr		= "Select";
 	private int								scopeSelected		= -1;
 	private int								subIterations;
 	private double							t;
 
-	private LoadFile loadFileInput;
+	private boolean							isMac;
+	private long							lastTime			= 0, lastFrameTime, lastIterTime, secTime = 0;
+	private LoadFile 						loadFileInput;
 
 	private Vector<CircuitNode>				nodeList;
-
-	private long							mytime				= 0;
 
 	private static AboutBox aboutBox;
 	private static EditDialog editDialog;
@@ -116,7 +115,7 @@ public class Simmer
 	private MouseMode						mouseMode			= MouseMode.SELECT;
 	private MouseMode						tempMouseMode		= MouseMode.SELECT;
 	private DockLayoutPanel					layoutPanel;
-	private DrawMenu popupDrawMenu;
+	private DrawMenu 						popupDrawMenu;
 
 	private AbstractCircuitElement 			selectedCircuitElement;
 	private AbstractCircuitElement			plotXElm, plotYElm;
@@ -134,7 +133,6 @@ public class Simmer
 	private String							stopMessage;
 
 	private double							timeStep;
-	private Vector<String>					undoStack, redoStack;
 	private boolean							analyzeFlag;
 	private boolean							dragging;
 	private boolean							mouseDragging;
@@ -229,8 +227,6 @@ public class Simmer
 		setGrid();
 
 		elmList = new Vector<AbstractCircuitElement>();
-		undoStack = new Vector<String>();
-		redoStack = new Vector<String>();
 
 		scopes = new Scope[20];
 		scopeColCount = new int[20];
@@ -301,6 +297,7 @@ public class Simmer
 			}
 			if (ce instanceof RailElm)
 				gotRail = true;
+
 			if (volt == null && ce instanceof VoltageElm)
 				volt = ce;
 		}
@@ -416,14 +413,18 @@ public class Simmer
 		closure[0] = true;
 		while (changed) {
 			changed = false;
+
 			for (i = 0; i != elmList.size(); i++) {
 				AbstractCircuitElement ce = getElm(i);
+
 				// loop through all ce's nodes to see if they are connected
 				// to other nodes not in closure
 				for (j = 0; j < ce.getPostCount(); j++) {
+
 					if (!closure[ce.getNode(j)]) {
 						if (ce.hasGroundConnection(j))
 							closure[ce.getNode(j)] = changed = true;
+
 						continue;
 					}
 					int k;
@@ -706,9 +707,11 @@ public class Simmer
 		}
 
 		// fire circuit working event here
-		CircuitLibrary circuit = createCircuitLibrary(elmList);
-		NativeJavascriptWrapper.fire("closed_circuit_signal", circuit);
+//		CircuitInterpreter circuit = createCircuitLibrary(elmList);
+		CircuitInterpreter cl = new CircuitInterpreter(getNodeList());
+		NativeJavascriptWrapper.fire("closed_circuit_signal", "");
 	}
+
 
 	protected boolean anySelectedButMouse() {
 		for (int i = 0; i != elmList.size(); i++)
@@ -767,13 +770,17 @@ public class Simmer
 			mainMenuBar.getDrawMenu().getMainMenuItems().get(i).setState(mainMenuBar.getDrawMenu().getMainMenuItemNames().get(i) == mouseModeStr);
 	}
 
+	// move to simmercontroller
 	protected boolean doSwitch(int x, int y) {
 		if (mouseElm == null || !(mouseElm instanceof SwitchElm))
 			return false;
+
 		SwitchElm se = (SwitchElm) mouseElm;
 		se.toggle();
+
 		if (se.isMomentary())
 			heldSwitchElm = se;
+
 		needAnalyze();
 		return true;
 	}
@@ -1050,12 +1057,14 @@ public class Simmer
 			cv.setCoordinateSpaceWidth(width);
 			cv.setCoordinateSpaceHeight(height);
 		}
+
 		if (backcv != null) {
 			backcv.setWidth(width + "PX");
 			backcv.setHeight(height + "PX");
 			backcv.setCoordinateSpaceWidth(width);
 			backcv.setCoordinateSpaceHeight(height);
 		}
+
 		int h = height / 5;
 		circuitArea = new Rectangle(0, 0, width, height - h);
 	}
@@ -1070,8 +1079,10 @@ public class Simmer
 		if (ce != mouseElm) {
 			if (mouseElm != null)
 				mouseElm.setMouseElm(false);
+
 			if (ce != null)
 				ce.setMouseElm(true);
+
 			mouseElm = ce;
 		}
 	}
@@ -1094,8 +1105,10 @@ public class Simmer
 		// unused scopes/columns
 		int pos = -1;
 		for (i = 0; i < scopeCount; i++) {
+
 			if (locateElm(scopes[i].getElm()) < 0)
 				scopes[i].setElm(null);
+
 			if (scopes[i].getElm() == null) {
 				int j;
 				for (j = i; j != scopeCount; j++)
@@ -1104,46 +1117,63 @@ public class Simmer
 				i--;
 				continue;
 			}
+
 			if (scopes[i].getPosition() > pos + 1)
 				scopes[i].setPosition(pos + 1);
-			pos = scopes[i].getPosition();
+
+				pos = scopes[i].getPosition();
 		}
+
 		while (scopeCount > 0 && scopes[scopeCount - 1].getElm() == null)
 			scopeCount--;
+
 		int h = cv.getCoordinateSpaceHeight() - circuitArea.height;
 		pos = 0;
+
 		for (i = 0; i != scopeCount; i++)
 			scopeColCount[i] = 0;
+
 		for (i = 0; i != scopeCount; i++) {
 			pos = MathUtil.max(scopes[i].getPosition(), pos);
 			scopeColCount[scopes[i].getPosition()]++;
 		}
+
 		int colct = pos + 1;
 		int iw = Display.INFOWIDTH;
+
 		if (colct <= 2)
 			iw = iw * 3 / 2;
+
 		int w = (cv.getCoordinateSpaceWidth() - iw) / colct;
 		int marg = 10;
+
 		if (w < marg * 2)
 			w = marg * 2;
+
 		pos = -1;
 		int colh = 0;
 		int row = 0;
 		int speed = 0;
+
 		for (i = 0; i != scopeCount; i++) {
+
 			Scope s = scopes[i];
+
 			if (s.getPosition() > pos) {
 				pos = s.getPosition();
 				colh = h / scopeColCount[pos];
 				row = 0;
 				speed = s.getSpeed();
 			}
+
 			if (s.getSpeed() != speed) {
 				s.setSpeed(speed);
 				s.resetGraph();
 			}
+
 			Rectangle r = new Rectangle(pos * w, cv.getCoordinateSpaceHeight() - h + colh * row, w - marg, colh);
 			row++;
+
 			if (!r.equals(s.getRect()))
 				s.setRect(r);
 		}
@@ -1382,10 +1412,9 @@ public class Simmer
 		AbstractCircuitElement.powerMult = Math.exp((sidePanel.getPowerBar().getValue() / 4.762) - 7);
 
 		int i;
-		// Font oldfont = g.getFont();
 		Font oldfont = AbstractCircuitElement.unitsFont;
 		g.setFont(oldfont);
-		// mydrawstarttime = System.currentTimeMillis();
+
 		for (i = 0; i != elmList.size(); i++) {
 			if (getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState())
 				g.setColor(Color.gray);
@@ -1410,7 +1439,7 @@ public class Simmer
 					ce.drawHandles(g, Color.cyan);
 				}
 			}
-		if (tempMouseMode ==MouseMode.SELECT && mouseElm != null) {
+		if (tempMouseMode == MouseMode.SELECT && mouseElm != null) {
 			mouseElm.drawHandles(g, Color.cyan);
 		}
 		int badnodes = 0;
@@ -1421,15 +1450,19 @@ public class Simmer
 			for (i = 0; i != getNodeList().size(); i++) {
 				CircuitNode cn = getCircuitNode(i);
 				if (!cn.internal && cn.links.size() == 1) {
+
 					int bb = 0, j;
 					CircuitNodeLink cnl = cn.links.elementAt(0);
+
 					for (j = 0; j != elmList.size(); j++) { // TODO: (hausen)
 															// see if this
 															// change does not
 															// break stuff
 						AbstractCircuitElement ce = getElm(j);
+
 						if (ce instanceof GraphicElm)
 							continue;
+
 						if (cnl.getElm() != ce && getElm(j).getBoundingBox().contains(cn.x, cn.y))
 							bb++;
 					}
@@ -1525,63 +1558,12 @@ public class Simmer
 
 		cvcontext.drawImage(backcontext.getCanvas(), 0.0, 0.0);
 		lastFrameTime = lastTime;
-		mytime = mytime + System.currentTimeMillis() - mystarttime;
 		// myframes++;
 	}
 
 	public void updateVoltageSource(int n1, int n2, int vs, double v) {
 		int vn = getNodeList().size() + vs;
 		stampRightSide(vn, v);
-	}
-   
-	private CircuitLibrary createCircuitLibrary(Vector<AbstractCircuitElement>	elmList){
-		CircuitLibrary circuit = new CircuitLibrary();
-		//loop through the elmlist creating components and connection. 
-		//all the properties of connection cannot be filled because we have to have 
-		//all the components first found.
-		/*
-		for(int i=0; i < elmList.size();i++){
-			AbstractCircuitElement elm = elmList.get(i);
-			if (!elm.isWire()){
-				CircuitComponent component = new CircuitComponent();
-				double uuid=Math.random();
-				component.setUUID(uuid);
-				component.setTypeClassName(elm.getClass().getName());
-				component.setBoundedBox(elm.getBoundingBox());
-				component.setTypeClass(elm.getClass());
-				circuit.put(uuid, component);
-			}
-			else {
-				Connection connection = new Connection();
-				double uuid=Math.random();
-				connection.setUUID(uuid);
-
-				circuit.put(uuid, connection);
-			}
-
-		}
-//		now for each connetion find a componenet that intersects its bounding box
-		for (Map.Entry<Double, Identifiable> entry : circuit.entrySet()) {
-			if (entry.getValue() instanceof CircuitComponent) continue;
-			Connection connection =(Connection) entry.getValue();
-			int i=0;
-			for (Map.Entry<Double, Identifiable> insideEntry : circuit.entrySet()){
-				if (i==2) break;
-				if (insideEntry.getValue() instanceof CircuitComponent) {
-					if (connection.getBoundedBox().intersects(insideEntry.getValue().getBoundedBox())){
-						if (i==0){
-							connection.setSide1UUID(insideEntry.getKey());
-													}
-						else {
-							connection.setSide1UUID(insideEntry.getKey());
-						}
-						i++;
-					}
-				}
-			}
-		}
-		*/
-		return circuit;
 	}
 
 	public SimmerController getSimmerController(){

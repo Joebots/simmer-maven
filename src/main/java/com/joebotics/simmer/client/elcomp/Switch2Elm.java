@@ -42,7 +42,7 @@ public class Switch2Elm extends SwitchElm {
 		setNoDiagonal(true);
 	}
 
-	Switch2Elm(int xx, int yy, boolean mm) {
+	public Switch2Elm(int xx, int yy, boolean mm) {
 		super(xx, yy, mm);
 		setNoDiagonal(true);
 	}

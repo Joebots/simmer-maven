@@ -1,11 +1,5 @@
 package com.joebotics.simmer.client.integration;
 
-import java.util.Map;
-import java.util.Vector;
-
-import com.joebotics.simmer.client.breadboard.CircuitLibrary;
-import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
-
 /**
  * Created by joe on 7/20/16.
  */

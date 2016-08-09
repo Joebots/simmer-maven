@@ -36,7 +36,9 @@ import com.joebotics.simmer.client.gui.util.Rectangle;
 import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.MouseModeEnum.MouseMode;
 
-public abstract class AbstractCircuitElement implements Editable {
+import java.io.Serializable;
+
+public abstract class AbstractCircuitElement implements Editable, Serializable {
 
 	private double uuid = Math.random();
 
