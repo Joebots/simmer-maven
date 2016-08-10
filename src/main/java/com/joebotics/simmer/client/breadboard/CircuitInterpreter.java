@@ -2,12 +2,10 @@ package com.joebotics.simmer.client.breadboard;
 
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
 import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
 import com.joebotics.simmer.client.elcomp.CircuitNode;
 import com.joebotics.simmer.client.elcomp.CircuitNodeLink;
 import com.joebotics.simmer.client.gui.util.Point;
-import org.eclipse.jetty.util.ajax.JSON;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +21,7 @@ public class CircuitInterpreter {
 	private Map<String, List<Connection>> connectionsForByName = new HashMap<>();
 	private List<CircuitNode> circuitNodeList;
 	private List<AbstractCircuitElement> circuitElements = new ArrayList<>();
-	private List<Connection> connections= new ArrayList<>();
+	private List<Connection> connections = new ArrayList<>();
 
 	public CircuitInterpreter(List<CircuitNode> circuitNodeList){
 		this.circuitNodeList = circuitNodeList;
@@ -67,6 +65,7 @@ public class CircuitInterpreter {
 
 				for( ConnectionPoint cpt : links ){
 
+					// don't include a link to ourself
 					if( cpt.toString().equals(cp.toString()) )
 						continue;
 
@@ -76,8 +75,6 @@ public class CircuitInterpreter {
 				}
 			}
 		}
-
-		log( toJSONObject().toString() );
 	}
 
 	public List<ConnectionPoint> getLinkedConnectionPoints(String coords) {
@@ -109,38 +106,36 @@ public class CircuitInterpreter {
 		return result;
 	}
 
-	private String componentNamesToJson(){
-		String result = "[";
-
-		for( String s : getComponentNames() ){
-			result += "\"" + s + "\",";
-		}
-
-		return result.substring(0, result.length()-1) + "]";
-	}
-
 	public JSONObject toJSONObject(){
 		JSONObject result = new JSONObject();
+		result.put("bounds", createBoundsJSON());
 
-		JSONArray components = new JSONArray();
-		result.put("components", components);
 		JSONObject connections = new JSONObject();
 		result.put("connections", connections);
 
 		for( int i=0; i<getComponentNames().size(); i++ ){
 			String name = getComponentNames().get(i);
-			components.set(i, new JSONString(name));
-			connections.put(name, createArray(this.connectionsForByName.get(name)));
+			connections.put(name, createArray(name));
 		}
 
 		return result;
 	}
 
-	private JSONArray createArray(List<Connection> connections){
+	private JSONObject createBoundsJSON(){
+		JSONObject result = new JSONObject();
+
+		for( AbstractCircuitElement ace : this.circuitElements ){
+			result.put(ace.toString(), ace.getBoundingBox().toJSONObject());
+		}
+
+		return result;
+	}
+
+	private JSONArray createArray(String name){
 		JSONArray result = new JSONArray();
 
-		for( Connection c : connections ){
-			result.set(result.size(), c.toJSONObject());
+		for( Connection c : this.connectionsForByName.get(name) ){
+			result.set(result.size(), c.toJSONObject(name));
 		}
 
 		return result;

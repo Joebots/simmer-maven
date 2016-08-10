@@ -18,6 +18,9 @@ package com.joebotics.simmer.client.gui.util;
 
 // Via http://grepcode.com/file_/repository.grepcode.com/java/root/jdk/openjdk/6-b14/java/awt/Rectangle.java/?v=source
 
+import com.google.gwt.json.client.JSONNumber;
+import com.google.gwt.json.client.JSONObject;
+
 import java.io.Serializable;
 
 public class Rectangle implements Serializable{
@@ -148,5 +151,14 @@ public class Rectangle implements Serializable{
 		if (ty2 > Integer.MAX_VALUE)
 			ty2 = Integer.MAX_VALUE;
 		return new Rectangle(tx1, ty1, (int) tx2, (int) ty2);
+	}
+
+	public JSONObject toJSONObject(){
+		JSONObject result = new JSONObject();
+		result.put("x", new JSONNumber(this.x));
+		result.put("y", new JSONNumber(this.y));
+		result.put("width", new JSONNumber(this.width));
+		result.put("height", new JSONNumber(this.height));
+		return result;
 	}
 }

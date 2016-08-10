@@ -709,7 +709,7 @@ public class Simmer
 		// fire circuit working event here
 //		CircuitInterpreter circuit = createCircuitLibrary(elmList);
 		CircuitInterpreter cl = new CircuitInterpreter(getNodeList());
-		NativeJavascriptWrapper.fire("closed_circuit_signal", "");
+		NativeJavascriptWrapper.fire("closed_circuit_signal", cl.toJSONObject());
 	}
 
 

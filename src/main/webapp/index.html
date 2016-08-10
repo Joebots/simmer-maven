@@ -12,8 +12,8 @@
 
         $(function() {
             globalBus = new EventBus();
-            globalBus.bind(".*", function(evt){
-                console.log(evt);
+            bus.bind(".*", function(e){
+                console.log("INDEX CAUGHT EVENT", e);
             });
         });
     </script>
