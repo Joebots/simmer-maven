@@ -1,5 +1,6 @@
 package com.joebotics.simmer.client.breadboard;
 
+import com.google.gwt.json.client.JSONObject;
 import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
 import com.joebotics.simmer.client.gui.util.Rectangle;
 
@@ -25,6 +26,13 @@ public class Connection {
 		result += "\"" + side1.getElement() + "\":" + side1.toJson() + ",";
 		result += "\"" + side2.getElement() + "\":" + side2.toJson() + "}";
 
+		return result;
+	}
+
+	public JSONObject toJSONObject(){
+		JSONObject result = new JSONObject();
+		result.put("side1", side1.toJSONObject());
+		result.put("side2", side2.toJSONObject());
 		return result;
 	}
 }

@@ -1,5 +1,9 @@
 package com.joebotics.simmer.client.breadboard;
 
+import com.google.gwt.json.client.JSONNumber;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
+import com.google.gwt.json.client.JSONValue;
 import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
 import com.joebotics.simmer.client.gui.util.Point;
 
@@ -49,13 +53,15 @@ public class ConnectionPoint extends Point {
     }
 
     public String toJson(){
-        String result = "{";
+        return toJson().toString();
+    }
 
-        result += "\"component\":\"" + element.toString() + "\",";
-        result += "\"post\":\"" + postNbr + "\",";
-        result += "\"x\":\"" + getX() + "\",";
-        result += "\"y\":\"" + getY() + "\"}";
-
+    public JSONObject toJSONObject(){
+        JSONObject result = new JSONObject();
+        result.put("component", new JSONString(element.toString()));
+        result.put("post", new JSONNumber(postNbr));
+        result.put("x", new JSONNumber(getX()));
+        result.put("y", new JSONNumber(getY()));
         return result;
     }
 }

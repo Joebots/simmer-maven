@@ -1,9 +1,13 @@
 package com.joebotics.simmer.client.breadboard;
 
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
 import com.joebotics.simmer.client.elcomp.CircuitNode;
 import com.joebotics.simmer.client.elcomp.CircuitNodeLink;
 import com.joebotics.simmer.client.gui.util.Point;
+import org.eclipse.jetty.util.ajax.JSON;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,7 +77,7 @@ public class CircuitInterpreter {
 			}
 		}
 
-		log( toJson() );
+		log( toJSONObject().toString() );
 	}
 
 	public List<ConnectionPoint> getLinkedConnectionPoints(String coords) {
@@ -115,23 +119,31 @@ public class CircuitInterpreter {
 		return result.substring(0, result.length()-1) + "]";
 	}
 
-	public String toJson(){
-		String result = "{";
-		result += "\"components\":" + componentNamesToJson() + ",\n";
-		result += "\"connections\":{";
+	public JSONObject toJSONObject(){
+		JSONObject result = new JSONObject();
 
-		for( String name : getComponentNames() ){
-			List<Connection> connections = getConnectionsFor(name);
-			result += "\n\"" + name + "\":" ;//+ connections + ",\n";
+		JSONArray components = new JSONArray();
+		result.put("components", components);
+		JSONObject connections = new JSONObject();
+		result.put("connections", connections);
 
-			for( Connection connection : connections ){
-				result += connection.toJson() + ",\n\t";
-			}
-
-			result = result.substring(0, result.length()-1);
+		for( int i=0; i<getComponentNames().size(); i++ ){
+			String name = getComponentNames().get(i);
+			components.set(i, new JSONString(name));
+			connections.put(name, createArray(this.connectionsForByName.get(name)));
 		}
 
-		return result + "}}";
+		return result;
+	}
+
+	private JSONArray createArray(List<Connection> connections){
+		JSONArray result = new JSONArray();
+
+		for( Connection c : connections ){
+			result.set(result.size(), c.toJSONObject());
+		}
+
+		return result;
 	}
 
 	public native void log(String message) /*-{
