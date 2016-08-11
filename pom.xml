@@ -9,7 +9,7 @@
   <artifactId>simmer</artifactId>
   <packaging>war</packaging>
   <version>1</version>
-  <name>GWT Maven Archetype</name>
+  <name>simmer-gwt</name>
 
   <properties>
     <!-- Convenience property to set the GWT version -->

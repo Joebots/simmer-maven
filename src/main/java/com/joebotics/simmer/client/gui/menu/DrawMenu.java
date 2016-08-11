@@ -82,11 +82,9 @@ public class DrawMenu extends MenuBar {
         activeMenuBar.addItem(getClassCheckItem(MessageI18N.getMessage("Add_JFET_(N-Channel)"), "NJfetElm"));
         activeMenuBar.addItem(getClassCheckItem(MessageI18N.getMessage("Add_JFET_(P-Channel)"), "PJfetElm"));
         activeMenuBar.addItem(getClassCheckItem(MessageI18N.getMessage("Add_SCR"), "SCRElm"));
-        activeMenuBar.addItem(getClassCheckItem(MessageI18N.getMessage("Add_Varactor/Varicap"), "VaractorElm"));
         activeMenuBar.addItem(getClassCheckItem(MessageI18N.getMessage("Add_Tunnel_Diode"), "TunnelDiodeElm"));
         activeMenuBar.addItem(getClassCheckItem(MessageI18N.getMessage("Add_Triode"), "TriodeElm"));
-
-        // missing i18n defs for property names
+        activeMenuBar.addItem(getClassCheckItem(MessageI18N.getMessage("Add_Varactor/Varicap"), "VaractorElm"));
         activeMenuBar.addItem(getClassCheckItem(MessageI18N.getMessage("Add_Diac"), "DiacElm"));
         activeMenuBar.addItem(getClassCheckItem(MessageI18N.getMessage("Add_Triac"), "TriacElm"));
         activeMenuBar.addItem(getClassCheckItem(MessageI18N.getMessage("Add_Photoresistor"), "PhotoResistorElm"));
