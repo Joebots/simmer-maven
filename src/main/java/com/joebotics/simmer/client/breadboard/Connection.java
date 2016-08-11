@@ -3,9 +3,6 @@ package com.joebotics.simmer.client.breadboard;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
-import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
-import com.joebotics.simmer.client.gui.util.Rectangle;
-import org.eclipse.jetty.util.ajax.JSON;
 
 public class Connection {
 	public ConnectionPoint side1;
