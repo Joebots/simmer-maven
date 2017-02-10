@@ -19,6 +19,9 @@
 
 package com.joebotics.simmer.client.gui.util;
 
+import com.google.gwt.json.client.JSONNumber;
+import com.google.gwt.json.client.JSONObject;
+
 import java.io.Serializable;
 
 public class Point implements Serializable{
@@ -31,14 +34,13 @@ public class Point implements Serializable{
 		y = 0;
 	}
 
-	public Point(int i, int j) {
-		x = i;
-		y = j;
+	public Point(int x, int y) {
+		this.x = x;
+		this.y = y;
 	}
 
 	public Point(Point p) {
-		x = p.x;
-		y = p.y;
+		setLocation(p);
 	}
 
 	public void setLocation(Point p) {
@@ -68,5 +70,16 @@ public class Point implements Serializable{
 
 	public String toString(){
 		return super.toString() + "::x=" + x + ",y=" + y;
+	}
+
+	public boolean equals(Point p){
+		return p.x == x && p.y == y;
+	}
+
+	public JSONObject toJSONObject(){
+		JSONObject result = new JSONObject();
+		result.put("x", new JSONNumber(x));
+		result.put("y", new JSONNumber(y));
+		return result;
 	}
 }

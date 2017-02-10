@@ -312,6 +312,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
 
         boolean success = true;
         switch (simmer.getTempMouseMode()) {
+
             case DRAG_ALL:
                 dragAll(snapGrid(e.getX()), snapGrid(e.getY()));
                 break;

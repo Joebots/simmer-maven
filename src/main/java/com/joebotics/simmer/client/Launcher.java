@@ -60,7 +60,7 @@ public class Launcher implements EntryPoint {
 	public static final String versionString = "1.0.1";
 
 	public void onModuleLoad() {
-		mysim = new Simmer();
+		mysim = Simmer.getInstance(); //new Simmer();
 		mysim.init();
 
 		Window.addResizeHandler(new ResizeHandler() {
@@ -71,6 +71,7 @@ public class Launcher implements EntryPoint {
 
 			}
 		});
+
 		mysim.updateCircuit();
 
 	}

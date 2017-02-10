@@ -1,4 +1,4 @@
-package com.joebotics.simmer.client.breadboard;
+package com.joebotics.simmer.client.breadboard.interpreter.model;
 
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
@@ -10,23 +10,23 @@ import com.joebotics.simmer.client.gui.util.Point;
 /**
  * Created by joe on 8/7/16.
  */
-public class ConnectionPoint extends Point {
+public class PinOut extends Point {
 
     private int postNbr;
     private AbstractCircuitElement element;
 
-    public ConnectionPoint(){}
+    public PinOut(){}
 
-    public ConnectionPoint(Point p){
-        super.setLocation(p);
+    public PinOut(Point p){
+        super(p);
     }
 
-    public ConnectionPoint(Point p, int postNbr){
+    public PinOut(Point p, int postNbr){
         super.setLocation(p);
         this.postNbr = postNbr;
     }
 
-    public ConnectionPoint(Point p, int postNbr, AbstractCircuitElement element){
+    public PinOut(Point p, int postNbr, AbstractCircuitElement element){
         super.setLocation(p);
         this.postNbr = postNbr;
         this.element = element;

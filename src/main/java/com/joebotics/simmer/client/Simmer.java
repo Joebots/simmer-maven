@@ -30,7 +30,9 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.*;
-import com.joebotics.simmer.client.breadboard.CircuitInterpreter;
+import com.joebotics.simmer.client.breadboard.interpreter.BreadboardCircuitParserListener;
+import com.joebotics.simmer.client.breadboard.interpreter.CircuitParser;
+import com.joebotics.simmer.client.breadboard.interpreter.CircuitParserListener;
 import com.joebotics.simmer.client.elcomp.*;
 import com.joebotics.simmer.client.gui.*;
 import com.joebotics.simmer.client.gui.dialog.*;
@@ -39,12 +41,12 @@ import com.joebotics.simmer.client.gui.menu.ElementPopupMenu;
 import com.joebotics.simmer.client.gui.menu.MainMenuBar;
 import com.joebotics.simmer.client.gui.menu.ScrollValuePopup;
 import com.joebotics.simmer.client.gui.util.*;
-import com.joebotics.simmer.client.integration.NativeJavascriptWrapper;
+import com.joebotics.simmer.client.integration.JSEventBusProxy;
 import com.joebotics.simmer.client.util.*;
 import com.joebotics.simmer.client.util.HintTypeEnum.HintType;
 import com.joebotics.simmer.client.util.MouseModeEnum.MouseMode;
 
-import java.util.Vector;
+import java.util.*;
 
 public class Simmer
 {
@@ -139,6 +141,17 @@ public class Simmer
 
 	private ElementPopupMenu							elmMenuBar;
 	private Scope							scopes[];
+
+	private static Simmer instance;
+
+	private Simmer(){}
+
+	public static final Simmer getInstance(){
+		if( instance == null )
+			instance = new Simmer();
+
+		return instance;
+	}
 
 	public ImportFromTextDialog getImportFromTextDialog() {
 		return importFromTextDialog;
@@ -257,7 +270,7 @@ public class Simmer
 
 		// setup timer
 		timer.scheduleRepeating(FASTTIMER);
-		NativeJavascriptWrapper.EventBus();
+		JSEventBusProxy.init();
 
 	}
 
@@ -336,8 +349,8 @@ public class Simmer
 				}
 				if (k == getNodeList().size()) {
 					CircuitNode cn = new CircuitNode();
-					cn.x = (int) pt.getX();
-					cn.y = (int) pt.getY();
+					cn.x = (int)pt.getX();
+					cn.y = (int)pt.getY();
 					CircuitNodeLink cnl = new CircuitNodeLink();
 					cnl.setNum(j);
 					cnl.setElm(ce);
@@ -707,9 +720,28 @@ public class Simmer
 		}
 
 		// fire circuit working event here
-//		CircuitInterpreter circuit = createCircuitLibrary(elmList);
-		CircuitInterpreter cl = new CircuitInterpreter(getNodeList());
-		NativeJavascriptWrapper.fire("closed_circuit_signal", cl.toJSONObject());
+		BreadboardCircuitParserListener bi = new BreadboardCircuitParserListener();
+		CircuitParser cl = new CircuitParser(getNodeList(), bi);
+		cl.analyze();
+
+		// this is a hack to ensure bounds are returned properly
+		// but with a little work can be used to throttle events
+		// sent through the bus to the js code.
+		class TimerHandler extends Timer{
+
+			private CircuitParserListener listener;
+
+			public TimerHandler(CircuitParserListener listener){
+				this.listener = listener;
+			}
+
+			public void run(){
+				JSEventBusProxy.fire("closed_circuit_signal", listener.toJSONObject());
+			}
+		}
+
+		TimerHandler th = new TimerHandler(bi);
+		th.schedule(1);
 	}
 
 

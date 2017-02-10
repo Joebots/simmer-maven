@@ -1,14 +1,16 @@
-package com.joebotics.simmer.client.breadboard;
+package com.joebotics.simmer.client.breadboard.interpreter.model;
 
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
+import com.joebotics.simmer.client.breadboard.interpreter.BreadboardCircuitParserListener;
 
 public class Connection {
-	public ConnectionPoint side1;
-	public ConnectionPoint side2;
+	public PinOut side1;
+	public PinOut side2;
 
-	public Connection(ConnectionPoint side1, ConnectionPoint side2 ){
+	public Connection(PinOut side1, PinOut side2 ){
 		this.side1 = side1;
 		this.side2 = side2;
 
@@ -41,15 +43,9 @@ public class Connection {
 
 		// enclosing object
 		JSONObject result = new JSONObject();
-		result.put("x", new JSONNumber(side1.getX()));
-		result.put("y", new JSONNumber(side1.getY()));
+//		result.put("name", new JSONString(side1isParent?side1.getElement().toString():side2.getElement().toString()));
 		result.put("post", new JSONNumber(side1isParent?side1.getPostNbr():side2.getPostNbr()));
-
-		// enclosed object
-		JSONObject target = new JSONObject();
-		result.put("target", target);
-		target.put("name", new JSONString(side1isParent?side2.getElement().toString():side1.getElement().toString()));
-		target.put("post", new JSONNumber(side1isParent?side2.getPostNbr():side1.getPostNbr()));
+		result.put("target", side1isParent?side2.toJSONObject():side1.toJSONObject());
 
 		return result;
 	}

@@ -12,7 +12,7 @@
 
         $(function() {
             globalBus = new EventBus();
-            bus.bind(".*", function(e){
+            globalBus.bind(".*", function(e){
                 console.log("INDEX CAUGHT EVENT", e);
             });
         });
