@@ -21,18 +21,18 @@ public class CircuitParser {
 
 	public void analyze(){
 
-		lager.info("analyze()");
+		lager.fine("analyze()");
 
 		circuitParserListener.onStart();
 
 		for( CircuitNode n : circuitNodeList ){
 
-			lager.info("analyze::CircuitNode:" + n);
+			lager.fine("analyze::CircuitNode:" + n);
 			circuitParserListener.onCircuitNode(n);
 
 			for( CircuitNodeLink cnl : n.links ){
 				circuitParserListener.onCircuitNodeLink(n, cnl);
-				lager.info("analyze::CircuitNodeLink:" + cnl);
+				lager.fine("analyze::CircuitNodeLink:" + cnl);
 			}
 		}
 

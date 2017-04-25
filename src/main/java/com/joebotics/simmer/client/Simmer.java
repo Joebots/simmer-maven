@@ -26,6 +26,7 @@ import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.*;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window.Navigator;
@@ -42,11 +43,13 @@ import com.joebotics.simmer.client.gui.menu.MainMenuBar;
 import com.joebotics.simmer.client.gui.menu.ScrollValuePopup;
 import com.joebotics.simmer.client.gui.util.*;
 import com.joebotics.simmer.client.integration.JSEventBusProxy;
+import com.joebotics.simmer.client.integration.SimmerEvents;
 import com.joebotics.simmer.client.util.*;
 import com.joebotics.simmer.client.util.HintTypeEnum.HintType;
 import com.joebotics.simmer.client.util.MouseModeEnum.MouseMode;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 public class Simmer
 {
@@ -139,10 +142,12 @@ public class Simmer
 	private boolean							dragging;
 	private boolean							mouseDragging;
 
-	private ElementPopupMenu							elmMenuBar;
+	private ElementPopupMenu				elmMenuBar;
 	private Scope							scopes[];
 
 	private static Simmer instance;
+
+	private static final Logger lager = Logger.getLogger(Simmer.class.getName());
 
 	private Simmer(){}
 
@@ -271,7 +276,6 @@ public class Simmer
 		// setup timer
 		timer.scheduleRepeating(FASTTIMER);
 		JSEventBusProxy.init();
-
 	}
 
 	public static EditDialog getEditDialog() {
@@ -458,7 +462,8 @@ public class Simmer
 			// connect unconnected nodes
 			for (i = 0; i != getNodeList().size(); i++)
 				if (!closure[i] && !getCircuitNode(i).internal) {
-					System.out.println(MessageI18N.getMessage("node_") + i + MessageI18N.getMessage("_unconnected"));
+					lager.info(MessageI18N.getMessage("node_") + i + MessageI18N.getMessage("_unconnected"));
+					JSEventBusProxy.fire(SimmerEvents.CIRCUIT_BROKEN.value, null);
 					stampResistor(0, i, 1e8);
 					closure[i] = true;
 					changed = true;
@@ -471,10 +476,10 @@ public class Simmer
 			// look for inductors with no current path
 			if (ce instanceof InductorElm) {
 				FindPathInfo fpi = new FindPathInfo(FindPathInfo.INDUCT, ce, ce.getNode(1), getNodeList().size(), getElmList());
-				// first try findPath with maximum depth of 5, to avoid
-				// slowdowns
+
+				// first try findPath with maximum depth of 5, to avoid slowdowns
 				if (!fpi.findPath(ce.getNode(0), 5) && !fpi.findPath(ce.getNode(0))) {
-					System.out.println(ce + MessageI18N.getMessage("_no_path"));
+					lager.info(ce + MessageI18N.getMessage("_no_path"));
 					ce.reset();
 				}
 			}
@@ -486,6 +491,8 @@ public class Simmer
 
 					// fire circuit broken event here
 					// {source: simmer, component: ce, message: "No_path_for_current_source"}
+					JSEventBusProxy.fire(SimmerEvents.CIRCUIT_BROKEN_NO_PATH_FOR_CURRENT_SOURCE.value, new JSONObject());
+
 					return;
 				}
 			}
@@ -498,6 +505,8 @@ public class Simmer
 
 					// fire circuit broken event here
 					// {source: simmer, component: ce, message: "Voltage_source/wire_loop_with_no_resistance!"}
+					JSEventBusProxy.fire(SimmerEvents.CIRCUIT_BROKEN_VOLTAGE_SOURCE_LOOP.value, new JSONObject());
+
 					return;
 				}
 			}
@@ -505,7 +514,7 @@ public class Simmer
 			if (ce instanceof CapacitorElm) {
 				FindPathInfo fpi = new FindPathInfo(FindPathInfo.SHORT, ce, ce.getNode(1), getNodeList().size(), getElmList());
 				if (fpi.findPath(ce.getNode(0))) {
-					System.out.println(ce + MessageI18N.getMessage("_shorted"));
+					lager.fine(ce + MessageI18N.getMessage("_shorted"));
 					ce.reset();
 				} else {
 					fpi = new FindPathInfo(FindPathInfo.CAP_V, ce, ce.getNode(1), getNodeList().size(), getElmList());
@@ -514,6 +523,8 @@ public class Simmer
 
 						// fire circuit broken event here
 						// {source: simmer, component: ce, message: "Capacitor_loop_with_no_resistance!"}
+						JSEventBusProxy.fire(SimmerEvents.CIRCUIT_BROKEN_CAPACITOR_LOOP.value, new JSONObject());
+
 						return;
 					}
 				}
@@ -526,7 +537,7 @@ public class Simmer
 			double qv = 0;
 			RowInfo re = circuitRowInfo[i];
 			/*
-			 * System.out.println(MessageI18N.getMessage("row_") + i + "_" + re.lsChanges + "_" +
+			 * lager.fine(MessageI18N.getMessage("row_") + i + "_" + re.lsChanges + "_" +
 			 * re.rsChanges + "_" + re.dropRow);
 			 */
 			if (re.isLsChanges() || re.isDropRow() || re.isRsChanges())
@@ -561,11 +572,11 @@ public class Simmer
 				
 				break;
 			}
-			// System.out.println(MessageI18N.getMessage("line_") + i + "_" + qp + "_" + qm + "_" + j);
+			// lager.fine(MessageI18N.getMessage("line_") + i + "_" + qp + "_" + qm + "_" + j);
 			/*
 			 * if (qp != -1 && circuitRowInfo[qp].lsChanges) {
-			 * System.out.println(MessageI18N.getMessage("lschanges")); continue; } if (qm != -1 &&
-			 * circuitRowInfo[qm].lsChanges) { System.out.println(MessageI18N.getMessage("lschanges"));
+			 * lager.fine(MessageI18N.getMessage("lschanges")); continue; } if (qm != -1 &&
+			 * circuitRowInfo[qm].lsChanges) { lager.fine(MessageI18N.getMessage("lschanges"));
 			 * continue; }
 			 */
 			if (j == matrixSize) {
@@ -574,6 +585,8 @@ public class Simmer
 
 					// fire circuit broken event here
 					// {source: simmer, component: ce, message: "Matrix_error"}
+					JSEventBusProxy.fire(SimmerEvents.CIRCUIT_BROKEN_MATRIX_ERROR.value, new JSONObject());
+
 					return;
 				}
 				RowInfo elt = circuitRowInfo[qp];
@@ -584,7 +597,7 @@ public class Simmer
 					for (k = 0; elt.getType() == RowInfo.ROW_EQUAL && k < 100; k++) {
 						// follow the chain
 						/*
-						 * System.out.println(MessageI18N.getMessage("following_equal_chain_from_") + i
+						 * lager.fine(MessageI18N.getMessage("following_equal_chain_from_") + i
 						 * + "_" + qp + MessageI18N.getMessage("_to_") + elt.nodeEq);
 						 */
 						qp = elt.getNodeEq();
@@ -592,25 +605,25 @@ public class Simmer
 					}
 					if (elt.getType() == RowInfo.ROW_EQUAL) {
 						// break equal chains
-						// System.out.println(MessageI18N.getMessage("Break_equal_chain"));
+						// lager.fine(MessageI18N.getMessage("Break_equal_chain"));
 						elt.setType(RowInfo.ROW_NORMAL);
 						continue;
 					}
 					if (elt.getType() != RowInfo.ROW_NORMAL) {
-						System.out.println(MessageI18N.getMessage("type_already_") + elt.getType() + MessageI18N.getMessage("_for_") + qp + "!");
+						lager.fine(MessageI18N.getMessage("type_already_") + elt.getType() + MessageI18N.getMessage("_for_") + qp + "!");
 						continue;
 					}
 					elt.setType(RowInfo.ROW_CONST);
 					elt.setValue((circuitRightSide[i] + rsadd) / qv);
 					circuitRowInfo[i].setDropRow(true);
-					// System.out.println(qp + MessageI18N.getMessage("_*_") + qv + MessageI18N.getMessage("_=_const_") +
+					// lager.fine(qp + MessageI18N.getMessage("_*_") + qv + MessageI18N.getMessage("_=_const_") +
 					// elt.value);
 					i = -1; // start over from scratch
 				} else if (circuitRightSide[i] + rsadd == 0) {
 					// we found a row with only two nonzero entries, and one
 					// is the negative of the other; the values are equal
 					if (elt.getType() != RowInfo.ROW_NORMAL) {
-						// System.out.println(MessageI18N.getMessage("swapping"));
+						// lager.fine(MessageI18N.getMessage("swapping"));
 						int qq = qm;
 						qm = qp;
 						qp = qq;
@@ -619,14 +632,14 @@ public class Simmer
 							// we should follow the chain here, but this
 							// hardly ever happens so it's not worth worrying
 							// about
-							System.out.println(MessageI18N.getMessage("swap_failed"));
+							lager.fine(MessageI18N.getMessage("swap_failed"));
 							continue;
 						}
 					}
 					elt.setType(RowInfo.ROW_EQUAL);
 					elt.setNodeEq(qm);
 					circuitRowInfo[i].setDropRow(true);
-					// System.out.println(qp + MessageI18N.getMessage("_=_") + qm);
+					// lager.fine(qp + MessageI18N.getMessage("_=_") + qm);
 				}
 			}
 		}
@@ -637,18 +650,22 @@ public class Simmer
 			RowInfo elt = circuitRowInfo[i];
 			if (elt.getType() == RowInfo.ROW_NORMAL) {
 				elt.setMapCol(nn++);
-				// System.out.println(MessageI18N.getMessage("col_") + i + MessageI18N.getMessage("_maps_to_") + elt.mapCol);
+				// lager.fine(MessageI18N.getMessage("col_") + i + MessageI18N.getMessage("_maps_to_") + elt.mapCol);
 				continue;
 			}
 			if (elt.getType() == RowInfo.ROW_EQUAL) {
 				RowInfo e2 = null;
 				// resolve chains of equality; 100 max steps to avoid loops
 				for (j = 0; j != 100; j++) {
+
 					e2 = circuitRowInfo[elt.getNodeEq()];
+
 					if (e2.getType() != RowInfo.ROW_EQUAL)
 						break;
+
 					if (i == e2.getNodeEq())
 						break;
+
 					elt.setNodeEq(e2.getNodeEq());
 				}
 			}
@@ -660,14 +677,15 @@ public class Simmer
 			if (elt.getType() == RowInfo.ROW_EQUAL) {
 				RowInfo e2 = circuitRowInfo[elt.getNodeEq()];
 				if (e2.getType() == RowInfo.ROW_CONST) {
+
 					// if something is equal to a const, it's a const
 					elt.setType(e2.getType());
 					elt.setValue(e2.getValue());
 					elt.setMapCol(-1);
-					// System.out.println(i + MessageI18N.getMessage("_=_[late]const_") + elt.value);
+					// lager.fine(i + MessageI18N.getMessage("_=_[late]const_") + elt.value);
 				} else {
 					elt.setMapCol(e2.getMapCol());
-					// System.out.println(i + MessageI18N.getMessage("_maps_to:_") + e2.mapCol);
+					// lager.fine(i + MessageI18N.getMessage("_maps_to:_") + e2.mapCol);
 				}
 			}
 		}
@@ -685,7 +703,7 @@ public class Simmer
 			}
 			newrs[ii] = circuitRightSide[i];
 			rri.setMapRow(ii);
-			// System.out.println(MessageI18N.getMessage("Row_") + i + MessageI18N.getMessage("_maps_to_") + ii);
+			// lager.fine(MessageI18N.getMessage("Row_") + i + MessageI18N.getMessage("_maps_to_") + ii);
 			for (j = 0; j != matrixSize; j++) {
 				RowInfo ri = circuitRowInfo[j];
 				if (ri.getType() == RowInfo.ROW_CONST)
@@ -715,6 +733,8 @@ public class Simmer
 
 				// fire circuit broken event here?
 				// {source: simmer, component: ce, message: "Singular_matrix!"}
+				JSEventBusProxy.fire(SimmerEvents.CIRCUIT_BROKEN_SINGULAR_MATRIX.value, new JSONObject());
+
 				return;
 			}
 		}
@@ -735,8 +755,14 @@ public class Simmer
 				this.listener = listener;
 			}
 
+			private JSONObject last;
+
 			public void run(){
-				JSEventBusProxy.fire("closed_circuit_signal", listener.toJSONObject());
+
+				JSONObject jsonObject = listener.toJSONObject();
+
+				if(getMainMenuBar().getEditMenu().circuitHasChanged())
+					JSEventBusProxy.fire(SimmerEvents.CIRCUIT_WORKING.value, jsonObject);
 			}
 		}
 
@@ -1003,6 +1029,7 @@ public class Simmer
 
 							// fire circuit broken event here
 							// {source: simmer, component: ce, message: "nan/infinite_matrix!"}
+							JSEventBusProxy.fire(SimmerEvents.CIRCUIT_BROKEN_NAN.value, new JSONObject());
 							return;
 						}
 					}
@@ -1023,6 +1050,7 @@ public class Simmer
 
 						// fire circuit broken event here
 						// {source: simmer, component: ce, message: "Singular_matrix!"}
+						JSEventBusProxy.fire(SimmerEvents.CIRCUIT_BROKEN_SINGULAR_MATRIX.value, new JSONObject());
 						return;
 					}
 				}
@@ -1036,7 +1064,7 @@ public class Simmer
 					else
 						res = circuitRightSide[ri.getMapCol()];
 					/*
-					 * System.out.println(j + "_" + res + "_" + ri.type + "_" +
+					 * lager.fine(j + "_" + res + "_" + ri.type + "_" +
 					 * ri.mapCol);
 					 */
 					if (Double.isNaN(res)) {
@@ -1052,7 +1080,7 @@ public class Simmer
 						}
 					} else {
 						int ji = j - (getNodeList().size() - 1);
-						// System.out.println(MessageI18N.getMessage("setting_vsrc_") + ji + MessageI18N.getMessage("_to_") +
+						// lager.fine(MessageI18N.getMessage("setting_vsrc_") + ji + MessageI18N.getMessage("_to_") +
 						// res);
 						voltageSources[ji].setCurrent(ji, res);
 					}
@@ -1260,13 +1288,13 @@ public class Simmer
 				i = circuitRowInfo[i - 1].getMapRow();
 				RowInfo ri = circuitRowInfo[j - 1];
 				if (ri.getType() == RowInfo.ROW_CONST) {
-					// System.out.println(MessageI18N.getMessage("Stamping_constant_") + i + "_" + j +
+					// lager.fine(MessageI18N.getMessage("Stamping_constant_") + i + "_" + j +
 					// "_" + x);
 					circuitRightSide[i] -= x * ri.getValue();
 					return;
 				}
 				j = ri.getMapCol();
-				// System.out.println(MessageI18N.getMessage("stamping_") + i + "_" + j + "_" + x);
+				// lager.fine(MessageI18N.getMessage("stamping_") + i + "_" + j + "_" + x);
 			} else {
 				i--;
 				j--;
@@ -1296,7 +1324,7 @@ public class Simmer
 
 	// indicate that the value on the right side of row i changes in doStep()
 	public void stampRightSide(int i) {
-		// System.out.println(MessageI18N.getMessage("rschanges_true_") + (i-1));
+		// lager.fine(MessageI18N.getMessage("rschanges_true_") + (i-1));
 		if (i > 0)
 			circuitRowInfo[i - 1].setRsChanges(true);
 	}
@@ -1307,7 +1335,7 @@ public class Simmer
 		if (i > 0) {
 			if (circuitNeedsMap) {
 				i = circuitRowInfo[i - 1].getMapRow();
-				// System.out.println(MessageI18N.getMessage("stamping_") + i + "_" + x);
+				// lager.fine(MessageI18N.getMessage("stamping_") + i + "_" + x);
 			} else
 				i--;
 			circuitRightSide[i] += x;
@@ -1351,6 +1379,7 @@ public class Simmer
 	}
 
 	public void stop(String s, AbstractCircuitElement ce) {
+		JSEventBusProxy.fire(SimmerEvents.CIRCUIT_BROKEN.value, new JSONObject());
 		stopMessage = s;
 		circuitMatrix = null;
 		stopElm = ce;
@@ -1391,6 +1420,7 @@ public class Simmer
 		realMouseElm = mouseElm;
 		if (mouseElm == null)
 			mouseElm = stopElm;
+
 		setupScopes();
 		// Graphics2D g = null; // hausen: changed to Graphics2D
 		// g = (Graphics2D)dbimage.getGraphics();
@@ -1398,6 +1428,7 @@ public class Simmer
 		// RenderingHints.VALUE_ANTIALIAS_ON);
 		Graphics g = new Graphics(backcontext);
 		AbstractCircuitElement.selectColor = Color.cyan;
+
 		if (mainMenuBar.getOptionsMenuBar().getBackgroundCheckItem().getState()) {
 			AbstractCircuitElement.whiteColor = Color.black;
 			AbstractCircuitElement.lightGrayColor = Color.black;
@@ -1407,7 +1438,9 @@ public class Simmer
 			AbstractCircuitElement.lightGrayColor = Color.lightGray;
 			g.setColor(Color.black);
 		}
+
 		g.fillRect(0, 0, g.getContext().getCanvas().getWidth(), g.getContext().getCanvas().getHeight());
+
 		if (!sidePanel.getStoppedCheck().getState()) {
 			try {
 				runCircuit();
@@ -1418,7 +1451,9 @@ public class Simmer
 				return;
 			}
 		}
+
 		long sysTime = System.currentTimeMillis();
+
 		if (!sidePanel.getStoppedCheck().getState()) {
 
 			if (lastTime != 0) {

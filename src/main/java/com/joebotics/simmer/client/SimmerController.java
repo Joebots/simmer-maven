@@ -392,8 +392,10 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
                     int j;
                     int area = ce.getBoundingBox().width * ce.getBoundingBox().height;
                     int jn = ce.getPostCount();
+
                     if (jn > 2)
                         jn = 2;
+
                     for (j = 0; j != jn; j++) {
                         Point pt = ce.getPost(j);
                         int dist = MathUtil.distanceSq(x, y, pt.getX(), pt.getY());

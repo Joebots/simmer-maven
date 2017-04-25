@@ -14,6 +14,7 @@ import com.joebotics.simmer.client.util.MessageI18N;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static com.google.gwt.user.client.Window.*;
 
@@ -27,6 +28,8 @@ public class EditMenu extends MenuBar{
     private List<AbstractCircuitElement> selected = new ArrayList<>();
     private String clipboard;
     private Simmer simmer;
+
+    private static final Logger lager = Logger.getLogger(EditMenu.class.getName());
 
     private MenuItem undoItem, redoItem, cutItem, copyItem, pasteItem, selectAllItem, optionsItem;
 
@@ -70,24 +73,28 @@ public class EditMenu extends MenuBar{
         undoItem.setEnabled(undoStack.size() > 0);
     }
 
-    private native void log( String msgs )/*-{
-        $wnd.console.log(msgs)
-    }-*/;
-
     public void pushUndo() {
-
-        log("pushUndo");
 
         redoStack.clear();
         String circuit = simmer.getFileOps().dumpCircuit();
 
-        if (undoStack.size() > 0 && circuit.compareTo(undoStack.get(undoStack.size()-1)) == 0)
-            return;
+        if( undoStack.isEmpty() )
+            undoStack.add(circuit);
 
-        undoStack.add(circuit);
-        enableUndoRedo();
+        if(circuitHasChanged()){
+            undoStack.add(circuit);
+            enableUndoRedo();
+        }
     }
 
+    public boolean circuitHasChanged(){
+        String circuit = simmer.getFileOps().dumpCircuit();
+        return !undoStack.contains(circuit);
+    }
+
+    public String peekUndo(){
+        return undoStack.isEmpty()?"":undoStack.get(undoStack.size()-1);
+    }
 
     public void doUndo() {
 

@@ -128,6 +128,10 @@ public class BreadboardCircuitParserListener implements CircuitParserListener {
         JSONObject connections = new JSONObject();
         result.put("components", connections);
 
+        JSONArray elements = new JSONArray();
+        result.put("elements", elements);
+        int idx = 0;
+
         for( String name : elementsByName.keySet()){
             List<Connection> connectionsFor = connectionsForByName.get(name);
 
@@ -136,6 +140,8 @@ public class BreadboardCircuitParserListener implements CircuitParserListener {
 
             createJSONTargets(connectionsFor, entry);
             createJSONPinouts(name, entry);
+
+            elements.set(idx++, new JSONString(name));
         }
 
         return result;

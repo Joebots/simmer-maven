@@ -418,10 +418,7 @@ public class Scope {
 			int ym = rect.height - 5;
 
             if (value != 0)
-				g.drawString(
-						AbstractCircuitElement.getUnitText(realMinV, elm.getScopeUnits(value)),
-                        x,
-						ym);
+				g.drawString(AbstractCircuitElement.getUnitText(realMinV, elm.getScopeUnits(value)), x, ym);
 
 			else if (showV)
 				g.drawString(AbstractCircuitElement.getVoltageText(realMinV), x, ym);
@@ -436,8 +433,10 @@ public class Scope {
 		if (showFreq && freq != 0 && rect.y + rect.height > yt + 5)
 			g.drawString(AbstractCircuitElement.getUnitText(freq, "Hz"), x, yt);
 		if (ptr > 5 && !lockScale) {
+
 			if (!gotI && minMaxI > 1e-4)
 				minMaxI /= 2;
+
 			if (!gotV && minMaxV > 1e-4)
 				minMaxV /= 2;
 		}
@@ -578,8 +577,6 @@ public class Scope {
 	}-*/;
 
 	public MenuBar getMenu() {
-
-		log( elm + "<-- ELM");
 
 		if (elm == null)
 			return null;

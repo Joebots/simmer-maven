@@ -17,8 +17,12 @@ import com.joebotics.simmer.client.util.HintTypeEnum;
 import com.joebotics.simmer.client.util.MessageI18N;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
+import java.util.logging.Logger;
+
 public class FileOps {
     private Simmer simmer;
+
+    private static Logger lager = Logger.getLogger(FileOps.class.getName());
 
     public FileOps(Simmer simmer) {
         this.simmer = simmer;
@@ -54,8 +58,6 @@ public class FileOps {
         f |= (simmer.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().getState()) ? 0 : 16;
         // 32 = linear scale in afilter
         String dump = "$ " + f + " " + simmer.getTimeStep() + " " + simmer.getIterCount() + " " + simmer.getSidePanel().getCurrentBar().getValue() + " " + AbstractCircuitElement.voltageRange + " " + simmer.getSidePanel().getPowerBar().getValue() + "\n";
-
-        log("elmList.size=" + simmer.getElmList().size() + "\tscope count:" + simmer.getScopeCount());
 
         for (i = 0; i != simmer.getElmList().size(); i++)
             dump += simmer.getElm(i).dump() + "\n";
@@ -148,10 +150,6 @@ public class FileOps {
         }
         simmer.setGrid();
     }
-
-    public native void log(String message) /*-{
-        $wnd.console.log(message);
-    }-*/;
 
     public void getSetupList(final boolean openDefault) {
 
@@ -316,7 +314,8 @@ public class FileOps {
     }
 
     public void loadFileFromURL(String url, final boolean centre) {
-        log("loadFileFromUrl:" + url );
+        lager.info("loadFileFromUrl:" + url );
+
         RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
         try {
             requestBuilder.sendRequest(null, new RequestCallback() {
@@ -329,7 +328,7 @@ public class FileOps {
                         String text = response.getText();
                         readSetup(text.getBytes(), text.length(), false, centre);
                     } else
-                        GWT.log(MessageI18N.getMessage("Bad_file_server_response") + response.getStatusText());
+                        lager.info(MessageI18N.getMessage("Bad_file_server_response") + response.getStatusText());
                 }
             });
         } catch (RequestException e) {

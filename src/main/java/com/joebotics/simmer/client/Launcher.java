@@ -53,15 +53,19 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Window;
 
+import java.util.logging.Logger;
+
 public class Launcher implements EntryPoint {
 
 	public static Simmer mysim;
 
 	public static final String versionString = "1.0.1";
+	private static final Logger lager = Logger.getLogger(Launcher.class.getName());
 
 	public void onModuleLoad() {
 		mysim = Simmer.getInstance(); //new Simmer();
 		mysim.init();
+		mysim.getFileOps().dumpCircuit();
 
 		Window.addResizeHandler(new ResizeHandler() {
 
@@ -73,6 +77,8 @@ public class Launcher implements EntryPoint {
 		});
 
 		mysim.updateCircuit();
+
+		lager.info(mysim.getFileOps().dumpCircuit());
 
 	}
 
