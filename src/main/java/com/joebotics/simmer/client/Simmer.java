@@ -197,6 +197,9 @@ public class Simmer
 			//log(e);
 		}
 
+		// HACK FOR DEMO
+		startCircuit = "jb-demo.txt";
+
 		String os = Navigator.getPlatform();
 		isMac = (os.toLowerCase().contains("mac"));
 		ctrlMetaKey = (isMac) ? "Cmd" : "Ctrl";
