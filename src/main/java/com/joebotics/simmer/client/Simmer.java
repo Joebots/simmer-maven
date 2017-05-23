@@ -190,7 +190,7 @@ public class Simmer
 
 			startCircuit = qp.getValue("startCircuit");
 			startLabel = qp.getValue("startLabel");
-			euro = qp.getBooleanValue("euroResistors", true);
+			euro = qp.getBooleanValue("euroResistors", false);
 			printable = qp.getBooleanValue("whiteBackground", false);
 			convention = qp.getBooleanValue("conventionalCurrent", true);
 		} catch (Exception e) {
