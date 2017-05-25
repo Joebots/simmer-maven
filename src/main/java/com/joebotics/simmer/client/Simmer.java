@@ -75,8 +75,8 @@ public class Simmer
 	private SwitchElm 						heldSwitchElm;
 
 	private HintType						hintType			= HintType.HINT_UNSET;
-	private HintType						hintItem1			= HintType.HINT_UNSET;
-	private HintType						hintItem2			= HintType.HINT_UNSET;
+	private int								hintItem1;
+	private int								hintItem2;
 
 	private int								draggingPost;
 	private int								dragX, dragY, initDragX, initDragY;
@@ -853,8 +853,8 @@ public class Simmer
 	}
 
 	private String getHint() {
-		AbstractCircuitElement c1 = getElm(hintItem1.getValue());
-		AbstractCircuitElement c2 = getElm(hintItem2.getValue());
+		AbstractCircuitElement c1 = getElm(hintItem1);
+		AbstractCircuitElement c2 = getElm(hintItem2);
 
 		if (c1 == null || c2 == null)
 			return null;
@@ -1907,11 +1907,11 @@ public class Simmer
 		return hintType;
 	}
 
-	public HintType getHintItem1() {
+	public int getHintItem1() {
 		return hintItem1;
 	}
 
-	public HintType getHintItem2() {
+	public int getHintItem2() {
 		return hintItem2;
 	}
 
@@ -1943,11 +1943,11 @@ public class Simmer
 		return fileOps;
 	}
 
-	public void setHintItem2(HintType hintItem2) {
+	public void setHintItem2(int hintItem2) {
 		this.hintItem2 = hintItem2;
 	}
 
-	public void setHintItem1(HintType hintItem1) {
+	public void setHintItem1(int hintItem1) {
 		this.hintItem1 = hintItem1;
 	}
 

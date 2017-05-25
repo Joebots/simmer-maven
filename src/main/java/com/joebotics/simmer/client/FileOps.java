@@ -123,8 +123,8 @@ public class FileOps {
 
     public void readHint(StringTokenizer st) {
         simmer.setHintType(simmer.getHintType().getHintFromValue(new Integer(st.nextToken()).intValue()));
-        simmer.setHintItem1(simmer.getHintType().getHintFromValue(new Integer(st.nextToken()).intValue()));
-        simmer.setHintItem2(simmer.getHintType().getHintFromValue(new Integer(st.nextToken()).intValue()));
+        simmer.setHintItem1(new Integer(st.nextToken()).intValue());
+        simmer.setHintItem2(new Integer(st.nextToken()).intValue());
     }
 
     public void readOptions(StringTokenizer st) {
