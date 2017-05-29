@@ -44,8 +44,8 @@ public class VCOElm extends ChipElm {
 	// can't do this in calculateCurrent() because it's called before
 	// we get pins[4].current and pins[5].current, which we need
 	void computeCurrent() {
-//		if (cResistance == 0)
-//			return;
+		if (cResistance == 0)
+			return;
 		
 		double c = cDir * (getPins()[4].getCurrent() + getPins()[5].getCurrent())
 				+ (getVolts()[3] - getVolts()[2]) / cResistance;

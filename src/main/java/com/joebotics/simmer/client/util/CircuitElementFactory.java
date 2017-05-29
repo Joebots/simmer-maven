@@ -236,8 +236,8 @@ public class CircuitElementFactory {
         if (n == "SeqGenElm")
             return (AbstractCircuitElement) new SeqGenElm(x1, y1);
 
-//        if (n == "VCOElm")
-//            return (AbstractCircuitElement) new VCOElm(x1, y1);
+        if (n == "VCOElm")
+            return (AbstractCircuitElement) new VCOElm(x1, y1);
 
         if (n == "BoxElm")
             return (AbstractCircuitElement) new BoxElm(x1, y1);
@@ -462,8 +462,8 @@ public class CircuitElementFactory {
         if (tint == 188)
             return (AbstractCircuitElement) new SeqGenElm(x1, y1, x2, y2, f, st);
 
-//        if (tint == 158)
-//            return (AbstractCircuitElement) new VCOElm(x1, y1, x2, y2, f, st);
+        if (tint == 158)
+            return (AbstractCircuitElement) new VCOElm(x1, y1, x2, y2, f, st);
 
         if (tint == 'b')
             return (AbstractCircuitElement) new BoxElm(x1, y1, x2, y2, f, st);

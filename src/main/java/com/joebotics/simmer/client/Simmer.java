@@ -442,10 +442,10 @@ public class Simmer
 				for (j = 0; j < ce.getPostCount(); j++) {
 
 					if (!closure[ce.getNode(j)]) {
-						if (ce.hasGroundConnection(j))
+						if (ce.hasGroundConnection(j)) {
 							closure[ce.getNode(j)] = changed = true;
-
-						continue;
+							continue;
+						}
 					}
 					int k;
 					for (k = 0; k != ce.getPostCount(); k++) {
