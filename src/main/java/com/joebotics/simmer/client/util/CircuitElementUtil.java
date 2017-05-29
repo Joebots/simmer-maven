@@ -1,14 +1,14 @@
 package com.joebotics.simmer.client.util;
 
-import java.util.Vector;
+import java.util.List;
 
 import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
 
 public class CircuitElementUtil {
 	
-	Vector<AbstractCircuitElement> elementList = null;
+	List<AbstractCircuitElement> elementList = null;
 	
-	CircuitElementUtil(Vector<AbstractCircuitElement> elmList) {
+	CircuitElementUtil(List<AbstractCircuitElement> elmList) {
 		elementList = elmList;
 	}
 
@@ -16,11 +16,10 @@ public class CircuitElementUtil {
 		if (n >= elementList.size())
 			return null;
 
-		return elementList.elementAt(n);
+		return elementList.get(n);
 	}
 	
-	public Vector<AbstractCircuitElement> getElmList() {
+	public List<AbstractCircuitElement> getElmList() {
 		return elementList;
 	}
-	
 }

@@ -107,7 +107,7 @@ public class Simmer
 	private long							lastTime			= 0, lastFrameTime, lastIterTime, secTime = 0;
 	private LoadFile 						loadFileInput;
 
-	private Vector<CircuitNode>				nodeList;
+	private List<CircuitNode>				nodeList;
 
 	private static AboutBox aboutBox;
 	private static EditDialog editDialog;
@@ -128,7 +128,7 @@ public class Simmer
 	private AbstractCircuitElement			voltageSources[];
 	private AbstractCircuitElement			dragElm;
 	private AbstractCircuitElement			mouseElm;
-	private Vector<AbstractCircuitElement>	elmList;
+	private List<AbstractCircuitElement>	elmList;
 
 	private Rectangle						selectedArea;
 	private String							shortcuts[];
@@ -329,13 +329,13 @@ public class Simmer
 			Point pt = volt.getPost(0);
 			cn.x = (int) pt.getX();
 			cn.y = (int) pt.getY();
-			getNodeList().addElement(cn);
+			getNodeList().add(cn);
 
 		} else {
 			// otherwise allocate extra node for ground
 			CircuitNode cn = new CircuitNode();
 			cn.x = cn.y = -1;
-			getNodeList().addElement(cn);
+			getNodeList().add(cn);
 		}
 
 		// allocate nodes and voltage sources
@@ -361,14 +361,14 @@ public class Simmer
 					CircuitNodeLink cnl = new CircuitNodeLink();
 					cnl.setNum(j);
 					cnl.setElm(ce);
-					cn.links.addElement(cnl);
+					cn.links.add(cnl);
 					ce.setNode(j, getNodeList().size());
-					getNodeList().addElement(cn);
+					getNodeList().add(cn);
 				} else {
 					CircuitNodeLink cnl = new CircuitNodeLink();
 					cnl.setNum(j);
 					cnl.setElm(ce);
-					getCircuitNode(k).links.addElement(cnl);
+					getCircuitNode(k).links.add(cnl);
 					ce.setNode(j, k);
 					// if it's the ground node, make sure the node voltage is 0,
 					// cause it may not get set later
@@ -383,9 +383,9 @@ public class Simmer
 				CircuitNodeLink cnl = new CircuitNodeLink();
 				cnl.setNum(j + posts);
 				cnl.setElm(ce);
-				cn.links.addElement(cnl);
+				cn.links.add(cnl);
 				ce.setNode(cnl.getNum(), getNodeList().size());
-				getNodeList().addElement(cn);
+				getNodeList().add(cn);
 			}
 			vscount += ivs;
 		}
@@ -849,7 +849,7 @@ public class Simmer
 	public CircuitNode getCircuitNode(int n) {
 		if (n >= getNodeList().size())
 			return null;
-		return getNodeList().elementAt(n);
+		return getNodeList().get(n);
 	}
 
 	private String getHint() {
@@ -960,7 +960,7 @@ public class Simmer
 
 	public int locateElm(AbstractCircuitElement elm) {
 		for (int i = 0; i != elmList.size(); i++)
-			if (elm == elmList.elementAt(i))
+			if (elm == elmList.get(i))
 				return i;
 		return -1;
 	}
@@ -1078,7 +1078,7 @@ public class Simmer
 					if (j < getNodeList().size() - 1) {
 						CircuitNode cn = getCircuitNode(j + 1);
 						for (k = 0; k != cn.links.size(); k++) {
-							CircuitNodeLink cnl = (CircuitNodeLink) cn.links.elementAt(k);
+							CircuitNodeLink cnl = (CircuitNodeLink) cn.links.get(k);
 							cnl.getElm().setNodeVoltage(cnl.getNum(), res);
 						}
 					} else {
@@ -1522,7 +1522,7 @@ public class Simmer
 				if (!cn.internal && cn.links.size() == 1) {
 
 					int bb = 0, j;
-					CircuitNodeLink cnl = cn.links.elementAt(0);
+					CircuitNodeLink cnl = cn.links.get(0);
 
 					for (j = 0; j != elmList.size(); j++) { // TODO: (hausen)
 															// see if this
@@ -1652,7 +1652,7 @@ public class Simmer
 		return mouseMode;
 	}
 
-	public Vector<CircuitNode> getNodeList() {
+	public List<CircuitNode> getNodeList() {
 		return nodeList;
 	}
 
@@ -1888,10 +1888,10 @@ public class Simmer
 		if (n >= elmList.size())
 			return null;
 
-		return elmList.elementAt(n);
+		return elmList.get(n);
 	}
 
-	public Vector<AbstractCircuitElement> getElmList() {
+	public List<AbstractCircuitElement> getElmList() {
 		return elmList;
 	}
 

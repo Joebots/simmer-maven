@@ -192,7 +192,7 @@ public class FileOps {
                 AbstractCircuitElement ce = simmer.getElm(i);
                 ce.delete();
             }
-            simmer.getElmList().removeAllElements();
+            simmer.getElmList().clear();
             simmer.setHintType(HintTypeEnum.HintType.HINT_UNSET);
             simmer.setTimeStep(5e-6);
             simmer.getMainMenuBar().getOptionsMenuBar().getDotsCheckItem().setState(false);
@@ -261,7 +261,7 @@ public class FileOps {
                         break;
                     }
                     newce.setPoints();
-                    simmer.getElmList().addElement(newce);
+                    simmer.getElmList().add(newce);
 
                 } catch (Exception ee) {
                     ee.printStackTrace();
