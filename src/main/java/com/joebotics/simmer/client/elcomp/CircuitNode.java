@@ -19,11 +19,12 @@
 
 package com.joebotics.simmer.client.elcomp;
 
+import java.util.List;
 import java.util.Vector;
 
 public class CircuitNode {
 	public boolean internal;
-	public Vector<CircuitNodeLink> links;
+	public List<CircuitNodeLink> links;
 	public int x, y;
 
 	public CircuitNode() {

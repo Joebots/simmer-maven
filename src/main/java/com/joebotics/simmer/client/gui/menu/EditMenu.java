@@ -141,7 +141,7 @@ public class EditMenu extends MenuBar{
             if (ce.isSelected()) {
                 clipboard += ce.dump() + "\n";
                 ce.delete();
-                simmer.getElmList().removeElementAt(i);
+                simmer.getElmList().remove(i);
             }
         }
         enablePaste();
@@ -158,7 +158,7 @@ public class EditMenu extends MenuBar{
             AbstractCircuitElement ce = simmer.getElm(i);
             if (ce.isSelected()) {
                 ce.delete();
-                simmer.getElmList().removeElementAt(i);
+                simmer.getElmList().remove(i);
                 hasDeleted = true;
             }
         }
@@ -168,7 +168,7 @@ public class EditMenu extends MenuBar{
                 AbstractCircuitElement ce = simmer.getElm(i);
                 if (ce == simmer.getMouseElm()) {
                     ce.delete();
-                    simmer.getElmList().removeElementAt(i);
+                    simmer.getElmList().remove(i);
                     hasDeleted = true;
                     simmer.setMouseElm(null);
                     break;

@@ -32,7 +32,7 @@ public class GraphicElm extends AbstractCircuitElement {
 		super(xa, ya, xb, yb, flags);
 	}
 
-//	int getPostCount() {
-//		return 0;
-//	}
+	public int getPostCount() {
+		return 0;
+	}
 }

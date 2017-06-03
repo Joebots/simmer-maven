@@ -502,7 +502,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
                     simmer.getMainMenuBar().getEditMenu().doSelectNone();
 
             } else {
-                simmer.getElmList().addElement(simmer.getDragElm());
+                simmer.getElmList().add(simmer.getDragElm());
                 // fire component added
 
                 circuitChanged = true;
@@ -807,7 +807,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         for (i = simmer.getElmList().size() - 1; i >= 0; i--) {
             AbstractCircuitElement ce = simmer.getElm(i);
             if (ce.getX1() == ce.getX2() && ce.getY1() == ce.getY2()) {
-                simmer.getElmList().removeElementAt(i);
+                simmer.getElmList().remove(i);
                 // fire component removed event
                 // {source: simmer, component: elmList.getElementAt(i)}
                 ce.delete();

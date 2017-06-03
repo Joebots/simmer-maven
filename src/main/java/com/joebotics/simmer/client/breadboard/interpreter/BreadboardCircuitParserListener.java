@@ -48,7 +48,10 @@ public class BreadboardCircuitParserListener implements CircuitParserListener {
     public void onCircuitNode(CircuitNode node) {
     }
 
-    public void onCircuitNodeLink(CircuitNode node, CircuitNodeLink cnl){
+    public void onCircuitNodeLink(CircuitNode node, CircuitNodeLink cnl) {
+    	if (node.internal) {
+    		return;
+    	}
         Point p = cnl.getElm().getPost(cnl.getNum());
         PinOut cp = new PinOut(p, cnl.getNum(), cnl.getElm());
 

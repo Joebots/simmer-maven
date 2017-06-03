@@ -1,6 +1,6 @@
 package com.joebotics.simmer.client.util;
 
-import java.util.Vector;
+import java.util.List;
 
 import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
 import com.joebotics.simmer.client.elcomp.CapacitorElm;
@@ -17,9 +17,9 @@ public class FindPathInfo {
 	AbstractCircuitElement firstElm;
 	int						type;
 	boolean					used[];
-	Vector<AbstractCircuitElement> elementList = null;
+	List<AbstractCircuitElement> elementList = null;
 
-	public FindPathInfo(int t, AbstractCircuitElement e, int d, int nodeListSize, Vector<AbstractCircuitElement> elmList) {
+	public FindPathInfo(int t, AbstractCircuitElement e, int d, int nodeListSize, List<AbstractCircuitElement> elmList) {
 		dest = d;
 		type = t;
 		firstElm = e;
