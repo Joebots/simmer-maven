@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 
 /**
  * Created by joe on 2/6/17.
+ * @deprecated Used Standard Simmer model classes for the both apps
  */
 public class BreadboardCircuitParserListener implements CircuitParserListener {
 

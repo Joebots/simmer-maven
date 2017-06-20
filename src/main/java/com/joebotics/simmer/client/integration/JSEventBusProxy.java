@@ -1,7 +1,6 @@
 package com.joebotics.simmer.client.integration;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
@@ -55,7 +54,7 @@ public class JSEventBusProxy {
     	JSONObject data = new JSONObject();
     	data.put("message", new JSONString(message));
     	if (ce != null) {
-    		data.put("element", new JSONString(ce.toString()));
+    		data.put("element", ce.toJSONObject());
     	}
     	fire(evt.value, data);
     }
@@ -64,10 +63,7 @@ public class JSEventBusProxy {
     	JSONObject data = new JSONObject();
     	data.put("message", new JSONString(message));
     	if (node != null) {
-	        JSONObject obj = new JSONObject();
-	        obj.put("x", new JSONNumber(node.x));
-	        obj.put("y", new JSONNumber(node.y));
-	    	data.put("node", obj);
+	    	data.put("node", node.toJSONObject());
     	}
     	fire(evt.value, data);
     }

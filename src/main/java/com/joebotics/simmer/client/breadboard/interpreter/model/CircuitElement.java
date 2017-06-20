@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * @deprecated Use {@code AbstractCircuitElement} instead of the class
  * Created by joe on 2/8/17.
  */
 public class CircuitElement {
