@@ -1,7 +1,6 @@
 package com.joebotics.simmer.client.breadboard.interpreter.model;
 
 import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.joebotics.simmer.client.gui.util.Point;

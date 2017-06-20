@@ -33,6 +33,7 @@ public class JSEventBusProxy {
     }-*/;
 
     private static native void fire(String evt, JSONObject data) /*-{
+    	console.log("JSEventBusProxy.fire", evt, "data", data);
         if ($wnd.busInSimmer) {
 	        var model = eval("(" + data + ")");
 	        evt.model = model;
