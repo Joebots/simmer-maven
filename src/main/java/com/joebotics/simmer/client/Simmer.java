@@ -107,7 +107,6 @@ public class Simmer
 	private long							lastTime			= 0, lastFrameTime, lastIterTime, secTime = 0;
 	private LoadFile 						loadFileInput;
 
-	private List<CircuitNode>				nodeList;
 
 	private static AboutBox aboutBox;
 	private static EditDialog editDialog;
@@ -128,7 +127,6 @@ public class Simmer
 	private AbstractCircuitElement			voltageSources[];
 	private AbstractCircuitElement			dragElm;
 	private AbstractCircuitElement			mouseElm;
-	private List<AbstractCircuitElement>	elmList;
 
 	private Rectangle						selectedArea;
 	private String							shortcuts[];
@@ -144,6 +142,8 @@ public class Simmer
 
 	private ElementPopupMenu				elmMenuBar;
 	private Scope							scopes[];
+	
+	private CircuitModel 					circuitModel;
 
 	private static Simmer instance;
 
@@ -235,7 +235,11 @@ public class Simmer
 		RootLayoutPanel.get().add(layoutPanel);
 		cv = Canvas.createIfSupported();
 		if (cv == null) {
-			RootPanel.get().add(new Label(MessageI18N.getMessage("Not_working._You_need_a_browser_that_supports_the_CANVAS_element.")));
+			// fire circuit broken event here
+			// {source: simmer, component: ce, message: "Voltage_source/wire_loop_with_no_resistance!"}
+			String message = MessageI18N.getMessage("Not_working._You_need_a_browser_that_supports_the_CANVAS_element.");
+			JSEventBusProxy.fireError(SimmerEvents.SYSTEM_ERROR, message);
+			RootPanel.get().add(new Label(message));
 			return;
 		}
 		layoutPanel.add(cv);
@@ -247,7 +251,7 @@ public class Simmer
 		sidePanel.createSideBar();
 		setGrid();
 
-		elmList = new Vector<AbstractCircuitElement>();
+		circuitModel = new CircuitModel();
 
 		scopes = new Scope[20];
 		scopeColCount = new int[20];
@@ -296,20 +300,20 @@ public class Simmer
 	private void analyzeCircuit() {
 		calcCircuitBottom();
 
-		if (elmList.isEmpty())
+		if (getElmList().isEmpty())
 			return;
 
 		stopMessage = null;
 		stopElm = null;
 		int i, j;
 		int vscount = 0;
-		setNodeList(new Vector<CircuitNode>());
+		circuitModel.resetNodeList();
 		boolean gotGround = false;
 		boolean gotRail = false;
 		AbstractCircuitElement volt = null;
 
 		// look for voltage or ground element
-		for (i = 0; i != elmList.size(); i++) {
+		for (i = 0; i != getElmList().size(); i++) {
 			AbstractCircuitElement ce = getElm(i);
 			if (ce instanceof GroundElm) {
 				gotGround = true;
@@ -339,7 +343,7 @@ public class Simmer
 		}
 
 		// allocate nodes and voltage sources
-		for (i = 0; i != elmList.size(); i++) {
+		for (i = 0; i != getElmList().size(); i++) {
 			AbstractCircuitElement ce = getElm(i);
 			int inodes = ce.getInternalNodeCount();
 			int ivs = ce.getVoltageSourceCount();
@@ -394,7 +398,7 @@ public class Simmer
 		circuitNonLinear = false;
 
 		// determine if circuit is nonlinear
-		for (i = 0; i != elmList.size(); i++) {
+		for (i = 0; i != getElmList().size(); i++) {
 			AbstractCircuitElement ce = getElm(i);
 			if (ce.nonLinear())
 				circuitNonLinear = true;
@@ -422,7 +426,7 @@ public class Simmer
 		circuitNeedsMap = false;
 
 		// stamp linear circuit elements
-		for (i = 0; i != elmList.size(); i++) {
+		for (i = 0; i != getElmList().size(); i++) {
 			AbstractCircuitElement ce = getElm(i);
 			ce.stamp();
 		}
@@ -434,7 +438,7 @@ public class Simmer
 		while (changed) {
 			changed = false;
 
-			for (i = 0; i != elmList.size(); i++) {
+			for (i = 0; i != getElmList().size(); i++) {
 				AbstractCircuitElement ce = getElm(i);
 
 				// loop through all ce's nodes to see if they are connected
@@ -465,8 +469,9 @@ public class Simmer
 			// connect unconnected nodes
 			for (i = 0; i != getNodeList().size(); i++)
 				if (!closure[i] && !getCircuitNode(i).internal) {
-					lager.info(MessageI18N.getMessage("node_") + i + MessageI18N.getMessage("_unconnected"));
-					JSEventBusProxy.fire(SimmerEvents.CIRCUIT_BROKEN.value, null);
+					String message = MessageI18N.getMessage("node_") + " " + i + " " + MessageI18N.getMessage("_unconnected");
+					lager.info(message);
+					JSEventBusProxy.fireError(SimmerEvents.CIRCUIT_BROKEN, message, getCircuitNode(i));
 					stampResistor(0, i, 1e8);
 					closure[i] = true;
 					changed = true;
@@ -474,7 +479,7 @@ public class Simmer
 				}
 		}
 	
-		for (i = 0; i != elmList.size(); i++) {
+		for (i = 0; i != getElmList().size(); i++) {
 			AbstractCircuitElement ce = getElm(i);
 			// look for inductors with no current path
 			if (ce instanceof InductorElm) {
@@ -490,12 +495,11 @@ public class Simmer
 			if (ce instanceof CurrentElm) {
 				FindPathInfo fpi = new FindPathInfo(FindPathInfo.INDUCT, ce, ce.getNode(1), getNodeList().size(), getElmList());
 				if (!fpi.findPath(ce.getNode(0))) {
-					stop(MessageI18N.getMessage("No_path_for_current_source!"), ce);
-
+					String message = MessageI18N.getMessage("No_path_for_current_source!");
+					stop(message, ce);
 					// fire circuit broken event here
 					// {source: simmer, component: ce, message: "No_path_for_current_source"}
-					JSEventBusProxy.fire(SimmerEvents.CIRCUIT_BROKEN_NO_PATH_FOR_CURRENT_SOURCE.value, new JSONObject());
-
+					JSEventBusProxy.fireError(SimmerEvents.CIRCUIT_BROKEN_NO_PATH_FOR_CURRENT_SOURCE, message, ce);
 					return;
 				}
 			}
@@ -504,11 +508,11 @@ public class Simmer
 			if ((ce instanceof VoltageElm && ce.getPostCount() == 2) || ce instanceof WireElm) {
 				FindPathInfo fpi = new FindPathInfo(FindPathInfo.VOLTAGE, ce, ce.getNode(1), getNodeList().size(), getElmList());
 				if (fpi.findPath(ce.getNode(0))) {
-					stop(MessageI18N.getMessage("Voltage_source/wire_loop_with_no_resistance!"), ce);
-
+					String message = MessageI18N.getMessage("Voltage_source/wire_loop_with_no_resistance!");
+					stop(message, ce);
 					// fire circuit broken event here
 					// {source: simmer, component: ce, message: "Voltage_source/wire_loop_with_no_resistance!"}
-					JSEventBusProxy.fire(SimmerEvents.CIRCUIT_BROKEN_VOLTAGE_SOURCE_LOOP.value, new JSONObject());
+					JSEventBusProxy.fireError(SimmerEvents.CIRCUIT_BROKEN_VOLTAGE_SOURCE_LOOP, message, ce);
 
 					return;
 				}
@@ -522,12 +526,11 @@ public class Simmer
 				} else {
 					fpi = new FindPathInfo(FindPathInfo.CAP_V, ce, ce.getNode(1), getNodeList().size(), getElmList());
 					if (fpi.findPath(ce.getNode(0))) {
-						stop(MessageI18N.getMessage("Capacitor_loop_with_no_resistance!"), ce);
-
+						String message = MessageI18N.getMessage("Capacitor_loop_with_no_resistance!");
+						stop(message, ce);
 						// fire circuit broken event here
 						// {source: simmer, component: ce, message: "Capacitor_loop_with_no_resistance!"}
-						JSEventBusProxy.fire(SimmerEvents.CIRCUIT_BROKEN_CAPACITOR_LOOP.value, new JSONObject());
-
+						JSEventBusProxy.fireError(SimmerEvents.CIRCUIT_BROKEN_CAPACITOR_LOOP, message, ce);
 						return;
 					}
 				}
@@ -584,12 +587,11 @@ public class Simmer
 			 */
 			if (j == matrixSize) {
 				if (qp == -1) {
-					stop(MessageI18N.getMessage("Matrix_error"), null);
-
+					String message = MessageI18N.getMessage("Matrix_error");
+					stop(message, null);
 					// fire circuit broken event here
 					// {source: simmer, component: ce, message: "Matrix_error"}
-					JSEventBusProxy.fire(SimmerEvents.CIRCUIT_BROKEN_MATRIX_ERROR.value, new JSONObject());
-
+					JSEventBusProxy.fireError(SimmerEvents.CIRCUIT_BROKEN_MATRIX_ERROR, message);
 					return;
 				}
 				RowInfo elt = circuitRowInfo[qp];
@@ -732,12 +734,11 @@ public class Simmer
 
 		if (!circuitNonLinear) {
 			if (!MathUtil.lu_factor(circuitMatrix, circuitMatrixSize, circuitPermute)) {
-				stop(MessageI18N.getMessage("Singular_matrix!"), null);
-
+				String message = MessageI18N.getMessage("Singular_matrix!");
+				stop(message, null);
 				// fire circuit broken event here?
 				// {source: simmer, component: ce, message: "Singular_matrix!"}
-				JSEventBusProxy.fire(SimmerEvents.CIRCUIT_BROKEN_SINGULAR_MATRIX.value, new JSONObject());
-
+				JSEventBusProxy.fireError(SimmerEvents.CIRCUIT_BROKEN_SINGULAR_MATRIX, message);
 				return;
 			}
 		}
@@ -752,20 +753,21 @@ public class Simmer
 		// sent through the bus to the js code.
 		class TimerHandler extends Timer{
 
-			private CircuitParserListener listener;
+			//private CircuitParserListener listener;
 
 			public TimerHandler(CircuitParserListener listener){
-				this.listener = listener;
+				//this.listener = listener;
 			}
 
 			private JSONObject last;
 
 			public void run(){
 
-				JSONObject jsonObject = listener.toJSONObject();
+				JSONObject jsonObject = circuitModel.toJSONObject();
+				lager.info(jsonObject.toString());
 
 				if(getMainMenuBar().getEditMenu().circuitHasChanged())
-					JSEventBusProxy.fire(SimmerEvents.CIRCUIT_WORKING.value, jsonObject);
+					JSEventBusProxy.fireEvent(SimmerEvents.CIRCUIT_WORKING, jsonObject);
 			}
 		}
 
@@ -775,7 +777,7 @@ public class Simmer
 
 
 	protected boolean anySelectedButMouse() {
-		for (int i = 0; i != elmList.size(); i++)
+		for (int i = 0; i != getElmList().size(); i++)
 			if (getElm(i) != mouseElm && getElm(i).isSelected())
 				return true;
 		return false;
@@ -784,7 +786,7 @@ public class Simmer
 	private void calcCircuitBottom() {
 		int i;
 		circuitBottom = 0;
-		for (i = 0; i != elmList.size(); i++) {
+		for (i = 0; i != getElmList().size(); i++) {
 			Rectangle rect = getElm(i).getBoundingBox();
 			int bottom = rect.height + rect.y;
 			if (bottom > circuitBottom)
@@ -795,7 +797,7 @@ public class Simmer
 	protected void centreCircuit() {
 		int i;
 		int minx = 1000, maxx = 0, miny = 1000, maxy = 0;
-		for (i = 0; i != elmList.size(); i++) {
+		for (i = 0; i != getElmList().size(); i++) {
 			AbstractCircuitElement ce = getElm(i);
 			// centered text causes problems when trying to center the circuit,
 			// so we special-case it here
@@ -816,7 +818,7 @@ public class Simmer
 		if (dy + miny < 0)
 			dy = gridMask & (-miny);
 
-		for (i = 0; i != elmList.size(); i++) {
+		for (i = 0; i != getElmList().size(); i++) {
 			AbstractCircuitElement ce = getElm(i);
 			ce.move(dx, dy);
 		}
@@ -959,8 +961,8 @@ public class Simmer
 	}
 
 	public int locateElm(AbstractCircuitElement elm) {
-		for (int i = 0; i != elmList.size(); i++)
-			if (elm == elmList.get(i))
+		for (int i = 0; i != getElmList().size(); i++)
+			if (elm == getElmList().get(i))
 				return i;
 		return -1;
 	}
@@ -971,7 +973,7 @@ public class Simmer
 
 	public void resetAction() {
 		int i;
-		for (i = 0; i != elmList.size(); i++)
+		for (i = 0; i != getElmList().size(); i++)
 			getElm(i).reset();
 
 		for (i = 0; i != scopeCount; i++)
@@ -984,7 +986,7 @@ public class Simmer
 	}
 
 	private void runCircuit() {
-		if (circuitMatrix == null || elmList.size() == 0) {
+		if (circuitMatrix == null || getElmList().size() == 0) {
 			circuitMatrix = null;
 			return;
 		}
@@ -999,7 +1001,7 @@ public class Simmer
 			return;
 		for (iter = 1;; iter++) {
 			int i, j, k, subiter;
-			for (i = 0; i != elmList.size(); i++) {
+			for (i = 0; i != getElmList().size(); i++) {
 				AbstractCircuitElement ce = getElm(i);
 				ce.startIteration();
 			}
@@ -1015,7 +1017,7 @@ public class Simmer
 						for (j = 0; j != circuitMatrixSize; j++)
 							circuitMatrix[i][j] = origMatrix[i][j];
 				}
-				for (i = 0; i != elmList.size(); i++) {
+				for (i = 0; i != getElmList().size(); i++) {
 					AbstractCircuitElement ce = getElm(i);
 					ce.doStep();
 				}
@@ -1028,11 +1030,11 @@ public class Simmer
 					for (i = 0; i != circuitMatrixSize; i++) {
 						double x = circuitMatrix[i][j];
 						if (Double.isNaN(x) || Double.isInfinite(x)) {
-							stop(MessageI18N.getMessage("nan/infinite_matrix!"), null);
-
+							String message = MessageI18N.getMessage("nan/infinite_matrix!");
+							stop(message, null);
 							// fire circuit broken event here
 							// {source: simmer, component: ce, message: "nan/infinite_matrix!"}
-							JSEventBusProxy.fire(SimmerEvents.CIRCUIT_BROKEN_NAN.value, new JSONObject());
+							JSEventBusProxy.fireError(SimmerEvents.CIRCUIT_BROKEN_NAN, message);
 							return;
 						}
 					}
@@ -1049,11 +1051,11 @@ public class Simmer
 					if (converged && subiter > 0)
 						break;
 					if (!MathUtil.lu_factor(circuitMatrix, circuitMatrixSize, circuitPermute)) {
-						stop(MessageI18N.getMessage("Singular_matrix!"), null);
-
+						String message = MessageI18N.getMessage("Singular_matrix!");
+						stop(message, null);
 						// fire circuit broken event here
 						// {source: simmer, component: ce, message: "Singular_matrix!"}
-						JSEventBusProxy.fire(SimmerEvents.CIRCUIT_BROKEN_SINGULAR_MATRIX.value, new JSONObject());
+						JSEventBusProxy.fireError(SimmerEvents.CIRCUIT_BROKEN_SINGULAR_MATRIX, message);
 						return;
 					}
 				}
@@ -1382,7 +1384,7 @@ public class Simmer
 	}
 
 	public void stop(String s, AbstractCircuitElement ce) {
-		JSEventBusProxy.fire(SimmerEvents.CIRCUIT_BROKEN.value, new JSONObject());
+		JSEventBusProxy.fireError(SimmerEvents.CIRCUIT_STOPPED, s, ce);
 		stopMessage = s;
 		circuitMatrix = null;
 		stopElm = ce;
@@ -1485,7 +1487,7 @@ public class Simmer
 		Font oldfont = AbstractCircuitElement.unitsFont;
 		g.setFont(oldfont);
 
-		for (i = 0; i != elmList.size(); i++) {
+		for (i = 0; i != getElmList().size(); i++) {
 			if (getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState())
 				g.setColor(Color.gray);
 			/*
@@ -1496,7 +1498,7 @@ public class Simmer
 		}
 		// mydrawtime += System.currentTimeMillis() - mydrawstarttime;
 		if (tempMouseMode == MouseMode.DRAG_ROW || tempMouseMode == MouseMode.DRAG_COLUMN || tempMouseMode == MouseMode.DRAG_POST || tempMouseMode == MouseMode.DRAG_SELECTED)
-			for (i = 0; i != elmList.size(); i++) {
+			for (i = 0; i != getElmList().size(); i++) {
 
 				AbstractCircuitElement ce = getElm(i);
 				// ce.drawPost(g, ce.x , ce.y );
@@ -1524,7 +1526,7 @@ public class Simmer
 					int bb = 0, j;
 					CircuitNodeLink cnl = cn.links.get(0);
 
-					for (j = 0; j != elmList.size(); j++) { // TODO: (hausen)
+					for (j = 0; j != getElmList().size(); j++) { // TODO: (hausen)
 															// see if this
 															// change does not
 															// break stuff
@@ -1653,7 +1655,7 @@ public class Simmer
 	}
 
 	public List<CircuitNode> getNodeList() {
-		return nodeList;
+		return circuitModel.getNodeList();
 	}
 
 	public double getT() {
@@ -1730,10 +1732,6 @@ public class Simmer
 
 	public Rectangle getCircuitArea(){
 		return circuitArea;
-	}
-
-	private void setNodeList(Vector<CircuitNode> nodeList) {
-		this.nodeList = nodeList;
 	}
 
 	public void setT(double t) {
@@ -1885,14 +1883,14 @@ public class Simmer
 	}
 
 	public AbstractCircuitElement getElm(int n) {
-		if (n >= elmList.size())
+		if (n >= getElmList().size())
 			return null;
 
-		return elmList.get(n);
+		return getElmList().get(n);
 	}
 
 	public List<AbstractCircuitElement> getElmList() {
-		return elmList;
+		return circuitModel.getElmList();
 	}
 
 	public int getGridSize() {

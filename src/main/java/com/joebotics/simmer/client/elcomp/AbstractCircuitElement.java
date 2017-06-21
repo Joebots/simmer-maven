@@ -24,6 +24,10 @@ package com.joebotics.simmer.client.elcomp;
 //import java.text.NumberFormat;
 
 import com.google.gwt.i18n.client.NumberFormat;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONNumber;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 import com.joebotics.simmer.client.Simmer;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.Editable;
@@ -1149,5 +1153,22 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 	public boolean isWire(){
 		return (this instanceof WireElm);
 	}
-
+	
+	public String getName() {
+		return getClass().getName() + "@" + Integer.toHexString(hashCode());
+	}
+	
+    public JSONObject toJSONObject() {
+        JSONObject result = new JSONObject();
+        result.put("name", new JSONString(getName()));
+        JSONArray posts = new JSONArray();
+        for( int i = 0; i < getPostCount(); i++ ) {
+            JSONObject obj = new JSONObject();
+            obj.put("x", new JSONNumber(getPost(i).getX()));
+            obj.put("y", new JSONNumber(getPost(i).getY()));
+            posts.set(i, obj);
+        }
+        result.put("posts", posts);
+        return result;
+    }
 }

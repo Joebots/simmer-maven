@@ -3,12 +3,12 @@ package com.joebotics.simmer.client.breadboard.interpreter.model;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
-import com.google.gwt.json.client.JSONValue;
 import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
 import com.joebotics.simmer.client.gui.util.Point;
 
 /**
  * Created by joe on 8/7/16.
+ * @deprecated Will be replaced/moved on named pins feature implementation
  */
 public class PinOut extends Point {
 

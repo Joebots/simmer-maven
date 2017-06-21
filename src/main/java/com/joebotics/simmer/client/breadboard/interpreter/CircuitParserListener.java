@@ -8,6 +8,7 @@ import com.joebotics.simmer.client.gui.util.Point;
 
 /**
  * Created by joe on 2/5/17.
+ * @deprecated Used Standard Simmer model classes for the both apps
  */
 public interface CircuitParserListener {
     public JSONObject toJSONObject();
