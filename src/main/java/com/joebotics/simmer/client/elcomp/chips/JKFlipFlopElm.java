@@ -20,6 +20,8 @@
 package com.joebotics.simmer.client.elcomp.chips;
 
 import com.joebotics.simmer.client.elcomp.ChipElm;
+import com.joebotics.simmer.client.elcomp.Pin;
+import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.util.StringTokenizer;
@@ -113,19 +115,19 @@ public class JKFlipFlopElm extends ChipElm {
 		setSizeX(2);
 		setSizeY(3);
 		setPins(new Pin[getPostCount()]);
-		getPins()[0] = new Pin(0, SIDE_W, "J");
-		getPins()[1] = new Pin(1, SIDE_W, "");
+		getPins()[0] = new Pin(0, Side.WEST, "J");
+		getPins()[1] = new Pin(1, Side.WEST, "");
 		getPins()[1].setClock(true);
 		getPins()[1].setBubble(true);
-		getPins()[2] = new Pin(2, SIDE_W, "K");
-		getPins()[3] = new Pin(0, SIDE_E, "Q");
+		getPins()[2] = new Pin(2, Side.WEST, "K");
+		getPins()[3] = new Pin(0, Side.EAST, "Q");
 		getPins()[3].setOutput(getPins()[3].setState(true));
-		getPins()[4] = new Pin(2, SIDE_E, "Q");
+		getPins()[4] = new Pin(2, Side.EAST, "Q");
 		getPins()[4].setOutput(true);
 		getPins()[4].setLineOver(true);
 
 		if (hasReset()) {
-			getPins()[5] = new Pin(1, SIDE_E, "R");
+			getPins()[5] = new Pin(1, Side.EAST, "R");
 		}
 	}
 }

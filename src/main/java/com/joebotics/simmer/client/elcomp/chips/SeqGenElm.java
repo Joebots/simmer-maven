@@ -20,6 +20,8 @@
 package com.joebotics.simmer.client.elcomp.chips;
 
 import com.joebotics.simmer.client.elcomp.ChipElm;
+import com.joebotics.simmer.client.elcomp.Pin;
+import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.util.StringTokenizer;
@@ -232,9 +234,9 @@ public class SeqGenElm extends ChipElm {
 		setSizeY(2);
 		setPins(new Pin[getPostCount()]);
 
-		getPins()[0] = new Pin(0, SIDE_W, "");
+		getPins()[0] = new Pin(0, Side.WEST, "");
 		getPins()[0].setClock(true);
-		getPins()[1] = new Pin(1, SIDE_E, "Q");
+		getPins()[1] = new Pin(1, Side.EAST, "Q");
 		getPins()[1].setOutput(true);
 	}
 

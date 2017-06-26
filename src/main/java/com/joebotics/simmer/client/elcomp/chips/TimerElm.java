@@ -20,6 +20,8 @@
 package com.joebotics.simmer.client.elcomp.chips;
 
 import com.joebotics.simmer.client.elcomp.ChipElm;
+import com.joebotics.simmer.client.elcomp.Pin;
+import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 //import java.awt.*;
@@ -62,7 +64,7 @@ public class TimerElm extends ChipElm {
 		if (!out && !setOut)
 			sim.stampResistor(getNodes()[N_DIS], 0, 10);
 		// output
-		sim.updateVoltageSource(0, getNodes()[N_OUT], getPins()[N_OUT].getVoltSource(),
+		sim.updateVoltageSource(0, getNodes()[N_OUT], getPins()[N_OUT].getVoltageSource(),
 				out ? getVolts()[N_VIN] : 0);
 	}
 
@@ -98,15 +100,15 @@ public class TimerElm extends ChipElm {
 		setSizeX(3);
 		setSizeY(5);
 		setPins(new Pin[7]);
-		getPins()[N_DIS] = new Pin(1, SIDE_W, "dis");
-		getPins()[N_TRIG] = new Pin(3, SIDE_W, "tr");
+		getPins()[N_DIS] = new Pin(1, Side.WEST, "dis");
+		getPins()[N_TRIG] = new Pin(3, Side.WEST, "tr");
 		getPins()[N_TRIG].setLineOver(true);
-		getPins()[N_THRES] = new Pin(4, SIDE_W, "th");
-		getPins()[N_VIN] = new Pin(1, SIDE_N, "Vin");
-		getPins()[N_CTL] = new Pin(1, SIDE_S, "ctl");
-		getPins()[N_OUT] = new Pin(2, SIDE_E, "out");
+		getPins()[N_THRES] = new Pin(4, Side.WEST, "th");
+		getPins()[N_VIN] = new Pin(1, Side.NORTH, "Vin");
+		getPins()[N_CTL] = new Pin(1, Side.SOUTH, "ctl");
+		getPins()[N_OUT] = new Pin(2, Side.EAST, "out");
 		getPins()[N_OUT].setOutput(getPins()[N_OUT].setState(true));
-		getPins()[N_RST] = new Pin(1, SIDE_E, "rst");
+		getPins()[N_RST] = new Pin(1, Side.EAST, "rst");
 	}
 
 	public void stamp() {
@@ -114,7 +116,7 @@ public class TimerElm extends ChipElm {
 		sim.stampResistor(getNodes()[N_VIN], getNodes()[N_CTL], 5000);
 		sim.stampResistor(getNodes()[N_CTL], 0, 10000);
 		// output pin
-		sim.stampVoltageSource(0, getNodes()[N_OUT], getPins()[N_OUT].getVoltSource());
+		sim.stampVoltageSource(0, getNodes()[N_OUT], getPins()[N_OUT].getVoltageSource());
 		// discharge pin
 		sim.stampNonLinear(getNodes()[N_DIS]);
 	}

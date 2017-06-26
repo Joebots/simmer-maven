@@ -164,10 +164,6 @@ public class TappedTransformerElm extends AbstractCircuitElement {
 		arr[4] = "Vd2 = " + getVoltageText(getVolts()[1] - getVolts()[3]);
 	}
 
-	public Point getPost(int n) {
-		return ptEnds[n];
-	}
-
 	public int getPostCount() {
 		return 5;
 	}
@@ -196,16 +192,18 @@ public class TappedTransformerElm extends AbstractCircuitElement {
 		interpPoint(getPoint1(), getPoint2(), ptEnds[4], 1, -hs * 2);
 		double ce = .5 - 12 / getDn();
 		double cd = .5 - 2 / getDn();
-		int i;
 		interpPoint(ptEnds[0], ptEnds[2], ptCoil[0], ce);
 		interpPoint(ptEnds[0], ptEnds[2], ptCoil[1], ce, -hs * 2);
 		interpPoint(ptEnds[0], ptEnds[2], ptCoil[2], 1 - ce);
 		interpPoint(ptEnds[0], ptEnds[2], ptCoil[3], 1 - ce, -hs);
 		interpPoint(ptEnds[0], ptEnds[2], ptCoil[4], 1 - ce, -hs * 2);
-		for (i = 0; i != 2; i++) {
+		for (int i = 0; i != 2; i++) {
 			int b = -hs * i * 2;
 			interpPoint(ptEnds[0], ptEnds[2], ptCore[i], cd, b);
 			interpPoint(ptEnds[0], ptEnds[2], ptCore[i + 2], 1 - cd, b);
+		}
+		for (int i = 0; i < ptEnds.length; i++) {
+			getPins()[i].setPost(ptEnds[i]);
 		}
 	}
 

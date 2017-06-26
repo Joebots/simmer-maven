@@ -58,6 +58,8 @@ public class SCRElm extends AbstractCircuitElement {
 	double lastvac, lastvag;
 
 	Polygon poly;
+	
+	private Pin anodePin, cathodePin, gatePin;
 
 	public SCRElm(int xx, int yy) {
 		super(xx, yy);
@@ -173,10 +175,6 @@ public class SCRElm extends AbstractCircuitElement {
 		return 1;
 	}
 
-	public Point getPost(int n) {
-		return (n == 0) ? getPoint1() : (n == 1) ? getPoint2() : gate[1];
-	}
-
 	public int getPostCount() {
 		return 3;
 	}
@@ -242,6 +240,20 @@ public class SCRElm extends AbstractCircuitElement {
 		interpPoint(getLead2(), getPoint2(), gate[0], gatelen / leadlen, gatelen * dir);
 		interpPoint(getLead2(), getPoint2(), gate[1], gatelen / leadlen, sim.getGridSize() * 2
 				* dir);
+		cathodePin.setPost(getPoint1());
+		anodePin.setPost(getPoint2());
+		gatePin.setPost(gate[1]);
+	}
+	
+	public void setupPins() {
+		// Cathode
+		cathodePin = new Pin(0, Side.UNKNOWN, "C");
+		// Anode
+		anodePin = new Pin(1, Side.UNKNOWN, "A");
+		// Gate
+		gatePin = new Pin(2, Side.UNKNOWN, "G");
+		setPins(new Pin[]{cathodePin, anodePin, gatePin});
+		allocNodes();
 	}
 
 	void setup() {

@@ -20,6 +20,8 @@
 package com.joebotics.simmer.client.elcomp.chips;
 
 import com.joebotics.simmer.client.elcomp.ChipElm;
+import com.joebotics.simmer.client.elcomp.Pin;
+import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 //
@@ -73,15 +75,15 @@ public class MultiplexerElm extends ChipElm {
 		setSizeY(5);
 		setPins(new Pin[getPostCount()]);
 
-		getPins()[0] = new Pin(0, SIDE_W, "I0");
-		getPins()[1] = new Pin(1, SIDE_W, "I1");
-		getPins()[2] = new Pin(2, SIDE_W, "I2");
-		getPins()[3] = new Pin(3, SIDE_W, "I3");
+		getPins()[0] = new Pin(0, Side.WEST, "I0");
+		getPins()[1] = new Pin(1, Side.WEST, "I1");
+		getPins()[2] = new Pin(2, Side.WEST, "I2");
+		getPins()[3] = new Pin(3, Side.WEST, "I3");
 
-		getPins()[4] = new Pin(1, SIDE_S, "S0");
-		getPins()[5] = new Pin(2, SIDE_S, "S1");
+		getPins()[4] = new Pin(1, Side.SOUTH, "S0");
+		getPins()[5] = new Pin(2, Side.SOUTH, "S1");
 
-		getPins()[6] = new Pin(0, SIDE_E, "Q");
+		getPins()[6] = new Pin(0, Side.EAST, "Q");
 		getPins()[6].setOutput(true);
 
 	}

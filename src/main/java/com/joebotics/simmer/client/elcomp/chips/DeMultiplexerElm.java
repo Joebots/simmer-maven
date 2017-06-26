@@ -20,6 +20,8 @@
 package com.joebotics.simmer.client.elcomp.chips;
 
 import com.joebotics.simmer.client.elcomp.ChipElm;
+import com.joebotics.simmer.client.elcomp.Pin;
+import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 //import java.awt.*;
@@ -74,19 +76,19 @@ public class DeMultiplexerElm extends ChipElm {
 		setSizeY(5);
 		setPins(new Pin[getPostCount()]);
 
-		getPins()[0] = new Pin(0, SIDE_E, "Q0");
+		getPins()[0] = new Pin(0, Side.EAST, "Q0");
 		getPins()[0].setOutput(true);
-		getPins()[1] = new Pin(1, SIDE_E, "Q1");
+		getPins()[1] = new Pin(1, Side.EAST, "Q1");
 		getPins()[1].setOutput(true);
-		getPins()[2] = new Pin(2, SIDE_E, "Q2");
+		getPins()[2] = new Pin(2, Side.EAST, "Q2");
 		getPins()[2].setOutput(true);
-		getPins()[3] = new Pin(3, SIDE_E, "Q3");
+		getPins()[3] = new Pin(3, Side.EAST, "Q3");
 		getPins()[3].setOutput(true);
 
-		getPins()[4] = new Pin(0, SIDE_S, "S0");
-		getPins()[5] = new Pin(1, SIDE_S, "S1");
+		getPins()[4] = new Pin(0, Side.SOUTH, "S0");
+		getPins()[5] = new Pin(1, Side.SOUTH, "S1");
 
-		getPins()[6] = new Pin(0, SIDE_W, "Q");
+		getPins()[6] = new Pin(0, Side.WEST, "Q");
 
 	}
 

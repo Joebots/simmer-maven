@@ -20,6 +20,8 @@
 package com.joebotics.simmer.client.elcomp.chips;
 
 import com.joebotics.simmer.client.elcomp.ChipElm;
+import com.joebotics.simmer.client.elcomp.Pin;
+import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 //import java.awt.*;
@@ -72,12 +74,12 @@ public class LatchElm extends ChipElm {
 		setPins(new Pin[getPostCount()]);
 		int i;
 		for (i = 0; i != getBits(); i++)
-			getPins()[i] = new Pin(getBits() - 1 - i, SIDE_W, "I" + i);
+			getPins()[i] = new Pin(getBits() - 1 - i, Side.WEST, "I" + i);
 		for (i = 0; i != getBits(); i++) {
-			getPins()[i + getBits()] = new Pin(getBits() - 1 - i, SIDE_E, "O");
+			getPins()[i + getBits()] = new Pin(getBits() - 1 - i, Side.EAST, "O");
 			getPins()[i + getBits()].setOutput(true);
 		}
-		getPins()[loadPin = getBits() * 2] = new Pin(getBits(), SIDE_W, "Ld");
+		getPins()[loadPin = getBits() * 2] = new Pin(getBits(), Side.WEST, "Ld");
 		allocNodes();
 	}
 }

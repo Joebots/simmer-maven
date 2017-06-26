@@ -194,10 +194,6 @@ public class PotElm extends AbstractCircuitElement implements Command, MouseWhee
 		arr[5] = "I2 = " + getCurrentDText(current2);
 	}
 
-	public Point getPost(int n) {
-		return (n == 0) ? getPoint1() : (n == 1) ? getPoint2() : post3;
-	}
-
 	public int getPostCount() {
 		return 3;
 	}
@@ -260,6 +256,10 @@ public class PotElm extends AbstractCircuitElement implements Command, MouseWhee
 		interpPoint2(corner2, arrowPoint, arrow1, arrow2, (clen - 8) / clen, 8);
 		ps3 = new Point();
 		ps4 = new Point();
+		
+		getPins()[0].setPost(getPoint1());
+		getPins()[1].setPost(getPoint2());
+		getPins()[2].setPost(post3);
 	}
 
 	void setup() {
