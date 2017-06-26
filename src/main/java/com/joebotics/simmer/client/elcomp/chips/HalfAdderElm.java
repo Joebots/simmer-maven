@@ -20,6 +20,8 @@
 package com.joebotics.simmer.client.elcomp.chips;
 
 import com.joebotics.simmer.client.elcomp.ChipElm;
+import com.joebotics.simmer.client.elcomp.Pin;
+import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 //import java.awt.*;
@@ -66,12 +68,12 @@ public class HalfAdderElm extends ChipElm {
 		setSizeY(2);
 		setPins(new Pin[getPostCount()]);
 
-		getPins()[0] = new Pin(0, SIDE_E, "S");
+		getPins()[0] = new Pin(0, Side.EAST, "S");
 		getPins()[0].setOutput(true);
-		getPins()[1] = new Pin(1, SIDE_E, "C");
+		getPins()[1] = new Pin(1, Side.EAST, "C");
 		getPins()[1].setOutput(true);
-		getPins()[2] = new Pin(0, SIDE_W, "A");
-		getPins()[3] = new Pin(1, SIDE_W, "B");
+		getPins()[2] = new Pin(0, Side.WEST, "A");
+		getPins()[3] = new Pin(1, Side.WEST, "B");
 
 	}
 

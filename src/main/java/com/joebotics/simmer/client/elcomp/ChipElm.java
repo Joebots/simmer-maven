@@ -29,167 +29,18 @@ import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
-
-//import java.awt.*;
-//import java.util.StringTokenizer;
-
-
 public abstract class ChipElm extends AbstractCircuitElement {
-	public class Pin {
-		double curcount;
-
-		private double current;
-
-		private boolean lineOver;
-
-		private boolean bubble;
-
-		private boolean clock;
-
-		private boolean output;
-
-		private boolean value;
-
-		private boolean state;
-		int pos, side;
-
-		private int voltSource;
-
-		int bubbleX;
-
-		int bubbleY;
-		Point post, stub;
-		String text;
-		Point textloc;
-		public Pin(int p, int s, String t) {
-			pos = p;
-			side = s;
-			text = t;
-		}
-
-		void setPoint(int px, int py, int dx, int dy, int dax, int day, int sx,
-				int sy) {
-			if ((getFlags() & FLAG_FLIP_X) != 0) {
-				dx = -dx;
-				dax = -dax;
-				px += getCspc2() * (getSizeX() - 1);
-				sx = -sx;
-			}
-			if ((getFlags() & FLAG_FLIP_Y) != 0) {
-				dy = -dy;
-				day = -day;
-				py += getCspc2() * (getSizeY() - 1);
-				sy = -sy;
-			}
-			int xa = px + getCspc2() * dx * pos + sx;
-			int ya = py + getCspc2() * dy * pos + sy;
-			post = new Point(xa + dax * getCspc2(), ya + day * getCspc2());
-			stub = new Point(xa + dax * getCspc(), ya + day * getCspc());
-			textloc = new Point(xa, ya);
-			if (bubble) {
-				bubbleX = xa + dax * 10 * csize;
-				bubbleY = ya + day * 10 * csize;
-			}
-			if (clock) {
-				clockPointsX = new int[3];
-				clockPointsY = new int[3];
-				clockPointsX[0] = xa + dax * getCspc() - dx * getCspc() / 2;
-				clockPointsY[0] = ya + day * getCspc() - dy * getCspc() / 2;
-				clockPointsX[1] = xa;
-				clockPointsY[1] = ya;
-				clockPointsX[2] = xa + dax * getCspc() + dx * getCspc() / 2;
-				clockPointsY[2] = ya + day * getCspc() + dy * getCspc() / 2;
-			}
-		}
-
-		public boolean isBubble() {
-			return bubble;
-		}
-
-		public void setBubble(boolean bubble) {
-			this.bubble = bubble;
-		}
-
-		public boolean isClock() {
-			return clock;
-		}
-
-		public void setClock(boolean clock) {
-			this.clock = clock;
-		}
-
-		public double getCurrent() {
-			return current;
-		}
-
-		public void setCurrent(double current) {
-			this.current = current;
-		}
-
-		public boolean isLineOver() {
-			return lineOver;
-		}
-
-		public void setLineOver(boolean lineOver) {
-			this.lineOver = lineOver;
-		}
-
-		public boolean isOutput() {
-			return output;
-		}
-
-		public void setOutput(boolean output) {
-			this.output = output;
-		}
-
-		public boolean isState() {
-			return state;
-		}
-
-		public boolean setState(boolean state) {
-			this.state = state;
-			return state;
-		}
-
-		public boolean isValue() {
-			return value;
-		}
-
-		public void setValue(boolean value) {
-			this.value = value;
-		}
-
-		public int getVoltSource() {
-			return voltSource;
-		}
-
-		public void setVoltSource(int voltSource) {
-			this.voltSource = voltSource;
-		}
-	}
 	private int bits;
 	int clockPointsX[], clockPointsY[];
 	int csize;
 	private int cspc;
 	private int cspc2;
-	public static final int FLAG_FLIP_X = 1024;
 
-	public static final int FLAG_FLIP_Y = 2048;
-
-	public static final int FLAG_SMALL = 1;
 
 	private boolean lastClock;
 
-	private Pin pins[];
-
 	int rectPointsX[], rectPointsY[];
 
-	public static final int SIDE_E = 3;
-
-	public static final int SIDE_N = 0;
-
-	public static final int SIDE_S = 1;
-	public static final int SIDE_W = 2;
 	private int sizeX;
 	private int sizeY;
 	public ChipElm(int xx, int yy) {
@@ -202,6 +53,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 		if( sim.getMainMenuBar() != null )
 			setSize(sim.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem() != null && sim.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().getState() ? 1 : 2);
 	}
+	
 	public ChipElm(int xa, int ya, int xb, int yb, int f, StringTokenizer st) {
 		super(xa, ya, xb, yb, f);
 		if (needsBits())
@@ -211,9 +63,9 @@ public abstract class ChipElm extends AbstractCircuitElement {
 		setSize((f & FLAG_SMALL) != 0 ? 1 : 2);
 		int i;
 		for (i = 0; i != getPostCount(); i++) {
-			if (pins[i].isState()) {
+			if (getPins()[i].isState()) {
 				getVolts()[i] = new Double(st.nextToken()).doubleValue();
-				pins[i].setValue(getVolts()[i] > 2.5);
+				getPins()[i].setValue(getVolts()[i] > 2.5);
 			}
 		}
 	}
@@ -221,15 +73,15 @@ public abstract class ChipElm extends AbstractCircuitElement {
 	public void doStep() {
 		int i;
 		for (i = 0; i != getPostCount(); i++) {
-			Pin p = pins[i];
+			Pin p = getPins()[i];
 			if (!p.isOutput())
 				p.setValue(getVolts()[i] > 2.5);
 		}
 		execute();
 		for (i = 0; i != getPostCount(); i++) {
-			Pin p = pins[i];
+			Pin p = getPins()[i];
 			if (p.isOutput())
-				sim.updateVoltageSource(0, getNodes()[i], p.getVoltSource(), p.isValue() ? 5
+				sim.updateVoltageSource(0, getNodes()[i], p.getVoltageSource(), p.isValue() ? 5
 						: 0);
 		}
 	}
@@ -257,28 +109,28 @@ public abstract class ChipElm extends AbstractCircuitElement {
 		g.setFont(f);
 		// FontMetrics fm = g.getFontMetrics();
 		for (i = 0; i != getPostCount(); i++) {
-			Pin p = pins[i];
+			Pin p = getPins()[i];
 			setVoltageColor(g, getVolts()[i]);
-			Point a = p.post;
-			Point b = p.stub;
+			Point a = p.getPost();
+			Point b = p.getStub();
 			GraphicsUtil.drawThickLine(g, a, b);
-			p.curcount = updateDotCount(p.getCurrent(), p.curcount);
-			drawDots(g, b, a, p.curcount);
+			p.setCurcount(updateDotCount(p.getCurrent(), p.getCurcount()));
+			drawDots(g, b, a, p.getCurcount());
 			if (p.isBubble()) {
 				g.setColor(sim.getMainMenuBar().getOptionsMenuBar().getBackgroundCheckItem().getState() ? Color.white
 						: Color.black);
-				GraphicsUtil.drawThickCircle(g, p.bubbleX, p.bubbleY, 1);
+				GraphicsUtil.drawThickCircle(g, p.getBubbleX(), p.getBubbleY(), 1);
 				g.setColor(lightGrayColor);
-				GraphicsUtil.drawThickCircle(g, p.bubbleX, p.bubbleY, 3);
+				GraphicsUtil.drawThickCircle(g, p.getBubbleX(), p.getBubbleY(), 3);
 			}
 			g.setColor(whiteColor);
 			// int sw = fm.stringWidth(p.text);
-			int sw = (int) g.getContext().measureText(p.text).getWidth();
+			int sw = (int) g.getContext().measureText(p.getText()).getWidth();
 			int asc = (int) g.getCurrentFontSize();
-			g.drawString(p.text, p.textloc.getX() - sw / 2, p.textloc.getY() + asc / 2);
+			g.drawString(p.getText(), p.getTextloc().getX() - sw / 2, p.getTextloc().getY() + asc / 2);
 			if (p.isLineOver()) {
-				int ya = p.textloc.getY() - asc / 2;
-				g.drawLine(p.textloc.getX() - sw / 2, ya, p.textloc.getX() + sw / 2, ya);
+				int ya = p.getTextloc().getY() - asc / 2;
+				g.drawLine(p.getTextloc().getX() - sw / 2, ya, p.getTextloc().getX() + sw / 2, ya);
 			}
 		}
 		g.setColor(needsHighlight() ? selectColor : lightGrayColor);
@@ -286,7 +138,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 		if (clockPointsX != null)
 			g.drawPolyline(clockPointsX, clockPointsY, 3);
 		for (i = 0; i != getPostCount(); i++)
-			drawPost(g, pins[i].post.getX(), pins[i].post.getY(), getNodes()[i]);
+			drawPost(g, getPins()[i].getPost().getX(), getPins()[i].getPost().getY(), getNodes()[i]);
 		g.setFont(oldfont);
 	}
 
@@ -297,7 +149,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 			s += " " + bits;
 		int i;
 		for (i = 0; i != getPostCount(); i++) {
-			if (pins[i].isState())
+			if (getPins()[i].isState())
 				s += " " + getVolts()[i];
 		}
 		return s;
@@ -332,12 +184,12 @@ public abstract class ChipElm extends AbstractCircuitElement {
 		arr[0] = getChipName();
 		int i, a = 1;
 		for (i = 0; i != getPostCount(); i++) {
-			Pin p = pins[i];
+			Pin p = getPins()[i];
 			if (arr[a] != null)
 				arr[a] += "; ";
 			else
 				arr[a] = "";
-			String t = p.text;
+			String t = p.getText();
 			if (p.isLineOver())
 				t += '\'';
 			if (p.isClock())
@@ -348,15 +200,9 @@ public abstract class ChipElm extends AbstractCircuitElement {
 		}
 	}
 
-	public Point getPost(int n) {
-		return pins[n].post;
-	}
+
 
 	abstract public int getVoltageSourceCount(); // output count
-
-	public boolean hasGroundConnection(int n1) {
-		return pins[n1].isOutput();
-	}
 
 	public boolean needsBits() {
 		return false;
@@ -365,18 +211,11 @@ public abstract class ChipElm extends AbstractCircuitElement {
 	public void reset() {
 		int i;
 		for (i = 0; i != getPostCount(); i++) {
-			pins[i].setValue(false);
-			pins[i].curcount = 0;
+			getPins()[i].setValue(false);
+			getPins()[i].setCurcount(0);
 			getVolts()[i] = 0;
 		}
 		lastClock = false;
-	}
-
-	public void setCurrent(int x, double c) {
-		int i;
-		for (i = 0; i != getPostCount(); i++)
-			if (pins[i].isOutput() && pins[i].getVoltSource() == x)
-				pins[i].current = c;
 	}
 
 	public void setEditValue(int n, EditInfo ei) {
@@ -411,23 +250,59 @@ public abstract class ChipElm extends AbstractCircuitElement {
 		setBbox(xr, yr, rectPointsX[2], rectPointsY[2]);
 		int i;
 		for (i = 0; i != getPostCount(); i++) {
-			Pin p = pins[i];
-			switch (p.side) {
-			case SIDE_N:
-				p.setPoint(x0, y0, 1, 0, 0, -1, 0, 0);
+			Pin p = getPins()[i];
+			switch (p.getSide()) {
+			case NORTH:
+				setPoint(p, x0, y0, 1, 0, 0, -1, 0, 0);
 				break;
-			case SIDE_S:
-				p.setPoint(x0, y0, 1, 0, 0, 1, 0, ys - cspc2);
+			case SOUTH:
+				setPoint(p, x0, y0, 1, 0, 0, 1, 0, ys - cspc2);
 				break;
-			case SIDE_W:
-				p.setPoint(x0, y0, 0, 1, -1, 0, 0, 0);
+			case WEST:
+				setPoint(p, x0, y0, 0, 1, -1, 0, 0, 0);
 				break;
-			case SIDE_E:
-				p.setPoint(x0, y0, 0, 1, 1, 0, xs - cspc2, 0);
+			case EAST:
+				setPoint(p, x0, y0, 0, 1, 1, 0, xs - cspc2, 0);
 				break;
 			}
 		}
 	}
+	
+	private void setPoint(Pin pin, int px, int py, int dx, int dy, int dax, int day, int sx,
+			int sy) {
+		if ((getFlags() & FLAG_FLIP_X) != 0) {
+			dx = -dx;
+			dax = -dax;
+			px += getCspc2() * (getSizeX() - 1);
+			sx = -sx;
+		}
+		if ((getFlags() & FLAG_FLIP_Y) != 0) {
+			dy = -dy;
+			day = -day;
+			py += getCspc2() * (getSizeY() - 1);
+			sy = -sy;
+		}
+		int xa = px + getCspc2() * dx * pin.getNumber() + sx;
+		int ya = py + getCspc2() * dy * pin.getNumber() + sy;
+		pin.setPost(new Point(xa + dax * getCspc2(), ya + day * getCspc2()));
+		pin.setStub(new Point(xa + dax * getCspc(), ya + day * getCspc()));
+		pin.setTextloc(new Point(xa, ya));
+		if (pin.isBubble()) {
+			pin.setBubbleX(xa + dax * 10 * csize);
+			pin.setBubbleY(ya + day * 10 * csize);
+		}
+		if (pin.isClock()) {
+			clockPointsX = new int[3];
+			clockPointsY = new int[3];
+			clockPointsX[0] = xa + dax * getCspc() - dx * getCspc() / 2;
+			clockPointsY[0] = ya + day * getCspc() - dy * getCspc() / 2;
+			clockPointsX[1] = xa;
+			clockPointsY[1] = ya;
+			clockPointsX[2] = xa + dax * getCspc() + dx * getCspc() / 2;
+			clockPointsY[2] = ya + day * getCspc() + dy * getCspc() / 2;
+		}
+	}
+
 	void setSize(int s) {
 		csize = s;
 		cspc = 8 * s;
@@ -435,27 +310,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 		setFlags(getFlags() & ~FLAG_SMALL);
 		setFlags(getFlags() | ((s == 1) ? FLAG_SMALL : 0));
 	}
-	public abstract void setupPins();
-	public void setVoltageSource(int j, int vs) {
-		int i;
-		for (i = 0; i != getPostCount(); i++) {
-			Pin p = pins[i];
-			if (p.isOutput() && j-- == 0) {
-				p.setVoltSource(vs);
-				return;
-			}
-		}
-		System.out.println("setVoltageSource failed for " + this);
-	}
 
-	public void stamp() {
-		int i;
-		for (i = 0; i != getPostCount(); i++) {
-			Pin p = pins[i];
-			if (p.isOutput())
-				sim.stampVoltageSource(0, getNodes()[i], p.getVoltSource());
-		}
-	}
 	public int getBits() {
 		return bits;
 	}
@@ -479,12 +334,6 @@ public abstract class ChipElm extends AbstractCircuitElement {
 	}
 	public void setLastClock(boolean lastClock) {
 		this.lastClock = lastClock;
-	}
-	public Pin[] getPins() {
-		return pins;
-	}
-	public void setPins(Pin pins[]) {
-		this.pins = pins;
 	}
 	public int getSizeX() {
 		return sizeX;

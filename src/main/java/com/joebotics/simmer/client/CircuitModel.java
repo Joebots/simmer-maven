@@ -90,17 +90,23 @@ public class CircuitModel {
     }
     
     private void createJSONPinouts(AbstractCircuitElement element, JSONObject entry) {
-        JSONArray pinOutArr = new JSONArray();
-
-        for( int j=0; j < element.getPostCount(); j++){
+        // TODO remove the pinOuts key (Compatibility with current version of Breadboard)
+        JSONArray pinOutArr = new JSONArray();        
+        for( int i = 0; i < element.getPostCount(); i++) {
             JSONObject obj = new JSONObject();
-            obj.put("x", new JSONNumber(element.getPost(j).getX()));
-            obj.put("y", new JSONNumber(element.getPost(j).getY()));
-            pinOutArr.set(j, obj);
+            obj.put("x", new JSONNumber(element.getPost(i).getX()));
+            obj.put("y", new JSONNumber(element.getPost(i).getY()));
+            pinOutArr.set(i, obj);
 
         }
-
         entry.put("pinOuts", pinOutArr);
+        
+        // New implementation (Named Pins)
+        JSONArray pins = new JSONArray();
+        for( int i = 0; i < element.getPostCount(); i++) {
+            pins.set(i, element.getPins()[i].toJSONObject());
+        }
+        entry.put("pins", pins);
     }
 
     private void createJSONTargets(Map<CircuitNodeLink, Set<CircuitNodeLink>> links, JSONObject entry) {

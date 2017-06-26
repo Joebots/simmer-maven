@@ -152,10 +152,6 @@ public class AnalogSwitchElm extends AbstractCircuitElement {
 		return point3;
 	}
 
-	public Point getPost(int n) {
-		return (n == 0) ? getPoint1() : (n == 1) ? getPoint2() : point3;
-	}
-
 	public int getPostCount() {
 		return 3;
 	}
@@ -214,6 +210,7 @@ public class AnalogSwitchElm extends AbstractCircuitElement {
 		int openhs = 16;
 		point3 = interpPoint(getPoint1(), getPoint2(), .5, -openhs);
 		lead3 = interpPoint(getPoint1(), getPoint2(), .5, -openhs / 2);
+		getPins()[2].setPost(point3);
 	}
 
 	public void setPs(Point ps) {

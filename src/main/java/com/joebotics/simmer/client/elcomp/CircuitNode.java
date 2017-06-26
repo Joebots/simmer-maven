@@ -40,4 +40,8 @@ public class CircuitNode {
         result.put("y", new JSONNumber(y));
         return result;
     }
+    
+    public String toString() {
+    	return toJSONObject().toString();
+    }
 }

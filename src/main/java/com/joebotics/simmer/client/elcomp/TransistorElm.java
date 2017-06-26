@@ -38,12 +38,13 @@ public class TransistorElm extends AbstractCircuitElement {
 	private double fgain;
 	private final int FLAG_FLIP = 1;
 	private double gmin;
-	private double ic, ie, ib, curcount_c, curcount_e, curcount_b;
+	private double ic, ie, ib;
 	private double lastvbc, lastvbe;
 	private int pnp;
 	private Point rect[], coll[], emit[], base;
 	private Polygon rectPoly, arrowPoly;
 	private double vcrit;
+	private Pin collPin, emitPin, basePin;
 
 	public TransistorElm(int xx, int yy, boolean pnpflag) {
 		super(xx, yy);
@@ -162,13 +163,15 @@ public class TransistorElm extends AbstractCircuitElement {
 		if (sim.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState())
 			g.setColor(Color.gray);
 		GraphicsUtil.drawThickLine(g, getPoint1(), base);
+		
 		// draw dots
-		curcount_b = updateDotCount(-ib, curcount_b);
-		drawDots(g, base, getPoint1(), curcount_b);
-		curcount_c = updateDotCount(-ic, curcount_c);
-		drawDots(g, coll[1], coll[0], curcount_c);
-		curcount_e = updateDotCount(-ie, curcount_e);
-		drawDots(g, emit[1], emit[0], curcount_e);
+		basePin.setCurrent(updateDotCount(-ib, basePin.getCurrent()));
+		drawDots(g, base, getPoint1(), basePin.getCurrent());
+		collPin.setCurrent(updateDotCount(-ic, collPin.getCurrent()));
+		drawDots(g, coll[1], coll[0], collPin.getCurrent());
+		emitPin.setCurrent(updateDotCount(-ie, emitPin.getCurrent()));
+		drawDots(g, emit[1], emit[0], emitPin.getCurrent());
+		
 		// draw base rectangle
 		setVoltageColor(g, getVolts()[0]);
 		setPowerColor(g, true);
@@ -179,12 +182,12 @@ public class TransistorElm extends AbstractCircuitElement {
 			// IES
 			// g.setFont(unitsFont);
 			int ds = sign(getDx());
-			g.drawString("B", base.getX() - 10 * ds, base.getY() - 5);
-			g.drawString("C", coll[0].getX() - 3 + 9 * ds, coll[0].getY() + 4); // x+6 if
+			g.drawString(basePin.getText(), base.getX() - 10 * ds, base.getY() - 5);
+			g.drawString(collPin.getText(), coll[0].getX() - 3 + 9 * ds, coll[0].getY() + 4); // x+6 if
 																		// ds=1,
 																		// -12
 																		// if -1
-			g.drawString("E", emit[0].getX() - 3 + 9 * ds, emit[0].getY() + 4);
+			g.drawString(emitPin.getText(), emit[0].getX() - 3 + 9 * ds, emit[0].getY() + 4);
 		}
 		drawPosts(g);
 	}
@@ -223,9 +226,7 @@ public class TransistorElm extends AbstractCircuitElement {
 		arr[5] = "Vbc = " + getVoltageText(vbc);
 		arr[6] = "Vce = " + getVoltageText(vce);
 	}
-	public Point getPost(int n) {
-		return (n == 0) ? getPoint1() : (n == 1) ? coll[0] : emit[0];
-	}
+	
 	public int getPostCount() {
 		return 3;
 	}
@@ -289,7 +290,10 @@ public class TransistorElm extends AbstractCircuitElement {
 
 	public void reset() {
 		getVolts()[0] = getVolts()[1] = getVolts()[2] = 0;
-		lastvbc = lastvbe = curcount_c = curcount_e = curcount_b = 0;
+		lastvbc = lastvbe = 0;
+		collPin.setCurrent(0);
+		emitPin.setCurrent(0);
+		basePin.setCurrent(0);
 	}
 
 	public void setEditValue(int n, EditInfo ei) {
@@ -304,6 +308,17 @@ public class TransistorElm extends AbstractCircuitElement {
 				setFlags(getFlags() & ~FLAG_FLIP);
 			setPoints();
 		}
+	}
+	
+	public void setupPins() {
+		// Base
+		basePin = new Pin(2, Side.EAST, "B");
+		// Collector
+		collPin = new Pin(0, Side.EAST, "C");
+		// Emitter
+		emitPin = new Pin(1, Side.EAST, "E");
+		setPins(new Pin[]{basePin, collPin, emitPin});
+		allocNodes();
 	}
 
 	public void setPoints() {
@@ -337,6 +352,10 @@ public class TransistorElm extends AbstractCircuitElement {
 					* pnp);
 			arrowPoly = calcArrow(emit[0], pt, 8, 4);
 		}
+		
+		basePin.setPost(point1);
+		collPin.setPost(coll[0]);
+		emitPin.setPost(emit[0]);
 	}
 
 	void setup() {

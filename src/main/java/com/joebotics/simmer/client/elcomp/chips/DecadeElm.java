@@ -20,6 +20,8 @@
 package com.joebotics.simmer.client.elcomp.chips;
 
 import com.joebotics.simmer.client.elcomp.ChipElm;
+import com.joebotics.simmer.client.elcomp.Pin;
+import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 //import java.awt.*;
@@ -77,14 +79,14 @@ public class DecadeElm extends ChipElm {
 		setSizeX(getBits() > 2 ? getBits() : 2);
 		setSizeY(2);
 		setPins(new Pin[getPostCount()]);
-		getPins()[0] = new Pin(1, SIDE_W, "");
+		getPins()[0] = new Pin(1, Side.WEST, "");
 		getPins()[0].setClock(true);
-		getPins()[1] = new Pin(getSizeX() - 1, SIDE_S, "R");
+		getPins()[1] = new Pin(getSizeX() - 1, Side.SOUTH, "R");
 		getPins()[1].setBubble(true);
 		int i;
 		for (i = 0; i != getBits(); i++) {
 			int ii = i + 2;
-			getPins()[ii] = new Pin(i, SIDE_N, "Q" + i);
+			getPins()[ii] = new Pin(i, Side.NORTH, "Q" + i);
 			getPins()[ii].setOutput(getPins()[ii].setState(true));
 		}
 		allocNodes();

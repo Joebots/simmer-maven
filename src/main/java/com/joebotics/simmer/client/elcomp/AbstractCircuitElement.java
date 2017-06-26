@@ -43,6 +43,10 @@ import com.joebotics.simmer.client.util.MouseModeEnum.MouseMode;
 import java.io.Serializable;
 
 public abstract class AbstractCircuitElement implements Editable, Serializable {
+	
+	public static final int FLAG_FLIP_X = 1024;
+	public static final int FLAG_FLIP_Y = 2048;
+	public static final int FLAG_SMALL = 1;
 
 	private double uuid = Math.random();
 
@@ -104,6 +108,8 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 	protected int y1;
 
 	protected int y2;
+	
+	private Pin[] pins;
 
 	protected static int abs(int x) {
 		return x < 0 ? -x : x;
@@ -255,6 +261,7 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 		flags = getDefaultFlags();
 		allocNodes();
 		initBoundingBox();
+		setupPins();
 	}
 
 	protected AbstractCircuitElement(int xa, int ya, int xb, int yb, int f) {
@@ -265,6 +272,7 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 		flags = f;
 		allocNodes();
 		initBoundingBox();
+		setupPins();
 	}
 
 	protected void adjustBbox(int x1, int y1, int x2, int y2) {
@@ -349,6 +357,12 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 	
 	// TODO: badger: abstraction
 	public void stamp() {
+		int i;
+		for (i = 0; i != getPostCount(); i++) {
+			Pin p = pins[i];
+			if (p.isOutput())
+				sim.stampVoltageSource(0, getNodes()[i], p.getVoltageSource());
+		}
 	}
 
 	// TODO: badger: abstraction
@@ -387,7 +401,7 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 	
 	// TODO: badger: abstraction
 	public boolean hasGroundConnection(int n1) {
-		return false;
+		return pins[n1].isOutput();
 	}
 
 	// TODO: badger: abstraction
@@ -584,8 +598,18 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 	// TODO: Badger: utils
 	public void drawPosts(Graphics g) {
 		for (int i = 0; i != getPostCount(); i++) {
-			Point p = getPost(i);
+			Pin pin = pins[i];
+			Point p = pin.getPost();
 			drawPost(g, p.getX(), p.getY(), nodes[i]);
+			drawPinText(g, pin);
+		}
+	}
+	
+	public void drawPinText(Graphics g, Pin pin) {
+		String text = pin.getText();
+		Point textloc = pin.getTextloc();
+		if (text != null && textloc != null) {
+			drawCenteredText(g, text, textloc.getX(), textloc.getY(), true);
 		}
 	}
 
@@ -712,7 +736,7 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 	}
 
 	public Point getPost(int n) {
-		return (n == 0) ? point1 : (n == 1) ? point2 : null;
+		return pins[n].getPost();
 	}
 
 //	private void doAdjust() {
@@ -981,6 +1005,10 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 
 	public void setCurrent(int x, double c) {
 		current = c;
+		int i;
+		for (i = 0; i != getPostCount(); i++)
+			if (pins[i].isOutput() && pins[i].getVoltageSource() == x)
+				pins[i].setCurrent(c);
 	}
 
 	protected void setDn(double dn) {
@@ -1008,10 +1036,12 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 
 	protected void setLead1(Point lead1) {
 		this.lead1 = lead1;
+		pins[0].setStub(lead1);
 	}
 
 	protected void setLead2(Point lead2) {
 		this.lead2 = lead2;
+		pins[1].setStub(lead1);
 	}
 
 	public void setMouseElm(boolean v) {
@@ -1042,6 +1072,14 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 	protected void setPoint2(Point point2) {
 		this.point2 = point2;
 	}
+	
+	public void setupPins() {
+		setPins(new Pin[getPostCount()]);
+		for (int i = 0; i < getPostCount(); i++) {
+			pins[i] = new Pin(i, Side.UNKNOWN, null);
+		}
+		allocNodes();
+	}
 
 	public void setPoints() {
 		dx = x2 - x1;
@@ -1052,6 +1090,10 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 		dsign = (dy == 0) ? sign(dx) : sign(dy);
 		point1 = new Point(x1, y1);
 		point2 = new Point(x2, y2);
+		pins[0].setPost(point1);
+		if (pins.length > 1) {
+			pins[1].setPost(point2);
+		}
 	}
 
 	// TODO: Badger: abstraction
@@ -1093,7 +1135,20 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 
 	public void setVoltageSource(int n, int v) {
 		voltSource = v;
+		int i;
+		for (i = 0; i != getPostCount(); i++) {
+			Pin p = pins[i];
+			if (p.isOutput() && n-- == 0) {
+				p.setVoltageSource(v);
+				return;
+			}
+		}
+		System.out.println("setVoltageSource failed for " + this);
 	}
+	/*
+	public void setVoltageSource(int n, int v) {
+		voltSource = v;
+	}*/
 
 	protected void setVolts(double volts[]) {
 		this.volts = volts;
@@ -1154,6 +1209,14 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 		return (this instanceof WireElm);
 	}
 	
+	public Pin[] getPins() {
+		return pins;
+	}
+	
+	public void setPins(Pin pins[]) {
+		this.pins = pins;
+	}
+	
 	public String getName() {
 		return getClass().getName() + "@" + Integer.toHexString(hashCode());
 	}
@@ -1161,6 +1224,8 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
     public JSONObject toJSONObject() {
         JSONObject result = new JSONObject();
         result.put("name", new JSONString(getName()));
+
+        // TODO remove the pinOuts key (Compatibility with current version of Breadboard)
         JSONArray posts = new JSONArray();
         for( int i = 0; i < getPostCount(); i++ ) {
             JSONObject obj = new JSONObject();
@@ -1169,6 +1234,13 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
             posts.set(i, obj);
         }
         result.put("posts", posts);
+        
+        // New implementation (Named Pins)
+        JSONArray pins = new JSONArray();
+        for( int i = 0; i < getPostCount(); i++ ) {
+            pins.set(i, getPins()[i].toJSONObject());
+        }
+        result.put("pins", pins);
         return result;
     }
 }

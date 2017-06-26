@@ -20,6 +20,8 @@
 package com.joebotics.simmer.client.elcomp.chips;
 
 import com.joebotics.simmer.client.elcomp.ChipElm;
+import com.joebotics.simmer.client.elcomp.Pin;
+import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 //import java.awt.*;
@@ -42,7 +44,7 @@ public class DACElm extends ChipElm {
 				ival |= 1 << i;
 		int ivalmax = (1 << getBits()) - 1;
 		double v = ival * getVolts()[getBits() + 1] / ivalmax;
-		sim.updateVoltageSource(0, getNodes()[getBits()], getPins()[getBits()].getVoltSource(), v);
+		sim.updateVoltageSource(0, getNodes()[getBits()], getPins()[getBits()].getVoltageSource(), v);
 	}
 
 	public String getChipName() {
@@ -71,10 +73,10 @@ public class DACElm extends ChipElm {
 		setPins(new Pin[getPostCount()]);
 		int i;
 		for (i = 0; i != getBits(); i++)
-			getPins()[i] = new Pin(getBits() - 1 - i, SIDE_W, "D" + i);
-		getPins()[getBits()] = new Pin(0, SIDE_E, "O");
+			getPins()[i] = new Pin(getBits() - 1 - i, Side.WEST, "D" + i);
+		getPins()[getBits()] = new Pin(0, Side.EAST, "O");
 		getPins()[getBits()].setOutput(true);
-		getPins()[getBits() + 1] = new Pin(getSizeY() - 1, SIDE_E, "V+");
+		getPins()[getBits() + 1] = new Pin(getSizeY() - 1, Side.EAST, "V+");
 		allocNodes();
 	}
 }

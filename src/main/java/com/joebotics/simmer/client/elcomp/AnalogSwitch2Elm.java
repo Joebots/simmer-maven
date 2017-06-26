@@ -101,10 +101,6 @@ public class AnalogSwitch2Elm extends AnalogSwitchElm {
 		arr[1] = "I = " + getCurrentDText(getCurrent());
 	}
 
-	public Point getPost(int n) {
-		return (n == 0) ? getPoint1() : (n == 3) ? ctlPoint : swposts[n - 1];
-	}
-
 	public int getPostCount() {
 		return 4;
 	}
@@ -117,6 +113,10 @@ public class AnalogSwitch2Elm extends AnalogSwitchElm {
 		interpPoint2(getLead1(), getLead2(), swpoles[0], swpoles[1], 1, openhs);
 		interpPoint2(getPoint1(), getPoint2(), swposts[0], swposts[1], 1, openhs);
 		ctlPoint = interpPoint(getPoint1(), getPoint2(), .5, openhs);
+		
+		getPins()[1].setPost(swpoles[0]);
+		getPins()[2].setPost(swposts[0]);
+		getPins()[3].setPost(ctlPoint);
 	}
 
 	public void stamp() {

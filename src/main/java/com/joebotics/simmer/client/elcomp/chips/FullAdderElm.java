@@ -20,6 +20,8 @@
 package com.joebotics.simmer.client.elcomp.chips;
 
 import com.joebotics.simmer.client.elcomp.ChipElm;
+import com.joebotics.simmer.client.elcomp.Pin;
+import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 //import java.awt.*;
@@ -67,13 +69,13 @@ public class FullAdderElm extends ChipElm {
 		setSizeY(3);
 		setPins(new Pin[getPostCount()]);
 
-		getPins()[0] = new Pin(2, SIDE_E, "S");
+		getPins()[0] = new Pin(2, Side.EAST, "S");
 		getPins()[0].setOutput(true);
-		getPins()[1] = new Pin(0, SIDE_E, "C");
+		getPins()[1] = new Pin(0, Side.EAST, "C");
 		getPins()[1].setOutput(true);
-		getPins()[2] = new Pin(0, SIDE_W, "A");
-		getPins()[3] = new Pin(1, SIDE_W, "B");
-		getPins()[4] = new Pin(2, SIDE_W, "Cin");
+		getPins()[2] = new Pin(0, Side.WEST, "A");
+		getPins()[3] = new Pin(1, Side.WEST, "B");
+		getPins()[4] = new Pin(2, Side.WEST, "Cin");
 
 	}
 

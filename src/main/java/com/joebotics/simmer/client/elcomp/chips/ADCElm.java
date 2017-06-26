@@ -20,6 +20,8 @@
 package com.joebotics.simmer.client.elcomp.chips;
 
 import com.joebotics.simmer.client.elcomp.ChipElm;
+import com.joebotics.simmer.client.elcomp.Pin;
+import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 //import java.awt.*;
@@ -71,11 +73,11 @@ public class ADCElm extends ChipElm {
 		setPins(new Pin[getPostCount()]);
 		int i;
 		for (i = 0; i != getBits(); i++) {
-			getPins()[i] = new Pin(getBits() - 1 - i, SIDE_E, "D" + i);
+			getPins()[i] = new Pin(getBits() - 1 - i, Side.EAST, "D" + i);
 			getPins()[i].setOutput(true);
 		}
-		getPins()[getBits()] = new Pin(0, SIDE_W, "In");
-		getPins()[getBits() + 1] = new Pin(getSizeY() - 1, SIDE_W, "V+");
+		getPins()[getBits()] = new Pin(0, Side.WEST, "In");
+		getPins()[getBits() + 1] = new Pin(getSizeY() - 1, Side.WEST, "V+");
 		allocNodes();
 	}
 }

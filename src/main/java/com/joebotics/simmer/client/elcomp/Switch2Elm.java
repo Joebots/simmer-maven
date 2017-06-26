@@ -112,10 +112,6 @@ public class Switch2Elm extends SwitchElm {
 		arr[1] = "I = " + getCurrentDText(getCurrent());
 	}
 
-	public Point getPost(int n) {
-		return (n == 0) ? getPoint1() : swposts[n - 1];
-	}
-
 	public int getPostCount() {
 		return 3;
 	}
@@ -153,6 +149,10 @@ public class Switch2Elm extends SwitchElm {
 		swpoles[2] = getLead2();
 		interpPoint2(getPoint1(), getPoint2(), swposts[0], swposts[1], 1, openhs);
 		posCount = hasCenterOff() ? 3 : 2;
+		
+		for (int i = 0; i < swposts.length; i++) {
+			getPins()[i + 1].setPost(swposts[i]);
+		}
 	}
 
 	public void stamp() {

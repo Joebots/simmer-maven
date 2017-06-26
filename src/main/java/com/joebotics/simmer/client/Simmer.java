@@ -761,11 +761,8 @@ public class Simmer
 
 			private JSONObject last;
 
-			public void run(){
-
+			public void run() {
 				JSONObject jsonObject = circuitModel.toJSONObject();
-				lager.info(jsonObject.toString());
-
 				if(getMainMenuBar().getEditMenu().circuitHasChanged())
 					JSEventBusProxy.fireEvent(SimmerEvents.CIRCUIT_WORKING, jsonObject);
 			}

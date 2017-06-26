@@ -168,10 +168,6 @@ public class TransLineElm extends AbstractCircuitElement {
 		return 2;
 	}
 
-	public Point getPost(int n) {
-		return posts[n];
-	}
-
 	public int getPostCount() {
 		return 4;
 	}
@@ -179,10 +175,6 @@ public class TransLineElm extends AbstractCircuitElement {
 	// double getVoltageDiff() { return volts[0]; }
 	public int getVoltageSourceCount() {
 		return 2;
-	}
-
-	public boolean hasGroundConnection(int n1) {
-		return false;
 	}
 
 	public void reset() {
@@ -235,6 +227,9 @@ public class TransLineElm extends AbstractCircuitElement {
 		// attached to ground.
 		posts = new Point[] { p3, p4, getPoint1(), getPoint2() };
 		inner = new Point[] { p7, p8, p5, p6 };
+		for (int i = 0; i < posts.length; i++) {
+			getPins()[i].setPost(posts[i]);
+		}
 	}
 
 	public void setVoltageSource(int n, int v) {

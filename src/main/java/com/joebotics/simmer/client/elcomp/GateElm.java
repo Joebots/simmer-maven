@@ -33,7 +33,6 @@ import com.joebotics.simmer.client.util.StringTokenizer;
 //import java.util.StringTokenizer;
 
 abstract class GateElm extends AbstractCircuitElement {
-	final int FLAG_SMALL = 1;
 	Polygon gatePoly;
 	int gsize, gwidth, gwidth2, gheight, hs2;
 
@@ -54,6 +53,7 @@ abstract class GateElm extends AbstractCircuitElement {
 
 		if( sim.getMainMenuBar() != null )
 			setSize(sim.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem() != null && sim.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().getState() ? 1 : 2);
+		setupPins();
 	}
 
 	public GateElm(int xa, int ya, int xb, int yb, int f, StringTokenizer st) {
@@ -62,6 +62,7 @@ abstract class GateElm extends AbstractCircuitElement {
 		lastOutput = new Double(st.nextToken()).doubleValue() > 2.5;
 		setNoDiagonal(true);
 		setSize((f & FLAG_SMALL) != 0 ? 1 : 2);
+		setupPins();
 	}
 	abstract boolean calcFunction();
 
@@ -125,12 +126,6 @@ abstract class GateElm extends AbstractCircuitElement {
 		return getVolts()[x] > 2.5;
 	}
 
-	public Point getPost(int n) {
-		if (n == inputCount)
-			return getPoint2();
-		return inPosts[n];
-	}
-
 	public int getPostCount() {
 		return inputCount + 1;
 	}
@@ -139,16 +134,13 @@ abstract class GateElm extends AbstractCircuitElement {
 		return 1;
 	}
 
-	public boolean hasGroundConnection(int n1) {
-		return (n1 == inputCount);
-	}
-
 	boolean isInverting() {
 		return false;
 	}
 
 	public void setEditValue(int n, EditInfo ei) {
 		inputCount = (int) ei.value;
+		setupPins();
 		setPoints();
 	}
 
@@ -174,9 +166,23 @@ abstract class GateElm extends AbstractCircuitElement {
 			inPosts[i] = interpPoint(getPoint1(), getPoint2(), 0, hs * i0);
 			inGates[i] = interpPoint(getLead1(), getLead2(), 0, hs * i0);
 			getVolts()[i] = (lastOutput ^ isInverting()) ? 5 : 0;
+			getPins()[i].setPost(inPosts[i]);
+			getPins()[i].setVoltage((lastOutput ^ isInverting()) ? 5 : 0);
 		}
+		getPins()[inputCount].setPost(getPoint2());
 		hs2 = gwidth * (inputCount / 2 + 1);
 		setBbox(getPoint1(), getPoint2(), hs2);
+	}
+	
+	public void setupPins() {
+		setPins(new Pin[getPostCount()]);
+		for (int i = 0; i < inputCount; i++) {
+			getPins()[i] = new Pin(i, Side.WEST, "In" + i);
+		}
+		Pin output = new Pin(inputCount, Side.EAST, "Out");
+		output.setOutput(true);
+		getPins()[inputCount] = output;
+		allocNodes();
 	}
 
 	void setSize(int s) {
