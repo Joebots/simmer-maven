@@ -6,7 +6,9 @@ import com.joebotics.simmer.client.elcomp.CircuitNodeLink;
 import java.util.List;
 import java.util.logging.Logger;
 
-
+/**
+ * @deprecated Used Standard Simmer model classes for the both apps
+ */
 public class CircuitParser {
 
 	private static final Logger lager = Logger.getLogger(CircuitParser.class.getName());

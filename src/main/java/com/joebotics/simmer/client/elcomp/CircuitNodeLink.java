@@ -19,9 +19,10 @@
 
 package com.joebotics.simmer.client.elcomp;
 
-
-
-
+import com.google.gwt.json.client.JSONNumber;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
+import com.joebotics.simmer.client.gui.util.Point;
 
 public class CircuitNodeLink {
 	private AbstractCircuitElement elm;
@@ -38,4 +39,19 @@ public class CircuitNodeLink {
 	public void setNum(int num) {
 		this.num = num;
 	}
+	
+    public JSONObject toJSONObject(CircuitNodeLink sourceLink){
+        JSONObject result = new JSONObject();
+        result.put("post", new JSONNumber(num));
+        
+        JSONObject target = new JSONObject();
+        target.put("component", new JSONString(sourceLink.elm.getName()));
+        target.put("post", new JSONNumber(sourceLink.num));
+        Point post = sourceLink.elm.getPost(sourceLink.num);
+        target.put("x", new JSONNumber(post.getX()));
+        target.put("y", new JSONNumber(post.getY()));
+        result.put("target", target);
+        
+        return result;
+    }
 }

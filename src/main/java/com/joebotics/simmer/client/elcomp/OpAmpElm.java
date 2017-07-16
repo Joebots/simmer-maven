@@ -164,10 +164,6 @@ public class OpAmpElm extends AbstractCircuitElement {
 				+ getVoltageText(maxOut);
 	}
 
-	public Point getPost(int n) {
-		return (n == 0) ? in1p[0] : (n == 1) ? in2p[0] : getPoint2();
-	}
-
 	public int getPostCount() {
 		return 3;
 	}
@@ -231,6 +227,10 @@ public class OpAmpElm extends AbstractCircuitElement {
 		interpPoint2(getLead1(), getLead2(), tris[0], tris[1], 0, hs * 2);
 		triangle = createPolygon(tris[0], tris[1], getLead2());
 		plusFont = new Font("SansSerif", 0, opsize == 2 ? 14 : 10);
+		
+		getPins()[0].setPost(in1p[0]);
+		getPins()[1].setPost(in2p[0]);
+		getPins()[2].setPost(getPoint2());
 	}
 
 	void setSize(int s) {

@@ -22,6 +22,9 @@ package com.joebotics.simmer.client.elcomp;
 import java.util.List;
 import java.util.Vector;
 
+import com.google.gwt.json.client.JSONNumber;
+import com.google.gwt.json.client.JSONObject;
+
 public class CircuitNode {
 	public boolean internal;
 	public List<CircuitNodeLink> links;
@@ -30,4 +33,15 @@ public class CircuitNode {
 	public CircuitNode() {
 		links = new Vector<CircuitNodeLink>();
 	}
+	
+    public JSONObject toJSONObject() {
+        JSONObject result = new JSONObject();
+        result.put("x", new JSONNumber(x));
+        result.put("y", new JSONNumber(y));
+        return result;
+    }
+    
+    public String toString() {
+    	return toJSONObject().toString();
+    }
 }

@@ -53,6 +53,9 @@ public class MosfetElm extends AbstractCircuitElement {
 
 	Point src[], drn[], gate[], pcircle;
 
+	private Pin srcPin, drnPin, gatePin;
+
+
 	double vt;
 
 	MosfetElm(int xx, int yy, boolean pnpflag) {
@@ -197,10 +200,10 @@ public class MosfetElm extends AbstractCircuitElement {
 			g.setColor(Color.white);
 			g.setFont(unitsFont);
 			int ds = sign(getDx());
-			g.drawString("G", gate[1].getX() - 10 * ds, gate[1].getY() - 5);
-			g.drawString(pnp == -1 ? "D" : "S", src[0].getX() - 3 + 9 * ds,
+			g.drawString(gatePin.getText(), gate[1].getX() - 10 * ds, gate[1].getY() - 5);
+			g.drawString(pnp == -1 ? drnPin.getText() : srcPin.getText(), src[0].getX() - 3 + 9 * ds,
 					src[0].getY() + 4); // x+6 if ds=1, -12 if -1
-			g.drawString(pnp == -1 ? "S" : "D", drn[0].getX() - 3 + 9 * ds,
+			g.drawString(pnp == -1 ? srcPin.getText() : drnPin.getText(), drn[0].getX() - 3 + 9 * ds,
 					drn[0].getY() + 4);
 		}
 		setCurcount(updateDotCount(-ids, getCurcount()));
@@ -260,10 +263,6 @@ public class MosfetElm extends AbstractCircuitElement {
 		getFetInfo(arr, "MOSFET");
 	}
 
-	public Point getPost(int n) {
-		return (n == 0) ? getPoint1() : (n == 1) ? src[0] : drn[0];
-	}
-
 	public int getPostCount() {
 		return 3;
 	}
@@ -292,6 +291,17 @@ public class MosfetElm extends AbstractCircuitElement {
 					: (getFlags() & ~FLAG_DIGITAL));
 			setPoints();
 		}
+	}
+	
+	public void setupPins() {
+		// Gate
+		gatePin = new Pin(0, Side.EAST, "G");
+		// Source
+		srcPin = new Pin(1, Side.EAST, "S");
+		// Drain
+		drnPin = new Pin(2, Side.EAST, "D");
+		setPins(new Pin[]{gatePin, srcPin, drnPin});
+		allocNodes();
 	}
 
 	public void setPoints() {
@@ -322,6 +332,10 @@ public class MosfetElm extends AbstractCircuitElement {
 			pcircle = interpPoint(getPoint1(), getPoint2(), 1 - dist / getDn());
 			pcircler = 3;
 		}
+		
+		gatePin.setPost(point1);
+		srcPin.setPost(src[0]);
+		drnPin.setPost(drn[0]);
 	}
 
 	public void stamp() {

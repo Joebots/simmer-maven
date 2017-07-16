@@ -20,6 +20,8 @@
 package com.joebotics.simmer.client.elcomp.chips;
 
 import com.joebotics.simmer.client.elcomp.ChipElm;
+import com.joebotics.simmer.client.elcomp.Pin;
+import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 //import java.awt.*;
@@ -111,25 +113,25 @@ public class SipoShiftElm extends ChipElm {
 		setSizeY(3);
 		setPins(new Pin[getPostCount()]);
 
-		getPins()[0] = new Pin(1, SIDE_W, "D");
-		getPins()[1] = new Pin(2, SIDE_W, "");
+		getPins()[0] = new Pin(1, Side.WEST, "D");
+		getPins()[1] = new Pin(2, Side.WEST, "");
 		getPins()[1].setClock(true);
 
-		getPins()[2] = new Pin(1, SIDE_N, "I7");
+		getPins()[2] = new Pin(1, Side.NORTH, "I7");
 		getPins()[2].setOutput(true);
-		getPins()[3] = new Pin(2, SIDE_N, "I6");
+		getPins()[3] = new Pin(2, Side.NORTH, "I6");
 		getPins()[3].setOutput(true);
-		getPins()[4] = new Pin(3, SIDE_N, "I5");
+		getPins()[4] = new Pin(3, Side.NORTH, "I5");
 		getPins()[4].setOutput(true);
-		getPins()[5] = new Pin(4, SIDE_N, "I4");
+		getPins()[5] = new Pin(4, Side.NORTH, "I4");
 		getPins()[5].setOutput(true);
-		getPins()[6] = new Pin(5, SIDE_N, "I3");
+		getPins()[6] = new Pin(5, Side.NORTH, "I3");
 		getPins()[6].setOutput(true);
-		getPins()[7] = new Pin(6, SIDE_N, "I2");
+		getPins()[7] = new Pin(6, Side.NORTH, "I2");
 		getPins()[7].setOutput(true);
-		getPins()[8] = new Pin(7, SIDE_N, "I1");
+		getPins()[8] = new Pin(7, Side.NORTH, "I1");
 		getPins()[8].setOutput(true);
-		getPins()[9] = new Pin(8, SIDE_N, "I0");
+		getPins()[9] = new Pin(8, Side.NORTH, "I0");
 		getPins()[9].setOutput(true);
 
 	}

@@ -72,6 +72,7 @@ public class RelayElm extends AbstractCircuitElement {
 		coilCurrent = coilCurCount = 0;
 		poleCount = 1;
 		setupPoles();
+		setupPins();
 	}
 
 	public RelayElm(int xa, int ya, int xb, int yb, int f, StringTokenizer st) {
@@ -87,6 +88,7 @@ public class RelayElm extends AbstractCircuitElement {
 		ind = new Inductor(sim);
 		ind.setup(inductance, coilCurrent, Inductor.FLAG_BACK_EULER);
 		setupPoles();
+		setupPins();
 	}
 
 	public void calculateCurrent() {
@@ -230,12 +232,6 @@ public class RelayElm extends AbstractCircuitElement {
 		return 1;
 	}
 
-	public Point getPost(int n) {
-		if (n < 3 * poleCount)
-			return swposts[n / 3][n % 3];
-		return coilPosts[n - 3 * poleCount];
-	}
-
 	public int getPostCount() {
 		return 2 + poleCount * 3;
 	}
@@ -310,6 +306,9 @@ public class RelayElm extends AbstractCircuitElement {
 					- openhs);
 			interpPoint(getPoint1(), getPoint2(), swposts[i][2], 1, -openhs * 3 * i
 					+ openhs);
+			for (int k = 0; k < 3; k++) {
+				getPins()[i * 3 + k].setPost(swposts[i][k]);
+			}
 		}
 
 		// coil
@@ -322,9 +321,25 @@ public class RelayElm extends AbstractCircuitElement {
 		interpPoint(getPoint1(), getPoint2(), coilPosts[1], x, openhs * 3);
 		interpPoint(getPoint1(), getPoint2(), coilLeads[0], .5, openhs * 2);
 		interpPoint(getPoint1(), getPoint2(), coilLeads[1], .5, openhs * 3);
+		
+		for (int k = poleCount * 3; k < getPostCount(); k++) {
+			getPins()[k].setPost(coilPosts[k - poleCount * 3]);	
+		}
 
 		// lines
 		lines = newPointArray(poleCount * 2);
+	}
+	
+	public void setupPins() {
+		setPins(new Pin[getPostCount()]);
+		for (int i = 0; i < poleCount; i++) {
+			for (int j = 0; j < 3; j++) {
+				getPins()[i * 3 + j] = new Pin(i * 3 + j, Side.UNKNOWN, "Pole " + (i + 1) + "." + (j + 1));				
+			}
+		}
+		for (int i = poleCount * 3; i < getPostCount(); i++) {
+			getPins()[i] = new Pin(i, Side.UNKNOWN, "Coil " + ((i - poleCount * 3) + 1));				
+		}
 	}
 
 	void setupPoles() {

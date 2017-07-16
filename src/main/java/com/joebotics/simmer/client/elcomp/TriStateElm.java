@@ -139,13 +139,6 @@ public class TriStateElm extends AbstractCircuitElement {
 		arr[4] = "Vc = " + getVoltageText(getVolts()[2]);
 	}
 
-	public Point getPost(int n) {
-		if (point4 == null)
-			System.out.print("Hello\n");
-		return (n == 0) ? getPoint1() : (n == 1) ? getPoint2() : (n == 2) ? point3
-				: point4;
-	}
-
 	public int getPostCount() {
 		return 4;
 	}
@@ -191,6 +184,11 @@ public class TriStateElm extends AbstractCircuitElement {
 		point3 = interpPoint(getPoint1(), getPoint2(), .5, -hs);
 		point4 = interpPoint(getPoint1(), getPoint2(), .5, 0);
 		lead3 = interpPoint(getPoint1(), getPoint2(), .5, -hs / 2);
+		
+		getPins()[0].setPost(getPoint1());
+		getPins()[1].setPost(getPoint2());
+		getPins()[2].setPost(point3);
+		getPins()[3].setPost(point4);
 	}
 
 	public void stamp() {

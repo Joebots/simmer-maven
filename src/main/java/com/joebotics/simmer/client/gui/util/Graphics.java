@@ -20,9 +20,12 @@
 package com.joebotics.simmer.client.gui.util;
 
 
+import java.util.logging.Logger;
+
 import com.google.gwt.canvas.dom.client.Context2d;
 
 public class Graphics {
+	protected static final Logger lager = Logger.getLogger(Graphics.class.getName());
 
 	private Context2d context;
 	private Font currentFont = null;
@@ -31,6 +34,20 @@ public class Graphics {
 
 	public Graphics(Context2d context) {
 		this.context = context;
+	}
+	
+	public void drawArc(int x1, int y1, int x2, int y2, int x3, int y3, int radius) {
+		context.beginPath();
+		context.moveTo(x1, y1);
+		context.arcTo(x2, y2, x3, y3, radius);
+		context.stroke();
+	}
+	
+	public void drawCircle(int x, int y, int radius) {
+		context.beginPath();
+		context.arc(x, y, radius, 0, 2.0 * Math.PI);
+		context.stroke();
+		context.closePath();
 	}
 
 	public void drawLine(int x1, int y1, int x2, int y2) {

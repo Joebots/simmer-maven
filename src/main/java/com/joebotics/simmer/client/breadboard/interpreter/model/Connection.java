@@ -1,11 +1,11 @@
 package com.joebotics.simmer.client.breadboard.interpreter.model;
 
-import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
-import com.joebotics.simmer.client.breadboard.interpreter.BreadboardCircuitParserListener;
 
+/**
+ * @deprecated Use {@code CircuitNodeLink} instead of the class *
+ */
 public class Connection {
 	public PinOut side1;
 	public PinOut side2;

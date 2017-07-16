@@ -107,7 +107,6 @@ public class Simmer
 	private long							lastTime			= 0, lastFrameTime, lastIterTime, secTime = 0;
 	private LoadFile 						loadFileInput;
 
-	private List<CircuitNode>				nodeList;
 
 	private static AboutBox aboutBox;
 	private static EditDialog editDialog;
@@ -128,7 +127,6 @@ public class Simmer
 	private AbstractCircuitElement			voltageSources[];
 	private AbstractCircuitElement			dragElm;
 	private AbstractCircuitElement			mouseElm;
-	private List<AbstractCircuitElement>	elmList;
 
 	private Rectangle						selectedArea;
 	private String							shortcuts[];
@@ -144,6 +142,8 @@ public class Simmer
 
 	private ElementPopupMenu				elmMenuBar;
 	private Scope							scopes[];
+	
+	private CircuitModel 					circuitModel;
 
 	private static Simmer instance;
 
@@ -251,7 +251,7 @@ public class Simmer
 		sidePanel.createSideBar();
 		setGrid();
 
-		elmList = new Vector<AbstractCircuitElement>();
+		circuitModel = new CircuitModel();
 
 		scopes = new Scope[20];
 		scopeColCount = new int[20];
@@ -300,20 +300,20 @@ public class Simmer
 	private void analyzeCircuit() {
 		calcCircuitBottom();
 
-		if (elmList.isEmpty())
+		if (getElmList().isEmpty())
 			return;
 
 		stopMessage = null;
 		stopElm = null;
 		int i, j;
 		int vscount = 0;
-		setNodeList(new Vector<CircuitNode>());
+		circuitModel.resetNodeList();
 		boolean gotGround = false;
 		boolean gotRail = false;
 		AbstractCircuitElement volt = null;
 
 		// look for voltage or ground element
-		for (i = 0; i != elmList.size(); i++) {
+		for (i = 0; i != getElmList().size(); i++) {
 			AbstractCircuitElement ce = getElm(i);
 			if (ce instanceof GroundElm) {
 				gotGround = true;
@@ -343,7 +343,7 @@ public class Simmer
 		}
 
 		// allocate nodes and voltage sources
-		for (i = 0; i != elmList.size(); i++) {
+		for (i = 0; i != getElmList().size(); i++) {
 			AbstractCircuitElement ce = getElm(i);
 			int inodes = ce.getInternalNodeCount();
 			int ivs = ce.getVoltageSourceCount();
@@ -398,7 +398,7 @@ public class Simmer
 		circuitNonLinear = false;
 
 		// determine if circuit is nonlinear
-		for (i = 0; i != elmList.size(); i++) {
+		for (i = 0; i != getElmList().size(); i++) {
 			AbstractCircuitElement ce = getElm(i);
 			if (ce.nonLinear())
 				circuitNonLinear = true;
@@ -426,7 +426,7 @@ public class Simmer
 		circuitNeedsMap = false;
 
 		// stamp linear circuit elements
-		for (i = 0; i != elmList.size(); i++) {
+		for (i = 0; i != getElmList().size(); i++) {
 			AbstractCircuitElement ce = getElm(i);
 			ce.stamp();
 		}
@@ -438,7 +438,7 @@ public class Simmer
 		while (changed) {
 			changed = false;
 
-			for (i = 0; i != elmList.size(); i++) {
+			for (i = 0; i != getElmList().size(); i++) {
 				AbstractCircuitElement ce = getElm(i);
 
 				// loop through all ce's nodes to see if they are connected
@@ -479,7 +479,7 @@ public class Simmer
 				}
 		}
 	
-		for (i = 0; i != elmList.size(); i++) {
+		for (i = 0; i != getElmList().size(); i++) {
 			AbstractCircuitElement ce = getElm(i);
 			// look for inductors with no current path
 			if (ce instanceof InductorElm) {
@@ -753,18 +753,16 @@ public class Simmer
 		// sent through the bus to the js code.
 		class TimerHandler extends Timer{
 
-			private CircuitParserListener listener;
+			//private CircuitParserListener listener;
 
 			public TimerHandler(CircuitParserListener listener){
-				this.listener = listener;
+				//this.listener = listener;
 			}
 
 			private JSONObject last;
 
-			public void run(){
-
-				JSONObject jsonObject = listener.toJSONObject();
-
+			public void run() {
+				JSONObject jsonObject = circuitModel.toJSONObject();
 				if(getMainMenuBar().getEditMenu().circuitHasChanged())
 					JSEventBusProxy.fireEvent(SimmerEvents.CIRCUIT_WORKING, jsonObject);
 			}
@@ -776,7 +774,7 @@ public class Simmer
 
 
 	protected boolean anySelectedButMouse() {
-		for (int i = 0; i != elmList.size(); i++)
+		for (int i = 0; i != getElmList().size(); i++)
 			if (getElm(i) != mouseElm && getElm(i).isSelected())
 				return true;
 		return false;
@@ -785,7 +783,7 @@ public class Simmer
 	private void calcCircuitBottom() {
 		int i;
 		circuitBottom = 0;
-		for (i = 0; i != elmList.size(); i++) {
+		for (i = 0; i != getElmList().size(); i++) {
 			Rectangle rect = getElm(i).getBoundingBox();
 			int bottom = rect.height + rect.y;
 			if (bottom > circuitBottom)
@@ -796,7 +794,7 @@ public class Simmer
 	protected void centreCircuit() {
 		int i;
 		int minx = 1000, maxx = 0, miny = 1000, maxy = 0;
-		for (i = 0; i != elmList.size(); i++) {
+		for (i = 0; i != getElmList().size(); i++) {
 			AbstractCircuitElement ce = getElm(i);
 			// centered text causes problems when trying to center the circuit,
 			// so we special-case it here
@@ -817,7 +815,7 @@ public class Simmer
 		if (dy + miny < 0)
 			dy = gridMask & (-miny);
 
-		for (i = 0; i != elmList.size(); i++) {
+		for (i = 0; i != getElmList().size(); i++) {
 			AbstractCircuitElement ce = getElm(i);
 			ce.move(dx, dy);
 		}
@@ -960,8 +958,8 @@ public class Simmer
 	}
 
 	public int locateElm(AbstractCircuitElement elm) {
-		for (int i = 0; i != elmList.size(); i++)
-			if (elm == elmList.get(i))
+		for (int i = 0; i != getElmList().size(); i++)
+			if (elm == getElmList().get(i))
 				return i;
 		return -1;
 	}
@@ -972,7 +970,7 @@ public class Simmer
 
 	public void resetAction() {
 		int i;
-		for (i = 0; i != elmList.size(); i++)
+		for (i = 0; i != getElmList().size(); i++)
 			getElm(i).reset();
 
 		for (i = 0; i != scopeCount; i++)
@@ -985,7 +983,7 @@ public class Simmer
 	}
 
 	private void runCircuit() {
-		if (circuitMatrix == null || elmList.size() == 0) {
+		if (circuitMatrix == null || getElmList().size() == 0) {
 			circuitMatrix = null;
 			return;
 		}
@@ -1000,7 +998,7 @@ public class Simmer
 			return;
 		for (iter = 1;; iter++) {
 			int i, j, k, subiter;
-			for (i = 0; i != elmList.size(); i++) {
+			for (i = 0; i != getElmList().size(); i++) {
 				AbstractCircuitElement ce = getElm(i);
 				ce.startIteration();
 			}
@@ -1016,7 +1014,7 @@ public class Simmer
 						for (j = 0; j != circuitMatrixSize; j++)
 							circuitMatrix[i][j] = origMatrix[i][j];
 				}
-				for (i = 0; i != elmList.size(); i++) {
+				for (i = 0; i != getElmList().size(); i++) {
 					AbstractCircuitElement ce = getElm(i);
 					ce.doStep();
 				}
@@ -1486,7 +1484,7 @@ public class Simmer
 		Font oldfont = AbstractCircuitElement.unitsFont;
 		g.setFont(oldfont);
 
-		for (i = 0; i != elmList.size(); i++) {
+		for (i = 0; i != getElmList().size(); i++) {
 			if (getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState())
 				g.setColor(Color.gray);
 			/*
@@ -1497,7 +1495,7 @@ public class Simmer
 		}
 		// mydrawtime += System.currentTimeMillis() - mydrawstarttime;
 		if (tempMouseMode == MouseMode.DRAG_ROW || tempMouseMode == MouseMode.DRAG_COLUMN || tempMouseMode == MouseMode.DRAG_POST || tempMouseMode == MouseMode.DRAG_SELECTED)
-			for (i = 0; i != elmList.size(); i++) {
+			for (i = 0; i != getElmList().size(); i++) {
 
 				AbstractCircuitElement ce = getElm(i);
 				// ce.drawPost(g, ce.x , ce.y );
@@ -1525,7 +1523,7 @@ public class Simmer
 					int bb = 0, j;
 					CircuitNodeLink cnl = cn.links.get(0);
 
-					for (j = 0; j != elmList.size(); j++) { // TODO: (hausen)
+					for (j = 0; j != getElmList().size(); j++) { // TODO: (hausen)
 															// see if this
 															// change does not
 															// break stuff
@@ -1654,7 +1652,7 @@ public class Simmer
 	}
 
 	public List<CircuitNode> getNodeList() {
-		return nodeList;
+		return circuitModel.getNodeList();
 	}
 
 	public double getT() {
@@ -1731,10 +1729,6 @@ public class Simmer
 
 	public Rectangle getCircuitArea(){
 		return circuitArea;
-	}
-
-	private void setNodeList(Vector<CircuitNode> nodeList) {
-		this.nodeList = nodeList;
 	}
 
 	public void setT(double t) {
@@ -1886,14 +1880,14 @@ public class Simmer
 	}
 
 	public AbstractCircuitElement getElm(int n) {
-		if (n >= elmList.size())
+		if (n >= getElmList().size())
 			return null;
 
-		return elmList.get(n);
+		return getElmList().get(n);
 	}
 
 	public List<AbstractCircuitElement> getElmList() {
-		return elmList;
+		return circuitModel.getElmList();
 	}
 
 	public int getGridSize() {

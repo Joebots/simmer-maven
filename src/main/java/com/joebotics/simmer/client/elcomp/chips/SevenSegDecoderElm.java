@@ -20,6 +20,8 @@
 package com.joebotics.simmer.client.elcomp.chips;
 
 import com.joebotics.simmer.client.elcomp.ChipElm;
+import com.joebotics.simmer.client.elcomp.Pin;
+import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 //import java.awt.*;
@@ -96,24 +98,24 @@ public class SevenSegDecoderElm extends ChipElm {
 		setSizeY(7);
 		setPins(new Pin[getPostCount()]);
 
-		getPins()[7] = new Pin(0, SIDE_W, "I3");
-		getPins()[8] = new Pin(1, SIDE_W, "I2");
-		getPins()[9] = new Pin(2, SIDE_W, "I1");
-		getPins()[10] = new Pin(3, SIDE_W, "I0");
+		getPins()[7] = new Pin(0, Side.WEST, "I3");
+		getPins()[8] = new Pin(1, Side.WEST, "I2");
+		getPins()[9] = new Pin(2, Side.WEST, "I1");
+		getPins()[10] = new Pin(3, Side.WEST, "I0");
 
-		getPins()[0] = new Pin(0, SIDE_E, "a");
+		getPins()[0] = new Pin(0, Side.EAST, "a");
 		getPins()[0].setOutput(true);
-		getPins()[1] = new Pin(1, SIDE_E, "b");
+		getPins()[1] = new Pin(1, Side.EAST, "b");
 		getPins()[1].setOutput(true);
-		getPins()[2] = new Pin(2, SIDE_E, "c");
+		getPins()[2] = new Pin(2, Side.EAST, "c");
 		getPins()[2].setOutput(true);
-		getPins()[3] = new Pin(3, SIDE_E, "d");
+		getPins()[3] = new Pin(3, Side.EAST, "d");
 		getPins()[3].setOutput(true);
-		getPins()[4] = new Pin(4, SIDE_E, "e");
+		getPins()[4] = new Pin(4, Side.EAST, "e");
 		getPins()[4].setOutput(true);
-		getPins()[5] = new Pin(5, SIDE_E, "f");
+		getPins()[5] = new Pin(5, Side.EAST, "f");
 		getPins()[5].setOutput(true);
-		getPins()[6] = new Pin(6, SIDE_E, "g");
+		getPins()[6] = new Pin(6, Side.EAST, "g");
 		getPins()[6].setOutput(true);
 	}
 

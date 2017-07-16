@@ -20,6 +20,8 @@
 package com.joebotics.simmer.client.elcomp.chips;
 
 import com.joebotics.simmer.client.elcomp.ChipElm;
+import com.joebotics.simmer.client.elcomp.Pin;
+import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
@@ -80,19 +82,19 @@ public class CC2Elm extends ChipElm {
 		setSizeX(2);
 		setSizeY(3);
 		setPins(new Pin[3]);
-		getPins()[0] = new Pin(0, SIDE_W, "X");
+		getPins()[0] = new Pin(0, Side.WEST, "X");
 		getPins()[0].setOutput(true);
-		getPins()[1] = new Pin(2, SIDE_W, "Y");
-		getPins()[2] = new Pin(1, SIDE_E, "Z");
+		getPins()[1] = new Pin(2, Side.WEST, "Y");
+		getPins()[2] = new Pin(1, Side.EAST, "Z");
 	}
 
 	// public boolean nonLinear() { return true; }
 	public void stamp() {
 		// X voltage = Y voltage
-		sim.stampVoltageSource(0, getNodes()[0], getPins()[0].getVoltSource());
-		sim.stampVCVS(0, getNodes()[1], 1, getPins()[0].getVoltSource());
+		sim.stampVoltageSource(0, getNodes()[0], getPins()[0].getVoltageSource());
+		sim.stampVCVS(0, getNodes()[1], 1, getPins()[0].getVoltageSource());
 		// Z current = gain * X current
-		sim.stampCCCS(0, getNodes()[2], getPins()[0].getVoltSource(), gain);
+		sim.stampCCCS(0, getNodes()[2], getPins()[0].getVoltageSource(), gain);
 	}
 }
 

@@ -164,10 +164,6 @@ public class TransformerElm extends AbstractCircuitElement {
 		arr[6] = "I2 = " + getCurrentText(current[1]);
 	}
 
-	public Point getPost(int n) {
-		return ptEnds[n];
-	}
-
 	public int getPostCount() {
 		return 4;
 	}
@@ -213,6 +209,8 @@ public class TransformerElm extends AbstractCircuitElement {
 			interpPoint(ptEnds[i], ptEnds[i + 1], ptCoil[i + 1], 1 - ce);
 			interpPoint(ptEnds[i], ptEnds[i + 1], ptCore[i], cd);
 			interpPoint(ptEnds[i], ptEnds[i + 1], ptCore[i + 1], 1 - cd);
+			getPins()[i].setPost(ptEnds[i]);
+			getPins()[i + 1].setPost(ptEnds[i + 1]);
 		}
 	}
 

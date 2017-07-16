@@ -20,6 +20,8 @@
 package com.joebotics.simmer.client.elcomp.chips;
 
 import com.joebotics.simmer.client.elcomp.ChipElm;
+import com.joebotics.simmer.client.elcomp.Pin;
+import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
@@ -69,12 +71,12 @@ public class VCOElm extends ChipElm {
 		}
 
 		// generate output voltage
-		sim.updateVoltageSource(0, getNodes()[1], getPins()[1].getVoltSource(), vo);
+		sim.updateVoltageSource(0, getNodes()[1], getPins()[1].getVoltageSource(), vo);
 		// now we set the current through the cap to be equal to the
 		// current through R1 and R2, so we can measure the voltage
 		// across the cap
-		int cur1 = sim.getNodeList().size() + getPins()[4].getVoltSource();
-		int cur2 = sim.getNodeList().size() + getPins()[5].getVoltSource();
+		int cur1 = sim.getNodeList().size() + getPins()[4].getVoltageSource();
+		int cur2 = sim.getNodeList().size() + getPins()[5].getVoltageSource();
 		sim.stampMatrix(getNodes()[2], cur1, dir);
 		sim.stampMatrix(getNodes()[2], cur2, dir);
 		sim.stampMatrix(getNodes()[3], cur1, -dir);
@@ -109,24 +111,24 @@ public class VCOElm extends ChipElm {
 		setSizeX(2);
 		setSizeY(4);
 		setPins(new Pin[6]);
-		getPins()[0] = new Pin(0, SIDE_W, "Vi");
-		getPins()[1] = new Pin(3, SIDE_W, "Vo");
+		getPins()[0] = new Pin(0, Side.WEST, "Vi");
+		getPins()[1] = new Pin(3, Side.WEST, "Vo");
 		getPins()[1].setOutput(true);
-		getPins()[2] = new Pin(0, SIDE_E, "C");
-		getPins()[3] = new Pin(1, SIDE_E, "C");
-		getPins()[4] = new Pin(2, SIDE_E, "R1");
+		getPins()[2] = new Pin(0, Side.EAST, "C");
+		getPins()[3] = new Pin(1, Side.EAST, "C");
+		getPins()[4] = new Pin(2, Side.EAST, "R1");
 		getPins()[4].setOutput(true);
-		getPins()[5] = new Pin(3, SIDE_E, "R2");
+		getPins()[5] = new Pin(3, Side.EAST, "R2");
 		getPins()[5].setOutput(true);
 	}
 
 	public void stamp() {
 		// output pin
-		sim.stampVoltageSource(0, getNodes()[1], getPins()[1].getVoltSource());
+		sim.stampVoltageSource(0, getNodes()[1], getPins()[1].getVoltageSource());
 		// attach Vi to R1 pin so its current is proportional to Vi
-		sim.stampVoltageSource(getNodes()[0], getNodes()[4], getPins()[4].getVoltSource(), 0);
+		sim.stampVoltageSource(getNodes()[0], getNodes()[4], getPins()[4].getVoltageSource(), 0);
 		// attach 5V to R2 pin so we get a current going
-		sim.stampVoltageSource(0, getNodes()[5], getPins()[5].getVoltSource(), 5);
+		sim.stampVoltageSource(0, getNodes()[5], getPins()[5].getVoltageSource(), 5);
 		// put resistor across cap pins to give current somewhere to go
 		// in case cap is not connected
 		sim.stampResistor(getNodes()[2], getNodes()[3], cResistance);
