@@ -130,5 +130,9 @@ public class LEDElm extends DiodeElm {
 		ledLead1 = interpPoint(getPoint1(), getPoint2(), .5 - cr / getDn());
 		ledLead2 = interpPoint(getPoint1(), getPoint2(), .5 + cr / getDn());
 		ledCenter = interpPoint(getPoint1(), getPoint2(), .5);
+		getPins()[0].setText("+");
+		getPins()[0].setDescription("anode");
+		getPins()[1].setText("-");
+		getPins()[1].setDescription("cathode");
 	}
 }

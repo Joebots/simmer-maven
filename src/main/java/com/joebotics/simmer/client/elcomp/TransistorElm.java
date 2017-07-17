@@ -312,11 +312,11 @@ public class TransistorElm extends AbstractCircuitElement {
 	
 	public void setupPins() {
 		// Base
-		basePin = new Pin(2, Side.EAST, "B");
+		basePin = new Pin(2, Side.EAST, "B", "base");
 		// Collector
-		collPin = new Pin(0, Side.EAST, "C");
+		collPin = new Pin(0, Side.EAST, "C", "collector");
 		// Emitter
-		emitPin = new Pin(1, Side.EAST, "E");
+		emitPin = new Pin(1, Side.EAST, "E", "emitter");
 		setPins(new Pin[]{basePin, collPin, emitPin});
 		allocNodes();
 	}

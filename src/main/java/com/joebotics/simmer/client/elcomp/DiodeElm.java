@@ -144,6 +144,10 @@ public class DiodeElm extends AbstractCircuitElement {
 		interpPoint2(getLead1(), getLead2(), pa[0], pa[1], 0, hs);
 		interpPoint2(getLead1(), getLead2(), cathode[0], cathode[1], 1, hs);
 		poly = createPolygon(pa[0], pa[1], getLead2());
+		getPins()[0].setText("+");
+		getPins()[0].setDescription("anode");
+		getPins()[1].setText("-");
+		getPins()[1].setDescription("cathode");
 	}
 
 	void setup() {
