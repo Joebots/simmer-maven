@@ -13,6 +13,7 @@ public class Pin {
     private int number;
     private Side side;
     private String text;
+    private String description;
     private Point post;
     private Point stub;
 	private boolean output;
@@ -35,11 +36,11 @@ public class Pin {
 		this(number, side, text, null);
 	}
 	
-	public Pin(int number, Side side, String text, Point post) {
+	public Pin(int number, Side side, String text, String description) {
 		this.number = number;
 		this.side = side;
 		this.text = text;
-		this.post = post;
+		this.description = description;
 	}
 
 	public int getNumber() {
@@ -188,11 +189,22 @@ public class Pin {
 		this.curcount = curcount;
 	}
 	
-    public JSONObject toJSONObject() {
+    public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public JSONObject toJSONObject() {
         JSONObject result = new JSONObject();
         result.put("number", new JSONNumber(number));
         if (text != null) {
             result.put("text", new JSONString(text));        	
+        }
+        if (description != null) {
+            result.put("description", new JSONString(description));        	
         }
         if (post != null) {
             JSONObject object = new JSONObject();

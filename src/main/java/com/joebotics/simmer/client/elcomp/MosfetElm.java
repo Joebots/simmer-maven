@@ -295,11 +295,11 @@ public class MosfetElm extends AbstractCircuitElement {
 	
 	public void setupPins() {
 		// Gate
-		gatePin = new Pin(0, Side.EAST, "G");
+		gatePin = new Pin(0, Side.EAST, "G", "gate");
 		// Source
-		srcPin = new Pin(1, Side.EAST, "S");
+		srcPin = new Pin(1, Side.EAST, "S", "source");
 		// Drain
-		drnPin = new Pin(2, Side.EAST, "D");
+		drnPin = new Pin(2, Side.EAST, "D", "drain");
 		setPins(new Pin[]{gatePin, srcPin, drnPin});
 		allocNodes();
 	}

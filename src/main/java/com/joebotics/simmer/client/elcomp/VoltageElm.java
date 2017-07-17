@@ -20,6 +20,7 @@
 package com.joebotics.simmer.client.elcomp;
 
 import com.joebotics.simmer.client.gui.widget.Choice;
+import com.joebotics.simmer.client.elcomp.CapacitorElm.CapacitorType;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Graphics;
@@ -337,6 +338,12 @@ public class VoltageElm extends AbstractCircuitElement {
 		super.setPoints();
 		calcLeads((waveform == WF_DC || waveform == WF_VAR) ? 8
 				: circleSize * 2);
+		if (waveform == WF_DC) {
+			getPins()[0].setText("+");
+			getPins()[0].setDescription("positive");
+			getPins()[1].setText("-");
+			getPins()[1].setDescription("negative");
+		}
 	}
 
 	public void stamp() {
