@@ -20,7 +20,6 @@
 package com.joebotics.simmer.client.elcomp;
 
 import com.joebotics.simmer.client.gui.widget.Choice;
-import com.joebotics.simmer.client.elcomp.CapacitorElm.CapacitorType;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Graphics;
