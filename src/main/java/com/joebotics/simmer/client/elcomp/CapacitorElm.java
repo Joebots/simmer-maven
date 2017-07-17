@@ -183,7 +183,7 @@ public class CapacitorElm extends AbstractCircuitElement {
 		if (type == CapacitorType.POLARIZED) {
 			getPins()[0].setText("+");
 			getPins()[0].setDescription("anode");
-			getPins()[0].setText("-");
+			getPins()[1].setText("-");
 			getPins()[1].setDescription("cathode");
 		}
 	}
