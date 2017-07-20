@@ -20,6 +20,8 @@
 package com.joebotics.simmer.client.elcomp.chips;
 
 import com.joebotics.simmer.client.elcomp.ChipElm;
+import com.joebotics.simmer.client.elcomp.Pin;
+import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.util.StringTokenizer;
@@ -147,18 +149,18 @@ public class CounterElm extends ChipElm {
 		setSizeX(2);
 		setSizeY(getBits() > 2 ? getBits() : 2);
 		setPins(new Pin[getPostCount()]);
-		getPins()[0] = new Pin(0, SIDE_W, "");
+		getPins()[0] = new Pin(0, Side.WEST, "");
 		getPins()[0].setClock(true);
-		getPins()[1] = new Pin(getSizeY() - 1, SIDE_W, "R");
+		getPins()[1] = new Pin(getSizeY() - 1, Side.WEST, "R");
 		getPins()[1].setBubble(invertreset);
 		int i;
 		for (i = 0; i != getBits(); i++) {
 			int ii = i + 2;
-			getPins()[ii] = new Pin(i, SIDE_E, "Q" + (getBits() - i - 1));
+			getPins()[ii] = new Pin(i, Side.EAST, "Q" + (getBits() - i - 1));
 			getPins()[ii].setOutput(getPins()[ii].setState(true));
 		}
 		if (hasEnable())
-			getPins()[getBits() + 2] = new Pin(getSizeY() - 2, SIDE_W, "En");
+			getPins()[getBits() + 2] = new Pin(getSizeY() - 2, Side.WEST, "En");
 		allocNodes();
 	}
 }

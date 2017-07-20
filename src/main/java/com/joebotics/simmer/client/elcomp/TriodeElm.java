@@ -39,6 +39,8 @@ public class TriodeElm extends AbstractCircuitElement {
 	double mu, kg1;
 
 	Point plate[], grid[], cath[], midgrid, midcath;
+	
+	private Pin platePin, cathodePin, gridPin;
 
 	public TriodeElm(int xx, int yy) {
 		super(xx, yy);
@@ -170,10 +172,6 @@ public class TriodeElm extends AbstractCircuitElement {
 		arr[3] = "Vce = " + getVoltageText(vce);
 	}
 
-	public Point getPost(int n) {
-		return (n == 0) ? plate[0] : (n == 1) ? grid[0] : cath[0];
-	}
-
 	public int getPostCount() {
 		return 3;
 	}
@@ -218,6 +216,21 @@ public class TriodeElm extends AbstractCircuitElement {
 		interpPoint2(getPoint2(), plate[1], cath[1], cath[2], -1, cathw);
 		interpPoint(getPoint2(), plate[1], cath[3], -1.2, -cathw);
 		interpPoint(getPoint2(), plate[1], cath[0], -farw / (double) nearw, cathw);
+		
+		platePin.setPost(plate[0]);
+		gridPin.setPost(grid[0]);
+		cathodePin.setPost(cath[0]);
+	}
+	
+	public void setupPins() {
+		// Plate (anode)
+		platePin = new Pin(0, Side.UNKNOWN, "P");
+		// Grid
+		gridPin = new Pin(1, Side.UNKNOWN, "G");
+		// Cathode
+		cathodePin = new Pin(2, Side.UNKNOWN, "C");
+		setPins(new Pin[]{platePin, gridPin, cathodePin});
+		allocNodes();
 	}
 
 	void setup() {

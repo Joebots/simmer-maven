@@ -20,16 +20,13 @@
 package com.joebotics.simmer.client.elcomp;
 
 import com.joebotics.simmer.client.gui.widget.Checkbox;
+import com.joebotics.simmer.client.gui.widget.Choice;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.StringTokenizer;
-
-
-//import java.awt.*;
-//import java.util.StringTokenizer;
 
 public class CapacitorElm extends AbstractCircuitElement {
 	public static final int FLAG_BACK_EULER = 2;
@@ -38,6 +35,7 @@ public class CapacitorElm extends AbstractCircuitElement {
 	double curSourceValue;
 
 	Point plate1[], plate2[];
+	private CapacitorType type = CapacitorType.FIXED;
 
 	public CapacitorElm(int xx, int yy) {
 		super(xx, yy);
@@ -49,6 +47,9 @@ public class CapacitorElm extends AbstractCircuitElement {
 		super(xa, ya, xb, yb, f);
 		capacitance = new Double(st.nextToken()).doubleValue();
 		voltdiff = new Double(st.nextToken()).doubleValue();
+		if (st.hasMoreElements()) {
+			type = CapacitorType.values()[(Integer.valueOf(st.nextToken()))];
+		}
 	}
 
 	public void calculateCurrent() {
@@ -80,7 +81,11 @@ public class CapacitorElm extends AbstractCircuitElement {
 		setVoltageColor(g, getVolts()[1]);
 		GraphicsUtil.drawThickLine(g, getPoint2(), getLead2());
 		setPowerColor(g, false);
-		GraphicsUtil.drawThickLine(g, plate2[0], plate2[1]);
+		if (type == CapacitorType.POLARIZED) {
+			GraphicsUtil.drawThickArc(g, plate2[0], plate2[1], plate2[2], 22);
+		} else {
+			GraphicsUtil.drawThickLine(g, plate2[0], plate2[2]);
+		}
 
 		updateDotCount();
 		if (sim.getDragElm() != this) {
@@ -95,7 +100,7 @@ public class CapacitorElm extends AbstractCircuitElement {
 	}
 
 	public String dump() {
-		return super.dump() + " " + capacitance + " " + voltdiff;
+		return super.dump() + " " + capacitance + " " + voltdiff + " " + type.ordinal();
 	}
 
 	public int getDumpType() {
@@ -107,6 +112,12 @@ public class CapacitorElm extends AbstractCircuitElement {
 			return new EditInfo("Capacitance (F)", capacitance, 0, 0);
 		if (n == 1) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
+			ei.choice = new Choice();
+			for (CapacitorType value : CapacitorType.values()) {
+				ei.choice.add(value.getTitle());
+			}
+			ei.choice.select(type.ordinal());
+			
 			ei.checkbox = new Checkbox("Trapezoidal Approximation",
 					isTrapezoidal());
 			return ei;
@@ -115,7 +126,7 @@ public class CapacitorElm extends AbstractCircuitElement {
 	}
 
 	public void getInfo(String arr[]) {
-		arr[0] = "capacitor";
+		arr[0] = type.getTitle();
 		getBasicInfo(arr);
 		arr[3] = "C = " + getUnitText(capacitance, "F");
 		arr[4] = "P = " + getUnitText(getPower(), "W");
@@ -141,11 +152,13 @@ public class CapacitorElm extends AbstractCircuitElement {
 		if (n == 0 && ei.value > 0)
 			capacitance = ei.value;
 		if (n == 1) {
+			type = CapacitorType.values()[ei.choice.getSelectedIndex()];
 			if (ei.checkbox.getState())
 				setFlags(getFlags() & ~FLAG_BACK_EULER);
 			else
 				setFlags(getFlags() | FLAG_BACK_EULER);
 		}
+		setPoints();
 	}
 
 	public void setNodeVoltage(int n, double c) {
@@ -157,13 +170,22 @@ public class CapacitorElm extends AbstractCircuitElement {
 		super.setPoints();
 		double f = (getDn() / 2 - 4) / getDn();
 		// calc leads
-		setLead1(interpPoint(getPoint1(), getPoint2(), f));
-		setLead2(interpPoint(getPoint1(), getPoint2(), 1 - f));
+		Point lead1 = interpPoint(getPoint1(), getPoint2(), f);
+		setLead1(lead1);
+		Point lead2 = interpPoint(getPoint1(), getPoint2(), 1 - f);
+		setLead2(lead2);
 		// calc plates
 		plate1 = newPointArray(2);
-		plate2 = newPointArray(2);
+		plate2 = newPointArray(3);
 		interpPoint2(getPoint1(), getPoint2(), plate1[0], plate1[1], f, 12);
-		interpPoint2(getPoint1(), getPoint2(), plate2[0], plate2[1], 1 - f, 12);
+		interpPoint(getPoint1(), getPoint2(), plate2[1], f, 0);
+		interpPoint2(getPoint1(), getPoint2(), plate2[0], plate2[2], 1 - f, 12);
+		if (type == CapacitorType.POLARIZED) {
+			getPins()[0].setText("+");
+			getPins()[0].setDescription("anode");
+			getPins()[1].setText("-");
+			getPins()[1].setDescription("cathode");
+		}
 	}
 
 	public void stamp() {
@@ -196,5 +218,22 @@ public class CapacitorElm extends AbstractCircuitElement {
 
 	public void setCapacitance(double capacitance) {
 		this.capacitance = capacitance;
+	}
+	
+	private static enum CapacitorType {
+		FIXED ("Fixed Capacitor"),
+		POLARIZED ("Polarized Capacitor");
+		// TODO be supported later
+		//VARIABLE ("Variable Capacitor")
+		
+		private String title;
+		
+		private CapacitorType(String title) {
+			this.title = title;
+		}
+
+		public String getTitle() {
+			return title;
+		}
 	}
 }

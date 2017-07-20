@@ -337,6 +337,12 @@ public class VoltageElm extends AbstractCircuitElement {
 		super.setPoints();
 		calcLeads((waveform == WF_DC || waveform == WF_VAR) ? 8
 				: circleSize * 2);
+		if (waveform == WF_DC) {
+			getPins()[0].setText("-");
+			getPins()[0].setDescription("negative");
+			getPins()[1].setText("+");
+			getPins()[1].setDescription("positive");
+		}
 	}
 
 	public void stamp() {

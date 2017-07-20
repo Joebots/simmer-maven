@@ -20,6 +20,8 @@
 package com.joebotics.simmer.client.elcomp.chips;
 
 import com.joebotics.simmer.client.elcomp.ChipElm;
+import com.joebotics.simmer.client.elcomp.Pin;
+import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 //import java.awt.*;
@@ -49,10 +51,10 @@ public class PhaseCompElm extends ChipElm {
 		double out = (ff1) ? 5 : (ff2) ? 0 : -1;
 		// System.out.println(out + " " + v1 + " " + v2);
 		if (out != -1)
-			sim.stampVoltageSource(0, getNodes()[2], getPins()[2].getVoltSource(), out);
+			sim.stampVoltageSource(0, getNodes()[2], getPins()[2].getVoltageSource(), out);
 		else {
 			// tie current through output pin to 0
-			int vn = sim.getNodeList().size() + getPins()[2].getVoltSource();
+			int vn = sim.getNodeList().size() + getPins()[2].getVoltageSource();
 			sim.stampMatrix(vn, vn, 1);
 		}
 		getPins()[0].setValue(v1);
@@ -83,14 +85,14 @@ public class PhaseCompElm extends ChipElm {
 		setSizeX(2);
 		setSizeY(2);
 		setPins(new Pin[3]);
-		getPins()[0] = new Pin(0, SIDE_W, "I1");
-		getPins()[1] = new Pin(1, SIDE_W, "I2");
-		getPins()[2] = new Pin(0, SIDE_E, "O");
+		getPins()[0] = new Pin(0, Side.WEST, "I1");
+		getPins()[1] = new Pin(1, Side.WEST, "I2");
+		getPins()[2] = new Pin(0, Side.EAST, "O");
 		getPins()[2].setOutput(true);
 	}
 
 	public void stamp() {
-		int vn = sim.getNodeList().size() + getPins()[2].getVoltSource();
+		int vn = sim.getNodeList().size() + getPins()[2].getVoltageSource();
 		sim.stampNonLinear(vn);
 		sim.stampNonLinear(0);
 		sim.stampNonLinear(getNodes()[2]);

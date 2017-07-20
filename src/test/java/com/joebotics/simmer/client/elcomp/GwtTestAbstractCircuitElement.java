@@ -13,7 +13,7 @@ public class GwtTestAbstractCircuitElement extends GWTTestCase {
 		ResistorElm elm = new ResistorElm(0, 0);
 		elm.setPoints();
 
-		String expected = "{\"name\":\""+ elm.getName() + "\", \"posts\":[{\"x\":0, \"y\":0},{\"x\":0, \"y\":0}]}";
+		String expected = "{\"name\":\""+ elm.getName() + "\", \"posts\":[{\"x\":0, \"y\":0},{\"x\":0, \"y\":0}], \"pins\":[{\"number\":0, \"post\":{\"x\":0, \"y\":0}},{\"number\":1, \"post\":{\"x\":0, \"y\":0}}]}";
 		assertEquals(expected, elm.toJSONObject().toString());
 	}
 }

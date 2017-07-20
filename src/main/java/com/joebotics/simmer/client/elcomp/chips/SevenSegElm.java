@@ -20,6 +20,8 @@
 package com.joebotics.simmer.client.elcomp.chips;
 
 import com.joebotics.simmer.client.elcomp.ChipElm;
+import com.joebotics.simmer.client.elcomp.Pin;
+import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.util.GraphicsUtil;
@@ -85,12 +87,12 @@ public class SevenSegElm extends ChipElm {
 		setSizeX(4);
 		setSizeY(4);
 		setPins(new Pin[7]);
-		getPins()[0] = new Pin(0, SIDE_W, "a");
-		getPins()[1] = new Pin(1, SIDE_W, "b");
-		getPins()[2] = new Pin(2, SIDE_W, "c");
-		getPins()[3] = new Pin(3, SIDE_W, "d");
-		getPins()[4] = new Pin(1, SIDE_S, "e");
-		getPins()[5] = new Pin(2, SIDE_S, "f");
-		getPins()[6] = new Pin(3, SIDE_S, "g");
+		getPins()[0] = new Pin(0, Side.WEST, "a");
+		getPins()[1] = new Pin(1, Side.WEST, "b");
+		getPins()[2] = new Pin(2, Side.WEST, "c");
+		getPins()[3] = new Pin(3, Side.WEST, "d");
+		getPins()[4] = new Pin(1, Side.SOUTH, "e");
+		getPins()[5] = new Pin(2, Side.SOUTH, "f");
+		getPins()[6] = new Pin(3, Side.SOUTH, "g");
 	}
 }
