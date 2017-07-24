@@ -48,7 +48,7 @@ public class AnalogSwitch2Elm extends AnalogSwitchElm {
 	}
 
 	public void doStep() {
-		setOpen((getVolts()[3] < 2.5));
+		setOpen((getVolts()[3] < Pin.VOLTAGE_THRESHOLD_LEVEL));
 		if ((getFlags() & FLAG_INVERT) != 0)
 			setOpen(!isOpen());
 		if (isOpen()) {

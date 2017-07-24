@@ -59,7 +59,7 @@ public class VCOElm extends ChipElm {
 	public void doStep() {
 		double vc = getVolts()[3] - getVolts()[2];
 		double vo = getVolts()[1];
-		int dir = (vo < 2.5) ? 1 : -1;
+		int dir = (vo < Pin.VOLTAGE_THRESHOLD_LEVEL) ? 1 : -1;
 		// switch direction of current through cap as we oscillate
 		if (vo < 2.5 && vc > 4.5) {
 			vo = 5;

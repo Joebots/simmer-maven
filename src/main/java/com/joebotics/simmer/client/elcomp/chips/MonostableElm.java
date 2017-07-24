@@ -55,7 +55,7 @@ public class MonostableElm extends ChipElm {
 
 	public void execute() {
 
-		if (getPins()[0].isValue() && prevInputValue != getPins()[0].isValue()
+		if (getPins()[0].getValue() && prevInputValue != getPins()[0].getValue()
 				&& (retriggerable || !triggered)) {
 			lastRisingEdge = sim.getT();
 			getPins()[1].setValue(true);
@@ -68,7 +68,7 @@ public class MonostableElm extends ChipElm {
 			getPins()[2].setValue(true);
 			triggered = false;
 		}
-		prevInputValue = getPins()[0].isValue();
+		prevInputValue = getPins()[0].getValue();
 	}
 
 	public String getChipName() {

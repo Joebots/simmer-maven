@@ -53,24 +53,24 @@ public class CounterElm extends ChipElm {
 	public void execute() {
 		boolean en = true;
 		if (hasEnable())
-			en = getPins()[getBits() + 2].isValue();
-		if (getPins()[0].isValue() && !isLastClock() && en) {
+			en = getPins()[getBits() + 2].getValue();
+		if (getPins()[0].getValue() && !isLastClock() && en) {
 			int i;
 			for (i = getBits() - 1; i >= 0; i--) {
 				int ii = i + 2;
-				if (!getPins()[ii].isValue()) {
+				if (!getPins()[ii].getValue()) {
 					getPins()[ii].setValue(true);
 					break;
 				}
 				getPins()[ii].setValue(false);
 			}
 		}
-		if (!getPins()[1].isValue() == invertreset) {
+		if (!getPins()[1].getValue() == invertreset) {
 			int i;
 			for (i = 0; i != getBits(); i++)
 				getPins()[i + 2].setValue(false);
 		}
-		setLastClock(getPins()[0].isValue());
+		setLastClock(getPins()[0].getValue());
 	}
 
 	public String getChipName() {

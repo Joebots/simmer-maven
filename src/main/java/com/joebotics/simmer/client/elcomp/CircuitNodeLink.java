@@ -40,6 +40,14 @@ public class CircuitNodeLink {
 		this.num = num;
 	}
 	
+    public JSONObject toJSONObject() {
+        JSONObject result = new JSONObject();
+        result.put("component", new JSONString(elm.getName()));
+        result.put("post", new JSONNumber(num));
+        return result;
+    }
+	
+    // TODO refactoring
     public JSONObject toJSONObject(CircuitNodeLink sourceLink){
         JSONObject result = new JSONObject();
         result.put("post", new JSONNumber(num));

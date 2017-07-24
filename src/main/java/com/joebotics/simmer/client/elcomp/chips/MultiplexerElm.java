@@ -42,11 +42,11 @@ public class MultiplexerElm extends ChipElm {
 
 	public void execute() {
 		int selectedvalue = 0;
-		if (getPins()[4].isValue())
+		if (getPins()[4].getValue())
 			selectedvalue++;
-		if (getPins()[5].isValue())
+		if (getPins()[5].getValue())
 			selectedvalue += 2;
-		getPins()[6].setValue(getPins()[selectedvalue].isValue());
+		getPins()[6].setValue(getPins()[selectedvalue].getValue());
 
 	}
 

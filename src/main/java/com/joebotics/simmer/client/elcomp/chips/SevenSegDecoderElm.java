@@ -59,13 +59,13 @@ public class SevenSegDecoderElm extends ChipElm {
 
 	public void execute() {
 		int input = 0;
-		if (getPins()[7].isValue())
+		if (getPins()[7].getValue())
 			input += 8;
-		if (getPins()[8].isValue())
+		if (getPins()[8].getValue())
 			input += 4;
-		if (getPins()[9].isValue())
+		if (getPins()[9].getValue())
 			input += 2;
-		if (getPins()[10].isValue())
+		if (getPins()[10].getValue())
 			input += 1;
 
 		for (int i = 0; i < 7; i++) {

@@ -123,7 +123,7 @@ abstract class GateElm extends AbstractCircuitElement {
 	}
 
 	boolean getInput(int x) {
-		return getVolts()[x] > 2.5;
+		return getVolts()[x] > Pin.VOLTAGE_THRESHOLD_LEVEL;
 	}
 
 	public int getPostCount() {

@@ -2,4 +2,4 @@ simmer.iml
 .idea
 target
 .classpath
-
+war/

@@ -64,7 +64,7 @@ public class TriStateElm extends AbstractCircuitElement {
 	}
 
 	public void doStep() {
-		open = (getVolts()[2] < 2.5);
+		open = (getVolts()[2] < Pin.VOLTAGE_THRESHOLD_LEVEL);
 		resistance = (open) ? r_off : r_on;
 		sim.stampResistor(getNodes()[3], getNodes()[1], resistance);
 		sim.updateVoltageSource(0, getNodes()[3], getVoltSource(), getVolts()[0] > 2.5 ? 5 : 0);

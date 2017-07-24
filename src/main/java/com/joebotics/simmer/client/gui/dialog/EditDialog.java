@@ -151,6 +151,8 @@ public class EditDialog extends DialogBox {
 					}
 				});
 //				ei.checkbox.addItemListener(this);
+			} else if (ei.texta != null) {
+				vp.insert(ei.texta, idx);
 			} else {
 				vp.insert(ei.textf =
 				// new TextBox(unitString(ei), 10));
