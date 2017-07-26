@@ -45,10 +45,10 @@ public class SipoShiftElm extends ChipElm {
 	}
 					public void execute() {
 
-		if (getPins()[1].isValue() && !clockstate) {
+		if (getPins()[1].getValue() && !clockstate) {
 			clockstate = true;
 			data = (short) (data >>> 1);
-			if (getPins()[0].isValue())
+			if (getPins()[0].getValue())
 				data += 128;
 
 			if ((data & 128) > 0)
@@ -84,7 +84,7 @@ public class SipoShiftElm extends ChipElm {
 			else
 				getPins()[9].setValue(false);
 		}
-		if (!getPins()[1].isValue())
+		if (!getPins()[1].getValue())
 			clockstate = false;
 	}
 

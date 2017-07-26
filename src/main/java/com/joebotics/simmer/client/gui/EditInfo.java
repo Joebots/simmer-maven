@@ -19,6 +19,7 @@
 
 package com.joebotics.simmer.client.gui;
 
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.widget.Choice;
@@ -33,7 +34,13 @@ public class EditInfo {
 	public String name, text;
 	public boolean newDialog;
 	public TextBox textf;
+	public TextArea texta;
 	public double value, minval, maxval;
+	
+	public EditInfo(String n) {
+		name = n;
+		dimensionless = true;
+	}
 	
 	public EditInfo(String n, double val, double mn, double mx) {
 		name = n;

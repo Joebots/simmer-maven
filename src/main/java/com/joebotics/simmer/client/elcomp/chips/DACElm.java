@@ -40,7 +40,7 @@ public class DACElm extends ChipElm {
 		int ival = 0;
 		int i;
 		for (i = 0; i != getBits(); i++)
-			if (getVolts()[i] > 2.5)
+			if (getVolts()[i] > Pin.VOLTAGE_THRESHOLD_LEVEL)
 				ival |= 1 << i;
 		int ivalmax = (1 << getBits()) - 1;
 		double v = ival * getVolts()[getBits() + 1] / ivalmax;

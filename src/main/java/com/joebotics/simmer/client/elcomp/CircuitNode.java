@@ -22,6 +22,7 @@ package com.joebotics.simmer.client.elcomp;
 import java.util.List;
 import java.util.Vector;
 
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 
@@ -38,6 +39,11 @@ public class CircuitNode {
         JSONObject result = new JSONObject();
         result.put("x", new JSONNumber(x));
         result.put("y", new JSONNumber(y));
+        JSONArray jsonLinks = new JSONArray();
+        for (int i = 0; i < links.size(); i++) {
+        	jsonLinks.set(i, links.get(i).toJSONObject());
+        }
+        result.put("links", jsonLinks);
         return result;
     }
     

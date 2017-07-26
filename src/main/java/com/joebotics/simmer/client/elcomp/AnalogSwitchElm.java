@@ -64,7 +64,7 @@ public class AnalogSwitchElm extends AbstractCircuitElement {
 	}
 
 	public void doStep() {
-		open = (getVolts()[2] < 2.5);
+		open = (getVolts()[2] < Pin.VOLTAGE_THRESHOLD_LEVEL);
 		if ((getFlags() & FLAG_INVERT) != 0)
 			open = !open;
 		resistance = (open) ? r_off : r_on;

@@ -40,11 +40,11 @@ public class PhaseCompElm extends ChipElm {
 	}
 
 	public void doStep() {
-		boolean v1 = getVolts()[0] > 2.5;
-		boolean v2 = getVolts()[1] > 2.5;
-		if (v1 && !getPins()[0].isValue())
+		boolean v1 = getVolts()[0] > Pin.VOLTAGE_THRESHOLD_LEVEL;
+		boolean v2 = getVolts()[1] > Pin.VOLTAGE_THRESHOLD_LEVEL;
+		if (v1 && !getPins()[0].getValue())
 			ff1 = true;
-		if (v2 && !getPins()[1].isValue())
+		if (v2 && !getPins()[1].getValue())
 			ff2 = true;
 		if (ff1 && ff2)
 			ff1 = ff2 = false;

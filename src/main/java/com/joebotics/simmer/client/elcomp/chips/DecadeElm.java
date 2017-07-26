@@ -38,21 +38,21 @@ public class DecadeElm extends ChipElm {
 
 	public void execute() {
 		int i;
-		if (getPins()[0].isValue() && !isLastClock()) {
+		if (getPins()[0].getValue() && !isLastClock()) {
 			for (i = 0; i != getBits(); i++)
-				if (getPins()[i + 2].isValue())
+				if (getPins()[i + 2].getValue())
 					break;
 			if (i < getBits())
 				getPins()[i++ + 2].setValue(false);
 			i %= getBits();
 			getPins()[i + 2].setValue(true);
 		}
-		if (!getPins()[1].isValue()) {
+		if (!getPins()[1].getValue()) {
 			for (i = 1; i != getBits(); i++)
 				getPins()[i + 2].setValue(false);
 			getPins()[2].setValue(true);
 		}
-		setLastClock(getPins()[0].isValue());
+		setLastClock(getPins()[0].getValue());
 	}
 
 	public String getChipName() {

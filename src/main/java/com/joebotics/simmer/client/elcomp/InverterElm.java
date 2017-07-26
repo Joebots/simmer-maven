@@ -57,7 +57,7 @@ public class InverterElm extends AbstractCircuitElement {
 
 	public void doStep() {
 		double v0 = getVolts()[1];
-		double out = getVolts()[0] > 2.5 ? 0 : 5;
+		double out = getVolts()[0] > Pin.VOLTAGE_THRESHOLD_LEVEL ? Pin.VOLTAGE_LOW_LEVEL : Pin.VOLTAGE_HIGH_LEVEL;
 		double maxStep = slewRate * sim.getTimeStep() * 1e9;
 		out = Math.max(Math.min(v0 + maxStep, out), v0 - maxStep);
 		sim.updateVoltageSource(0, getNodes()[1], getVoltSource(), out);

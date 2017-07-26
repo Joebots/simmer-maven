@@ -41,13 +41,13 @@ public class DeMultiplexerElm extends ChipElm {
 
 	public void execute() {
 		int selectedvalue = 0;
-		if (getPins()[4].isValue())
+		if (getPins()[4].getValue())
 			selectedvalue++;
-		if (getPins()[5].isValue())
+		if (getPins()[5].getValue())
 			selectedvalue += 2;
 		for (int i = 0; i < 4; i++)
 			getPins()[i].setValue(false);
-		getPins()[selectedvalue].setValue(getPins()[6].isValue());
+		getPins()[selectedvalue].setValue(getPins()[6].getValue());
 
 	}
 

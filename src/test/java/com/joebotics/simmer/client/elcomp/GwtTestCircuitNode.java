@@ -14,7 +14,7 @@ public class GwtTestCircuitNode extends GWTTestCase {
 		node.x = 0;
 		node.y = 0;
 		
-		String expected = "{\"x\":0, \"y\":0}";
+		String expected = "{\"x\":0, \"y\":0, \"links\":[]}";
 		assertEquals(expected, node.toJSONObject().toString());
 	}
 }
