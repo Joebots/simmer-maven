@@ -40,23 +40,23 @@ public class DFlipFlopElm extends ChipElm {
 	public DFlipFlopElm(int xa, int ya, int xb, int yb, int f,
 			StringTokenizer st) {
 		super(xa, ya, xb, yb, f, st);
-		getPins()[2].setValue(!getPins()[1].isValue());
+		getPins()[2].setValue(!getPins()[1].getValue());
 	}
 
 	public void execute() {
-		if (getPins()[3].isValue() && !isLastClock()) {
-			getPins()[1].setValue(getPins()[0].isValue());
-			getPins()[2].setValue(!getPins()[0].isValue());
+		if (getPins()[3].getValue() && !isLastClock()) {
+			getPins()[1].setValue(getPins()[0].getValue());
+			getPins()[2].setValue(!getPins()[0].getValue());
 		}
-		if (hasSet() && getPins()[5].isValue()) {
+		if (hasSet() && getPins()[5].getValue()) {
 			getPins()[1].setValue(true);
 			getPins()[2].setValue(false);
 		}
-		if (hasReset() && getPins()[4].isValue()) {
+		if (hasReset() && getPins()[4].getValue()) {
 			getPins()[1].setValue(false);
 			getPins()[2].setValue(true);
 		}
-		setLastClock(getPins()[3].isValue());
+		setLastClock(getPins()[3].getValue());
 	}
 
 	public String getChipName() {

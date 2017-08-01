@@ -190,6 +190,9 @@ public class CircuitElementFactory {
 
         if (n == "XorGateElm")
             return (AbstractCircuitElement) new XorGateElm(x1, y1);
+        
+        if (n == "ScriptElm")
+        	return (AbstractCircuitElement) new ScriptElm(x1, y1);
 
         if (n == "DFlipFlopElm")
             return (AbstractCircuitElement) new DFlipFlopElm(x1, y1);
@@ -485,6 +488,9 @@ public class CircuitElementFactory {
 
         if (tint == 194)
             return (AbstractCircuitElement) new MonostableElm(x1, y1, x2, y2, f, st);
+        
+        if (tint == 300)
+        	return (AbstractCircuitElement) new ScriptElm(x1, y1, x2, y2, f, st);
 
         return null;
     }

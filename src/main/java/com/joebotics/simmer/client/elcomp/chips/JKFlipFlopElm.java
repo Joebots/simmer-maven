@@ -39,26 +39,26 @@ public class JKFlipFlopElm extends ChipElm {
 	public JKFlipFlopElm(int xa, int ya, int xb, int yb, int f,
 			StringTokenizer st) {
 		super(xa, ya, xb, yb, f, st);
-		getPins()[4].setValue(!getPins()[3].isValue());
+		getPins()[4].setValue(!getPins()[3].getValue());
 	}
 
 	public void execute() {
-		if (!getPins()[1].isValue() && isLastClock()) {
-			boolean q = getPins()[3].isValue();
-			if (getPins()[0].isValue()) {
-				if (getPins()[2].isValue())
+		if (!getPins()[1].getValue() && isLastClock()) {
+			boolean q = getPins()[3].getValue();
+			if (getPins()[0].getValue()) {
+				if (getPins()[2].getValue())
 					q = !q;
 				else
 					q = true;
-			} else if (getPins()[2].isValue())
+			} else if (getPins()[2].getValue())
 				q = false;
 			getPins()[3].setValue(q);
 			getPins()[4].setValue(!q);
 		}
-		setLastClock(getPins()[1].isValue());
+		setLastClock(getPins()[1].getValue());
 
 		if (hasReset()) {
-			if (getPins()[5].isValue()) {
+			if (getPins()[5].getValue()) {
 				getPins()[3].setValue(false);
 				getPins()[4].setValue(true);
 			}

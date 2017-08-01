@@ -74,15 +74,16 @@ public abstract class ChipElm extends AbstractCircuitElement {
 		int i;
 		for (i = 0; i != getPostCount(); i++) {
 			Pin p = getPins()[i];
-			if (!p.isOutput())
-				p.setValue(getVolts()[i] > 2.5);
+			if (!p.isOutput()) {
+				p.setVoltage(getVolts()[i]);
+			}
 		}
 		execute();
 		for (i = 0; i != getPostCount(); i++) {
 			Pin p = getPins()[i];
-			if (p.isOutput())
-				sim.updateVoltageSource(0, getNodes()[i], p.getVoltageSource(), p.isValue() ? 5
-						: 0);
+			if (p.isOutput()) {
+				sim.updateVoltageSource(0, getNodes()[i], p.getVoltageSource(), p.getVoltage());
+			}
 		}
 	}
 

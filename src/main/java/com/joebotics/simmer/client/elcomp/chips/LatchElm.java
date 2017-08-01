@@ -42,10 +42,10 @@ public class LatchElm extends ChipElm {
 
 	public void execute() {
 		int i;
-		if (getPins()[loadPin].isValue() && !lastLoad)
+		if (getPins()[loadPin].getValue() && !lastLoad)
 			for (i = 0; i != getBits(); i++)
-				getPins()[i + getBits()].setValue(getPins()[i].isValue());
-		lastLoad = getPins()[loadPin].isValue();
+				getPins()[i + getBits()].setValue(getPins()[i].getValue());
+		lastLoad = getPins()[loadPin].getValue();
 	}
 
 	public String getChipName() {

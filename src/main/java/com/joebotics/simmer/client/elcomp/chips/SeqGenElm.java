@@ -63,7 +63,7 @@ public class SeqGenElm extends ChipElm {
 				lastchangetime = sim.getT();
 			}
 		}
-		if (getPins()[0].isValue() && !clockstate) {
+		if (getPins()[0].getValue() && !clockstate) {
 			clockstate = true;
 			if (oneshot) {
 				position = 0;
@@ -73,7 +73,7 @@ public class SeqGenElm extends ChipElm {
 					position = 0;
 			}
 		}
-		if (!getPins()[0].isValue())
+		if (!getPins()[0].getValue())
 			clockstate = false;
 
 	}

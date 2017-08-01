@@ -148,7 +148,12 @@ public class DrawMenu extends MenuBar {
         achipMenuBar.addItem(getClassCheckItem(MessageI18N.getMessage("Add_VCO"), "VCOElm"));
         achipMenuBar.addItem(getClassCheckItem(MessageI18N.getMessage("Add_Monostable"), "MonostableElm"));
         this.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getMessage("Analog_and_Hybrid_Chips")), achipMenuBar);
-
+        
+        // Programmable
+        MenuBar pchipMenuBar = new MenuBar(true);
+        pchipMenuBar.addItem(getClassCheckItem(MessageI18N.getMessage("Add_Script"), "ScriptElm"));
+        this.addItem(SafeHtmlUtils.fromTrustedString(CheckboxMenuItem.checkBoxHtml + "&nbsp;</div>" + MessageI18N.getMessage("Programmable_Chips")), pchipMenuBar);
+        
         // Drag
         MenuBar otherMenuBar = new MenuBar(true);
         CheckboxMenuItem mi;

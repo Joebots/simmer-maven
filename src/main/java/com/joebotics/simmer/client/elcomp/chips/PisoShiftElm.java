@@ -44,26 +44,26 @@ public class PisoShiftElm extends ChipElm {
 		super(xa, ya, xb, yb, f, st);
 	}
 	public void execute() {
-		if (getPins()[0].isValue() && !modestate) {
+		if (getPins()[0].getValue() && !modestate) {
 			modestate = true;
 			data = 0;
-			if (getPins()[2].isValue())
+			if (getPins()[2].getValue())
 				data += 128;
-			if (getPins()[3].isValue())
+			if (getPins()[3].getValue())
 				data += 64;
-			if (getPins()[4].isValue())
+			if (getPins()[4].getValue())
 				data += 32;
-			if (getPins()[5].isValue())
+			if (getPins()[5].getValue())
 				data += 16;
-			if (getPins()[6].isValue())
+			if (getPins()[6].getValue())
 				data += 8;
-			if (getPins()[7].isValue())
+			if (getPins()[7].getValue())
 				data += 4;
-			if (getPins()[8].isValue())
+			if (getPins()[8].getValue())
 				data += 2;
-			if (getPins()[9].isValue())
+			if (getPins()[9].getValue())
 				data += 1;
-		} else if (getPins()[1].isValue() && !clockstate) {
+		} else if (getPins()[1].getValue() && !clockstate) {
 			clockstate = true;
 			if ((data & 1) == 0)
 				getPins()[10].setValue(false);
@@ -71,9 +71,9 @@ public class PisoShiftElm extends ChipElm {
 				getPins()[10].setValue(true);
 			data = (byte) (data >>> 1);
 		}
-		if (!getPins()[0].isValue())
+		if (!getPins()[0].getValue())
 			modestate = false;
-		if (!getPins()[1].isValue())
+		if (!getPins()[1].getValue())
 			clockstate = false;
 	}
 

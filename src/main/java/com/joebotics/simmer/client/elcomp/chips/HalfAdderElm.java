@@ -39,8 +39,8 @@ public class HalfAdderElm extends ChipElm {
 
 	public void execute() {
 
-		getPins()[0].setValue(getPins()[2].isValue() ^ getPins()[3].isValue());
-		getPins()[1].setValue(getPins()[2].isValue() && getPins()[3].isValue());
+		getPins()[0].setValue(getPins()[2].getValue() ^ getPins()[3].getValue());
+		getPins()[1].setValue(getPins()[2].getValue() && getPins()[3].getValue());
 	}
 
 	public String getChipName() {
