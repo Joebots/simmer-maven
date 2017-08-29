@@ -118,7 +118,7 @@ public class Simmer
 
 	private MouseMode						mouseMode			= MouseMode.SELECT;
 	private MouseMode						tempMouseMode		= MouseMode.SELECT;
-	private DockLayoutPanel					layoutPanel;
+	//private DockLayoutPanel					layoutPanel;
 	private DrawMenu 						popupDrawMenu;
 
 	private AbstractCircuitElement 			selectedCircuitElement;
@@ -216,7 +216,8 @@ public class Simmer
 		 */
 
 		// main.setLayout(new CircuitLayout());
-		layoutPanel = new DockLayoutPanel(Unit.PX);
+		MainPanel mainPanel = new MainPanel();
+		//layoutPanel = new DockLayoutPanel(Unit.PX);
 		sidePanel = new SidePanel(this);
 		popupDrawMenu = new DrawMenu(this, true);
 		mainMenuBar = new MainMenuBar(this);
@@ -227,13 +228,13 @@ public class Simmer
 //		getPrintableCheckItem().setState(printable);
 		getMainMenuBar().getOptionsMenuBar().getConventionCheckItem().setState(convention);
 
-		layoutPanel.addNorth(mainMenuBar, Display.MENUBARHEIGHT);
-		layoutPanel.addEast(sidePanel, Display.VERTICALPANELWIDTH);
+		//layoutPanel.addNorth(mainMenuBar, Display.MENUBARHEIGHT);
+		//layoutPanel.addEast(sidePanel, Display.VERTICALPANELWIDTH);
 //        SideBar sideBar = new SideBar(this);
 //        layoutPanel.addEast(sideBar, Display.VERTICALPANELWIDTH);
 
-		RootLayoutPanel.get().add(layoutPanel);
-		cv = Canvas.createIfSupported();
+		RootLayoutPanel.get().add(mainPanel);
+		cv = mainPanel.getCanvas();
 		if (cv == null) {
 			// fire circuit broken event here
 			// {source: simmer, component: ce, message: "Voltage_source/wire_loop_with_no_resistance!"}
@@ -242,7 +243,7 @@ public class Simmer
 			RootPanel.get().add(new Label(message));
 			return;
 		}
-		layoutPanel.add(cv);
+		//layoutPanel.add(cv);
 
 		cvcontext = cv.getContext2d();
 		backcv = Canvas.createIfSupported();

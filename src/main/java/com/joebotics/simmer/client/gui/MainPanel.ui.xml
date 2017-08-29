@@ -1,0 +1,38 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+    xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.canvas.client"
+    xmlns:m="urn:import:gwt.material.design.client.ui" xmlns:jb="urn:import:com.joebotics.simmer.client.gui"
+    xmlns:jbm="urn:import:com.joebotics.simmer.client.gui.menu">
+    <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N' />
+    <ui:style>
+        .important {
+        font-weight: bold;
+        }
+    </ui:style>
+    <g:DockLayoutPanel unit='PX' ui:field="layoutPanel">
+        <g:east size="300">
+            <g:DockLayoutPanel unit='PX'>
+                <g:south size="100">
+                    <jb:ToolsPanel ui:field="toolsPanel" />
+                </g:south>
+                <g:center>
+                    <g:HTMLPanel>
+                        Breadboard placeholder
+                    </g:HTMLPanel>
+                </g:center>
+            </g:DockLayoutPanel>
+        </g:east>
+        <g:center>
+            <g:DockLayoutPanel unit='PX'>
+                <g:south size="100">
+                    <g:HTMLPanel>
+                        Wizard placeholder
+                    </g:HTMLPanel>
+                </g:south>
+                <g:center>
+                    <c:Canvas ui:field="canvas"></c:Canvas>
+                </g:center>
+            </g:DockLayoutPanel>
+        </g:center>
+    </g:DockLayoutPanel>
+</ui:UiBinder> 

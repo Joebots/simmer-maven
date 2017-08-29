@@ -3,7 +3,6 @@ package com.joebotics.simmer.client;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.joebotics.simmer.client.elcomp.*;
@@ -21,7 +20,10 @@ import com.joebotics.simmer.client.util.MouseModeEnum;
 
 import java.util.List;
 
-public class SimmerController implements MouseDownHandler, MouseWheelHandler, MouseMoveHandler, MouseUpHandler, MouseOutHandler, ClickHandler, DoubleClickHandler, ContextMenuHandler, Event.NativePreviewHandler {
+public class SimmerController implements MouseDownHandler, MouseWheelHandler, MouseMoveHandler, MouseUpHandler, MouseOutHandler,
+    TouchCancelHandler, TouchEndHandler, TouchMoveHandler, TouchStartHandler,
+    ClickHandler, DoubleClickHandler,
+    ContextMenuHandler, Event.NativePreviewHandler {
     private final Simmer simmer;
     private boolean dragStarted = false;
 
@@ -816,5 +818,29 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         }
         
         simmer.needAnalyze();
+    }
+
+    @Override
+    public void onTouchStart(TouchStartEvent event) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onTouchMove(TouchMoveEvent event) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onTouchEnd(TouchEndEvent event) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onTouchCancel(TouchCancelEvent event) {
+        // TODO Auto-generated method stub
+        
     }
 }
