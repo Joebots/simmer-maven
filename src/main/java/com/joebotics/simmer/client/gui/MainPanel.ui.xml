@@ -1,7 +1,6 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-    xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.canvas.client"
-    xmlns:m="urn:import:gwt.material.design.client.ui" xmlns:jb="urn:import:com.joebotics.simmer.client.gui"
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui"
+    xmlns:c="urn:import:com.google.gwt.canvas.client" xmlns:m="urn:import:gwt.material.design.client.ui" xmlns:jb="urn:import:com.joebotics.simmer.client.gui"
     xmlns:jbm="urn:import:com.joebotics.simmer.client.gui.menu">
     <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N' />
     <ui:style>
@@ -16,8 +15,8 @@
                     <jb:ToolsPanel ui:field="toolsPanel" />
                 </g:south>
                 <g:center>
-                    <g:HTMLPanel ui:field="burner">
-                        Breadboard placeholder
+                    <g:HTMLPanel>
+                        <div id="burner">{#burner}</div>
                     </g:HTMLPanel>
                 </g:center>
             </g:DockLayoutPanel>
@@ -25,8 +24,8 @@
         <g:center>
             <g:DockLayoutPanel unit='PX'>
                 <g:south size="100">
-                    <g:HTMLPanel ui:field="burnerControls">
-                        Wizard placeholder
+                    <g:HTMLPanel>
+                        <div id="burner-controls">{#burner-controls}</div>
                     </g:HTMLPanel>
                 </g:south>
                 <g:center>

@@ -22,12 +22,6 @@ public class MainPanel extends Composite {
 
     @UiField
     Canvas canvas;
-    
-    @UiField
-    HTMLPanel burner;
-    
-    @UiField
-    HTMLPanel burnerControls;
 
     @UiFactory
     Canvas createCanvas() {
@@ -36,8 +30,6 @@ public class MainPanel extends Composite {
 
     public MainPanel(String firstName) {
         initWidget(uiBinder.createAndBindUi(this));
-        burner.getElement().addClassName("burner-placeholder");
-        burnerControls.getElement().addClassName("burner-сontrols-placeholder");
     }
 
     public Canvas getCanvas() {
