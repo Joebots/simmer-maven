@@ -2,16 +2,12 @@ package com.joebotics.simmer.client.gui;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.joebotics.simmer.client.gui.dialog.OptionsDialog;
-
-import gwt.material.design.client.ui.MaterialLink;
 
 public class MainPanel extends Composite {
 
@@ -26,6 +22,12 @@ public class MainPanel extends Composite {
 
     @UiField
     Canvas canvas;
+    
+    @UiField
+    HTMLPanel burner;
+    
+    @UiField
+    HTMLPanel burnerControls;
 
     @UiFactory
     Canvas createCanvas() {
@@ -33,16 +35,9 @@ public class MainPanel extends Composite {
     }
 
     public MainPanel(String firstName) {
-        /*
-         * if (canvas == null) { // fire circuit broken event here // {source:
-         * simmer, component: ce, message:
-         * "Voltage_source/wire_loop_with_no_resistance!"} String message =
-         * MessageI18N.getMessage(
-         * "Not_working._You_need_a_browser_that_supports_the_CANVAS_element.");
-         * JSEventBusProxy.fireError(SimmerEvents.SYSTEM_ERROR, message);
-         * RootPanel.get().add(new Label(message)); return; }
-         */
         initWidget(uiBinder.createAndBindUi(this));
+        burner.getElement().addClassName("burner-placeholder");
+        burnerControls.getElement().addClassName("burner-сontrols-placeholder");
     }
 
     public Canvas getCanvas() {

@@ -16,7 +16,7 @@
                     <jb:ToolsPanel ui:field="toolsPanel" />
                 </g:south>
                 <g:center>
-                    <g:HTMLPanel>
+                    <g:HTMLPanel ui:field="burner">
                         Breadboard placeholder
                     </g:HTMLPanel>
                 </g:center>
@@ -25,7 +25,7 @@
         <g:center>
             <g:DockLayoutPanel unit='PX'>
                 <g:south size="100">
-                    <g:HTMLPanel>
+                    <g:HTMLPanel ui:field="burnerControls">
                         Wizard placeholder
                     </g:HTMLPanel>
                 </g:south>
