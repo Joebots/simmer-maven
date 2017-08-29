@@ -18,7 +18,8 @@ public enum SimmerEvents implements Serializable, IsSerializable {
     CIRCUIT_BROKEN_CAPACITOR_LOOP("circuit.broken.capacitor-loop"),
     CIRCUIT_BROKEN_MATRIX_ERROR("circuit.broken.matrix-error"),
     CIRCUIT_STOPPED("circuit.stopped"),
-    SYSTEM_ERROR("system.error");
+    SYSTEM_ERROR("system.error"),
+    SYSTEM_LOADED("system.loaded");
 
     public final String value;
 

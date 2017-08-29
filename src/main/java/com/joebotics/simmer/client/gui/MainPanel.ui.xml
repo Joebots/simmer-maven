@@ -16,7 +16,7 @@
                 </g:south>
                 <g:center>
                     <g:HTMLPanel>
-                        <div id="burner">{#burner}</div>
+                        <div id="breadboard">{#breadboard}</div>
                     </g:HTMLPanel>
                 </g:center>
             </g:DockLayoutPanel>
@@ -25,7 +25,7 @@
             <g:DockLayoutPanel unit='PX'>
                 <g:south size="100">
                     <g:HTMLPanel>
-                        <div id="burner-controls">{#burner-controls}</div>
+                        <div id="breadboard-controls" class="table">{#breadboard-controls}</div>
                     </g:HTMLPanel>
                 </g:south>
                 <g:center>
