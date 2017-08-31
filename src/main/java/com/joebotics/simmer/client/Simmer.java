@@ -1112,7 +1112,7 @@ public class Simmer
 		int width, height;
 		width = RootLayoutPanel.get().getOffsetWidth();
 		height = RootLayoutPanel.get().getOffsetHeight();
-		height = height - Display.MENUBARHEIGHT;
+		//height = height - Display.MENUBARHEIGHT;
 		width = width - Display.VERTICALPANELWIDTH;
 		if (cv != null) {
 			cv.setWidth(width + "PX");

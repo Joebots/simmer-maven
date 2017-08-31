@@ -4,11 +4,11 @@
     xmlns:jbm="urn:import:com.joebotics.simmer.client.gui.menu">
     <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N' />
     <ui:style>
-        .important {
-        font-weight: bold;
+        .main-panel {
+            background-color: black;
         }
     </ui:style>
-    <g:DockLayoutPanel unit='PX' ui:field="layoutPanel">
+    <g:DockLayoutPanel unit='PX' ui:field="layoutPanel" styleName="{style.main-panel}">
         <g:east size="300">
             <g:DockLayoutPanel unit='PX'>
                 <g:south size="100">
@@ -23,11 +23,6 @@
         </g:east>
         <g:center>
             <g:DockLayoutPanel unit='PX'>
-                <g:south size="100">
-                    <g:HTMLPanel>
-                        <div id="breadboard-controls" class="table">{#breadboard-controls}</div>
-                    </g:HTMLPanel>
-                </g:south>
                 <g:center>
                     <c:Canvas ui:field="canvas"></c:Canvas>
                 </g:center>

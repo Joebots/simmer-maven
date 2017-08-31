@@ -43,7 +43,7 @@ public class SidePanel extends VerticalPanel{
                     cumheight += 12;
             }
         }
-        int ih = RootLayoutPanel.get().getOffsetHeight() - Display.MENUBARHEIGHT - cumheight;
+        int ih = RootLayoutPanel.get().getOffsetHeight() - cumheight;
         if (ih < 0)
             ih = 0;
         iFrame.setHeight(ih + "px");
