@@ -1487,7 +1487,6 @@ public class Simmer
 			if (lastTime != 0) {
 				int inc = (int) (sysTime - lastTime);
 				double c = options.getInteger(OptionKey.CURRENT_SPEED);
-				GWT.log("c= " + c);
 				c = java.lang.Math.exp(c / 3.5 - 14.2);
 				AbstractCircuitElement.currentMult = 1.7 * inc * c;
 				if (!options.getBoolean(OptionKey.CONVENTIONAL_CURRENT_MOTION))
