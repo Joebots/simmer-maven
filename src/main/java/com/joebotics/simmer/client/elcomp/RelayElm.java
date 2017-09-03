@@ -19,7 +19,6 @@
 
 package com.joebotics.simmer.client.elcomp;
 
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Graphics;
@@ -27,6 +26,8 @@ import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.Inductor;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 
 //import java.awt.*;
@@ -208,8 +209,8 @@ public class RelayElm extends AbstractCircuitElement {
 			return new EditInfo("Coil Resistance (ohms)", coilR, 0, 0);
 		if (n == 6) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Swap Coil Direction",
-					(getFlags() & FLAG_SWAP_COIL) != 0);
+			ei.checkbox = new MaterialCheckBox("Swap Coil Direction");
+            ei.checkbox.setValue((getFlags() & FLAG_SWAP_COIL) != 0);
 			return ei;
 		}
 		return null;
@@ -272,7 +273,7 @@ public class RelayElm extends AbstractCircuitElement {
 		if (n == 5 && ei.value > 0)
 			coilR = ei.value;
 		if (n == 6) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(getFlags() | FLAG_SWAP_COIL);
 			else
 				setFlags(getFlags() & ~FLAG_SWAP_COIL);

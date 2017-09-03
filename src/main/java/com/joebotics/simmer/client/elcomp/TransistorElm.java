@@ -19,7 +19,6 @@
 
 package com.joebotics.simmer.client.elcomp;
 
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.Scope;
 import com.joebotics.simmer.client.gui.util.Color;
@@ -28,6 +27,8 @@ import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.gui.util.Polygon;
 import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 public class TransistorElm extends AbstractCircuitElement {
 	private static final double leakage = 1e-13; // 1e-6;
@@ -205,7 +206,8 @@ public class TransistorElm extends AbstractCircuitElement {
 			return new EditInfo("Beta/hFE", beta, 10, 1000).setDimensionless();
 		if (n == 1) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Swap E/C", (getFlags() & FLAG_FLIP) != 0);
+			ei.checkbox = new MaterialCheckBox("Swap E/C");
+            ei.checkbox.setValue((getFlags() & FLAG_FLIP) != 0);
 			return ei;
 		}
 		return null;
@@ -302,7 +304,7 @@ public class TransistorElm extends AbstractCircuitElement {
 			setup();
 		}
 		if (n == 1) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(getFlags() | FLAG_FLIP);
 			else
 				setFlags(getFlags() & ~FLAG_FLIP);

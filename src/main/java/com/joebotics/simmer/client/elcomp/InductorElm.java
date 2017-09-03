@@ -19,11 +19,12 @@
 
 package com.joebotics.simmer.client.elcomp;
 
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.util.Inductor;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 
 //import java.awt.*;
@@ -88,8 +89,8 @@ public class InductorElm extends AbstractCircuitElement {
 			return new EditInfo("Inductance (H)", inductance, 0, 0);
 		if (n == 1) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Trapezoidal Approximation",
-					ind.isTrapezoidal());
+			ei.checkbox = new MaterialCheckBox("Trapezoidal Approximation");
+            ei.checkbox.setValue(ind.isTrapezoidal());
 			return ei;
 		}
 		return null;
@@ -119,7 +120,7 @@ public class InductorElm extends AbstractCircuitElement {
 		if (n == 0)
 			inductance = ei.value;
 		if (n == 1) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(getFlags() & ~Inductor.FLAG_BACK_EULER);
 			else
 				setFlags(getFlags() | Inductor.FLAG_BACK_EULER);

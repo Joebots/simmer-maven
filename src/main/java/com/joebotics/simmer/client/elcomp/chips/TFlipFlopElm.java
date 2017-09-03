@@ -22,9 +22,10 @@ package com.joebotics.simmer.client.elcomp.chips;
 import com.joebotics.simmer.client.elcomp.ChipElm;
 import com.joebotics.simmer.client.elcomp.Pin;
 import com.joebotics.simmer.client.elcomp.Side;
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 //import java.awt.*;
 //import java.util.StringTokenizer;
@@ -77,12 +78,14 @@ public class TFlipFlopElm extends ChipElm {
 	public EditInfo getEditInfo(int n) {
 		if (n == 2) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Reset Pin", hasReset());
+			ei.checkbox = new MaterialCheckBox("Reset Pin");
+            ei.checkbox.setValue(hasReset());
 			return ei;
 		}
 		if (n == 3) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Set Pin", hasSet());
+			ei.checkbox = new MaterialCheckBox("Set Pin");
+            ei.checkbox.setValue(hasSet());
 			return ei;
 		}
 		return super.getEditInfo(n);
@@ -112,7 +115,7 @@ public class TFlipFlopElm extends ChipElm {
 
 	public void setEditValue(int n, EditInfo ei) {
 		if (n == 2) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(getFlags() | FLAG_RESET);
 			else
 				setFlags(getFlags() & (~FLAG_RESET | FLAG_SET));
@@ -121,7 +124,7 @@ public class TFlipFlopElm extends ChipElm {
 			setPoints();
 		}
 		if (n == 3) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(getFlags() | FLAG_SET);
 			else
 				setFlags(getFlags() & ~FLAG_SET);

@@ -543,12 +543,10 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
                 if (code == KeyCodes.KEY_ENTER)
                     Simmer.getScrollValuePopup().close(true);
             }
-            if (Simmer.getEditDialog() != null && Simmer.getEditDialog().isShowing() && (t & Event.ONKEYDOWN) != 0) {
-                if (code == KeyCodes.KEY_ESCAPE)
-                    Simmer.getEditDialog().closeDialog();
+            if (simmer.getEditDialog() != null && simmer.getEditDialog().isShowing() && (t & Event.ONKEYDOWN) != 0) {
                 if (code == KeyCodes.KEY_ENTER) {
-                    Simmer.getEditDialog().apply();
-                    Simmer.getEditDialog().closeDialog();
+                    simmer.getEditDialog().apply();
+                    simmer.getEditDialog().close();
                 }
             }
             return;

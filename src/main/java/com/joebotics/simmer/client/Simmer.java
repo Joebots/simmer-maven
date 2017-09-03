@@ -19,37 +19,72 @@
 
 package com.joebotics.simmer.client;
 
+import java.util.List;
+import java.util.logging.Logger;
+
 // GWT conversion (c) 2015 by Iain Sharp
 // For information about the theory behind this, see Electronic Circuit & System Simulation Methods by Pillage
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window.Navigator;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.MenuItem;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.joebotics.simmer.client.breadboard.interpreter.BreadboardCircuitParserListener;
 import com.joebotics.simmer.client.breadboard.interpreter.CircuitParser;
 import com.joebotics.simmer.client.breadboard.interpreter.CircuitParserListener;
-import com.joebotics.simmer.client.elcomp.*;
-import com.joebotics.simmer.client.gui.*;
-import com.joebotics.simmer.client.gui.dialog.*;
+import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
+import com.joebotics.simmer.client.elcomp.CapacitorElm;
+import com.joebotics.simmer.client.elcomp.CircuitNode;
+import com.joebotics.simmer.client.elcomp.CircuitNodeLink;
+import com.joebotics.simmer.client.elcomp.CurrentElm;
+import com.joebotics.simmer.client.elcomp.GraphicElm;
+import com.joebotics.simmer.client.elcomp.GroundElm;
+import com.joebotics.simmer.client.elcomp.InductorElm;
+import com.joebotics.simmer.client.elcomp.RailElm;
+import com.joebotics.simmer.client.elcomp.ResistorElm;
+import com.joebotics.simmer.client.elcomp.SwitchElm;
+import com.joebotics.simmer.client.elcomp.VoltageElm;
+import com.joebotics.simmer.client.elcomp.WireElm;
+import com.joebotics.simmer.client.gui.MainPanel;
+import com.joebotics.simmer.client.gui.Scope;
+import com.joebotics.simmer.client.gui.SidePanel;
+import com.joebotics.simmer.client.gui.dialog.AboutBox;
+import com.joebotics.simmer.client.gui.dialog.EditDialog;
+import com.joebotics.simmer.client.gui.dialog.ExportAsLocalFileDialog;
+import com.joebotics.simmer.client.gui.dialog.ExportAsTextDialog;
+import com.joebotics.simmer.client.gui.dialog.ExportAsUrlDialog;
+import com.joebotics.simmer.client.gui.dialog.ImportFromTextDialog;
 import com.joebotics.simmer.client.gui.menu.DrawMenu;
 import com.joebotics.simmer.client.gui.menu.ElementPopupMenu;
 import com.joebotics.simmer.client.gui.menu.MainMenuBar;
 import com.joebotics.simmer.client.gui.menu.ScrollValuePopup;
-import com.joebotics.simmer.client.gui.util.*;
+import com.joebotics.simmer.client.gui.util.Color;
+import com.joebotics.simmer.client.gui.util.Display;
+import com.joebotics.simmer.client.gui.util.Font;
+import com.joebotics.simmer.client.gui.util.Graphics;
+import com.joebotics.simmer.client.gui.util.LoadFile;
+import com.joebotics.simmer.client.gui.util.Point;
+import com.joebotics.simmer.client.gui.util.Rectangle;
+import com.joebotics.simmer.client.gui.util.RowInfo;
 import com.joebotics.simmer.client.integration.JSEventBusProxy;
 import com.joebotics.simmer.client.integration.SimmerEvents;
-import com.joebotics.simmer.client.util.*;
+import com.joebotics.simmer.client.util.FindPathInfo;
 import com.joebotics.simmer.client.util.HintTypeEnum.HintType;
+import com.joebotics.simmer.client.util.MathUtil;
+import com.joebotics.simmer.client.util.MessageI18N;
 import com.joebotics.simmer.client.util.MouseModeEnum.MouseMode;
-
-import java.util.*;
-import java.util.logging.Logger;
+import com.joebotics.simmer.client.util.QueryParameters;
 
 public class Simmer
 {
@@ -217,6 +252,7 @@ public class Simmer
 
 		// main.setLayout(new CircuitLayout());
 		MainPanel mainPanel = new MainPanel();
+        editDialog = mainPanel.getEditDialog();
 		//layoutPanel = new DockLayoutPanel(Unit.PX);
 		sidePanel = new SidePanel(this);
 		popupDrawMenu = new DrawMenu(this, true);
@@ -286,16 +322,12 @@ public class Simmer
 		JSEventBusProxy.init();
 	}
 
-	public static EditDialog getEditDialog() {
+	public EditDialog getEditDialog() {
 		return editDialog;
 	}
 
 	public static String getMuString() {
 		return muString;
-	}
-
-	public static void setEditDialog(EditDialog editDialog) {
-		Simmer.editDialog = editDialog;
 	}
 
 	private void analyzeCircuit() {

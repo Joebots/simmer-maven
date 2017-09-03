@@ -19,22 +19,22 @@
 
 package com.joebotics.simmer.client.gui;
 
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
-import com.joebotics.simmer.client.gui.widget.Checkbox;
-import com.joebotics.simmer.client.gui.widget.Choice;
+import gwt.material.design.client.ui.MaterialCheckBox;
+import gwt.material.design.client.ui.MaterialListBox;
+import gwt.material.design.client.ui.MaterialTextArea;
+import gwt.material.design.client.ui.MaterialTextBox;
 
 public class EditInfo {
 
-	public Checkbox checkbox;
+	public MaterialCheckBox checkbox;
 	// Scrollbar bar;
-	public Choice choice;
+	public MaterialListBox choice;
 	public boolean dimensionless;
 	public boolean forceLargeM;
 	public String name, text;
 	public boolean newDialog;
-	public TextBox textf;
-	public TextArea texta;
+	public MaterialTextBox textf;
+	public MaterialTextArea texta;
 	public double value, minval, maxval;
 	
 	public EditInfo(String n) {

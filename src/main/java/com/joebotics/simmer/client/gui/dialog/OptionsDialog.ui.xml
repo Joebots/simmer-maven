@@ -8,9 +8,9 @@
     </ui:style>
     <m:MaterialModal ui:field="modal" type="DEFAULT" dismissible="true" inDuration="500" outDuration="500">
         <m:MaterialNavBar>
-            <m:MaterialNavBrand float="LEFT" text="Options" />
+            <m:MaterialNavBrand float="LEFT" text="{i18n.Options}" />
             <m:MaterialNavSection float="RIGHT">
-                <m:MaterialIcon ui:field="btnClose" tooltip="Close" iconType="CLEAR" iconColor="WHITE"
+                <m:MaterialIcon ui:field="btnClose" tooltip="{i18n.Close}" iconType="CLEAR" iconColor="WHITE"
                     circle="true" waves="DEFAULT" />
             </m:MaterialNavSection>
         </m:MaterialNavBar>

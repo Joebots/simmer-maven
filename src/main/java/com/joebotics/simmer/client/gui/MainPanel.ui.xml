@@ -1,18 +1,22 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui"
     xmlns:c="urn:import:com.google.gwt.canvas.client" xmlns:m="urn:import:gwt.material.design.client.ui" xmlns:jb="urn:import:com.joebotics.simmer.client.gui"
-    xmlns:jbm="urn:import:com.joebotics.simmer.client.gui.menu">
+    xmlns:jbm="urn:import:com.joebotics.simmer.client.gui.menu"
+    xmlns:jbd="urn:import:com.joebotics.simmer.client.gui.dialog">
+
     <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N' />
     <ui:import field="com.joebotics.simmer.client.gui.util.Display.*" />
+
     <ui:style>
         .main-panel {
             background-color: black;
         }
     </ui:style>
+
     <g:DockLayoutPanel unit='PX' ui:field="layoutPanel" styleName="{style.main-panel}">
         <g:east size="418">
-            <g:DockLayoutPanel unit='PX' ui:field="eastPanel">
-                <g:south size="145">
+            <g:DockLayoutPanel unit='PCT' ui:field="eastPanel">
+                <g:south size="20">
                     <jb:ToolsPanel ui:field="toolsPanel" />
                 </g:south>
                 <g:center>
@@ -23,11 +27,10 @@
             </g:DockLayoutPanel>
         </g:east>
         <g:center>
-            <g:DockLayoutPanel unit='PX'>
-                <g:center>
-                    <c:Canvas ui:field="canvas"></c:Canvas>
-                </g:center>
-            </g:DockLayoutPanel>
+            <g:HTMLPanel>
+                <c:Canvas ui:field="canvas"></c:Canvas>
+                <jbd:EditDialog ui:field="editDialog" />
+            </g:HTMLPanel>
         </g:center>
     </g:DockLayoutPanel>
 </ui:UiBinder> 

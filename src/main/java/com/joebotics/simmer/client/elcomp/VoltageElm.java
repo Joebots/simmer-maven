@@ -19,13 +19,14 @@
 
 package com.joebotics.simmer.client.elcomp;
 
-import com.joebotics.simmer.client.gui.widget.Choice;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialListBox;
 
 
 //import java.awt.*;
@@ -196,14 +197,14 @@ public class VoltageElm extends AbstractCircuitElement {
 					maxVoltage, -20, 20);
 		if (n == 1) {
 			EditInfo ei = new EditInfo("Waveform", waveform, -1, -1);
-			ei.choice = new Choice();
-			ei.choice.add("D/C");
-			ei.choice.add("A/C");
-			ei.choice.add("Square Wave");
-			ei.choice.add("Triangle");
-			ei.choice.add("Sawtooth");
-			ei.choice.add("Pulse");
-			ei.choice.select(waveform);
+			ei.choice = new MaterialListBox();
+			ei.choice.addItem("D/C");
+			ei.choice.addItem("A/C");
+			ei.choice.addItem("Square Wave");
+			ei.choice.addItem("Triangle");
+			ei.choice.addItem("Sawtooth");
+			ei.choice.addItem("Pulse");
+			ei.choice.setSelectedIndex(waveform);
 			return ei;
 		}
 		if (waveform == WF_DC)
