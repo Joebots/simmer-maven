@@ -26,6 +26,7 @@ import com.joebotics.simmer.client.gui.util.Font;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.GraphicsUtil;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 import gwt.material.design.client.ui.MaterialCheckBox;
@@ -50,9 +51,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 			bits = (this instanceof DecadeElm) ? 10 : 4;
 		setNoDiagonal(true);
 		setupPins();
-
-		if( sim.getMainMenuBar() != null )
-			setSize(sim.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem() != null && sim.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().getState() ? 1 : 2);
+		setSize(sim.getOptions().getBoolean(OptionKey.SMALL_GRID) ? 1 : 2);
 	}
 	
 	public ChipElm(int xa, int ya, int xb, int yb, int f, StringTokenizer st) {
@@ -119,8 +118,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 			p.setCurcount(updateDotCount(p.getCurrent(), p.getCurcount()));
 			drawDots(g, b, a, p.getCurcount());
 			if (p.isBubble()) {
-				g.setColor(sim.getMainMenuBar().getOptionsMenuBar().getBackgroundCheckItem().getState() ? Color.white
-						: Color.black);
+				g.setColor(sim.getOptions().getBoolean(OptionKey.WHITE_BACKGROUND) ? Color.white : Color.black);
 				GraphicsUtil.drawThickCircle(g, p.getBubbleX(), p.getBubbleY(), 1);
 				g.setColor(lightGrayColor);
 				GraphicsUtil.drawThickCircle(g, p.getBubbleX(), p.getBubbleY(), 3);

@@ -39,6 +39,7 @@ import com.joebotics.simmer.client.gui.util.Polygon;
 import com.joebotics.simmer.client.gui.util.Rectangle;
 import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.MouseModeEnum.MouseMode;
+import com.joebotics.simmer.client.util.OptionKey;
 
 import java.io.Serializable;
 
@@ -552,12 +553,12 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 
 	// TODO: Badger: utils
 	protected void drawDots(Graphics g, Point pa, Point pb, double pos) {
-		if (sim.getSidePanel().getStoppedCheck().getState() || pos == 0 || !sim.getMainMenuBar().getOptionsMenuBar().getDotsCheckItem().getState())
+		if (sim.getSidePanel().getStoppedCheck().getState() || pos == 0 || !sim.getOptions().getBoolean(OptionKey.SHOW_CURRENT))
 			return;
 		int dx = pb.getX() - pa.getX();
 		int dy = pb.getY() - pa.getY();
 		double dn = Math.sqrt(dx * dx + dy * dy);
-		g.setColor(sim.getMainMenuBar().getOptionsMenuBar().getConventionCheckItem().getState() ? Color.yellow
+		g.setColor(sim.getOptions().getBoolean(OptionKey.CONVENTIONAL_CURRENT_MOTION) ? Color.yellow
 				: Color.cyan);
 		int ds = 16;
 		pos %= ds;
@@ -786,8 +787,8 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 		if (needsHighlight()) {
 			return (selectColor);
 		}
-		if (!sim.getMainMenuBar().getOptionsMenuBar().getVoltsCheckItem().getState()) {
-			if (!sim.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState()) // &&
+		if (!sim.getOptions().getBoolean(OptionKey.SHOW_VOLTAGE)) {
+			if (!sim.getOptions().getBoolean(OptionKey.SHOW_POWER)) // &&
 												// !conductanceCheckItem.getState())
 				return (whiteColor);
 			return (g.getLastColor());
@@ -1102,7 +1103,7 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 		 * if (conductanceCheckItem.getState()) { setConductanceColor(g,
 		 * current/getVoltageDiff()); return; }
 		 */
-		if (!sim.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState())
+		if (!sim.getOptions().getBoolean(OptionKey.SHOW_POWER))
 			return;
 		setPowerColor(g, getPower());
 	}

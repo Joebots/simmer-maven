@@ -23,6 +23,7 @@ import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.util.GraphicsUtil;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 import gwt.material.design.client.ui.MaterialCheckBox;
@@ -97,7 +98,7 @@ public class SweepElm extends AbstractCircuitElement {
 			ox = xc + i;
 			oy = yy;
 		}
-		if (sim.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().getState()) {
+		if (sim.getOptions().getBoolean(OptionKey.SHOW_VALUES)) {
 			String s = getShortUnitText(frequency, "Hz");
 			if (getDx() == 0 || getDy() == 0)
 				drawValues(g, s, circleSize);

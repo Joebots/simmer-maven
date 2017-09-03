@@ -33,6 +33,7 @@ import com.joebotics.simmer.client.gui.Scrollbar;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.GraphicsUtil;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 public class PotElm extends AbstractCircuitElement implements Command, MouseWheelHandler {
@@ -93,7 +94,7 @@ public class PotElm extends AbstractCircuitElement implements Command, MouseWhee
 		int segments = 16;
 		int i;
 		int ox = 0;
-		int hs = sim.getMainMenuBar().getOptionsMenuBar().getEuroResistorCheckItem().getState() ? 6 : 8;
+		int hs = sim.getOptions().getBoolean(OptionKey.EURO_RESISTORS) ? 6 : 8;
 		double v1 = getVolts()[0];
 		double v2 = getVolts()[1];
 		double v3 = getVolts()[2];
@@ -102,7 +103,7 @@ public class PotElm extends AbstractCircuitElement implements Command, MouseWhee
 		setPowerColor(g, true);
 		double segf = 1. / segments;
 		int divide = (int) (segments * position);
-		if (!sim.getMainMenuBar().getOptionsMenuBar().getEuroResistorCheckItem().getState()) {
+		if (!sim.getOptions().getBoolean(OptionKey.EURO_RESISTORS)) {
 			// draw zigzag
 			for (i = 0; i != segments; i++) {
 				int nx = 0;

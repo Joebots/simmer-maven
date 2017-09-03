@@ -25,6 +25,7 @@ import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.gui.util.Polygon;
 import com.joebotics.simmer.client.util.GraphicsUtil;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 import gwt.material.design.client.ui.MaterialCheckBox;
@@ -184,7 +185,7 @@ public class MosfetElm extends AbstractCircuitElement {
 			setVoltageColor(g, pnp == 1 ? getVolts()[1] : getVolts()[2]);
 			g.fillPolygon(arrowPoly);
 		}
-		if (sim.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState())
+		if (sim.getOptions().getBoolean(OptionKey.SHOW_POWER))
 			g.setColor(Color.gray);
 		setVoltageColor(g, getVolts()[0]);
 		GraphicsUtil.drawThickLine(g, getPoint1(), gate[1]);

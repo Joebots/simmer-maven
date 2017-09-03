@@ -24,6 +24,7 @@ import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.GraphicsUtil;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 import gwt.material.design.client.ui.MaterialCheckBox;
@@ -75,7 +76,7 @@ public class CapacitorElm extends AbstractCircuitElement {
 		GraphicsUtil.drawThickLine(g, getPoint1(), getLead1());
 		setPowerColor(g, false);
 		GraphicsUtil.drawThickLine(g, plate1[0], plate1[1]);
-		if (sim.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState())
+		if (sim.getOptions().getBoolean(OptionKey.SHOW_POWER))
 			g.setColor(Color.gray);
 
 		// draw second lead and plate
@@ -94,7 +95,7 @@ public class CapacitorElm extends AbstractCircuitElement {
 			drawDots(g, getPoint2(), getLead2(), -getCurcount());
 		}
 		drawPosts(g);
-		if (sim.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().getState()) {
+		if (sim.getOptions().getBoolean(OptionKey.SHOW_VALUES)) {
 			String s = getShortUnitText(capacitance, "F");
 			drawValues(g, s, hs);
 		}

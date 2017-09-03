@@ -24,6 +24,7 @@ import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.GraphicsUtil;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 import gwt.material.design.client.ui.MaterialListBox;
@@ -175,7 +176,7 @@ public class VoltageElm extends AbstractCircuitElement {
 			break;
 		}
 		}
-		if (sim.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().getState()) {
+		if (sim.getOptions().getBoolean(OptionKey.SHOW_VALUES)) {
 			String s = getShortUnitText(frequency, "Hz");
 			if (getDx() == 0 || getDy() == 0)
 				drawValues(g, s, circleSize);

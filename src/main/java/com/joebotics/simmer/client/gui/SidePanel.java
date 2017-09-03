@@ -8,6 +8,7 @@ import com.joebotics.simmer.client.gui.util.Display;
 import com.joebotics.simmer.client.gui.util.LoadFile;
 import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.util.MessageI18N;
+import com.joebotics.simmer.client.util.OptionKey;
 
 /**
  * Created by joe on 8/7/16.
@@ -18,10 +19,8 @@ public class SidePanel extends VerticalPanel{
     private Scrollbar						powerBar;
     private Label powerLabel;
     private Button resetButton;
-    private Scrollbar                       currentBar;
     private Checkbox stoppedCheck;
     private Frame iFrame;
-    private Scrollbar						speedBar;
 
     public SidePanel(Simmer simmer){
         this.simmer = simmer;
@@ -84,16 +83,6 @@ public class SidePanel extends VerticalPanel{
         }
 
         Label l;
-        this.add(l = new Label(MessageI18N.getMessage("Simulation_Speed")));
-        l.addStyleName(MessageI18N.getMessage("topSpace"));
-
-        // was max of 140
-        this.add(speedBar = new Scrollbar(Scrollbar.HORIZONTAL, 3, 1, 0, 260));
-
-        this.add(l = new Label(MessageI18N.getMessage("Current_Speed")));
-        l.addStyleName("topSpace");
-        currentBar = new Scrollbar(Scrollbar.HORIZONTAL, 50, 1, 1, 100);
-        this.add(currentBar);
         this.add(powerLabel = new Label(MessageI18N.getMessage("Power_Brightness")));
         powerLabel.addStyleName("topSpace");
         this.add(powerBar = new Scrollbar(Scrollbar.HORIZONTAL, 50, 1, 1, 100));
@@ -105,21 +94,13 @@ public class SidePanel extends VerticalPanel{
     }
 
     public void setPowerBarEnable() {
-        if (simmer.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState()) {
+        if (simmer.getOptions().getBoolean(OptionKey.SHOW_POWER)) {
             powerLabel.setStyleName("disabled", false);
             powerBar.enable();
         } else {
             powerLabel.setStyleName("disabled", true);
             powerBar.disable();
         }
-    }
-
-    public Scrollbar getSpeedBar() {
-        return speedBar;
-    }
-
-    public Scrollbar getCurrentBar() {
-        return currentBar;
     }
 
     public Scrollbar getPowerBar() {

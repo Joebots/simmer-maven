@@ -22,6 +22,7 @@ package com.joebotics.simmer.client.elcomp;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.util.Inductor;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 import gwt.material.design.client.ui.MaterialCheckBox;
@@ -68,7 +69,7 @@ public class InductorElm extends AbstractCircuitElement {
 		draw2Leads(g);
 		setPowerColor(g, false);
 		drawCoil(g, 8, getLead1(), getLead2(), v1, v2);
-		if (sim.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().getState()) {
+		if (sim.getOptions().getBoolean(OptionKey.SHOW_VALUES)) {
 			String s = getShortUnitText(inductance, "H");
 			drawValues(g, s, hs);
 		}

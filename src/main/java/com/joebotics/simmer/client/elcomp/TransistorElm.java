@@ -26,6 +26,7 @@ import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.gui.util.Polygon;
 import com.joebotics.simmer.client.util.GraphicsUtil;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 import gwt.material.design.client.ui.MaterialCheckBox;
@@ -161,7 +162,7 @@ public class TransistorElm extends AbstractCircuitElement {
 		g.fillPolygon(arrowPoly);
 		// draw base
 		setVoltageColor(g, getVolts()[0]);
-		if (sim.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState())
+		if (sim.getOptions().getBoolean(OptionKey.SHOW_POWER))
 			g.setColor(Color.gray);
 		GraphicsUtil.drawThickLine(g, getPoint1(), base);
 		

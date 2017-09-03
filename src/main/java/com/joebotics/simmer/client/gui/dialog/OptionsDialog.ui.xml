@@ -1,8 +1,10 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui"
     xmlns:m="urn:import:gwt.material.design.client.ui">
+    
     <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N' />
-
+    <ui:import field="com.joebotics.simmer.client.util.OptionKey.*" />
+    
     <ui:style>
 
     </ui:style>
@@ -16,16 +18,17 @@
         </m:MaterialNavBar>
         <m:MaterialModalContent>
             <m:MaterialLabel text="{i18n.Simulation_Speed}" />
-            <m:MaterialRange min="10" max="50" value="25" />
+            <m:MaterialRange ui:field="speedBar" min="0" max="260" value="3" />
             <m:MaterialLabel text="{i18n.Current_Speed}" />
-            <m:MaterialRange min="10" max="50" value="25" />
-            <m:MaterialCheckBox text="{i18n.Conventional_Current_Motion}" />
-            <m:MaterialCheckBox text="{i18n.European_Resistors}" />
-            <m:MaterialCheckBox text="{i18n.Show_Current}" />
-            <m:MaterialCheckBox text="{i18n.Show_Values}" />
-            <m:MaterialCheckBox text="{i18n.Small_Grid}" />
-            <m:MaterialCheckBox text="{i18n.Show_Voltage}" />
-            <m:MaterialCheckBox text="{i18n.Show_Power}" />
+            <m:MaterialRange ui:field="currentBar" min="1" max="100" value="50" />
+            <m:MaterialCheckBox ui:field="showCurrentCheckItem" text="{i18n.Show_Current}" name="{SHOW_CURRENT.name}"/>
+            <m:MaterialCheckBox ui:field="showVoltageCheckItem" text="{i18n.Show_Voltage}" name="{SHOW_VOLTAGE.name}"/>
+            <m:MaterialCheckBox ui:field="showPowerCheckItem" text="{i18n.Show_Power}" name="{SHOW_POWER.name}"/>
+            <m:MaterialCheckBox ui:field="showValuesCheckItem" text="{i18n.Show_Values}" name="{SHOW_VALUES.name}"/>
+            <m:MaterialCheckBox ui:field="smallGridCheckItem" text="{i18n.Small_Grid}" name="{SMALL_GRID.name}"/>
+            <m:MaterialCheckBox ui:field="euroResistorCheckItem" text="{i18n.European_Resistors}" name="{EURO_RESISTORS.name}"/>
+            <m:MaterialCheckBox ui:field="backgroundCheckItem" text="{i18n.White_Background}" name="{WHITE_BACKGROUND.name}"/>
+            <m:MaterialCheckBox ui:field="conventionCheckItem" text="{i18n.Conventional_Current_Motion}" name="{CONVENTIONAL_CURRENT_MOTION.name}"/>
             <m:MaterialIntegerBox label="Integer value" />
         </m:MaterialModalContent>
     </m:MaterialModal>

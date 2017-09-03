@@ -9,6 +9,7 @@ import com.joebotics.simmer.client.gui.util.MenuCommand;
 import com.joebotics.simmer.client.util.MessageI18N;
 
 /**
+ * @deprecated Functionality is moved to the {@code OptionsDialog} class
  * Created by joe on 8/5/16.
  */
 public class OptionsMenu extends MenuBar {

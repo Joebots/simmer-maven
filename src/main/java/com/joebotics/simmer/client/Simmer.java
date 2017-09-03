@@ -27,9 +27,11 @@ import java.util.logging.Logger;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
@@ -83,6 +85,8 @@ import com.joebotics.simmer.client.util.FindPathInfo;
 import com.joebotics.simmer.client.util.HintTypeEnum.HintType;
 import com.joebotics.simmer.client.util.MathUtil;
 import com.joebotics.simmer.client.util.MessageI18N;
+import com.joebotics.simmer.client.util.OptionKey;
+import com.joebotics.simmer.client.util.Options;
 import com.joebotics.simmer.client.util.MouseModeEnum.MouseMode;
 import com.joebotics.simmer.client.util.QueryParameters;
 
@@ -179,6 +183,7 @@ public class Simmer
 	private Scope							scopes[];
 	
 	private CircuitModel 					circuitModel;
+	private Options                   options;
 
 	private static Simmer instance;
 
@@ -241,6 +246,7 @@ public class Simmer
 
 		// dumpTypes = new Class[300];
 		shortcuts = new String[127];
+		options = new Options(Dictionary.getDictionary("SimmerOptions"));
 
 		// these characters are reserved
 		// IES - removal of scopes
@@ -258,17 +264,6 @@ public class Simmer
 		popupDrawMenu = new DrawMenu(this, true);
 		mainMenuBar = new MainMenuBar(this);
 
-		getMainMenuBar().getOptionsMenuBar().getVoltsCheckItem().setState(true);
-		getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().setState(true);
-		getMainMenuBar().getOptionsMenuBar().getEuroResistorCheckItem().setState(euro);
-//		getPrintableCheckItem().setState(printable);
-		getMainMenuBar().getOptionsMenuBar().getConventionCheckItem().setState(convention);
-
-		//layoutPanel.addNorth(mainMenuBar, Display.MENUBARHEIGHT);
-		//layoutPanel.addEast(sidePanel, Display.VERTICALPANELWIDTH);
-//        SideBar sideBar = new SideBar(this);
-//        layoutPanel.addEast(sideBar, Display.VERTICALPANELWIDTH);
-
 		RootLayoutPanel.get().add(mainPanel);
 		cv = mainPanel.getCanvas();
 		if (cv == null) {
@@ -279,7 +274,6 @@ public class Simmer
 			RootPanel.get().add(new Label(message));
 			return;
 		}
-		//layoutPanel.add(cv);
 
 		cvcontext = cv.getContext2d();
 		backcv = Canvas.createIfSupported();
@@ -954,13 +948,12 @@ public class Simmer
 		return null;
 	}
 
-	public double getIterCount() {
-		if (sidePanel.getSpeedBar().getValue() == 0)
-			return 0;
-
-		return .1 * Math.exp((sidePanel.getSpeedBar().getValue() - 61) / 24.);
-
-	}
+    public double getIterCount() {
+        Integer speed = options.getInteger(OptionKey.SIMULATION_SPEED);
+        if (speed == 0)
+            return 0;
+        return .1 * Math.exp((speed - 61) / 24.);
+    }
 
     public void enableItems() {
         // if (powerCheckItem.getState()) {
@@ -1165,7 +1158,7 @@ public class Simmer
 	}
 
 	public void setGrid() {
-		gridSize = (getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().getState()) ? 8 : 16;
+		gridSize = options.getBoolean(OptionKey.SMALL_GRID) ? 8 : 16;
 		gridMask = ~(gridSize - 1);
 		gridRound = gridSize / 2 - 1;
 	}
@@ -1464,7 +1457,7 @@ public class Simmer
 		Graphics g = new Graphics(backcontext);
 		AbstractCircuitElement.selectColor = Color.cyan;
 
-		if (mainMenuBar.getOptionsMenuBar().getBackgroundCheckItem().getState()) {
+		if (options.getBoolean(OptionKey.WHITE_BACKGROUND)) {
 			AbstractCircuitElement.whiteColor = Color.black;
 			AbstractCircuitElement.lightGrayColor = Color.black;
 			g.setColor(Color.white);
@@ -1493,10 +1486,11 @@ public class Simmer
 
 			if (lastTime != 0) {
 				int inc = (int) (sysTime - lastTime);
-				double c = sidePanel.getCurrentBar().getValue();
+				double c = options.getInteger(OptionKey.CURRENT_SPEED);
+				GWT.log("c= " + c);
 				c = java.lang.Math.exp(c / 3.5 - 14.2);
 				AbstractCircuitElement.currentMult = 1.7 * inc * c;
-				if (!getMainMenuBar().getOptionsMenuBar().getConventionCheckItem().getState())
+				if (!options.getBoolean(OptionKey.CONVENTIONAL_CURRENT_MOTION))
 					AbstractCircuitElement.currentMult = -AbstractCircuitElement.currentMult;
 			}
 
@@ -1518,7 +1512,7 @@ public class Simmer
 		g.setFont(oldfont);
 
 		for (i = 0; i != getElmList().size(); i++) {
-			if (getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState())
+			if (options.getBoolean(OptionKey.SHOW_POWER))
 				g.setColor(Color.gray);
 			/*
 			 * else if (conductanceCheckItem.getState())
@@ -1943,6 +1937,7 @@ public class Simmer
 		return hintItem2;
 	}
 
+	@Deprecated
 	public MainMenuBar getMainMenuBar() {
 		return mainMenuBar;
 	}
@@ -2026,4 +2021,8 @@ public class Simmer
 	public SidePanel getSidePanel() {
 		return sidePanel;
 	}
+
+    public Options getOptions() {
+        return options;
+    }
 }
