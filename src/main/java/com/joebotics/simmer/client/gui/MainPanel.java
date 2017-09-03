@@ -6,7 +6,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.joebotics.simmer.client.gui.util.Display;
 
 public class MainPanel extends Composite {
 
@@ -15,12 +17,23 @@ public class MainPanel extends Composite {
     interface MainPanelUiBinder extends UiBinder<Widget, MainPanel> {
     }
 
-    public MainPanel() {
-        initWidget(uiBinder.createAndBindUi(this));
-    }
+    @UiField
+    DockLayoutPanel layoutPanel;
 
     @UiField
     Canvas canvas;
+
+    @UiField
+    DockLayoutPanel eastPanel;
+
+    @UiField
+    ToolsPanel toolsPanel;
+
+    public MainPanel() {
+        initWidget(uiBinder.createAndBindUi(this));
+        //eastPanel.setWidgetSize(toolsPanel, RootLayoutPanel.get().getOffsetHeight() - height);
+        layoutPanel.setWidgetSize(eastPanel, Display.BREADBOARD_WIDTH);
+    }
 
     @UiFactory
     Canvas createCanvas() {

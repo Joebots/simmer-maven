@@ -8,6 +8,9 @@
     <inherits name="com.google.gwt.json.JSON" />
     <inherits name="com.google.gwt.logging.Logging" />
 
+    <!-- Internationalisation -->
+    <inherits name="com.google.gwt.i18n.I18N" />
+
     <!--GWT Material -->
     <inherits name="gwt.material.design.GwtMaterialDesign" />
     <inherits name="gwt.material.design.addins.GwtMaterialAddins" />

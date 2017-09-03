@@ -69,9 +69,9 @@ public class Scrollbar extends Composite implements ClickHandler,
 		val = value;
 		pan = new VerticalPanel();
 		can = Canvas.createIfSupported();
-		can.setWidth((Display.VERTICALPANELWIDTH) + " px");
+		can.setWidth((Display.BREADBOARD_WIDTH) + " px");
 		can.setHeight("40 px");
-		can.setCoordinateSpaceWidth(Display.VERTICALPANELWIDTH);
+		can.setCoordinateSpaceWidth(Display.BREADBOARD_WIDTH);
 		can.setCoordinateSpaceHeight(SCROLLHEIGHT);
 		pan.add(can);
 		g = can.getContext2d();
@@ -105,7 +105,7 @@ public class Scrollbar extends Composite implements ClickHandler,
 		v = min
 				+ (max - min)
 				* (x - HMARGIN - SCROLLHEIGHT - BARMARGIN)
-				/ (Display.VERTICALPANELWIDTH - 2 * (HMARGIN + SCROLLHEIGHT + BARMARGIN));
+				/ (Display.BREADBOARD_WIDTH - 2 * (HMARGIN + SCROLLHEIGHT + BARMARGIN));
 		if (v < min)
 			v = min;
 		if (v > max)
@@ -125,14 +125,14 @@ public class Scrollbar extends Composite implements ClickHandler,
 		else
 			g.setStrokeStyle("lightgrey");
 		g.setLineWidth(1.0);
-		g.fillRect(0, 0, Display.VERTICALPANELWIDTH, SCROLLHEIGHT);
+		g.fillRect(0, 0, Display.BREADBOARD_WIDTH, SCROLLHEIGHT);
 		g.beginPath();
 		g.moveTo(HMARGIN + SCROLLHEIGHT - 3, 0);
 		g.lineTo(HMARGIN, SCROLLHEIGHT / 2);
 		g.lineTo(HMARGIN + SCROLLHEIGHT - 3, SCROLLHEIGHT);
-		g.moveTo(Display.VERTICALPANELWIDTH - HMARGIN - SCROLLHEIGHT + 3, 0);
-		g.lineTo(Display.VERTICALPANELWIDTH - HMARGIN, SCROLLHEIGHT / 2);
-		g.lineTo(Display.VERTICALPANELWIDTH - HMARGIN - SCROLLHEIGHT + 3,
+		g.moveTo(Display.BREADBOARD_WIDTH - HMARGIN - SCROLLHEIGHT + 3, 0);
+		g.lineTo(Display.BREADBOARD_WIDTH - HMARGIN, SCROLLHEIGHT / 2);
+		g.lineTo(Display.BREADBOARD_WIDTH - HMARGIN - SCROLLHEIGHT + 3,
 				SCROLLHEIGHT);
 		g.stroke();
 		if (enabled)
@@ -141,13 +141,13 @@ public class Scrollbar extends Composite implements ClickHandler,
 		g.setLineWidth(5.0);
 		g.moveTo(HMARGIN + SCROLLHEIGHT + BARMARGIN, SCROLLHEIGHT / 2);
 		g.lineTo(
-				Display.VERTICALPANELWIDTH - HMARGIN - SCROLLHEIGHT - BARMARGIN,
+				Display.BREADBOARD_WIDTH - HMARGIN - SCROLLHEIGHT - BARMARGIN,
 				SCROLLHEIGHT / 2);
 		g.stroke();
 		double p = HMARGIN
 				+ SCROLLHEIGHT
 				+ BARMARGIN
-				+ ((Display.VERTICALPANELWIDTH - 2 * (HMARGIN + SCROLLHEIGHT + BARMARGIN)) * ((double) (val - min)))
+				+ ((Display.BREADBOARD_WIDTH - 2 * (HMARGIN + SCROLLHEIGHT + BARMARGIN)) * ((double) (val - min)))
 				/ (max - min);
 		if (enabled) {
 			if (attachedElm != null && attachedElm.needsHighlight())
@@ -207,7 +207,7 @@ public class Scrollbar extends Composite implements ClickHandler,
 				if (val > min)
 					val--;
 			} else {
-				if (e.getX() > Display.VERTICALPANELWIDTH - HMARGIN
+				if (e.getX() > Display.BREADBOARD_WIDTH - HMARGIN
 						- SCROLLHEIGHT) {
 					if (val < max)
 						val++;

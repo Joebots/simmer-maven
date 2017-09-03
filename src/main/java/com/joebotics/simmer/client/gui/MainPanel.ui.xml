@@ -3,15 +3,16 @@
     xmlns:c="urn:import:com.google.gwt.canvas.client" xmlns:m="urn:import:gwt.material.design.client.ui" xmlns:jb="urn:import:com.joebotics.simmer.client.gui"
     xmlns:jbm="urn:import:com.joebotics.simmer.client.gui.menu">
     <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N' />
+    <ui:import field="com.joebotics.simmer.client.gui.util.Display.*" />
     <ui:style>
         .main-panel {
             background-color: black;
         }
     </ui:style>
     <g:DockLayoutPanel unit='PX' ui:field="layoutPanel" styleName="{style.main-panel}">
-        <g:east size="300">
-            <g:DockLayoutPanel unit='PX'>
-                <g:south size="100">
+        <g:east size="418">
+            <g:DockLayoutPanel unit='PX' ui:field="eastPanel">
+                <g:south size="145">
                     <jb:ToolsPanel ui:field="toolsPanel" />
                 </g:south>
                 <g:center>

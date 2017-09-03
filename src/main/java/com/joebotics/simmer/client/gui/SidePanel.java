@@ -99,7 +99,7 @@ public class SidePanel extends VerticalPanel{
         this.add(powerBar = new Scrollbar(Scrollbar.HORIZONTAL, 50, 1, 1, 100));
         setPowerBarEnable();
         this.add(iFrame = new Frame("iframe.html"));
-        iFrame.setWidth(Display.VERTICALPANELWIDTH + "px");
+        iFrame.setWidth(Display.BREADBOARD_WIDTH + "px");
         iFrame.setHeight("100 px");
         iFrame.getElement().setAttribute("scrolling","no");
     }
