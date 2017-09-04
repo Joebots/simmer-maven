@@ -15,6 +15,7 @@ import com.joebotics.simmer.client.gui.util.MenuCommand;
 import com.joebotics.simmer.client.util.CircuitElementFactory;
 import com.joebotics.simmer.client.util.HintTypeEnum;
 import com.joebotics.simmer.client.util.MessageI18N;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 import java.util.logging.Logger;
@@ -51,13 +52,13 @@ public class FileOps {
 
     public String dumpCircuit() {
         int i;
-        int f = (simmer.getMainMenuBar().getOptionsMenuBar().getDotsCheckItem().getState()) ? 1 : 0;
-        f |= (simmer.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().getState()) ? 2 : 0;
-        f |= (simmer.getMainMenuBar().getOptionsMenuBar().getVoltsCheckItem().getState()) ? 0 : 4;
-        f |= (simmer.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState()) ? 8 : 0;
-        f |= (simmer.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().getState()) ? 0 : 16;
+        int f = (simmer.getOptions().getBoolean(OptionKey.SHOW_CURRENT)) ? 1 : 0;
+        f |= (simmer.getOptions().getBoolean(OptionKey.SMALL_GRID)) ? 2 : 0;
+        f |= (simmer.getOptions().getBoolean(OptionKey.SHOW_VOLTAGE)) ? 0 : 4;
+        f |= (simmer.getOptions().getBoolean(OptionKey.SHOW_POWER)) ? 8 : 0;
+        f |= (simmer.getOptions().getBoolean(OptionKey.SHOW_VALUES)) ? 0 : 16;
         // 32 = linear scale in afilter
-        String dump = "$ " + f + " " + simmer.getTimeStep() + " " + simmer.getIterCount() + " " + simmer.getSidePanel().getCurrentBar().getValue() + " " + AbstractCircuitElement.voltageRange + " " + simmer.getSidePanel().getPowerBar().getValue() + "\n";
+        String dump = "$ " + f + " " + simmer.getTimeStep() + " " + simmer.getIterCount() + " " + simmer.getOptions().getInteger(OptionKey.CURRENT_SPEED) + " " + AbstractCircuitElement.voltageRange + " " + simmer.getSidePanel().getPowerBar().getValue() + "\n";
 
         for (i = 0; i != simmer.getElmList().size(); i++)
             dump += simmer.getElm(i).dump() + "\n";
@@ -130,17 +131,17 @@ public class FileOps {
     public void readOptions(StringTokenizer st) {
         int flags = new Integer(st.nextToken()).intValue();
         // IES - remove inteaction
-        simmer.getMainMenuBar().getOptionsMenuBar().getDotsCheckItem().setState((flags & 1) != 0);
-        simmer.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().setState((flags & 2) != 0);
-        simmer.getMainMenuBar().getOptionsMenuBar().getVoltsCheckItem().setState((flags & 4) == 0);
-        simmer.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().setState((flags & 8) == 8);
-        simmer.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().setState((flags & 16) == 0);
+        simmer.getOptions().setValue(OptionKey.SHOW_CURRENT, (flags & 1) != 0);
+        simmer.getOptions().setValue(OptionKey.SMALL_GRID, (flags & 2) != 0);
+        simmer.getOptions().setValue(OptionKey.SHOW_VOLTAGE, (flags & 4) == 0);
+        simmer.getOptions().setValue(OptionKey.SHOW_POWER, (flags & 8) == 8);
+        simmer.getOptions().setValue(OptionKey.SHOW_VALUES, (flags & 16) == 0);
         simmer.setTimeStep(new Double(st.nextToken()).doubleValue());
         double sp = new Double(st.nextToken()).doubleValue();
         int sp2 = (int) (Math.log(10 * sp) * 24 + 61.5);
         // int sp2 = (int) (Math.log(sp)*24+1.5);
-        simmer.getSidePanel().getSpeedBar().setValue(sp2);
-        simmer.getSidePanel().getCurrentBar().setValue(new Integer(st.nextToken()).intValue());
+        simmer.getOptions().setValue(OptionKey.SIMULATION_SPEED, sp2);
+        simmer.getOptions().setValue(OptionKey.CURRENT_SPEED, new Integer(st.nextToken()).intValue());
         AbstractCircuitElement.voltageRange = new Double(st.nextToken()).doubleValue();
 
         try {
@@ -195,14 +196,7 @@ public class FileOps {
             simmer.getElmList().clear();
             simmer.setHintType(HintTypeEnum.HintType.HINT_UNSET);
             simmer.setTimeStep(5e-6);
-            simmer.getMainMenuBar().getOptionsMenuBar().getDotsCheckItem().setState(false);
-            simmer.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().setState(false);
-            simmer.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().setState(false);
-            simmer.getMainMenuBar().getOptionsMenuBar().getVoltsCheckItem().setState(true);
-            simmer.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().setState(true);
             simmer.setGrid();
-            simmer.getSidePanel().getSpeedBar().setValue(117); // 57
-            simmer.getSidePanel().getCurrentBar().setValue(50);
             simmer.getSidePanel().getPowerBar().setValue(50);
             AbstractCircuitElement.voltageRange = 5;
             simmer.setScopeCount(0);

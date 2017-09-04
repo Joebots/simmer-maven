@@ -19,13 +19,14 @@
 
 package com.joebotics.simmer.client.elcomp;
 
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.Inductor;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 
 //import java.awt.*;
@@ -147,8 +148,8 @@ public class TransformerElm extends AbstractCircuitElement {
 					.setDimensionless();
 		if (n == 3) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Trapezoidal Approximation",
-					isTrapezoidal());
+			ei.checkbox = new MaterialCheckBox("Trapezoidal Approximation");
+            ei.checkbox.setValue(isTrapezoidal());
 			return ei;
 		}
 		return null;
@@ -184,7 +185,7 @@ public class TransformerElm extends AbstractCircuitElement {
 		if (n == 2 && ei.value > 0 && ei.value < 1)
 			couplingCoef = ei.value;
 		if (n == 3) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(getFlags() & ~Inductor.FLAG_BACK_EULER);
 			else
 				setFlags(getFlags() | Inductor.FLAG_BACK_EULER);

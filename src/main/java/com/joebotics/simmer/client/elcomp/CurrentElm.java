@@ -24,6 +24,7 @@ import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.gui.util.Polygon;
 import com.joebotics.simmer.client.util.GraphicsUtil;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 
@@ -65,7 +66,7 @@ public class CurrentElm extends AbstractCircuitElement {
 		g.fillPolygon(arrow);
 		setBbox(getPoint1(), getPoint2(), cr);
 		doDots(g);
-		if (sim.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().getState()) {
+		if (sim.getOptions().getBoolean(OptionKey.SHOW_VALUES)) {
 			String s = getShortUnitText(currentValue, "A");
 			if (getDx() == 0 || getDy() == 0)
 				drawValues(g, s, cr);

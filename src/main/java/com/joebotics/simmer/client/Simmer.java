@@ -19,37 +19,76 @@
 
 package com.joebotics.simmer.client;
 
+import java.util.List;
+import java.util.logging.Logger;
+
 // GWT conversion (c) 2015 by Iain Sharp
 // For information about the theory behind this, see Electronic Circuit & System Simulation Methods by Pillage
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window.Navigator;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.MenuItem;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.joebotics.simmer.client.breadboard.interpreter.BreadboardCircuitParserListener;
 import com.joebotics.simmer.client.breadboard.interpreter.CircuitParser;
 import com.joebotics.simmer.client.breadboard.interpreter.CircuitParserListener;
-import com.joebotics.simmer.client.elcomp.*;
-import com.joebotics.simmer.client.gui.*;
-import com.joebotics.simmer.client.gui.dialog.*;
+import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
+import com.joebotics.simmer.client.elcomp.CapacitorElm;
+import com.joebotics.simmer.client.elcomp.CircuitNode;
+import com.joebotics.simmer.client.elcomp.CircuitNodeLink;
+import com.joebotics.simmer.client.elcomp.CurrentElm;
+import com.joebotics.simmer.client.elcomp.GraphicElm;
+import com.joebotics.simmer.client.elcomp.GroundElm;
+import com.joebotics.simmer.client.elcomp.InductorElm;
+import com.joebotics.simmer.client.elcomp.RailElm;
+import com.joebotics.simmer.client.elcomp.ResistorElm;
+import com.joebotics.simmer.client.elcomp.SwitchElm;
+import com.joebotics.simmer.client.elcomp.VoltageElm;
+import com.joebotics.simmer.client.elcomp.WireElm;
+import com.joebotics.simmer.client.gui.MainPanel;
+import com.joebotics.simmer.client.gui.Scope;
+import com.joebotics.simmer.client.gui.SidePanel;
+import com.joebotics.simmer.client.gui.dialog.AboutBox;
+import com.joebotics.simmer.client.gui.dialog.EditDialog;
+import com.joebotics.simmer.client.gui.dialog.ExportAsLocalFileDialog;
+import com.joebotics.simmer.client.gui.dialog.ExportAsTextDialog;
+import com.joebotics.simmer.client.gui.dialog.ExportAsUrlDialog;
+import com.joebotics.simmer.client.gui.dialog.ImportFromTextDialog;
 import com.joebotics.simmer.client.gui.menu.DrawMenu;
 import com.joebotics.simmer.client.gui.menu.ElementPopupMenu;
 import com.joebotics.simmer.client.gui.menu.MainMenuBar;
 import com.joebotics.simmer.client.gui.menu.ScrollValuePopup;
-import com.joebotics.simmer.client.gui.util.*;
+import com.joebotics.simmer.client.gui.util.Color;
+import com.joebotics.simmer.client.gui.util.Display;
+import com.joebotics.simmer.client.gui.util.Font;
+import com.joebotics.simmer.client.gui.util.Graphics;
+import com.joebotics.simmer.client.gui.util.LoadFile;
+import com.joebotics.simmer.client.gui.util.Point;
+import com.joebotics.simmer.client.gui.util.Rectangle;
+import com.joebotics.simmer.client.gui.util.RowInfo;
 import com.joebotics.simmer.client.integration.JSEventBusProxy;
 import com.joebotics.simmer.client.integration.SimmerEvents;
-import com.joebotics.simmer.client.util.*;
+import com.joebotics.simmer.client.util.FindPathInfo;
 import com.joebotics.simmer.client.util.HintTypeEnum.HintType;
+import com.joebotics.simmer.client.util.MathUtil;
+import com.joebotics.simmer.client.util.MessageI18N;
+import com.joebotics.simmer.client.util.OptionKey;
+import com.joebotics.simmer.client.util.Options;
 import com.joebotics.simmer.client.util.MouseModeEnum.MouseMode;
-
-import java.util.*;
-import java.util.logging.Logger;
+import com.joebotics.simmer.client.util.QueryParameters;
 
 public class Simmer
 {
@@ -118,7 +157,7 @@ public class Simmer
 
 	private MouseMode						mouseMode			= MouseMode.SELECT;
 	private MouseMode						tempMouseMode		= MouseMode.SELECT;
-	private DockLayoutPanel					layoutPanel;
+	//private DockLayoutPanel					layoutPanel;
 	private DrawMenu 						popupDrawMenu;
 
 	private AbstractCircuitElement 			selectedCircuitElement;
@@ -144,6 +183,7 @@ public class Simmer
 	private Scope							scopes[];
 	
 	private CircuitModel 					circuitModel;
+	private Options                   options;
 
 	private static Simmer instance;
 
@@ -206,6 +246,7 @@ public class Simmer
 
 		// dumpTypes = new Class[300];
 		shortcuts = new String[127];
+		options = new Options(Dictionary.getDictionary("SimmerOptions"));
 
 		// these characters are reserved
 		// IES - removal of scopes
@@ -216,24 +257,15 @@ public class Simmer
 		 */
 
 		// main.setLayout(new CircuitLayout());
-		layoutPanel = new DockLayoutPanel(Unit.PX);
+		MainPanel mainPanel = new MainPanel();
+        editDialog = mainPanel.getEditDialog();
+		//layoutPanel = new DockLayoutPanel(Unit.PX);
 		sidePanel = new SidePanel(this);
 		popupDrawMenu = new DrawMenu(this, true);
 		mainMenuBar = new MainMenuBar(this);
 
-		getMainMenuBar().getOptionsMenuBar().getVoltsCheckItem().setState(true);
-		getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().setState(true);
-		getMainMenuBar().getOptionsMenuBar().getEuroResistorCheckItem().setState(euro);
-//		getPrintableCheckItem().setState(printable);
-		getMainMenuBar().getOptionsMenuBar().getConventionCheckItem().setState(convention);
-
-		layoutPanel.addNorth(mainMenuBar, Display.MENUBARHEIGHT);
-		layoutPanel.addEast(sidePanel, Display.VERTICALPANELWIDTH);
-//        SideBar sideBar = new SideBar(this);
-//        layoutPanel.addEast(sideBar, Display.VERTICALPANELWIDTH);
-
-		RootLayoutPanel.get().add(layoutPanel);
-		cv = Canvas.createIfSupported();
+		RootLayoutPanel.get().add(mainPanel);
+		cv = mainPanel.getCanvas();
 		if (cv == null) {
 			// fire circuit broken event here
 			// {source: simmer, component: ce, message: "Voltage_source/wire_loop_with_no_resistance!"}
@@ -242,7 +274,6 @@ public class Simmer
 			RootPanel.get().add(new Label(message));
 			return;
 		}
-		layoutPanel.add(cv);
 
 		cvcontext = cv.getContext2d();
 		backcv = Canvas.createIfSupported();
@@ -285,16 +316,12 @@ public class Simmer
 		JSEventBusProxy.init();
 	}
 
-	public static EditDialog getEditDialog() {
+	public EditDialog getEditDialog() {
 		return editDialog;
 	}
 
 	public static String getMuString() {
 		return muString;
-	}
-
-	public static void setEditDialog(EditDialog editDialog) {
-		Simmer.editDialog = editDialog;
 	}
 
 	private void analyzeCircuit() {
@@ -921,13 +948,12 @@ public class Simmer
 		return null;
 	}
 
-	public double getIterCount() {
-		if (sidePanel.getSpeedBar().getValue() == 0)
-			return 0;
-
-		return .1 * Math.exp((sidePanel.getSpeedBar().getValue() - 61) / 24.);
-
-	}
+    public double getIterCount() {
+        Integer speed = options.getInteger(OptionKey.SIMULATION_SPEED);
+        if (speed == 0)
+            return 0;
+        return .1 * Math.exp((speed - 61) / 24.);
+    }
 
     public void enableItems() {
         // if (powerCheckItem.getState()) {
@@ -1111,8 +1137,8 @@ public class Simmer
 		int width, height;
 		width = RootLayoutPanel.get().getOffsetWidth();
 		height = RootLayoutPanel.get().getOffsetHeight();
-		height = height - Display.MENUBARHEIGHT;
-		width = width - Display.VERTICALPANELWIDTH;
+		//height = height - Display.MENUBARHEIGHT;
+		width = width - Display.BREADBOARD_WIDTH;
 		if (cv != null) {
 			cv.setWidth(width + "PX");
 			cv.setHeight(height + "PX");
@@ -1132,7 +1158,7 @@ public class Simmer
 	}
 
 	public void setGrid() {
-		gridSize = (getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().getState()) ? 8 : 16;
+		gridSize = options.getBoolean(OptionKey.SMALL_GRID) ? 8 : 16;
 		gridMask = ~(gridSize - 1);
 		gridRound = gridSize / 2 - 1;
 	}
@@ -1431,7 +1457,7 @@ public class Simmer
 		Graphics g = new Graphics(backcontext);
 		AbstractCircuitElement.selectColor = Color.cyan;
 
-		if (mainMenuBar.getOptionsMenuBar().getBackgroundCheckItem().getState()) {
+		if (options.getBoolean(OptionKey.WHITE_BACKGROUND)) {
 			AbstractCircuitElement.whiteColor = Color.black;
 			AbstractCircuitElement.lightGrayColor = Color.black;
 			g.setColor(Color.white);
@@ -1460,10 +1486,10 @@ public class Simmer
 
 			if (lastTime != 0) {
 				int inc = (int) (sysTime - lastTime);
-				double c = sidePanel.getCurrentBar().getValue();
+				double c = options.getInteger(OptionKey.CURRENT_SPEED);
 				c = java.lang.Math.exp(c / 3.5 - 14.2);
 				AbstractCircuitElement.currentMult = 1.7 * inc * c;
-				if (!getMainMenuBar().getOptionsMenuBar().getConventionCheckItem().getState())
+				if (!options.getBoolean(OptionKey.CONVENTIONAL_CURRENT_MOTION))
 					AbstractCircuitElement.currentMult = -AbstractCircuitElement.currentMult;
 			}
 
@@ -1485,7 +1511,7 @@ public class Simmer
 		g.setFont(oldfont);
 
 		for (i = 0; i != getElmList().size(); i++) {
-			if (getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState())
+			if (options.getBoolean(OptionKey.SHOW_POWER))
 				g.setColor(Color.gray);
 			/*
 			 * else if (conductanceCheckItem.getState())
@@ -1910,6 +1936,7 @@ public class Simmer
 		return hintItem2;
 	}
 
+	@Deprecated
 	public MainMenuBar getMainMenuBar() {
 		return mainMenuBar;
 	}
@@ -1993,4 +2020,8 @@ public class Simmer
 	public SidePanel getSidePanel() {
 		return sidePanel;
 	}
+
+    public Options getOptions() {
+        return options;
+    }
 }

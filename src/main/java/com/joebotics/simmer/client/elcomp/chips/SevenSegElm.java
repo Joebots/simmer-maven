@@ -25,6 +25,7 @@ import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.util.GraphicsUtil;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 //import java.awt.*;
@@ -79,7 +80,7 @@ public class SevenSegElm extends ChipElm {
 	}
 
 	void setColor(Graphics g, int p) {
-		g.setColor(getPins()[p].getValue() ? Color.red : sim.getMainMenuBar().getOptionsMenuBar().getBackgroundCheckItem().getState() ? Color.white : darkred);
+		g.setColor(getPins()[p].getValue() ? Color.red : sim.getOptions().getBoolean(OptionKey.WHITE_BACKGROUND) ? Color.white : darkred);
 	}
 
 	public void setupPins() {

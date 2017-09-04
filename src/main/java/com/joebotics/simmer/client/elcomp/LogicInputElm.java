@@ -19,13 +19,14 @@
 
 package com.joebotics.simmer.client.elcomp;
 
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Font;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 //import java.awt.*;
 //import java.util.StringTokenizer;
@@ -89,7 +90,8 @@ public class LogicInputElm extends SwitchElm {
 	public EditInfo getEditInfo(int n) {
 		if (n == 0) {
 			EditInfo ei = new EditInfo("", 0, 0, 0);
-			ei.checkbox = new Checkbox("Momentary Switch", isMomentary());
+			ei.checkbox = new MaterialCheckBox("Momentary Switch");
+            ei.checkbox.setValue(isMomentary());
 			return ei;
 		}
 		if (n == 1)
@@ -142,7 +144,7 @@ public class LogicInputElm extends SwitchElm {
 
 	public void setEditValue(int n, EditInfo ei) {
 		if (n == 0)
-			setMomentary(ei.checkbox.getState());
+			setMomentary(ei.checkbox.getValue());
 		if (n == 1)
 			hiV = ei.value;
 		if (n == 2)

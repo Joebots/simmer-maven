@@ -24,6 +24,7 @@ import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.gui.util.Polygon;
 import com.joebotics.simmer.client.util.GraphicsUtil;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 
@@ -51,8 +52,7 @@ abstract class GateElm extends AbstractCircuitElement {
 		setNoDiagonal(true);
 		inputCount = 2;
 
-		if( sim.getMainMenuBar() != null )
-			setSize(sim.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem() != null && sim.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().getState() ? 1 : 2);
+		setSize(sim.getOptions().getBoolean(OptionKey.SMALL_GRID) ? 1 : 2);
 		setupPins();
 	}
 

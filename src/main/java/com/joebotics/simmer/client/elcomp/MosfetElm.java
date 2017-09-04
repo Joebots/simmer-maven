@@ -19,14 +19,16 @@
 
 package com.joebotics.simmer.client.elcomp;
 
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.gui.util.Polygon;
 import com.joebotics.simmer.client.util.GraphicsUtil;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 
 //import java.awt.*;
@@ -183,7 +185,7 @@ public class MosfetElm extends AbstractCircuitElement {
 			setVoltageColor(g, pnp == 1 ? getVolts()[1] : getVolts()[2]);
 			g.fillPolygon(arrowPoly);
 		}
-		if (sim.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState())
+		if (sim.getOptions().getBoolean(OptionKey.SHOW_POWER))
 			g.setColor(Color.gray);
 		setVoltageColor(g, getVolts()[0]);
 		GraphicsUtil.drawThickLine(g, getPoint1(), gate[1]);
@@ -243,7 +245,8 @@ public class MosfetElm extends AbstractCircuitElement {
 			return new EditInfo("Threshold Voltage", pnp * vt, .01, 5);
 		if (n == 1) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Digital Symbol", drawDigital());
+			ei.checkbox = new MaterialCheckBox("Digital Symbol");
+            ei.checkbox.setValue(drawDigital());
 			return ei;
 		}
 
@@ -287,7 +290,7 @@ public class MosfetElm extends AbstractCircuitElement {
 		if (n == 0)
 			vt = pnp * ei.value;
 		if (n == 1) {
-			setFlags((ei.checkbox.getState()) ? (getFlags() | FLAG_DIGITAL)
+			setFlags((ei.checkbox.getValue()) ? (getFlags() | FLAG_DIGITAL)
 					: (getFlags() & ~FLAG_DIGITAL));
 			setPoints();
 		}

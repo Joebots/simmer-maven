@@ -19,7 +19,6 @@
 
 package com.joebotics.simmer.client.elcomp;
 
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Font;
@@ -27,6 +26,8 @@ import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 
 //import java.awt.*;
@@ -77,8 +78,8 @@ public class OutputElm extends AbstractCircuitElement {
 	public EditInfo getEditInfo(int n) {
 		if (n == 0) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Show Voltage",
-					(getFlags() & FLAG_VALUE) != 0);
+			ei.checkbox = new MaterialCheckBox("Show Voltage");
+            ei.checkbox.setValue((getFlags() & FLAG_VALUE) != 0);
 			return ei;
 		}
 		return null;
@@ -99,7 +100,7 @@ public class OutputElm extends AbstractCircuitElement {
 
 	public void setEditValue(int n, EditInfo ei) {
 		if (n == 0)
-			setFlags((ei.checkbox.getState()) ? (getFlags() | FLAG_VALUE)
+			setFlags((ei.checkbox.getValue()) ? (getFlags() | FLAG_VALUE)
 					: (getFlags() & ~FLAG_VALUE));
 	}
 

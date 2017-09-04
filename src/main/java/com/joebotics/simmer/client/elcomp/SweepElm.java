@@ -19,12 +19,14 @@
 
 package com.joebotics.simmer.client.elcomp;
 
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.util.GraphicsUtil;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 
 //import java.awt.*;
@@ -96,7 +98,7 @@ public class SweepElm extends AbstractCircuitElement {
 			ox = xc + i;
 			oy = yy;
 		}
-		if (sim.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().getState()) {
+		if (sim.getOptions().getBoolean(OptionKey.SHOW_VALUES)) {
 			String s = getShortUnitText(frequency, "Hz");
 			if (getDx() == 0 || getDy() == 0)
 				drawValues(g, s, circleSize);
@@ -125,15 +127,16 @@ public class SweepElm extends AbstractCircuitElement {
 			return new EditInfo("Sweep Time (s)", sweepTime, 0, 0);
 		if (n == 3) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Logarithmic", (getFlags() & FLAG_LOG) != 0);
+			ei.checkbox = new MaterialCheckBox("Logarithmic");
+            ei.checkbox.setValue((getFlags() & FLAG_LOG) != 0);
 			return ei;
 		}
 		if (n == 4)
 			return new EditInfo("Max Voltage", maxV, 0, 0);
 		if (n == 5) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Bidirectional",
-					(getFlags() & FLAG_BIDIR) != 0);
+			ei.checkbox = new MaterialCheckBox("Bidirectional");
+            ei.checkbox.setValue((getFlags() & FLAG_BIDIR) != 0);
 			return ei;
 		}
 		return null;
@@ -188,14 +191,14 @@ public class SweepElm extends AbstractCircuitElement {
 			sweepTime = ei.value;
 		if (n == 3) {
 			setFlags(getFlags() & ~FLAG_LOG);
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(getFlags() | FLAG_LOG);
 		}
 		if (n == 4)
 			maxV = ei.value;
 		if (n == 5) {
 			setFlags(getFlags() & ~FLAG_BIDIR);
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(getFlags() | FLAG_BIDIR);
 		}
 		setParams();

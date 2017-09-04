@@ -1,0 +1,23 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui"
+    xmlns:m="urn:import:gwt.material.design.client.ui">
+    <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N' />
+
+    <ui:style>
+
+    </ui:style>
+    <m:MaterialModal ui:field="modal" type="DEFAULT" dismissible="true" inDuration="500" outDuration="500">
+        <m:MaterialNavBar>
+            <m:MaterialNavBrand float="LEFT" text="{i18n.Edit_Component}" />
+            <m:MaterialNavSection float="RIGHT">
+                <m:MaterialIcon ui:field="btnClose" tooltip="{i18n.Close}" iconType="CLEAR" iconColor="WHITE"
+                    circle="true" waves="DEFAULT" />
+            </m:MaterialNavSection>
+        </m:MaterialNavBar>
+        <m:MaterialModalContent ui:field="content">
+        </m:MaterialModalContent>
+        <m:MaterialModalFooter>
+            <m:MaterialButton ui:field="btnSave" text="{i18n.Save}" type="FLAT"/>
+        </m:MaterialModalFooter>
+    </m:MaterialModal>
+</ui:UiBinder> 

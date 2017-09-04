@@ -5,6 +5,7 @@ import com.joebotics.simmer.client.Simmer;
 import com.joebotics.simmer.client.util.MessageI18N;
 
 /**
+ * @deprecated Functionality is moved to the {@code ToolsPanel} class
  * Created by joe on 8/6/16.
  */
 public class MainMenuBar extends MenuBar {

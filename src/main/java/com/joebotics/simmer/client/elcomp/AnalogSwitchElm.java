@@ -19,12 +19,13 @@
 
 package com.joebotics.simmer.client.elcomp;
 
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 
 //import java.awt.*;
@@ -125,8 +126,8 @@ public class AnalogSwitchElm extends AbstractCircuitElement {
 	public EditInfo getEditInfo(int n) {
 		if (n == 0) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Normally closed",
-					(getFlags() & FLAG_INVERT) != 0);
+			ei.checkbox = new MaterialCheckBox("Normally closed");
+            ei.checkbox.setValue((getFlags() & FLAG_INVERT) != 0);
 			return ei;
 		}
 		if (n == 1)
@@ -183,7 +184,7 @@ public class AnalogSwitchElm extends AbstractCircuitElement {
 
 	public void setEditValue(int n, EditInfo ei) {
 		if (n == 0)
-			setFlags((ei.checkbox.getState()) ? (getFlags() | FLAG_INVERT)
+			setFlags((ei.checkbox.getValue()) ? (getFlags() | FLAG_INVERT)
 					: (getFlags() & ~FLAG_INVERT));
 		if (n == 1 && ei.value > 0)
 			r_on = ei.value;

@@ -24,6 +24,7 @@ import com.joebotics.simmer.client.Simmer;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 //import java.awt.*;
@@ -72,7 +73,7 @@ public class ResistorElm extends AbstractCircuitElement {
 		grad.addColorStop(0, getVoltageColor(g, v1).getHexValue());
 		grad.addColorStop(1.0, getVoltageColor(g, v2).getHexValue());
 		g.getContext().setStrokeStyle(grad);
-		if (!sim.getMainMenuBar().getOptionsMenuBar().getEuroResistorCheckItem().getState()) {
+		if (!sim.getOptions().getBoolean(OptionKey.EURO_RESISTORS)) {
 			// // draw zigzag
 			// for (i = 0; i != segments; i++) {
 			// int nx = 0;

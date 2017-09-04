@@ -20,6 +20,7 @@
 package com.joebotics.simmer.client.elcomp;
 
 import com.joebotics.simmer.client.util.MathUtil;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Font;
 import com.joebotics.simmer.client.gui.util.Graphics;
@@ -55,8 +56,7 @@ public class OpAmpElm extends AbstractCircuitElement {
 		minOut = -15;
 		gbw = 1e6;
 
-		if( sim.getMainMenuBar() != null )
-			setSize(sim.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem() != null && sim.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().getState() ? 1 : 2);
+		setSize(sim.getOptions().getBoolean(OptionKey.SMALL_GRID) ? 1 : 2);
 
 		setGain();
 	}

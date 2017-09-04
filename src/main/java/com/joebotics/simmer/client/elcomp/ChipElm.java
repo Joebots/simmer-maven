@@ -20,14 +20,16 @@
 package com.joebotics.simmer.client.elcomp;
 
 import com.joebotics.simmer.client.elcomp.chips.DecadeElm;
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Font;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.GraphicsUtil;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 public abstract class ChipElm extends AbstractCircuitElement {
 	private int bits;
@@ -49,9 +51,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 			bits = (this instanceof DecadeElm) ? 10 : 4;
 		setNoDiagonal(true);
 		setupPins();
-
-		if( sim.getMainMenuBar() != null )
-			setSize(sim.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem() != null && sim.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().getState() ? 1 : 2);
+		setSize(sim.getOptions().getBoolean(OptionKey.SMALL_GRID) ? 1 : 2);
 	}
 	
 	public ChipElm(int xa, int ya, int xb, int yb, int f, StringTokenizer st) {
@@ -118,8 +118,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 			p.setCurcount(updateDotCount(p.getCurrent(), p.getCurcount()));
 			drawDots(g, b, a, p.getCurcount());
 			if (p.isBubble()) {
-				g.setColor(sim.getMainMenuBar().getOptionsMenuBar().getBackgroundCheckItem().getState() ? Color.white
-						: Color.black);
+				g.setColor(sim.getOptions().getBoolean(OptionKey.WHITE_BACKGROUND) ? Color.white : Color.black);
 				GraphicsUtil.drawThickCircle(g, p.getBubbleX(), p.getBubbleY(), 1);
 				g.setColor(lightGrayColor);
 				GraphicsUtil.drawThickCircle(g, p.getBubbleX(), p.getBubbleY(), 3);
@@ -170,12 +169,14 @@ public abstract class ChipElm extends AbstractCircuitElement {
 	public EditInfo getEditInfo(int n) {
 		if (n == 0) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Flip X", (getFlags() & FLAG_FLIP_X) != 0);
+			ei.checkbox = new MaterialCheckBox("Flip X");
+            ei.checkbox.setValue((getFlags() & FLAG_FLIP_X) != 0);
 			return ei;
 		}
 		if (n == 1) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Flip Y", (getFlags() & FLAG_FLIP_Y) != 0);
+			ei.checkbox = new MaterialCheckBox("Flip Y");
+            ei.checkbox.setValue((getFlags() & FLAG_FLIP_Y) != 0);
 			return ei;
 		}
 		return null;
@@ -221,14 +222,14 @@ public abstract class ChipElm extends AbstractCircuitElement {
 
 	public void setEditValue(int n, EditInfo ei) {
 		if (n == 0) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(getFlags() | FLAG_FLIP_X);
 			else
 				setFlags(getFlags() & ~FLAG_FLIP_X);
 			setPoints();
 		}
 		if (n == 1) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(getFlags() | FLAG_FLIP_Y);
 			else
 				setFlags(getFlags() & ~FLAG_FLIP_Y);

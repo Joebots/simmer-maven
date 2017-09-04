@@ -22,9 +22,10 @@ package com.joebotics.simmer.client.elcomp.chips;
 import com.joebotics.simmer.client.elcomp.ChipElm;
 import com.joebotics.simmer.client.elcomp.Pin;
 import com.joebotics.simmer.client.elcomp.Side;
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 //import java.awt.*;
 //import java.util.StringTokenizer;
@@ -82,7 +83,8 @@ public class MonostableElm extends ChipElm {
 	public EditInfo getEditInfo(int n) {
 		if (n == 2) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Retriggerable", retriggerable);
+			ei.checkbox = new MaterialCheckBox("Retriggerable");
+            ei.checkbox.setValue(retriggerable);
 			return ei;
 		}
 		if (n == 3) {
@@ -102,7 +104,7 @@ public class MonostableElm extends ChipElm {
 
 	public void setEditValue(int n, EditInfo ei) {
 		if (n == 2) {
-			retriggerable = ei.checkbox.getState();
+			retriggerable = ei.checkbox.getValue();
 		}
 		if (n == 3) {
 			delay = ei.value;

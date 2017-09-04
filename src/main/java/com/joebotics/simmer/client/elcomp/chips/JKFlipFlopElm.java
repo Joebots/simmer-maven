@@ -22,9 +22,10 @@ package com.joebotics.simmer.client.elcomp.chips;
 import com.joebotics.simmer.client.elcomp.ChipElm;
 import com.joebotics.simmer.client.elcomp.Pin;
 import com.joebotics.simmer.client.elcomp.Side;
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 //import java.awt.*;
 //import java.util.StringTokenizer;
@@ -76,7 +77,8 @@ public class JKFlipFlopElm extends ChipElm {
 	public EditInfo getEditInfo(int n) {
 		if (n == 2) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Reset Pin", hasReset());
+			ei.checkbox = new MaterialCheckBox("Reset Pin");
+            ei.checkbox.setValue(hasReset());
 			return ei;
 		}
 
@@ -97,7 +99,7 @@ public class JKFlipFlopElm extends ChipElm {
 
 	public void setEditValue(int n, EditInfo ei) {
 		if (n == 2) {
-			if (ei.checkbox.getState()) {
+			if (ei.checkbox.getValue()) {
 				setFlags(getFlags() | FLAG_RESET);
 			} else {
 				setFlags(getFlags() & ~FLAG_RESET);
