@@ -59,6 +59,7 @@ public class CircuitsDialog extends Composite {
     private void initTree() {
         TreeNode<CircuitLinkInfo> circuits = Simmer.getInstance().getCircuitsTree();
         if (circuits != null) {
+            circuitsTree.clear();
             for(TreeNode<CircuitLinkInfo> node : circuits) {
                 circuitsTree.add(parseNode(node));
             }
