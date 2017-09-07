@@ -1,24 +1,26 @@
 package com.joebotics.simmer.client;
 
+import java.util.logging.Logger;
+
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.http.client.*;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.MenuBar;
-import com.google.gwt.user.client.ui.MenuItem;
 import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
+import com.joebotics.simmer.client.gui.Scope;
 import com.joebotics.simmer.client.gui.dialog.ExportAsLocalFileDialog;
 import com.joebotics.simmer.client.gui.dialog.ExportAsTextDialog;
 import com.joebotics.simmer.client.gui.dialog.ExportAsUrlDialog;
-import com.joebotics.simmer.client.gui.Scope;
 import com.joebotics.simmer.client.gui.util.LoadFile;
-import com.joebotics.simmer.client.gui.util.MenuCommand;
 import com.joebotics.simmer.client.util.CircuitElementFactory;
 import com.joebotics.simmer.client.util.HintTypeEnum;
 import com.joebotics.simmer.client.util.MessageI18N;
 import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
-
-import java.util.logging.Logger;
 
 public class FileOps {
     private Simmer simmer;
@@ -74,15 +76,13 @@ public class FileOps {
     }
 
     protected void processSetupList(byte b[], int len, final boolean openDefault) {
-        MenuBar currentMenuBar;
-        MenuBar stack[] = new MenuBar[6];
+        TreeNode<CircuitLinkInfo> stack[] = new TreeNode[6];
         int stackptr = 0;
-        currentMenuBar = new MenuBar(true);
-        currentMenuBar.setAutoOpen(true);
-        simmer.getMainMenuBar().addItem(MessageI18N.getMessage("Circuits"), currentMenuBar);
-        stack[stackptr++] = currentMenuBar;
+        TreeNode<CircuitLinkInfo> circuitsTree = new TreeNode(null);
+        TreeNode<CircuitLinkInfo> currentNode = circuitsTree;
+        stack[stackptr++] = currentNode;
         int p;
-        for (p = 0; p < len; ) {
+        for (p = 0; p < len;) {
             int l;
             for (l = 0; l != len - p; l++)
                 if (b[l + p] == '\n') {
@@ -90,17 +90,18 @@ public class FileOps {
                     break;
                 }
             String line = new String(b, p, l - 1);
-            if (line.charAt(0) == '#')
-                ;
-            else if (line.charAt(0) == '+') {
-                // MenuBar n = new Menu(line.substring(1));
-                MenuBar n = new MenuBar(true);
-                n.setAutoOpen(true);
-                currentMenuBar.addItem(line.substring(1), n);
-                currentMenuBar = stack[stackptr++] = n;
-            } else if (line.charAt(0) == '-') {
-                currentMenuBar = stack[--stackptr - 1];
-            } else {
+            switch (line.charAt(0)) {
+            case '#':
+                // Commented out record
+                break;
+            case '+':
+                TreeNode n  = currentNode.addChild(new CircuitLinkInfo(line.substring(1)));
+                currentNode = stack[stackptr++] = n;
+                break;
+            case '-':
+                currentNode = stack[--stackptr - 1];
+                break;
+            default:
                 int i = line.indexOf(' ');
                 if (i > 0) {
                     String title = line.substring(i + 1);
@@ -108,8 +109,7 @@ public class FileOps {
                     if (line.charAt(0) == '>')
                         first = true;
                     String file = line.substring(first ? 1 : 0, i);
-                    // menu.add(getMenuItem(title, MessageI18N.getMessage("setup_") + file));
-                    currentMenuBar.addItem(new MenuItem(title, new MenuCommand("circuits", "setup " + file)));
+                    currentNode.addChild(new CircuitLinkInfo(title, file));
                     if (first && simmer.getStartCircuit() == null) {
                         simmer.setStartCircuit(file);
                         simmer.setStartLabel(title);
@@ -120,6 +120,7 @@ public class FileOps {
             }
             p += l;
         }
+        simmer.setCircuitsTree(circuitsTree);
     }
 
     public void readHint(StringTokenizer st) {

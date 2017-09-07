@@ -15,7 +15,8 @@
             <m:MaterialButton ui:field="powerButton" type="FLOATING" waves="LIGHT" size="LARGE"
                 iconType="POWER_SETTINGS_NEW" />
         </g:HTMLPanel>
-        <jbd:OptionsDialog ui:field="optionsDialog" />
         <jbd:SchematicDialog ui:field="schematicDialog" />
+        <jbd:CircuitsDialog ui:field="circuitsDialog" />
+        <jbd:OptionsDialog ui:field="optionsDialog" />
     </g:HTMLPanel>
 </ui:UiBinder> 

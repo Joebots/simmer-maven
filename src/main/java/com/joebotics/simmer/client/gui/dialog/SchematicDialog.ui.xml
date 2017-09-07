@@ -8,7 +8,7 @@
     </ui:style>
     <m:MaterialModal ui:field="modal" type="DEFAULT" dismissible="true" inDuration="500" outDuration="500">
         <m:MaterialNavBar>
-            <m:MaterialNavBrand float="LEFT" text="Components" />
+            <m:MaterialNavBrand float="LEFT" text="{i18n.Components}" />
             <m:MaterialNavSection float="RIGHT">
                 <m:MaterialIcon ui:field="btnCollapse" tooltip="Collapse" iconType="VERTICAL_ALIGN_CENTER"
                     iconColor="WHITE" circle="true" waves="DEFAULT" />

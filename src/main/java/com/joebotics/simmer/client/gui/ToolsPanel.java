@@ -7,6 +7,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import com.joebotics.simmer.client.gui.dialog.CircuitsDialog;
 import com.joebotics.simmer.client.gui.dialog.OptionsDialog;
 import com.joebotics.simmer.client.gui.dialog.SchematicDialog;
 
@@ -37,8 +38,16 @@ public class ToolsPanel extends Composite {
     @UiField
     SchematicDialog schematicDialog;
 
+    @UiField
+    CircuitsDialog circuitsDialog;
+
     public ToolsPanel() {
         initWidget(uiBinder.createAndBindUi(this));
+    }
+
+    @UiHandler("fileButton")
+    public void fileButtonHandler(ClickEvent e) {
+        circuitsDialog.open();
     }
 
     @UiHandler("optionsButton")

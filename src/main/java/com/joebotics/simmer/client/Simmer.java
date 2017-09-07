@@ -169,6 +169,7 @@ public class Simmer
 
 	private Rectangle						selectedArea;
 	private String							shortcuts[];
+	private TreeNode<CircuitLinkInfo>       circuitsTree        = null;
 	private String							startCircuit		= null;
 	private String							startCircuitText	= null;
 	private String							startLabel			= null;
@@ -2023,5 +2024,13 @@ public class Simmer
 
     public Options getOptions() {
         return options;
+    }
+
+    public TreeNode<CircuitLinkInfo> getCircuitsTree() {
+        return circuitsTree;
+    }
+
+    public void setCircuitsTree(TreeNode<CircuitLinkInfo> circuitsTree) {
+        this.circuitsTree = circuitsTree;
     }
 }
