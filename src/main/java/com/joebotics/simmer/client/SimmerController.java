@@ -1,5 +1,6 @@
 package com.joebotics.simmer.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.Event;
@@ -739,6 +740,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             // cv.repaint();
         }
         if (menu == "circuits" && item.indexOf("setup ") == 0) {
+            GWT.log("performed " + item);
             simmer.getMainMenuBar().getEditMenu().pushUndo();
             simmer.getFileOps().readSetupFile(item.substring(6), "", true);
         }
