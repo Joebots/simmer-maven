@@ -156,7 +156,7 @@ public class FileOps {
     public void getSetupList(final boolean openDefault) {
 
         String url = GWT.getModuleBaseURL();
-        url = url.substring(0,url.indexOf("circuitjs1"));
+        url = url.substring(0,url.indexOf("simmer"));
         url = url +  "setuplist.txt" + "?v=" + Math.random();
         RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
         try {
@@ -290,7 +290,7 @@ public class FileOps {
         // try {
         // TODO: Maybe think about some better approach to cache management!
         String url = GWT.getModuleBaseURL();
-        url = url.substring(0, url.indexOf("circuitjs1"));
+        url = url.substring(0, url.indexOf("simmer"));
         url = url + "circuits/" + str + "?v=" + Math.random();
         loadFileFromURL(url, centre);
     }

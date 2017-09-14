@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.joebotics.simmer.client.gui.dialog.CircuitsDialog;
 import com.joebotics.simmer.client.gui.dialog.OptionsDialog;
+import com.joebotics.simmer.client.gui.dialog.ProgrammingDialog;
 import com.joebotics.simmer.client.gui.dialog.SchematicDialog;
 
 import gwt.material.design.client.ui.MaterialButton;
@@ -20,6 +21,9 @@ public class ToolsPanel extends Composite {
     interface ToolsPanelUiBinder extends UiBinder<Widget, ToolsPanel> {
     }
 
+    @UiField
+    MaterialButton programmingButton;
+    
     @UiField
     MaterialButton optionsButton;
 
@@ -41,6 +45,9 @@ public class ToolsPanel extends Composite {
     @UiField
     CircuitsDialog circuitsDialog;
 
+    @UiField
+    ProgrammingDialog programmingDialog;
+    
     public ToolsPanel() {
         initWidget(uiBinder.createAndBindUi(this));
     }
@@ -64,7 +71,12 @@ public class ToolsPanel extends Composite {
     public void powerButtonHandler(ClickEvent e) {
         closeBrowser();
     }
-
+    
+    @UiHandler("programmingButton")
+    public void programmingButtonHandler(ClickEvent e) {
+        programmingDialog.open();
+    }
+    
     public native void closeBrowser()
     /*-{
         $wnd.close();

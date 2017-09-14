@@ -10,7 +10,6 @@
 
   <!-- Default page to serve -->
   <welcome-file-list>
-    <welcome-file>circuitjs.html</welcome-file>
+    <welcome-file>simmer.html</welcome-file>
   </welcome-file-list>
-
 </web-app>

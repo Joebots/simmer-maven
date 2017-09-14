@@ -3,7 +3,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.joebotics.simmer</groupId>
+    <groupId>com.joebotics</groupId>
     <artifactId>simmer</artifactId>
     <packaging>war</packaging>
     <version>1</version>
@@ -112,7 +112,7 @@
                 <!-- Plugin configuration. There are many available options, 
                     see gwt-maven-plugin documentation at codehaus.org -->
                 <configuration>
-                    <runTarget>circuitjs.html</runTarget>
+                    <runTarget>simmer.html</runTarget>
                     <modules>
                         <module>com.joebotics.simmer.simmer</module>
                     </modules>

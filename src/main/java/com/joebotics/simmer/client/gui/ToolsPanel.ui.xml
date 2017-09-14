@@ -12,11 +12,14 @@
                 iconType="FOLDER" />
             <m:MaterialButton ui:field="optionsButton" type="FLOATING" waves="LIGHT" size="LARGE"
                 iconType="SETTINGS" />
+            <m:MaterialButton ui:field="programmingButton" type="FLOATING" waves="LIGHT" size="LARGE"
+                iconType="EXTENSION" />
             <m:MaterialButton ui:field="powerButton" type="FLOATING" waves="LIGHT" size="LARGE"
                 iconType="POWER_SETTINGS_NEW" />
         </g:HTMLPanel>
         <jbd:SchematicDialog ui:field="schematicDialog" />
         <jbd:CircuitsDialog ui:field="circuitsDialog" />
         <jbd:OptionsDialog ui:field="optionsDialog" />
+        <jbd:ProgrammingDialog ui:field="programmingDialog" />
     </g:HTMLPanel>
 </ui:UiBinder> 

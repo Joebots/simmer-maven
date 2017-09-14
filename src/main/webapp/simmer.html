@@ -10,9 +10,18 @@
     <title></title>
 
     <script src="https://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ=" crossorigin="anonymous"></script>
+    <script src="blockly/blockly_compressed.js"></script>
+    <script src="blockly/blocks_compressed.js"></script>
+    <script src="blockly/javascript_compressed.js"></script>
+    <script src="blockly/python_compressed.js"></script>
+    <script src="blockly/msg/js/en.js"></script>
 
-      <script language="javascript">
+    <!-- Custom GPIO Blocks -->
+    <script src="blocks/gpio.js"></script>
+    <script src="blocks/text.js"></script>
+    <script src="blocks/time.js"></script>
 
+    <script language="javascript">
       $(function() {
         var globalBus = window.parent.globalBus;
         console.log(globalBus);
@@ -46,7 +55,7 @@
     <!-- 'nocache.js' file (also called a "selection script") is     -->
     <!-- produced by the GWT compiler in the module output directory -->
     <!-- or generated automatically in development mode.             -->
-    <script language="javascript" src="circuitjs1/circuitjs1.nocache.js"></script>
+    <script language="javascript" src="simmer/simmer.nocache.js"></script>
     
     <!-- Include a history iframe to enable full GWT history support -->
     <!-- (the id must be exactly as shown)                           -->
