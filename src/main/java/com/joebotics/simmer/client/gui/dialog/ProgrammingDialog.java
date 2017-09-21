@@ -11,8 +11,9 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.joebotics.simmer.client.gui.Blockly;
+import com.joebotics.simmer.client.gui.Bgpio;
 
+import gwt.material.design.client.ui.MaterialColumn;
 import gwt.material.design.client.ui.MaterialIcon;
 import gwt.material.design.client.ui.MaterialModal;
 
@@ -25,6 +26,12 @@ public class ProgrammingDialog extends Composite {
 
     @UiField
     MaterialModal modal;
+
+    @UiField
+    MaterialIcon btnRun;
+
+    @UiField
+    MaterialIcon btnDebug;
 
     @UiField
     MaterialIcon btnClose;
@@ -41,30 +48,44 @@ public class ProgrammingDialog extends Composite {
     @UiField
     HTMLPanel toolboxPanel;
 
-    private Blockly.Params params;
+    @UiField
+    MaterialColumn codeTab;
+
+    @UiField
+    MaterialColumn consoleTab;
+
+    private Bgpio.Params params;
     private Element workspacePlayground;
 
     public ProgrammingDialog() {
         initWidget(uiBinder.createAndBindUi(this));
         blocklyPanel.setHeight("300px");
-        params = new Blockly.Params();
+
+        params = new Bgpio.Params();
         params.media = "blockly/media/";
         params.toolbox = toolboxPanel.getElement().getFirstChildElement();
         params.sounds = false;
+
+        Bgpio.codePanel = codeTab.getElement();
+    }
+
+    @UiHandler("btnRun")
+    public void btnRunHandler(ClickEvent event) {
+        Bgpio.RunMode.run();
     }
 
     @UiHandler("btnCollapse")
     public void btnCollapseHandler(ClickEvent event) {
         modal.setFullscreen(false);
         blocklyPanel.setHeight("300px");
-        Blockly.svgResize(workspacePlayground);
+        Bgpio.resize();
     }
 
     @UiHandler("btnExpand")
     public void btnExpandHandler(ClickEvent event) {
         modal.setFullscreen(true);
         blocklyPanel.setHeight("500px");
-        Blockly.svgResize(workspacePlayground);
+        Bgpio.resize();
     }
 
     @UiHandler("btnClose")
@@ -74,13 +95,13 @@ public class ProgrammingDialog extends Composite {
 
     @UiHandler("modal")
     public void modalOpeningHandler(OpenEvent<MaterialModal> event) {
-        Blockly.svgResize(workspacePlayground);
-        Blockly.Xml.domToWorkspace(DOM.getElementById("startBlocks"), workspacePlayground);
+        Bgpio.resize();
+        Bgpio.setBlocks(DOM.getElementById("startBlocks"));
     }
 
     public void open() {
         if (workspacePlayground == null) {
-            workspacePlayground = Blockly.inject(blocklyPanel.getElement(), params);
+            workspacePlayground = Bgpio.init(blocklyPanel.getElement(), params);
         }
         modal.open();
     }
