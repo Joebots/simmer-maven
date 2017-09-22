@@ -2,6 +2,7 @@ package com.joebotics.simmer.client.gui.dialog;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -13,9 +14,9 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.joebotics.simmer.client.gui.Bgpio;
 
-import gwt.material.design.client.ui.MaterialColumn;
 import gwt.material.design.client.ui.MaterialIcon;
 import gwt.material.design.client.ui.MaterialModal;
+import gwt.material.design.client.ui.MaterialTextArea;
 
 public class ProgrammingDialog extends Composite {
 
@@ -49,10 +50,10 @@ public class ProgrammingDialog extends Composite {
     HTMLPanel toolboxPanel;
 
     @UiField
-    MaterialColumn codeTab;
+    MaterialTextArea codeTab;
 
     @UiField
-    MaterialColumn consoleTab;
+    MaterialTextArea consoleTab;
 
     private Bgpio.Params params;
     private Element workspacePlayground;
@@ -62,15 +63,16 @@ public class ProgrammingDialog extends Composite {
         blocklyPanel.setHeight("300px");
 
         params = new Bgpio.Params();
-        params.media = "blockly/media/";
+        params.media = "lib/blockly/media/";
         params.toolbox = toolboxPanel.getElement().getFirstChildElement();
         params.sounds = false;
-
-        Bgpio.codePanel = codeTab.getElement();
+        Bgpio.setCodeArea(codeTab.getElement());
+        Bgpio.setConsoleArea(consoleTab.getElement());
     }
 
     @UiHandler("btnRun")
     public void btnRunHandler(ClickEvent event) {
+        Bgpio.RunMode.selectMode(1);
         Bgpio.RunMode.run();
     }
 

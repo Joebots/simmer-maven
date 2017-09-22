@@ -14,7 +14,7 @@
                 <m:MaterialIcon ui:field="btnRun" tooltip="{i18n.Run}" iconType="PLAY_ARROW" circle="true"
                     waves="DEFAULT" />
                 <m:MaterialIcon ui:field="btnDebug" tooltip="{i18n.Debug}" iconType="BUG_REPORT" circle="true"
-                    waves="DEFAULT"/>
+                    waves="DEFAULT" />
                 <m:MaterialIcon ui:field="btnCollapse" tooltip="{i18n.Collapse}" iconType="VERTICAL_ALIGN_CENTER"
                     iconColor="WHITE" circle="true" waves="DEFAULT" />
                 <m:MaterialIcon ui:field="btnExpand" tooltip="{i18n.Expand}" iconType="ZOOM_OUT_MAP"
@@ -34,7 +34,7 @@
                 <m:MaterialTabItem waves="LIGHT" flex="NONE">
                     <m:MaterialLink text="{i18n.JS_Console}" href="#consoleTab" textColor="WHITE" />
                 </m:MaterialTabItem>
-                </m:MaterialTab>
+            </m:MaterialTab>
 
             <m:MaterialColumn m:id="blocklyTab" grid="s12">
                 <g:HTMLPanel ui:field="toolboxPanel">
@@ -226,9 +226,11 @@
                     </xml>
                 </g:HTMLPanel>
             </m:MaterialColumn>
-            <m:MaterialColumn ui:field="codeTab" m:id="codeTab" grid="s12">
+            <m:MaterialColumn m:id="codeTab" grid="s12">
+                <m:MaterialTextArea ui:field="codeTab" label="Code" resizeRule="AUTO" />
             </m:MaterialColumn>
-            <m:MaterialColumn ui:field="consoleTab" m:id="consoleTab" grid="s12">
+            <m:MaterialColumn m:id="consoleTab" grid="s12">
+                <m:MaterialTextArea ui:field="consoleTab" label="Console" resizeRule="AUTO" />
             </m:MaterialColumn>
         </m:MaterialModalContent>
     </m:MaterialModal>

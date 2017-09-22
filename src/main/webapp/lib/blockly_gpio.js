@@ -12,8 +12,8 @@ Bgpio.workspace = null;
 Bgpio.DEBUG = true;
 Bgpio.PIN_COUNT = 26;
 
-Bgpio.codePanel = null;
-Bgpio.jsConsole = null;
+Bgpio.codeArea = null;
+Bgpio.consoleArea = null;
 
 Bgpio.init = function(container, params) {
     Bgpio.workspace = Blockly.inject(container, params);
@@ -26,6 +26,14 @@ Bgpio.init = function(container, params) {
 
 Bgpio.setBlocks = function(blocks) {
     Blockly.Xml.domToWorkspace(blocks, Bgpio.workspace);
+}
+
+Bgpio.setCodeArea = function(element) {
+    Bgpio.codeArea = element;
+}
+
+Bgpio.setConsoleArea = function(element) {
+    Bgpio.consoleArea = element;
 }
 
 Bgpio.resize = function() {
@@ -53,6 +61,7 @@ Bgpio.runMode = {
     run : Bgpio.JsInterpreter.run,
     stop : Bgpio.JsInterpreter.stop,
     updateState_ : function() {
+        /*
         for (var i = 0; i < this.types.length; i++) {
             var modeText = document.getElementById('mode' + this.types[i]);
             if (i === this.selected) {
@@ -63,16 +72,17 @@ Bgpio.runMode = {
         }
         var simulationContent = document.getElementById('simulationContentDiv');
         var executionContent = document.getElementById('executionContentDiv');
+        */
         if (this.selected === 0) {
-            simulationContent.style.display = 'block';
-            executionContent.style.display = 'none';
+            //simulationContent.style.display = 'block';
+            //executionContent.style.display = 'none';
             this.debugInit = Bgpio.JsInterpreter.debugInit;
             this.debugStep = Bgpio.JsInterpreter.debugStep;
             this.run = Bgpio.JsInterpreter.run;
             this.stop = Bgpio.JsInterpreter.stop;
         } else {
-            simulationContent.style.display = 'none';
-            executionContent.style.display = 'block';
+            //simulationContent.style.display = 'none';
+            //executionContent.style.display = 'block';
             this.debugInit = Bgpio.PythonInterpreter.debugInit;
             this.debugStep = Bgpio.PythonInterpreter.debugStep;
             this.run = Bgpio.PythonInterpreter.run;
@@ -98,14 +108,21 @@ Bgpio.generateXml = function() {
     return xmlText;
 };
 
+Bgpio.getCode = function() {
+    if (Bgpio.codeArea) {
+        return Bgpio.codeArea.textContent;
+    }
+    return null;
+};
+
 Bgpio.renderCode = function() {
     // Only regenerate the code if a block is not being dragged
-    if (!Bgpio.codePanel || Blockly.dragMode_ != 0) {
+    if (!Bgpio.codeArea || Bgpio.workspace.isDragging()) {
         return;
     }
     // Render Code with latest change highlight and syntax highlighting
-    Bgpio.codePanel.textContent = Bgpio.generateJavaScriptCode();
-    Bgpio.codePanel.innerHTML = prettyPrintOne(pyPre.innerHTML, 'js', false);
+    Bgpio.codeArea.textContent = Bgpio.generateJavaScriptCode();
+    Bgpio.codeArea.innerHTML = prettyPrintOne(pyPre.innerHTML, 'js', false);
 };
 
 /*******************************************************************************
@@ -125,14 +142,14 @@ Bgpio.setPinDigital = function(pinNumber, isPinHigh) {
 };
 
 Bgpio.appendTextJsConsole = function(text) {
-    if (Bgpio.jsConsole) {
-        Bgpio.jsConsole.textContent += text + '\n';
+    if (Bgpio.consoleArea) {
+        Bgpio.consoleArea.textContent += text + '\n';
     }
 };
 
 Bgpio.clearJsConsole = function(text) {
-    if (Bgpio.jsConsole) {
-        Bgpio.jsConsole.textContent = 'Simulated print output.\n';
+    if (Bgpio.consoleArea) {
+        Bgpio.consoleArea.textContent = 'Simulated print output.\n';
     }
 };
 
@@ -140,6 +157,7 @@ Bgpio.clearJsConsole = function(text) {
  * Other
  ******************************************************************************/
 Bgpio.getRaspPiIp = function() {
+    /*
     var ipField = document.getElementById('raspPiIp');
     var ip = ipField.value;
     if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
@@ -148,5 +166,6 @@ Bgpio.getRaspPiIp = function() {
         return ipField.value;
     }
     ipField.style.color = "red";
+    */
     return null;
 };

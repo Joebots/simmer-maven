@@ -12,12 +12,6 @@ public class Bgpio {
     @JsProperty
     public static Element workspace;
 
-    @JsProperty
-    public static Element codePanel;
-
-    @JsProperty
-    public static Element jsConsole;
-
     @JsMethod
     public static native Element init(Element container, Params params);
 
@@ -25,10 +19,25 @@ public class Bgpio {
     public static native void setBlocks(Element blocks);
 
     @JsMethod
+    public static native void setCodeArea(Element element);
+
+    @JsMethod
+    public static native void setConsoleArea(Element element);
+
+    @JsMethod
     public static native Element resize();
 
     @JsType(isNative = true, name = "Bgpio.runMode", namespace = JsPackage.GLOBAL)
     public static class RunMode {
+        @JsMethod
+        public static native String getSelectedMode();
+
+        @JsMethod
+        public static native void selectMode(int id);
+
+        @JsMethod
+        public static native void selectNextMode();
+
         @JsMethod
         public static native void run();
 
