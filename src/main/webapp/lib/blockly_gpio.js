@@ -122,7 +122,7 @@ Bgpio.renderCode = function() {
     }
     // Render Code with latest change highlight and syntax highlighting
     Bgpio.codeArea.textContent = Bgpio.generateJavaScriptCode();
-    Bgpio.codeArea.innerHTML = prettyPrintOne(pyPre.innerHTML, 'js', false);
+    Bgpio.codeArea.innerHTML = prettyPrintOne(Bgpio.codeArea.innerHTML, 'js', false);
 };
 
 /*******************************************************************************
