@@ -10,25 +10,27 @@
 <title></title>
 
 <!-- JQuery -->
-<script src="js/jquery-1.12.3.min.js"></script>
+<script src="lib/jquery-1.12.3.min.js"></script>
 <!-- Socket.IO -->
-<script src="js/socket.io.js"></script>
+<script src="lib/socket.io.js"></script>
 <!-- Google Blockly -->
-<script src="js/blockly/blockly_compressed.js"></script>
-<script src="js/blockly/blocks_compressed.js"></script>
-<script src="js/blockly/javascript_compressed.js"></script>
-<script src="js/blockly/python_compressed.js"></script>
-<script src="js/blockly/msg/js/en.js"></script>
+<script src="lib/blockly/blockly_compressed.js"></script>
+<script src="lib/blockly/blocks_compressed.js"></script>
+<script src="lib/blockly/javascript_compressed.js"></script>
+<script src="lib/blockly/python_compressed.js"></script>
+<script src="lib/blockly/msg/js/en.js"></script>
 <!-- Custom GPIO Blocks -->
-<script src="js/blocks/gpio.js"></script>
-<script src="js/blocks/text.js"></script>
-<script src="js/blocks/time.js"></script>
+<script src="lib/blocks/gpio.js"></script>
+<script src="lib/blocks/text.js"></script>
+<script src="lib/blocks/time.js"></script>
 <!-- Acorn JS Interpreter -->
-<script src="js/acorn/acorn_interpreter.js"></script>
+<script src="lib/acorn/acorn_interpreter.js"></script>
 <!-- Custom Scripts -->
-<script src="js/js_interpreter.js"></script>
-<script src="js/python_interpreter.js"></script>
-<script src="js/blockly_gpio.js"></script>
+<script src="lib/js_interpreter.js"></script>
+<script src="lib/python_interpreter.js"></script>
+<script src="lib/blockly_gpio.js"></script>
+<script src="lib/websocket.js"></script>
+<script src="lib/script_executor.js"></script>
 
 <script>
       $(function() {
@@ -55,7 +57,6 @@
       };
 
     </script>
-<script type="text/javascript" src="ScriptExecutor.js"></script>
 </head>
 <body>
 
@@ -69,8 +70,5 @@
  <!-- (the id must be exactly as shown)                           -->
  <iframe src="javascript:''" id="__gwt_historyFrame"
   style="width: 0px; height: 0px; border: 0"></iframe>
- <script src="js/js_interpreter.js"></script>
- <script src="js/python_interpreter.js"></script>
- <script src="js/websocket.js"></script>
 </body>
 </html>

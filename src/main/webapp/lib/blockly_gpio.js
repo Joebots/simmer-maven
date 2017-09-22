@@ -25,7 +25,7 @@ Bgpio.init = function(container, params) {
 };
 
 Bgpio.setBlocks = function(blocks) {
-    Blockly.Xml.domToWorkspace(Bgpio.workspace, blocks);
+    Blockly.Xml.domToWorkspace(blocks, Bgpio.workspace);
 }
 
 Bgpio.resize = function() {
