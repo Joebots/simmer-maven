@@ -167,5 +167,6 @@ Bgpio.getRaspPiIp = function() {
     }
     ipField.style.color = "red";
     */
-    return "localhost";
+    //DEBUG return "localhost";
+    return null;
 };
