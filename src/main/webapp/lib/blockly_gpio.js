@@ -110,7 +110,7 @@ Bgpio.generateXml = function() {
 
 Bgpio.getCode = function() {
     if (Bgpio.codeArea) {
-        return Bgpio.codeArea.textContent;
+        return Bgpio.codeArea.getText();
     }
     return null;
 };
