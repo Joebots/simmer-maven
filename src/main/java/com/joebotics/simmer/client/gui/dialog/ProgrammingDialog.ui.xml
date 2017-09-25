@@ -1,6 +1,6 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui"
-    xmlns:m="urn:import:gwt.material.design.client.ui">
+    xmlns:m="urn:import:gwt.material.design.client.ui" xmlns:jbw="urn:import:com.joebotics.simmer.client.gui.widget">
 
     <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N' />
 
@@ -227,10 +227,10 @@
                 </g:HTMLPanel>
             </m:MaterialColumn>
             <m:MaterialColumn m:id="codeTab" grid="s12">
-                <m:MaterialTextArea ui:field="codeTab" label="Code" resizeRule="AUTO" />
+                <jbw:TextArea ui:field="codeTab" label="Code" resizeRule="AUTO" />
             </m:MaterialColumn>
             <m:MaterialColumn m:id="consoleTab" grid="s12">
-                <m:MaterialTextArea ui:field="consoleTab" label="Console" resizeRule="AUTO" />
+                <jbw:TextArea ui:field="consoleTab" label="Console" resizeRule="AUTO" />
             </m:MaterialColumn>
         </m:MaterialModalContent>
     </m:MaterialModal>

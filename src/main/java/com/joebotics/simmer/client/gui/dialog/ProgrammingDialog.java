@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.joebotics.simmer.client.gui.Bgpio;
+import com.joebotics.simmer.client.gui.widget.TextArea;
 
 import gwt.material.design.client.ui.MaterialIcon;
 import gwt.material.design.client.ui.MaterialModal;
@@ -50,10 +51,10 @@ public class ProgrammingDialog extends Composite {
     HTMLPanel toolboxPanel;
 
     @UiField
-    MaterialTextArea codeTab;
+    TextArea codeTab;
 
     @UiField
-    MaterialTextArea consoleTab;
+    TextArea consoleTab;
 
     private Bgpio.Params params;
     private Element workspacePlayground;
@@ -66,8 +67,8 @@ public class ProgrammingDialog extends Composite {
         params.media = "lib/blockly/media/";
         params.toolbox = toolboxPanel.getElement().getFirstChildElement();
         params.sounds = false;
-        Bgpio.setCodeArea(codeTab.getElement());
-        Bgpio.setConsoleArea(consoleTab.getElement());
+        Bgpio.setCodeArea(codeTab);
+        Bgpio.setConsoleArea(consoleTab);
     }
 
     @UiHandler("btnRun")

@@ -20,6 +20,7 @@ Bgpio.WebSocket.connect = function(ip) {
     Bgpio.WebSocket.ws = io.connect();
   }
   Bgpio.WebSocket.ws.on('connect', Bgpio.WebSocket.open);
+  Bgpio.WebSocket.ws.on('console', Bgpio.appendTextJsConsole);
   //Bgpio.WebSocket.ws.onclose = function(evt) { Bgpio.WebSocket.close(evt) };
   //Bgpio.WebSocket.ws.onmessage = function(evt) { Bgpio.WebSocket.receive(evt) };
   //Bgpio.WebSocket.ws.onerror = function(evt) { Bgpio.WebSocket.error(evt) };

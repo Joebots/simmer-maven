@@ -6,6 +6,7 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 import com.google.gwt.dom.client.Element;
+import com.joebotics.simmer.client.gui.widget.TextArea;
 
 @JsType(isNative = true, name = "Bgpio", namespace = JsPackage.GLOBAL)
 public class Bgpio {
@@ -19,10 +20,10 @@ public class Bgpio {
     public static native void setBlocks(Element blocks);
 
     @JsMethod
-    public static native void setCodeArea(Element element);
+    public static native void setCodeArea(TextArea element);
 
     @JsMethod
-    public static native void setConsoleArea(Element element);
+    public static native void setConsoleArea(TextArea element);
 
     @JsMethod
     public static native Element resize();

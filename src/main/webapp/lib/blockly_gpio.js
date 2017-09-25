@@ -121,8 +121,8 @@ Bgpio.renderCode = function() {
         return;
     }
     // Render Code with latest change highlight and syntax highlighting
-    Bgpio.codeArea.textContent = Bgpio.generateJavaScriptCode();
-    Bgpio.codeArea.innerHTML = prettyPrintOne(Bgpio.codeArea.innerHTML, 'js', false);
+    Bgpio.codeArea.clear();
+    Bgpio.codeArea.setText(Bgpio.generateJavaScriptCode());
 };
 
 /*******************************************************************************
@@ -143,13 +143,14 @@ Bgpio.setPinDigital = function(pinNumber, isPinHigh) {
 
 Bgpio.appendTextJsConsole = function(text) {
     if (Bgpio.consoleArea) {
-        Bgpio.consoleArea.textContent += text + '\n';
+        Bgpio.consoleArea.setText(text + '\n');
     }
 };
 
 Bgpio.clearJsConsole = function(text) {
     if (Bgpio.consoleArea) {
-        Bgpio.consoleArea.textContent = 'Simulated print output.\n';
+        Bgpio.consoleArea.clear();
+        Bgpio.consoleArea.setText('Simulated print output.\n');
     }
 };
 
