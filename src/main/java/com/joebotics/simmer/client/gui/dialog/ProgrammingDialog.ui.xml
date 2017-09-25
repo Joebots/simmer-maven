@@ -94,7 +94,7 @@
                             </value>
                             <next>
                                 <block type="led_set">
-                                    <field name="PIN">3</field>
+                                    <field name="PIN">7</field>
                                     <value name="STATE">
                                         <block type="pin_binary">
                                             <field name="STATE">HIGH</field>
@@ -109,7 +109,7 @@
                                             </value>
                                             <next>
                                                 <block type="led_set">
-                                                    <field name="PIN">3</field>
+                                                    <field name="PIN">7</field>
                                                     <value name="STATE">
                                                         <block type="pin_binary">
                                                             <field name="STATE">LOW</field>
@@ -131,7 +131,7 @@
                                                                     </value>
                                                                     <statement name="DO">
                                                                         <block type="led_set">
-                                                                            <field name="PIN">5</field>
+                                                                            <field name="PIN">0</field>
                                                                             <value name="STATE">
                                                                                 <block type="pin_binary">
                                                                                     <field name="STATE">HIGH</field>
@@ -146,7 +146,7 @@
                                                                                     </value>
                                                                                     <next>
                                                                                         <block type="led_set">
-                                                                                            <field name="PIN">5</field>
+                                                                                            <field name="PIN">0</field>
                                                                                             <value name="STATE">
                                                                                                 <block type="pin_binary">
                                                                                                     <field name="STATE">LOW</field>
@@ -172,7 +172,7 @@
                                                                     </statement>
                                                                     <next>
                                                                         <block type="led_set">
-                                                                            <field name="PIN">7</field>
+                                                                            <field name="PIN">2</field>
                                                                             <value name="STATE">
                                                                                 <block type="pin_binary">
                                                                                     <field name="STATE">HIGH</field>
@@ -187,7 +187,7 @@
                                                                                     </value>
                                                                                     <next>
                                                                                         <block type="led_set">
-                                                                                            <field name="PIN">7</field>
+                                                                                            <field name="PIN">2</field>
                                                                                             <value name="STATE">
                                                                                                 <block type="pin_binary">
                                                                                                     <field name="STATE">LOW</field>

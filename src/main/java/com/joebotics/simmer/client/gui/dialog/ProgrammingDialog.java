@@ -98,14 +98,14 @@ public class ProgrammingDialog extends Composite {
 
     @UiHandler("modal")
     public void modalOpeningHandler(OpenEvent<MaterialModal> event) {
-        Bgpio.resize();
-        Bgpio.setBlocks(DOM.getElementById("startBlocks"));
+        if (workspacePlayground == null) {
+            workspacePlayground = Bgpio.init(blocklyPanel.getElement(), params);
+            Bgpio.resize();
+            Bgpio.setBlocks(DOM.getElementById("startBlocks"));
+        }
     }
 
     public void open() {
-        if (workspacePlayground == null) {
-            workspacePlayground = Bgpio.init(blocklyPanel.getElement(), params);
-        }
         modal.open();
     }
 }

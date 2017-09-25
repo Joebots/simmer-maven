@@ -143,13 +143,12 @@ Bgpio.setPinDigital = function(pinNumber, isPinHigh) {
 
 Bgpio.appendTextJsConsole = function(text) {
     if (Bgpio.consoleArea) {
-        Bgpio.consoleArea.setText(text + '\n');
+        Bgpio.consoleArea.appendText(text + '\n');
     }
 };
 
 Bgpio.clearJsConsole = function(text) {
     if (Bgpio.consoleArea) {
-        Bgpio.consoleArea.clear();
         Bgpio.consoleArea.setText('Simulated print output.\n');
     }
 };
@@ -168,5 +167,5 @@ Bgpio.getRaspPiIp = function() {
     }
     ipField.style.color = "red";
     */
-    return null;
+    return "localhost";
 };
