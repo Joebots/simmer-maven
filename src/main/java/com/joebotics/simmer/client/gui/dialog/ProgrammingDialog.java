@@ -11,77 +11,99 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.joebotics.simmer.client.gui.Blockly;
+import com.joebotics.simmer.client.gui.Bgpio;
+import com.joebotics.simmer.client.gui.widget.TextArea;
 
 import gwt.material.design.client.ui.MaterialIcon;
 import gwt.material.design.client.ui.MaterialModal;
 
 public class ProgrammingDialog extends Composite {
-
+    
     private static ProgrammingDialogUiBinder uiBinder = GWT.create(ProgrammingDialogUiBinder.class);
-
+    
     interface ProgrammingDialogUiBinder extends UiBinder<Widget, ProgrammingDialog> {
     }
-
+    
     @UiField
     MaterialModal modal;
-
+    
+    @UiField
+    MaterialIcon btnRun;
+    
+    @UiField
+    MaterialIcon btnDebug;
+    
     @UiField
     MaterialIcon btnClose;
-
+    
     @UiField
     MaterialIcon btnExpand;
-
+    
     @UiField
     MaterialIcon btnCollapse;
-
+    
     @UiField
     HTMLPanel blocklyPanel;
-
+    
     @UiField
     HTMLPanel toolboxPanel;
-
-    private Blockly.Params params;
+    
+    @UiField
+    TextArea codeTab;
+    
+    @UiField
+    TextArea consoleTab;
+    
+    private Bgpio.Params params;
     private Element workspacePlayground;
-
+    
     public ProgrammingDialog() {
         initWidget(uiBinder.createAndBindUi(this));
         blocklyPanel.setHeight("300px");
-        params = new Blockly.Params();
-        params.media = "blockly/media/";
+        
+        params = new Bgpio.Params();
+        params.media = "lib/blockly/media/";
         params.toolbox = toolboxPanel.getElement().getFirstChildElement();
         params.sounds = false;
+        Bgpio.setCodeArea(codeTab);
+        Bgpio.setConsoleArea(consoleTab);
     }
-
+    
+    @UiHandler("btnRun")
+    public void btnRunHandler(ClickEvent event) {
+        Bgpio.RunMode.selectMode(1);
+        Bgpio.RunMode.run();
+    }
+    
     @UiHandler("btnCollapse")
     public void btnCollapseHandler(ClickEvent event) {
         modal.setFullscreen(false);
         blocklyPanel.setHeight("300px");
-        Blockly.svgResize(workspacePlayground);
+        Bgpio.resize();
     }
-
+    
     @UiHandler("btnExpand")
     public void btnExpandHandler(ClickEvent event) {
         modal.setFullscreen(true);
         blocklyPanel.setHeight("500px");
-        Blockly.svgResize(workspacePlayground);
+        Bgpio.resize();
     }
-
+    
     @UiHandler("btnClose")
     public void btnCloseHandler(ClickEvent event) {
         modal.close();
     }
-
+    
     @UiHandler("modal")
     public void modalOpeningHandler(OpenEvent<MaterialModal> event) {
-        Blockly.svgResize(workspacePlayground);
-        Blockly.Xml.domToWorkspace(DOM.getElementById("startBlocks"), workspacePlayground);
-    }
-
-    public void open() {
         if (workspacePlayground == null) {
-            workspacePlayground = Blockly.inject(blocklyPanel.getElement(), params);
+            workspacePlayground = Bgpio.init(blocklyPanel.getElement(), params);
+            Bgpio.resize();
+            Bgpio.setBlocks(DOM.getElementById("startBlocks"));
         }
+    }
+    
+    public void open() {
         modal.open();
     }
 }

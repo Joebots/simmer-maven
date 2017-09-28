@@ -1,27 +1,41 @@
 <!DOCTYPE html>
 <html>
-  <head>
-  
-    <!-- Properties can be specified to influence deferred binding -->
-    <meta name='gwt:property' content='locale=en_UK'>
-    
-    
-    <!-- Titles are optional, but useful -->
-    <title></title>
+<head>
 
-    <script src="https://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ=" crossorigin="anonymous"></script>
-    <script src="blockly/blockly_compressed.js"></script>
-    <script src="blockly/blocks_compressed.js"></script>
-    <script src="blockly/javascript_compressed.js"></script>
-    <script src="blockly/python_compressed.js"></script>
-    <script src="blockly/msg/js/en.js"></script>
+<!-- Properties can be specified to influence deferred binding -->
+<meta name='gwt:property' content='locale=en_UK'>
 
-    <!-- Custom GPIO Blocks -->
-    <script src="blocks/gpio.js"></script>
-    <script src="blocks/text.js"></script>
-    <script src="blocks/time.js"></script>
 
-    <script language="javascript">
+<!-- Titles are optional, but useful -->
+<title></title>
+
+<!-- JQuery -->
+<script src="lib/jquery-1.12.3.min.js"></script>
+<!-- Socket.IO -->
+<script src="lib/socket.io.js"></script>
+<!-- Google Blockly -->
+<script src="lib/blockly/blockly_compressed.js"></script>
+<script src="lib/blockly/blocks_compressed.js"></script>
+<script src="lib/blockly/javascript_compressed.js"></script>
+<script src="lib/blockly/python_compressed.js"></script>
+<script src="lib/blockly/msg/js/en.js"></script>
+<!-- Custom GPIO Blocks -->
+<script src="lib/blocks/gpio.js"></script>
+<script src="lib/blocks/text.js"></script>
+<script src="lib/blocks/time.js"></script>
+<!-- Acorn JS Interpreter -->
+<script src="lib/acorn/acorn_interpreter.js"></script>
+<!--  Prettify -->
+<script src="lib/prettify/prettify.js"></script>
+<link rel="stylesheet" type="text/css" href="lib/prettify/prettify.css">
+<!-- Custom Scripts -->
+<script src="lib/js_interpreter.js"></script>
+<script src="lib/python_interpreter.js"></script>
+<script src="lib/blockly_gpio.js"></script>
+<script src="lib/websocket.js"></script>
+<script src="lib/script_executor.js"></script>
+
+<script>
       $(function() {
         var globalBus = window.parent.globalBus;
         console.log(globalBus);
@@ -46,20 +60,18 @@
       };
 
     </script>
-    <script type="text/javascript" src="ScriptExecutor.js"></script>
+</head>
+<body>
 
-  </head>
-  <body>
-   
-    <!-- This script tag is what actually loads the GWT module.  The -->
-    <!-- 'nocache.js' file (also called a "selection script") is     -->
-    <!-- produced by the GWT compiler in the module output directory -->
-    <!-- or generated automatically in development mode.             -->
-    <script language="javascript" src="simmer/simmer.nocache.js"></script>
-    
-    <!-- Include a history iframe to enable full GWT history support -->
-    <!-- (the id must be exactly as shown)                           -->
-    <iframe src="javascript:''" id="__gwt_historyFrame" style="width:0px;height:0px;border:0"></iframe>
-    
-  </body>
- </html>
+ <!-- This script tag is what actually loads the GWT module.  The -->
+ <!-- 'nocache.js' file (also called a "selection script") is     -->
+ <!-- produced by the GWT compiler in the module output directory -->
+ <!-- or generated automatically in development mode.             -->
+ <script language="javascript" src="simmer/simmer.nocache.js"></script>
+
+ <!-- Include a history iframe to enable full GWT history support -->
+ <!-- (the id must be exactly as shown)                           -->
+ <iframe src="javascript:''" id="__gwt_historyFrame"
+  style="width: 0px; height: 0px; border: 0"></iframe>
+</body>
+</html>
