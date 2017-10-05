@@ -14,8 +14,8 @@ import com.google.gwt.user.client.ui.Widget;
 import com.joebotics.simmer.client.gui.Bgpio;
 import com.joebotics.simmer.client.gui.widget.TextArea;
 
-import gwt.material.design.client.ui.MaterialIcon;
-import gwt.material.design.client.ui.MaterialModal;
+import gwt.material.design.addins.client.window.MaterialWindow;
+import gwt.material.design.client.ui.MaterialButton;
 
 public class ProgrammingDialog extends Composite {
     
@@ -25,22 +25,13 @@ public class ProgrammingDialog extends Composite {
     }
     
     @UiField
-    MaterialModal modal;
+    MaterialWindow modal;
     
     @UiField
-    MaterialIcon btnRun;
+    MaterialButton btnRun;
     
     @UiField
-    MaterialIcon btnDebug;
-    
-    @UiField
-    MaterialIcon btnClose;
-    
-    @UiField
-    MaterialIcon btnExpand;
-    
-    @UiField
-    MaterialIcon btnCollapse;
+    MaterialButton btnDebug;
     
     @UiField
     HTMLPanel blocklyPanel;
@@ -59,7 +50,7 @@ public class ProgrammingDialog extends Composite {
     
     public ProgrammingDialog() {
         initWidget(uiBinder.createAndBindUi(this));
-        blocklyPanel.setHeight("300px");
+        blocklyPanel.setHeight("100%");
         
         params = new Bgpio.Params();
         params.media = "lib/blockly/media/";
@@ -75,27 +66,8 @@ public class ProgrammingDialog extends Composite {
         Bgpio.RunMode.run();
     }
     
-    @UiHandler("btnCollapse")
-    public void btnCollapseHandler(ClickEvent event) {
-        modal.setFullscreen(false);
-        blocklyPanel.setHeight("300px");
-        Bgpio.resize();
-    }
-    
-    @UiHandler("btnExpand")
-    public void btnExpandHandler(ClickEvent event) {
-        modal.setFullscreen(true);
-        blocklyPanel.setHeight("500px");
-        Bgpio.resize();
-    }
-    
-    @UiHandler("btnClose")
-    public void btnCloseHandler(ClickEvent event) {
-        modal.close();
-    }
-    
     @UiHandler("modal")
-    public void modalOpeningHandler(OpenEvent<MaterialModal> event) {
+    public void modalOpeningHandler(OpenEvent<Boolean> event) {
         if (workspacePlayground == null) {
             workspacePlayground = Bgpio.init(blocklyPanel.getElement(), params);
             Bgpio.resize();

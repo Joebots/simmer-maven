@@ -13,8 +13,8 @@ import com.joebotics.simmer.client.Launcher;
 
 import gwt.material.design.addins.client.tree.MaterialTree;
 import gwt.material.design.addins.client.tree.MaterialTreeItem;
-import gwt.material.design.client.ui.MaterialIcon;
-import gwt.material.design.client.ui.MaterialModal;
+import gwt.material.design.addins.client.window.MaterialWindow;
+import gwt.material.design.client.ui.MaterialButton;
 
 public class SchematicDialog extends Composite {
 
@@ -24,19 +24,16 @@ public class SchematicDialog extends Composite {
     }
 
     @UiField
-    MaterialModal modal;
+    MaterialWindow modal;
 
     @UiField
     MaterialTree compTree;
 
     @UiField
-    MaterialIcon btnCollapse;
+    MaterialButton btnCollapse;
 
     @UiField
-    MaterialIcon btnExpand;
-
-    @UiField
-    MaterialIcon btnClose;
+    MaterialButton btnExpand;
 
     public SchematicDialog() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -62,11 +59,6 @@ public class SchematicDialog extends Composite {
     @UiHandler("btnExpand")
     public void btnExpandHandler(ClickEvent event) {
         compTree.expand();
-    }
-
-    @UiHandler("btnClose")
-    public void btnCloseHandler(ClickEvent event) {
-        modal.close();
     }
 
     public void open() {

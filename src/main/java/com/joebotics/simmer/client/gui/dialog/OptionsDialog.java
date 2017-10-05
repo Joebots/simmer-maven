@@ -2,7 +2,6 @@ package com.joebotics.simmer.client.gui.dialog;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -13,9 +12,8 @@ import com.joebotics.simmer.client.Simmer;
 import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.Options;
 
+import gwt.material.design.addins.client.window.MaterialWindow;
 import gwt.material.design.client.ui.MaterialCheckBox;
-import gwt.material.design.client.ui.MaterialIcon;
-import gwt.material.design.client.ui.MaterialModal;
 import gwt.material.design.client.ui.MaterialRange;
 
 public class OptionsDialog extends Composite {
@@ -26,10 +24,7 @@ public class OptionsDialog extends Composite {
     }
 
     @UiField
-    MaterialModal modal;
-
-    @UiField
-    MaterialIcon btnClose;
+    MaterialWindow modal;
 
     @UiField
     MaterialCheckBox showCurrentCheckItem, showVoltageCheckItem, showPowerCheckItem, showValuesCheckItem,
@@ -53,11 +48,6 @@ public class OptionsDialog extends Composite {
         conventionCheckItem.setValue(model.getBoolean(OptionKey.CONVENTIONAL_CURRENT_MOTION));
         speedBar.setValue(model.getInteger(OptionKey.SIMULATION_SPEED));
         speedBar.setValue(model.getInteger(OptionKey.CURRENT_SPEED));
-    }
-
-    @UiHandler("btnClose")
-    public void btnCloseHandler(ClickEvent event) {
-        modal.close();
     }
 
     @UiHandler({ "showCurrentCheckItem", "showVoltageCheckItem", "showPowerCheckItem", "showValuesCheckItem",
