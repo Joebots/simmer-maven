@@ -23,4 +23,4 @@
         <jbd:ProgrammingDialog ui:field="programmingDialog" />
         <jbd:ExitDialog ui:field="exitDialog" />
     </g:HTMLPanel>
-</ui:UiBinder> 
+</ui:UiBinder>

@@ -16,4 +16,4 @@
             <m:MaterialButton ui:field="btnExit" text="{i18n.Quit_OK}" textColor="RED" type="FLAT" />
         </m:MaterialModalFooter>
     </m:MaterialModal>
-</ui:UiBinder> 
+</ui:UiBinder>
