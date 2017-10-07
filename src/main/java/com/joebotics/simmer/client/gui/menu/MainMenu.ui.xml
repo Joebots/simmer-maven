@@ -21,4 +21,4 @@
            <m:MaterialLink iconType="DELETE" text="Trash"/>
            <m:MaterialLink ui:field="optionsLink" iconType="SETTINGS" text="{i18n.Options}"/>
        </m:MaterialSideNavDrawer>
-</ui:UiBinder>
+</ui:UiBinder> 
