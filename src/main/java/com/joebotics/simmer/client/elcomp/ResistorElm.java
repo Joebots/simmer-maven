@@ -117,7 +117,7 @@ public class ResistorElm extends AbstractCircuitElement {
 			g.getContext().strokeRect(0, -hs, len, 2.0 * hs);
 		}
 		g.getContext().restore();
-		if (sim.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().getState()) {
+		if (sim.getOptions().getBoolean(OptionKey.SHOW_VALUES)) {
 			String s = getShortUnitText(getResistance(), "");
 			drawValues(g, s, hs);
 		}
