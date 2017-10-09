@@ -21,5 +21,6 @@
         <jbd:CircuitsDialog ui:field="circuitsDialog" />
         <jbd:OptionsDialog ui:field="optionsDialog" />
         <jbd:ProgrammingDialog ui:field="programmingDialog" />
+        <jbd:ExitDialog ui:field="exitDialog" />
     </g:HTMLPanel>
-</ui:UiBinder> 
+</ui:UiBinder>

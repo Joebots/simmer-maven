@@ -6,7 +6,7 @@
     <ui:style>
 
     </ui:style>
-    <m:MaterialModal ui:field="modal" type="DEFAULT" dismissible="true" inDuration="500" outDuration="500">
+    <m:MaterialModal ui:field="modal" type="DEFAULT" dismissible="true" inDuration="500" outDuration="500" styleName="shifted-dialog">
         <m:MaterialNavBar>
             <m:MaterialNavBrand float="LEFT" text="{i18n.Edit_Component}" />
             <m:MaterialNavSection float="RIGHT">
@@ -20,4 +20,4 @@
             <m:MaterialButton ui:field="btnSave" text="{i18n.Save}" type="FLAT"/>
         </m:MaterialModalFooter>
     </m:MaterialModal>
-</ui:UiBinder> 
+</ui:UiBinder>

@@ -13,12 +13,15 @@ import com.joebotics.simmer.client.CircuitLinkInfo;
 import com.joebotics.simmer.client.Launcher;
 import com.joebotics.simmer.client.Simmer;
 import com.joebotics.simmer.client.TreeNode;
+import com.joebotics.simmer.client.gui.SimmerUIClientBundle;
 
 import gwt.material.design.addins.client.tree.MaterialTree;
 import gwt.material.design.addins.client.tree.MaterialTreeItem;
+import gwt.material.design.addins.client.window.MaterialWindow;
+import gwt.material.design.client.MaterialDesignBase;
+import gwt.material.design.client.constants.CenterOn;
 import gwt.material.design.client.constants.IconType;
-import gwt.material.design.client.ui.MaterialIcon;
-import gwt.material.design.client.ui.MaterialModal;
+import gwt.material.design.client.ui.MaterialButton;
 
 public class CircuitsDialog extends Composite {
 
@@ -28,22 +31,22 @@ public class CircuitsDialog extends Composite {
     }
 
     @UiField
-    MaterialModal modal;
+    MaterialWindow modal;
 
     @UiField
     MaterialTree circuitsTree;
 
     @UiField
-    MaterialIcon btnCollapse;
+    MaterialButton btnCollapse;
 
     @UiField
-    MaterialIcon btnExpand;
-
-    @UiField
-    MaterialIcon btnClose;
+    MaterialButton btnExpand;
 
     public CircuitsDialog() {
         initWidget(uiBinder.createAndBindUi(this));
+        //ToggleStyleMixin<MaterialWindow> shiftMixin = new ToggleStyleMixin<>(modal, AddinsCssName.OPEN);
+
+        modal.setCenterOn(CenterOn.CENTER_ON_SMALL);
         circuitsTree.addSelectionHandler(new SelectionHandler<MaterialTreeItem>() {
             @Override
             public void onSelection(SelectionEvent<MaterialTreeItem> event) {
@@ -89,11 +92,6 @@ public class CircuitsDialog extends Composite {
     @UiHandler("btnExpand")
     public void btnExpandHandler(ClickEvent event) {
         circuitsTree.expand();
-    }
-
-    @UiHandler("btnClose")
-    public void btnCloseHandler(ClickEvent event) {
-        modal.close();
     }
 
     public void open() {
