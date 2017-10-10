@@ -91,6 +91,14 @@
                             target="ProbeElm" />
                     </ma:tree.MaterialTreeItem>
 
+                    <!-- GPIO -->
+                    <ma:tree.MaterialTreeItem iconType="FOLDER" text="{i18n.Gpio}">
+                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Gpio_Input}"
+                            target="GpioInputElm" />
+                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Gpio_Output}"
+                            target="GpioOutputElm" />
+                    </ma:tree.MaterialTreeItem>
+
                     <!-- Active Components -->
                     <ma:tree.MaterialTreeItem iconType="FOLDER" text="{i18n.Active_Components}">
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Diode}"
@@ -220,11 +228,8 @@
                     </ma:tree.MaterialTreeItem>
 
                     <!-- Programmable -->
-                    <ma:tree.MaterialTreeItem iconType="FOLDER" text="{i18n.Programmable_Chips}">
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Script}"
-                            target="ScriptElm" />
-                    </ma:tree.MaterialTreeItem>
-
+                    <!-- <ma:tree.MaterialTreeItem iconType="FOLDER" text="{i18n.Programmable_Chips}"> <ma:tree.MaterialTreeItem 
+                        iconType="EXTENSION" text="{i18n.Add_Script}" target="ScriptElm" /> </ma:tree.MaterialTreeItem> -->
 
                     <!-- Passive Components -->
                 </ma:tree.MaterialTree>

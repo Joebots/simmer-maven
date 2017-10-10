@@ -607,6 +607,7 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 	}
 	
 	public void drawPinText(Graphics g, Pin pin) {
+	    g.setFont(unitsFont);
 		String text = pin.getText();
 		Point textloc = pin.getTextloc();
 		if (text != null && textloc != null) {

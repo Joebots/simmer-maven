@@ -80,6 +80,7 @@ import com.joebotics.simmer.client.gui.util.Rectangle;
 import com.joebotics.simmer.client.gui.util.RowInfo;
 import com.joebotics.simmer.client.integration.JSEventBusProxy;
 import com.joebotics.simmer.client.integration.SimmerEvents;
+import com.joebotics.simmer.client.model.GpioManager;
 import com.joebotics.simmer.client.util.FindPathInfo;
 import com.joebotics.simmer.client.util.HintTypeEnum.HintType;
 import com.joebotics.simmer.client.util.MathUtil;
@@ -184,12 +185,15 @@ public class Simmer
 	
 	private CircuitModel 					circuitModel;
 	private Options                   options;
+	private GpioManager                gpioManager;
 
 	private static Simmer instance;
 
 	private static final Logger lager = Logger.getLogger(Simmer.class.getName());
 
-	private Simmer(){}
+	private Simmer(){
+	    gpioManager = new GpioManager();
+	}
 
 	public static final Simmer getInstance(){
 		if( instance == null )
@@ -2031,5 +2035,9 @@ public class Simmer
 
     public void setCircuitsTree(TreeNode<CircuitLinkInfo> circuitsTree) {
         this.circuitsTree = circuitsTree;
+    }
+
+    public GpioManager getGpioManager() {
+        return gpioManager;
     }
 }

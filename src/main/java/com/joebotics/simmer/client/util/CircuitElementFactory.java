@@ -5,7 +5,6 @@ import com.joebotics.simmer.client.elcomp.chips.*;
 
 public class CircuitElementFactory {
 
-
     public static AbstractCircuitElement constructElement(String n, int x1, int y1) {
 
         if (n == "GroundElm")
@@ -190,9 +189,9 @@ public class CircuitElementFactory {
 
         if (n == "XorGateElm")
             return (AbstractCircuitElement) new XorGateElm(x1, y1);
-        
+
         if (n == "ScriptElm")
-        	return (AbstractCircuitElement) new ScriptElm(x1, y1);
+            return (AbstractCircuitElement) new ScriptElm(x1, y1);
 
         if (n == "DFlipFlopElm")
             return (AbstractCircuitElement) new DFlipFlopElm(x1, y1);
@@ -263,10 +262,17 @@ public class CircuitElementFactory {
         if (n == "MonostableElm")
             return (AbstractCircuitElement) new MonostableElm(x1, y1);
 
+        if (n == "GpioInputElm")
+            return (AbstractCircuitElement) new GpioInputElm(x1, y1);
+
+        if (n == "GpioOutputElm")
+            return (AbstractCircuitElement) new GpioOutputElm(x1, y1);
+
         return null;
     }
 
-    public static AbstractCircuitElement createCircuitElement(int tint, int x1, int y1, int x2, int y2, int f, StringTokenizer st) {
+    public static AbstractCircuitElement createCircuitElement(int tint, int x1, int y1, int x2, int y2, int f,
+            StringTokenizer st) {
         if (tint == 'g')
             return (AbstractCircuitElement) new GroundElm(x1, y1, x2, y2, f, st);
 
@@ -488,9 +494,9 @@ public class CircuitElementFactory {
 
         if (tint == 194)
             return (AbstractCircuitElement) new MonostableElm(x1, y1, x2, y2, f, st);
-        
+
         if (tint == 300)
-        	return (AbstractCircuitElement) new ScriptElm(x1, y1, x2, y2, f, st);
+            return (AbstractCircuitElement) new ScriptElm(x1, y1, x2, y2, f, st);
 
         return null;
     }
