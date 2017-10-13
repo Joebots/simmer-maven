@@ -184,8 +184,9 @@ public class Simmer
 	private Scope							scopes[];
 	
 	private CircuitModel 					circuitModel;
-	private Options                   options;
-	private GpioManager                gpioManager;
+	private Options options;
+	private GpioManager gpioManager;
+	private String blocklyXml;
 
 	private static Simmer instance;
 
@@ -2039,5 +2040,13 @@ public class Simmer
 
     public GpioManager getGpioManager() {
         return gpioManager;
+    }
+
+    public String getBlocklyXml() {
+        return blocklyXml;
+    }
+
+    public void setBlocklyXml(String blocklyXml) {
+        this.blocklyXml = blocklyXml;
     }
 }

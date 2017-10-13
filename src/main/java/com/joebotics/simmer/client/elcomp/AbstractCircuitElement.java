@@ -1083,20 +1083,22 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 		allocNodes();
 	}
 
-	public void setPoints() {
-		dx = x2 - x1;
-		dy = y2 - y1;
-		dn = Math.sqrt(dx * dx + dy * dy);
-		dpx1 = dy / dn;
-		dpy1 = -dx / dn;
-		dsign = (dy == 0) ? sign(dx) : sign(dy);
-		point1 = new Point(x1, y1);
-		point2 = new Point(x2, y2);
-		pins[0].setPost(point1);
-		if (pins.length > 1) {
-			pins[1].setPost(point2);
-		}
-	}
+    public void setPoints() {
+        dx = x2 - x1;
+        dy = y2 - y1;
+        dn = Math.sqrt(dx * dx + dy * dy);
+        dpx1 = dy / dn;
+        dpy1 = -dx / dn;
+        dsign = (dy == 0) ? sign(dx) : sign(dy);
+        point1 = new Point(x1, y1);
+        point2 = new Point(x2, y2);
+        if (pins.length > 0) {
+            pins[0].setPost(point1);
+        }
+        if (pins.length > 1) {
+            pins[1].setPost(point2);
+        }
+    }
 
 	// TODO: Badger: abstraction
 	protected void setPowerColor(Graphics g, boolean yellow) {
