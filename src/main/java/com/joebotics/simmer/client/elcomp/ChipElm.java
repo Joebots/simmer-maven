@@ -88,13 +88,13 @@ public abstract class ChipElm extends AbstractCircuitElement {
 	}
 
 	public void drag(int xx, int yy) {
-		yy = sim.getSimmerController().snapGrid(yy);
+		yy = sim.snapGrid(yy);
 		if (xx < getX1()) {
 			xx = getX1();
 			yy = getY1();
 		} else {
 			setY1(setY2(yy));
-			setX2(sim.getSimmerController().snapGrid(xx));
+			setX2(sim.snapGrid(xx));
 		}
 		setPoints();
 	}
