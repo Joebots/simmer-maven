@@ -4,7 +4,8 @@
     <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N' />
     <ui:style>
     </ui:style>
-    <ma:window.MaterialWindow ui:field="modal" title="{i18n.Circuits}" toolbarColor="GREEN" styleName="shifted-window">
+    <ma:window.MaterialWindow ui:field="modal" title="{i18n.Circuits}" toolbarColor="GREEN"
+        styleName="shifted-window">
         <m:MaterialRow>
             <m:MaterialColumn grid="s11">
                 <ma:tree.MaterialTree ui:field="circuitsTree">
@@ -15,6 +16,10 @@
                     tooltip="Collapse" iconType="VERTICAL_ALIGN_CENTER" />
                 <m:MaterialButton ui:field="btnExpand" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
                     tooltip="Expand" iconType="ZOOM_OUT_MAP" />
+                <m:MaterialLink ui:field="btnImport" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                    tooltip="Open" iconType="FILE_UPLOAD" />
+                <m:MaterialLink ui:field="btnExport" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                    tooltip="Save" iconType="FILE_DOWNLOAD" />
             </m:MaterialColumn>
         </m:MaterialRow>
     </ma:window.MaterialWindow>

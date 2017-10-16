@@ -59,7 +59,7 @@ public class LoadFile extends FileUpload implements ChangeHandler {
 		this.setName("Import");
 		this.getElement().setId("LoadFileElement");
 		this.addChangeHandler(this);
-		this.addStyleName("offScreen");
+		this.setVisible(false);
 	}
 
 	public final native void click()

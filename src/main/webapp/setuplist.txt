@@ -11,6 +11,9 @@ potdivide.txt Potentiometer Divider
 thevenin.txt Thevenin's Theorem
 norton.txt Norton's Theorem
 -
++Demo
+demo-traffic-light.txt Traffic Light
+-
 +A/C Circuits
 capac.txt Capacitor
 inductac.txt Inductor

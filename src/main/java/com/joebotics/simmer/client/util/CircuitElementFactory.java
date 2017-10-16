@@ -498,6 +498,11 @@ public class CircuitElementFactory {
         if (tint == 300)
             return (AbstractCircuitElement) new ScriptElm(x1, y1, x2, y2, f, st);
 
+        if (tint == 400)
+            return (AbstractCircuitElement) new GpioOutputElm(x1, y1, x2, y2, f, st);
+
+        if (tint == 401)
+            return (AbstractCircuitElement) new GpioInputElm(x1, y1, x2, y2, f, st);
         return null;
     }
 }

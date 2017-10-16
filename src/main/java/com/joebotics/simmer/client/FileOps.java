@@ -16,6 +16,7 @@ import com.joebotics.simmer.client.gui.dialog.ExportAsLocalFileDialog;
 import com.joebotics.simmer.client.gui.dialog.ExportAsTextDialog;
 import com.joebotics.simmer.client.gui.dialog.ExportAsUrlDialog;
 import com.joebotics.simmer.client.gui.util.LoadFile;
+import com.joebotics.simmer.client.util.Base64Util;
 import com.joebotics.simmer.client.util.CircuitElementFactory;
 import com.joebotics.simmer.client.util.HintTypeEnum;
 import com.joebotics.simmer.client.util.MessageI18N;
@@ -29,7 +30,12 @@ public class FileOps {
 
     public FileOps(Simmer simmer) {
         this.simmer = simmer;
-    }// this is the file generation logic!  :)
+    }// this is the file generation logic! :)
+
+    public String getCircuitUrl() {
+        String dataAsBase64 = Base64Util.encodeString(dumpCircuit());
+        return "data:application/octet-stream;name=document.pdf;base64," + dataAsBase64;
+    }
 
     public void doExportAsLocalFile() {
         String dump = dumpCircuit();
@@ -60,7 +66,9 @@ public class FileOps {
         f |= (simmer.getOptions().getBoolean(OptionKey.SHOW_POWER)) ? 8 : 0;
         f |= (simmer.getOptions().getBoolean(OptionKey.SHOW_VALUES)) ? 0 : 16;
         // 32 = linear scale in afilter
-        String dump = "$ " + f + " " + simmer.getTimeStep() + " " + simmer.getIterCount() + " " + simmer.getOptions().getInteger(OptionKey.CURRENT_SPEED) + " " + AbstractCircuitElement.voltageRange + " " + simmer.getSidePanel().getPowerBar().getValue() + "\n";
+        String dump = "$ " + f + " " + simmer.getTimeStep() + " " + simmer.getIterCount() + " "
+                + simmer.getOptions().getInteger(OptionKey.CURRENT_SPEED) + " " + AbstractCircuitElement.voltageRange
+                + " " + simmer.getSidePanel().getPowerBar().getValue() + "\n";
 
         for (i = 0; i != simmer.getElmList().size(); i++)
             dump += simmer.getElm(i).dump() + "\n";
@@ -72,6 +80,10 @@ public class FileOps {
         }
         if (simmer.getHintType() != HintTypeEnum.HintType.HINT_UNSET)
             dump += "h " + simmer.getHintType() + " " + simmer.getHintItem1() + " " + simmer.getHintItem2() + "\n";
+        // Blockly blocks
+        if (simmer.getBlocklyXml() != null) {
+            dump += "& " + Base64Util.encodeString(simmer.getBlocklyXml());
+        }
         return dump;
     }
 
@@ -95,7 +107,7 @@ public class FileOps {
                 // Commented out record
                 break;
             case '+':
-                TreeNode n  = currentNode.addChild(new CircuitLinkInfo(line.substring(1)));
+                TreeNode n = currentNode.addChild(new CircuitLinkInfo(line.substring(1)));
                 currentNode = stack[stackptr++] = n;
                 break;
             case '-':
@@ -153,11 +165,23 @@ public class FileOps {
         simmer.setGrid();
     }
 
+    public void readBlocks(StringTokenizer st) {
+        String encoded = st.nextToken();
+        if (encoded != null) {
+            try {
+                String xmlText = Base64Util.decodeString(encoded);
+                simmer.setBlocklyXml(xmlText);
+            } catch (Exception e) {
+                GWT.log("Error", e);
+            }
+        }
+    }
+
     public void getSetupList(final boolean openDefault) {
 
         String url = GWT.getModuleBaseURL();
-        url = url.substring(0,url.indexOf("simmer"));
-        url = url +  "setuplist.txt" + "?v=" + Math.random();
+        url = url.substring(0, url.indexOf("simmer"));
+        url = url + "setuplist.txt" + "?v=" + Math.random();
         RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
         try {
             requestBuilder.sendRequest(null, new RequestCallback() {
@@ -180,14 +204,14 @@ public class FileOps {
         }
 
         String s = "";
-        if( s != null && s.isEmpty() && Character.isUpperCase(s.charAt(0))){
+        if (s != null && s.isEmpty() && Character.isUpperCase(s.charAt(0))) {
 
         }
     }
 
     public void readSetup(byte b[], int len, boolean retain, boolean centre) {
 
-//        log("readSetup " + b.length );
+        // log("readSetup " + b.length );
         int i;
         if (!retain) {
             for (i = 0; i != simmer.getElmList().size(); i++) {
@@ -201,9 +225,10 @@ public class FileOps {
             simmer.getSidePanel().getPowerBar().setValue(50);
             AbstractCircuitElement.voltageRange = 5;
             simmer.setScopeCount(0);
+            simmer.setBlocklyXml(null);
         }
         // cv.repaint();
-        for (int p = 0; p < len; ) {
+        for (int p = 0; p < len;) {
             int l;
             int linelen = len - p; // IES - changed to allow the last line to
             // not end with a delim.
@@ -215,7 +240,7 @@ public class FileOps {
                     break;
                 }
             String line = new String(b, p, linelen);
-            StringTokenizer st = new StringTokenizer(line, " +\t\n\r\f");
+            StringTokenizer st = new StringTokenizer(line, " \t\n\r\f");
             while (st.hasMoreTokens()) {
                 String type = st.nextToken();
                 int tint = type.charAt(0);
@@ -236,6 +261,10 @@ public class FileOps {
                         readOptions(st);
                         break;
                     }
+                    if (tint == '&') {
+                        readBlocks(st);
+                        break;
+                    }
                     if (tint == '%' || tint == '?' || tint == 'B') {
                         // ignore afilter-specific stuff
                         break;
@@ -249,8 +278,8 @@ public class FileOps {
                     int y2 = new Integer(st.nextToken()).intValue();
                     int f = new Integer(st.nextToken()).intValue();
 
-                    AbstractCircuitElement newce = CircuitElementFactory.createCircuitElement(tint, x1, y1, x2, y2, f, st);
-
+                    AbstractCircuitElement newce = CircuitElementFactory.createCircuitElement(tint, x1, y1, x2, y2, f,
+                            st);
                     if (newce == null) {
                         System.out.println(MessageI18N.getMessage("unrecognized_dump_type_") + type);
                         break;
@@ -309,7 +338,7 @@ public class FileOps {
     }
 
     public void loadFileFromURL(String url, final boolean centre) {
-        lager.info("loadFileFromUrl:" + url );
+        lager.info("loadFileFromUrl:" + url);
 
         RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
         try {

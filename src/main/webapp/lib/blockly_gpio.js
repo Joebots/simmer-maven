@@ -24,8 +24,23 @@ Bgpio.init = function(container, params) {
     return Bgpio.workspace;
 };
 
-Bgpio.setBlocks = function(blocks) {
-    Blockly.Xml.domToWorkspace(blocks, Bgpio.workspace);
+Bgpio.setBlocks = function(xmlText) {
+    var xml = Blockly.Xml.textToDom(xmlText);
+    Blockly.Xml.domToWorkspace(xml, Bgpio.workspace);
+}
+
+Bgpio.getBlocks = function() {
+    if (Bgpio.workspace) {
+        var xml = Blockly.Xml.workspaceToDom(Bgpio.workspace);
+        return Blockly.Xml.domToText(xml);
+    }
+    return null;
+}
+
+Bgpio.clearBlocks = function() {
+    if (Bgpio.workspace) {
+        Bgpio.workspace.clear();
+    }
 }
 
 Bgpio.setCodeArea = function(element) {
