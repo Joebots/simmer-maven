@@ -221,9 +221,9 @@ public class EditMenu extends MenuBar{
             int spacew = simmer.getCircuitArea().width - oldbb.width - newbb.width;
             int spaceh = simmer.getCircuitArea().height - oldbb.height - newbb.height;
             if (spacew > spaceh)
-                dx = simmer.getSimmerController().snapGrid(oldbb.x + oldbb.width - newbb.x + simmer.getGridSize());
+                dx = simmer.snapGrid(oldbb.x + oldbb.width - newbb.x + simmer.getGridSize());
             else
-                dy = simmer.getSimmerController().snapGrid(oldbb.y + oldbb.height - newbb.y + simmer.getGridSize());
+                dy = simmer.snapGrid(oldbb.y + oldbb.height - newbb.y + simmer.getGridSize());
             for (i = oldsz; i != simmer.getElmList().size(); i++) {
                 AbstractCircuitElement ce = simmer.getElm(i);
                 ce.move(dx, dy);

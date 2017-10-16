@@ -85,8 +85,8 @@ public class TransformerElm extends AbstractCircuitElement {
 	}
 
 	public void drag(int xx, int yy) {
-		xx = sim.getSimmerController().snapGrid(xx);
-		yy = sim.getSimmerController().snapGrid(yy);
+		xx = sim.snapGrid(xx);
+		yy = sim.snapGrid(yy);
 		width = max(32, abs(yy - getY1()));
 		if (xx == getX1())
 			yy = getY1();
