@@ -17,7 +17,13 @@ public class Bgpio {
     public static native Element init(Element container, Params params);
 
     @JsMethod
-    public static native void setBlocks(Element blocks);
+    public static native void setBlocks(String xmlText);
+
+    @JsMethod
+    public static native String getBlocks();
+
+    @JsMethod
+    public static native String clearBlocks();
 
     @JsMethod
     public static native void setCodeArea(TextArea element);
