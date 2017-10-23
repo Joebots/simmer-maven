@@ -31,7 +31,7 @@ Bgpio.BrowserInterpreter.debugStep = function() {
     if (Bgpio.DEBUG)
         console.log('JavaScript debug step');
     var recursiveStep = function() {
-        notifyStarted(true);
+        Bgpio.notifyStarted(true);
         try {
             var ok = Bgpio.BrowserInterpreter.myInterpreter.step();
         } finally {
@@ -39,13 +39,13 @@ Bgpio.BrowserInterpreter.debugStep = function() {
                 // Program complete, no more code to execute.
                 if (Bgpio.DEBUG)
                     console.log('Javascript Debug steps ended');
-                notifySopped();
+                Bgpio.notifySopped();
                 return;
             }
         }
         if (Bgpio.BrowserInterpreter.pauseProcess) {
             // A block has been highlighted. Pause execution here.
-            notifyPaused();
+            Bgpio.notifyPaused();
             Bgpio.BrowserInterpreter.pauseProcess = false;
         } else {
             Bgpio.BrowserInterpreter.processId = setTimeout(recursiveStep, Bgpio.BrowserInterpreter.sleepTime);
@@ -59,7 +59,7 @@ Bgpio.BrowserInterpreter.run = function() {
     if (Bgpio.DEBUG)
         console.log('Running JavaScript simulation');
     Bgpio.BrowserInterpreter.stepping = false;
-    notifyStarted(false);
+    Bgpio.notifyStarted(false);
     Bgpio.BrowserInterpreter.prepareNewRun();
     
     // Generate JavaScript code and parse it
@@ -83,7 +83,7 @@ Bgpio.BrowserInterpreter.run = function() {
             Bgpio.BrowserInterpreter.sleepTime = 0;
         }
         if (stop) {
-            notifyStopped();
+            Bgpio.notifyStopped();
         }
     };
     recursiveStep();
@@ -94,7 +94,7 @@ Bgpio.BrowserInterpreter.stop = function() {
         console.log('Manually stopping running JavaScript');
     Bgpio.BrowserInterpreter.pauseProcess = true;
     clearTimeout(Bgpio.BrowserInterpreter.processId);
-    notifyStopped();
+    Bgpio.notifyStopped();
 };
 
 Bgpio.BrowserInterpreter.prepareNewRun = function() {
@@ -195,27 +195,4 @@ Bgpio.BrowserInterpreter.parseAcornObject = function(acornObj) {
 function highlightBlock(id) {
     Bgpio.workspace.highlightBlock(id);
     Bgpio.BrowserInterpreter.pauseProcess = true;
-}
-
-function notifyStarted(debug) {
-    if (Bgpio.eventBus) {
-        Bgpio.eventBus
-                .fireEvent(new com.joebotics.simmer.client.event.InterpreterStartedEvent(
-                        debug))
-    }
-}
-
-function notifyPaused() {
-    if (Bgpio.eventBus) {
-        Bgpio.eventBus
-                .fireEvent(new com.joebotics.simmer.client.event.InterpreterPausedEvent())
-    }
-}
-
-function notifyStopped() {
-    Bgpio.workspace.highlightBlock(null);
-    if (Bgpio.eventBus) {
-        Bgpio.eventBus
-                .fireEvent(new com.joebotics.simmer.client.event.InterpreterStoppedEvent())
-    }
 }

@@ -185,16 +185,39 @@ Bgpio.getRaspPiIp = function() {
 Bgpio.setUseBoard = function(value) {
     Bgpio.runMode.selectMode(value ? 1 : 0);
     if (value) {
-        Bgpio.WebSocket.connect();
+        Bgpio.BoardInterpreter.startup();
     } else {
-        Bgpio.WebSocket.close();
+        Bgpio.BoardInterpreter.shutdown();
     }
 }
 
 Bgpio.getUseBoard = function() {
-    return Bgpio.runMode.selected === 1;
+    return this.runMode.selected === 1;
 }
 
 Bgpio.setEventBus = function(eventBus) {
-    Bgpio.eventBus = eventBus;
+    this.eventBus = eventBus;
+}
+
+Bgpio.notifyStarted = function(debug) {
+    if (this.eventBus) {
+        this.eventBus
+                .fireEvent(new com.joebotics.simmer.client.event.InterpreterStartedEvent(
+                        debug))
+    }
+}
+
+Bgpio.notifyPaused = function() {
+    if (this.eventBus) {
+        this.eventBus
+                .fireEvent(new com.joebotics.simmer.client.event.InterpreterPausedEvent())
+    }
+}
+
+Bgpio.notifyStopped = function() {
+    this.workspace.highlightBlock(null);
+    if (this.eventBus) {
+        this.eventBus
+                .fireEvent(new com.joebotics.simmer.client.event.InterpreterStoppedEvent())
+    }
 }
