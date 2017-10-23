@@ -8,19 +8,24 @@
     <ui:style>
     
     </ui:style>
-    <ma:window.MaterialWindow ui:field="modal" title="{i18n.Programming}" toolbarColor="GREEN" styleName="shifted-window">
+    <ma:window.MaterialWindow ui:field="modal" title="{i18n.Programming}" toolbarColor="GREEN"
+        styleName="shifted-window">
         <m:MaterialRow height="100%">
             <m:MaterialColumn grid="s11" height="100%">
                 <m:MaterialTab backgroundColor="WHITE">
-                    <m:MaterialTabItem waves="LIGHT" flex="NONE">
+                    <m:MaterialTabItem waves="LIGHT" flex="NONE" grid="s2">
                         <m:MaterialLink text="{i18n.Blockly}" href="#blocklyTab" />
                     </m:MaterialTabItem>
-                    <m:MaterialTabItem waves="LIGHT" flex="NONE">
+                    <m:MaterialTabItem waves="LIGHT" flex="NONE" grid="s2">
                         <m:MaterialLink text="{i18n.JS_Code}" href="#codeTab" />
                     </m:MaterialTabItem>
-                    <m:MaterialTabItem waves="LIGHT" flex="NONE">
+                    <m:MaterialTabItem waves="LIGHT" flex="NONE" grid="s2">
                         <m:MaterialLink text="{i18n.JS_Console}" href="#consoleTab" />
                     </m:MaterialTabItem>
+                    <m:MaterialTabItem waves="LIGHT" flex="NONE" grid="s6">
+                        <m:MaterialSwitch ui:field="useBoardSwitch" offLabel="{i18n.Simulator}" onLabel="{i18n.Board}" />
+                    </m:MaterialTabItem>
+
                 </m:MaterialTab>
 
                 <m:MaterialColumn m:id="blocklyTab" grid="s12" height="100%">
@@ -71,149 +76,6 @@
                         </xml>
                     </g:HTMLPanel>
                     <g:HTMLPanel ui:field="blocklyPanel">
-                        <!-- Blocks to display on the workspace -->
-                        <xml id="startBlocks" style="display: none">
-                            <block type="text_print" x="20" y="9">
-                                <value name="TEXT">
-                                    <block type="text">
-                                        <field name="TEXT">GPIO toggling starting...</field>
-                                    </block>
-                                </value>
-                                <next>
-                                    <block type="led_set">
-                                        <field name="PIN">7</field>
-                                        <value name="STATE">
-                                            <block type="pin_binary">
-                                                <field name="STATE">HIGH</field>
-                                            </block>
-                                        </value>
-                                        <next>
-                                            <block type="sleep_ms">
-                                                <value name="SLEEP_TIME_MILI">
-                                                    <block type="math_number">
-                                                        <field name="NUM">1000</field>
-                                                    </block>
-                                                </value>
-                                                <next>
-                                                    <block type="led_set">
-                                                        <field name="PIN">7</field>
-                                                        <value name="STATE">
-                                                            <block type="pin_binary">
-                                                                <field name="STATE">LOW</field>
-                                                            </block>
-                                                        </value>
-                                                        <next>
-                                                            <block type="sleep_ms">
-                                                                <value name="SLEEP_TIME_MILI">
-                                                                    <block type="math_number">
-                                                                        <field name="NUM">1000</field>
-                                                                    </block>
-                                                                </value>
-                                                                <next>
-                                                                    <block type="controls_repeat_ext">
-                                                                        <value name="TIMES">
-                                                                            <block type="math_number">
-                                                                                <field name="NUM">2</field>
-                                                                            </block>
-                                                                        </value>
-                                                                        <statement name="DO">
-                                                                            <block type="led_set">
-                                                                                <field name="PIN">0</field>
-                                                                                <value name="STATE">
-                                                                                    <block type="pin_binary">
-                                                                                        <field name="STATE">HIGH</field>
-                                                                                    </block>
-                                                                                </value>
-                                                                                <next>
-                                                                                    <block type="sleep_ms">
-                                                                                        <value name="SLEEP_TIME_MILI">
-                                                                                            <block type="math_number">
-                                                                                                <field name="NUM">500</field>
-                                                                                            </block>
-                                                                                        </value>
-                                                                                        <next>
-                                                                                            <block type="led_set">
-                                                                                                <field name="PIN">0</field>
-                                                                                                <value name="STATE">
-                                                                                                    <block type="pin_binary">
-                                                                                                        <field
-                                                                                                            name="STATE">LOW</field>
-                                                                                                    </block>
-                                                                                                </value>
-                                                                                                <next>
-                                                                                                    <block type="sleep_ms">
-                                                                                                        <value
-                                                                                                            name="SLEEP_TIME_MILI">
-                                                                                                            <block
-                                                                                                                type="math_number">
-                                                                                                                <field
-                                                                                                                    name="NUM">500</field>
-                                                                                                            </block>
-                                                                                                        </value>
-                                                                                                    </block>
-                                                                                                </next>
-                                                                                            </block>
-                                                                                        </next>
-                                                                                    </block>
-                                                                                </next>
-                                                                            </block>
-                                                                        </statement>
-                                                                        <next>
-                                                                            <block type="led_set">
-                                                                                <field name="PIN">2</field>
-                                                                                <value name="STATE">
-                                                                                    <block type="pin_binary">
-                                                                                        <field name="STATE">HIGH</field>
-                                                                                    </block>
-                                                                                </value>
-                                                                                <next>
-                                                                                    <block type="sleep_ms">
-                                                                                        <value name="SLEEP_TIME_MILI">
-                                                                                            <block type="math_number">
-                                                                                                <field name="NUM">1000</field>
-                                                                                            </block>
-                                                                                        </value>
-                                                                                        <next>
-                                                                                            <block type="led_set">
-                                                                                                <field name="PIN">2</field>
-                                                                                                <value name="STATE">
-                                                                                                    <block type="pin_binary">
-                                                                                                        <field
-                                                                                                            name="STATE">LOW</field>
-                                                                                                    </block>
-                                                                                                </value>
-                                                                                                <next>
-                                                                                                    <block type="text_print">
-                                                                                                        <value
-                                                                                                            name="TEXT">
-                                                                                                            <block
-                                                                                                                type="text">
-                                                                                                                <field
-                                                                                                                    name="TEXT">GPIO
-                                                                                                                    toggling
-                                                                                                                    done</field>
-                                                                                                            </block>
-                                                                                                        </value>
-                                                                                                    </block>
-                                                                                                </next>
-                                                                                            </block>
-                                                                                        </next>
-                                                                                    </block>
-                                                                                </next>
-                                                                            </block>
-                                                                        </next>
-                                                                    </block>
-                                                                </next>
-                                                            </block>
-                                                        </next>
-                                                    </block>
-                                                </next>
-                                            </block>
-                                        </next>
-                                    </block>
-                                </next>
-                            </block>
-                        </xml>
                     </g:HTMLPanel>
                 </m:MaterialColumn>
                 <m:MaterialColumn m:id="codeTab" grid="s12">
@@ -228,6 +90,10 @@
                     tooltip="{i18n.Run}" iconType="PLAY_ARROW" />
                 <m:MaterialButton ui:field="btnDebug" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
                     tooltip="{i18n.Debug}" iconType="BUG_REPORT" />
+                <m:MaterialButton ui:field="btnNextStep" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                    tooltip="{i18n.Next_Step}" iconType="SKIP_NEXT" enabled="false" />
+                <m:MaterialButton ui:field="btnStop" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                    tooltip="{i18n.Stop}" iconType="STOP" iconColor="RED" enabled="false"/>
             </m:MaterialColumn>
         </m:MaterialRow>
     </ma:window.MaterialWindow>

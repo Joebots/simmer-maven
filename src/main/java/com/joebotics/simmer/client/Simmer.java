@@ -40,6 +40,7 @@ import com.joebotics.simmer.client.breadboard.interpreter.BreadboardCircuitParse
 import com.joebotics.simmer.client.breadboard.interpreter.CircuitParser;
 import com.joebotics.simmer.client.breadboard.interpreter.CircuitParserListener;
 import com.joebotics.simmer.client.elcomp.*;
+import com.joebotics.simmer.client.event.SimmerEventBus;
 import com.joebotics.simmer.client.gui.MainPanel;
 import com.joebotics.simmer.client.gui.Scope;
 import com.joebotics.simmer.client.gui.SidePanel;
@@ -147,6 +148,7 @@ public class Simmer {
     private Options options;
     private GpioManager gpioManager;
     private String blocklyXml;
+    private SimmerEventBus eventBus;
 
     private static Simmer instance;
 
@@ -154,6 +156,7 @@ public class Simmer {
 
     private Simmer() {
         gpioManager = new GpioManager();
+        eventBus = new SimmerEventBus();
     }
 
     public static final Simmer getInstance() {
@@ -2007,5 +2010,9 @@ public class Simmer {
 
     public void setBlocklyXml(String blocklyXml) {
         this.blocklyXml = blocklyXml;
+    }
+
+    public SimmerEventBus getEventBus() {
+        return eventBus;
     }
 }

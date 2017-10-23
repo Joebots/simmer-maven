@@ -7,26 +7,26 @@
 'use strict';
 
 var Bgpio = Bgpio || {};
-Bgpio.PythonInterpreter = {};
+Bgpio.BoardInterpreter = {};
 
-Bgpio.PythonInterpreter.debugInit = function() {
-  if (Bgpio.DEBUG) console.log('Init Python debug');
+Bgpio.BoardInterpreter.debugInit = function() {
+  if (Bgpio.DEBUG) console.log('Init Board debug');
   alert('Feature not yet implemented.');
 };
 
-Bgpio.PythonInterpreter.debugStep = function() {
+Bgpio.BoardInterpreter.debugStep = function() {
   if (Bgpio.DEBUG) console.log('Python debug step');
   alert('Feature not yet implemented.');
 };
 
-Bgpio.PythonInterpreter.run = function() {
+Bgpio.BoardInterpreter.run = function() {
   var code = Bgpio.getCode();
   if (Bgpio.DEBUG) console.log('Run Python code: \n' + code);
   Bgpio.WebSocket.connect(Bgpio.getRaspPiIp());
   Bgpio.WebSocket.sendCode(code);
 };
 
-Bgpio.PythonInterpreter.stop = function() {
+Bgpio.BoardInterpreter.stop = function() {
   if (Bgpio.DEBUG) console.log('Stop running Python code');
   alert('Feature not yet implemented.');
 };

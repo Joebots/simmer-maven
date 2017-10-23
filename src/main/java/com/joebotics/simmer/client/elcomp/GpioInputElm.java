@@ -1,6 +1,9 @@
 package com.joebotics.simmer.client.elcomp;
 
+import com.google.gwt.core.client.GWT;
 import com.joebotics.simmer.client.Simmer;
+import com.joebotics.simmer.client.event.GpioEvent;
+import com.joebotics.simmer.client.event.GpioEventHandler;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.model.GpioManager;
 import com.joebotics.simmer.client.model.GpioPin;
@@ -9,13 +12,14 @@ import com.joebotics.simmer.client.util.StringTokenizer;
 
 import gwt.material.design.client.ui.MaterialListBox;
 
-public class GpioInputElm extends LogicInputElm {
+public class GpioInputElm extends LogicInputElm implements GpioEventHandler {
     private GpioManager gpioManager = Simmer.getInstance().getGpioManager();
     private GpioPin gpioPin;
 
     public GpioInputElm(int xx, int yy) {
         super(xx, yy);
         setGpioPin(gpioManager.getAvailablePins().get(0));
+        Simmer.getInstance().getEventBus().addHandler(GpioEvent.TYPE, this);
     }
 
     public GpioInputElm(int xa, int ya, int xb, int yb, int f, StringTokenizer st) {
@@ -30,6 +34,7 @@ public class GpioInputElm extends LogicInputElm {
         }
         allocNodes();
         setupPins();
+        Simmer.getInstance().getEventBus().addHandler(GpioEvent.TYPE, this);
     }
 
     public String dump() {
@@ -89,5 +94,14 @@ public class GpioInputElm extends LogicInputElm {
         }
         this.gpioPin = gpioPin;
         gpioManager.holdPin(gpioPin, GpioPinState.INPUT);
+    }
+
+    @Override
+    public void onGpioEvent(GpioEvent event) {
+        if (gpioPin.getPinNumber().equals(event.getPinNumber())) {
+            int pos = event.getValue() ? 1 : 0;
+            this.position = pos;
+            Simmer.getInstance().needAnalyze();
+        }
     }
 }

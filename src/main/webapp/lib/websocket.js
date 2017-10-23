@@ -9,11 +9,6 @@
 var Bgpio = Bgpio || {};
 Bgpio.WebSocket = {};
 
-Bgpio.WebSocket.init = function() {
-    Bgpio.WebSocket.connect();
-    //DEBUG Bgpio.WebSocket.connect("localhost");
-};
-
 Bgpio.WebSocket.connect = function(ip) {
     if (ip) {
         Bgpio.WebSocket.ws = io('http://' + ip + ':8080/').connect();
@@ -65,3 +60,7 @@ Bgpio.WebSocket.error = function(evt) {
 Bgpio.WebSocket.sendCode = function(codeStr) {
     Bgpio.WebSocket.ws.emit('javascript_code', codeStr);
 };
+
+Bgpio.WebSocket.close = function() {
+    Bgpio.WebSocket.ws.close();
+}

@@ -9,6 +9,7 @@
 var Bgpio = Bgpio || {};
 
 Bgpio.workspace = null;
+Bgpio.eventBus = null;
 Bgpio.DEBUG = true;
 Bgpio.PIN_COUNT = 26;
 
@@ -20,7 +21,6 @@ Bgpio.init = function(container, params) {
     Bgpio.workspace.addChangeListener(Bgpio.renderCode);
     
     Bgpio.clearJsConsole();
-    Bgpio.WebSocket.init();
     return Bgpio.workspace;
 };
 
@@ -71,37 +71,23 @@ Bgpio.runMode = {
             this.selected = 0;
         this.updateState_();
     },
-    debugInit : Bgpio.JsInterpreter.debugInit,
-    debugStep : Bgpio.JsInterpreter.debugStep,
-    run : Bgpio.JsInterpreter.run,
-    stop : Bgpio.JsInterpreter.stop,
+    debugInit : Bgpio.BrowserInterpreter.debugInit,
+    debugStep : Bgpio.BrowserInterpreter.debugStep,
+    run : Bgpio.BrowserInterpreter.run,
+    stop : Bgpio.BrowserInterpreter.stop,
     updateState_ : function() {
-        /*
-        for (var i = 0; i < this.types.length; i++) {
-            var modeText = document.getElementById('mode' + this.types[i]);
-            if (i === this.selected) {
-                modeText.style.display = 'inline';
-            } else {
-                modeText.style.display = 'none';
-            }
-        }
-        var simulationContent = document.getElementById('simulationContentDiv');
-        var executionContent = document.getElementById('executionContentDiv');
-        */
         if (this.selected === 0) {
-            //simulationContent.style.display = 'block';
-            //executionContent.style.display = 'none';
-            this.debugInit = Bgpio.JsInterpreter.debugInit;
-            this.debugStep = Bgpio.JsInterpreter.debugStep;
-            this.run = Bgpio.JsInterpreter.run;
-            this.stop = Bgpio.JsInterpreter.stop;
+            this.debugInit = Bgpio.BrowserInterpreter.debugInit;
+            this.debugStep = Bgpio.BrowserInterpreter.debugStep;
+            this.run = Bgpio.BrowserInterpreter.run;
+            this.stop = Bgpio.BrowserInterpreter.stop;
+            Bgpio.clearJsConsole('Simulated print output.\n');
         } else {
-            //simulationContent.style.display = 'none';
-            //executionContent.style.display = 'block';
-            this.debugInit = Bgpio.PythonInterpreter.debugInit;
-            this.debugStep = Bgpio.PythonInterpreter.debugStep;
-            this.run = Bgpio.PythonInterpreter.run;
-            this.stop = Bgpio.PythonInterpreter.stop;
+            this.debugInit = Bgpio.BoardInterpreter.debugInit;
+            this.debugStep = Bgpio.BoardInterpreter.debugStep;
+            this.run = Bgpio.BoardInterpreter.run;
+            this.stop = Bgpio.BoardInterpreter.stop;
+            Bgpio.clearJsConsole('Board print output.\n');
         }
     },
 };
@@ -145,15 +131,25 @@ Bgpio.renderCode = function() {
  ******************************************************************************/
 Bgpio.setPinDefaults = function() {
     console.log("Bgpio.setPinDefaults()");
-    //for (var i = 1; i <= Bgpio.PIN_COUNT; i++) {
-    //    document.getElementById('pin' + i).className = 'pinDefault';
-    //}
+    if (Bgpio.eventBus) {
+        for (var i = 1; i <= Bgpio.PIN_COUNT; i++) {
+            Bgpio.eventBus.fireEvent(new com.joebotics.simmer.client.event.GpioEvent(i + 1, false));
+        }
+    }
 };
 
-Bgpio.setPinDigital = function(pinNumber, isPinHigh) {
-    console.log("Bgpio.setPinDigital(" + pinNumber + ", " + isPinHigh + ")");
-    //var pin = document.getElementById('pin' + pinNumber);
-    //pin.className = isPinHigh ? 'pinDigitalHigh' : 'pinDigitalLow';
+Bgpio.setPinDigital = function(pinNumber, value) {
+    console.log("Bgpio.setPinDigital(" + pinNumber + ", " + value + ")");
+    if (Bgpio.eventBus) {
+        Bgpio.eventBus.fireEvent(new com.joebotics.simmer.client.event.GpioEvent(pinNumber, value))
+    }
+};
+
+Bgpio.getPinDigital = function(pinNumber) {
+    console.log("Bgpio.getPinDigital(" + pinNumber + ")");
+    if (Bgpio.eventBus) {
+        Bgpio.eventBus.fireEvent(new com.joebotics.simmer.client.event.GpioEvent(pinNumber, value))
+    }
 };
 
 Bgpio.appendTextJsConsole = function(text) {
@@ -164,7 +160,10 @@ Bgpio.appendTextJsConsole = function(text) {
 
 Bgpio.clearJsConsole = function(text) {
     if (Bgpio.consoleArea) {
-        Bgpio.consoleArea.setText('Simulated print output.\n');
+        Bgpio.consoleArea.clear();
+        if (text) {
+            Bgpio.consoleArea.setText(text);
+        }
     }
 };
 
@@ -173,15 +172,29 @@ Bgpio.clearJsConsole = function(text) {
  ******************************************************************************/
 Bgpio.getRaspPiIp = function() {
     /*
-    var ipField = document.getElementById('raspPiIp');
-    var ip = ipField.value;
-    if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
-            .test(ip)) {
-        ipField.style.color = "green";
-        return ipField.value;
-    }
-    ipField.style.color = "red";
-    */
-    //DEBUG return "localhost";
+     * var ipField = document.getElementById('raspPiIp'); var ip =
+     * ipField.value; if
+     * (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+     * .test(ip)) { ipField.style.color = "green"; return ipField.value; }
+     * ipField.style.color = "red";
+     */
+    // DEBUG return "localhost";
     return null;
 };
+
+Bgpio.setUseBoard = function(value) {
+    Bgpio.runMode.selectMode(value ? 1 : 0);
+    if (value) {
+        Bgpio.WebSocket.connect();
+    } else {
+        Bgpio.WebSocket.close();
+    }
+}
+
+Bgpio.getUseBoard = function() {
+    return Bgpio.runMode.selected === 1;
+}
+
+Bgpio.setEventBus = function(eventBus) {
+    Bgpio.eventBus = eventBus;
+}
