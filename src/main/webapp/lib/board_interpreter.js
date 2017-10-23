@@ -21,7 +21,6 @@ Bgpio.BoardInterpreter.startup = function() {
     });
     Bgpio.WebSocket.on('stopped', function() {
         Bgpio.notifyStopped();
-        Bgpio.WebSocket.close();
     });
 }
 
