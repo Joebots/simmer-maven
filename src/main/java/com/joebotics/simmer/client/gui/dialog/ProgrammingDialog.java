@@ -110,7 +110,9 @@ public class ProgrammingDialog extends Composite implements InterpreterEventHand
             Bgpio.resize();
         }
         String xmlText = Simmer.getInstance().getBlocklyXml();
-        if (xmlText != null) {
+        Bgpio.clearBlocks();
+        if (xmlText != null && !xmlText.equals(Bgpio.getBlocks())) {
+            Bgpio.clearBlocks();
             Bgpio.setBlocks(xmlText);
         } else {
             Bgpio.clearBlocks();
