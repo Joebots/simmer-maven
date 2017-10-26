@@ -8,7 +8,6 @@ import jsinterop.annotations.JsType;
 
 @JsType(name = "GpioEvent")
 public class GpioEvent extends GwtEvent<GpioEventHandler> {
-    @JsIgnore
     public static final Type<GpioEventHandler> TYPE = new Type<GpioEventHandler>();
 
     private String pinNumber;
