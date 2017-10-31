@@ -4,7 +4,7 @@
  * 
  * @fileoverview Description.
  */
-'use strict';
+"use strict";
 
 var Bgpio = Bgpio || {};
 Bgpio.BrowserInterpreter = {};
@@ -16,7 +16,7 @@ Bgpio.BrowserInterpreter.sleepTime = 0;
 
 Bgpio.BrowserInterpreter.debugInit = function() {
     if (Bgpio.DEBUG)
-        console.log('Init JavaScript debug');
+        console.log("Init JavaScript debug");
     Bgpio.BrowserInterpreter.stepping = true;
     Bgpio.BrowserInterpreter.prepareNewRun();
     
@@ -29,7 +29,7 @@ Bgpio.BrowserInterpreter.debugInit = function() {
 
 Bgpio.BrowserInterpreter.debugStep = function() {
     if (Bgpio.DEBUG)
-        console.log('JavaScript debug step');
+        console.log("JavaScript debug step");
     var recursiveStep = function() {
         Bgpio.notifyStarted(true);
         try {
@@ -38,7 +38,7 @@ Bgpio.BrowserInterpreter.debugStep = function() {
             if (!ok) {
                 // Program complete, no more code to execute.
                 if (Bgpio.DEBUG)
-                    console.log('Javascript Debug steps ended');
+                    console.log("Javascript Debug steps ended");
                 Bgpio.notifySopped();
                 return;
             }
@@ -57,7 +57,7 @@ Bgpio.BrowserInterpreter.debugStep = function() {
 
 Bgpio.BrowserInterpreter.run = function() {
     if (Bgpio.DEBUG)
-        console.log('Running JavaScript simulation');
+        console.log("Running JavaScript simulation");
     Bgpio.BrowserInterpreter.stepping = false;
     Bgpio.notifyStarted(false);
     Bgpio.BrowserInterpreter.prepareNewRun();
@@ -91,7 +91,7 @@ Bgpio.BrowserInterpreter.run = function() {
 
 Bgpio.BrowserInterpreter.stop = function() {
     if (Bgpio.DEBUG)
-        console.log('Manually stopping running JavaScript');
+        console.log("Manually stopping running JavaScript");
     Bgpio.BrowserInterpreter.pauseProcess = true;
     clearTimeout(Bgpio.BrowserInterpreter.processId);
     Bgpio.notifyStopped();
@@ -106,20 +106,20 @@ Bgpio.BrowserInterpreter.prepareNewRun = function() {
 };
 
 Bgpio.BrowserInterpreter.prepareJavaScript = function() {
-    Blockly.JavaScript.addReservedWords('highlightBlock');
-    Blockly.JavaScript.addReservedWords('setDiagramPin');
-    Blockly.JavaScript.addReservedWords('delayMs');
-    Blockly.JavaScript.addReservedWords('jsPrint');
+    Blockly.JavaScript.addReservedWords("highlightBlock");
+    Blockly.JavaScript.addReservedWords("setDiagramPin");
+    Blockly.JavaScript.addReservedWords("delayMs");
+    Blockly.JavaScript.addReservedWords("jsPrint");
     
     Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
     if (Bgpio.BrowserInterpreter.stepping) {
-        Blockly.JavaScript.STATEMENT_PREFIX = 'highlightBlock(%1);\n';
+        Blockly.JavaScript.STATEMENT_PREFIX = "highlightBlock(%1);\n";
     } else {
         Blockly.JavaScript.STATEMENT_PREFIX = null;
     }
     var code = Bgpio.generateJavaScriptCode();
     if (Bgpio.DEBUG)
-        console.log('About to execute code:\n' + code);
+        console.log("About to execute code:\n" + code);
     return code;
 };
 
@@ -129,67 +129,72 @@ Bgpio.BrowserInterpreter.prepareJavaScript = function() {
 Bgpio.BrowserInterpreter.debugInterpreterInit = function(interpreter, scope) {
     // Add an API function for the alert() block.
     var wrapper = function(text) {
-        text = text ? text.toString() : '';
+        text = text ? text.toString() : "";
         return interpreter.createPrimitive(alert(text));
     };
-    interpreter.setProperty(scope, 'alert', interpreter
+    interpreter.setProperty(scope, "alert", interpreter
             .createNativeFunction(wrapper));
     
     // Add an API function for the prompt() block.
     var wrapper = function(text) {
-        text = text ? text.toString() : '';
+        text = text ? text.toString() : "";
         return interpreter.createPrimitive(prompt(text));
     };
-    interpreter.setProperty(scope, 'prompt', interpreter
+    interpreter.setProperty(scope, "prompt", interpreter
             .createNativeFunction(wrapper));
     
     // Add an API function for highlighting blocks.
     var wrapper = function(id) {
-        id = id ? id.toString() : '';
+        id = id ? id.toString() : "";
         return interpreter.createPrimitive(highlightBlock(id));
     };
-    interpreter.setProperty(scope, 'highlightBlock', interpreter
+    interpreter.setProperty(scope, "highlightBlock", interpreter
+            .createNativeFunction(wrapper));
+
+    // Add an API function for listening pin value changes
+    var wrapper = function(event, callback) {
+        if (Bgpio.DEBUG)
+            console.log("GPIO event: " + event);
+        Bgpio.onGpioChanged(callback);
+    };
+    interpreter.setProperty(scope, "gpioOn", interpreter
             .createNativeFunction(wrapper));
     
-    // Add an API function for simulating pins
+    // Add an API function for write pin value
     var wrapper = function(pin, value) {
         if (Bgpio.DEBUG)
-            console.log('pin->' + pin + ' set ' + value);
+            console.log("pin->" + pin + " set " + value);
         Bgpio.setPinDigital(pin, value);
     };
-    interpreter.setProperty(scope, 'setDiagramPin', interpreter
+    interpreter.setProperty(scope, "gpioWrite", interpreter
             .createNativeFunction(wrapper));
     
-    // Add an API function for simulating pins
-    var wrapper = function(pin, value) {
+    // Add an API function for read pin value
+    var wrapper = function(pin) {
         if (Bgpio.DEBUG)
-            console.log('get pin->' + pin);
+            console.log("get pin->" + pin);
         return Bgpio.getPinDigital(pin);
     };
-    interpreter.setProperty(scope, 'getDiagramPin', interpreter
+    interpreter.setProperty(scope, "gpioRead", interpreter
             .createNativeFunction(wrapper));
     
     // Add an API function for waiting an amount of time
     var wrapper = function(value) {
         if (Bgpio.DEBUG)
-            console.log('wait for ' + value + ' ms');
+            console.log("wait for " + value + " ms");
         Bgpio.BrowserInterpreter.sleepTime = value;
     };
-    interpreter.setProperty(scope, 'delayMs', interpreter
+    interpreter.setProperty(scope, "sleep", interpreter
             .createNativeFunction(wrapper));
     
     // Add an API function for printing into the fake console
     var wrapper = function(text) {
         if (Bgpio.DEBUG)
-            console.log('Print in fake console: ' + text);
+            console.log("Print in fake console: " + text);
         Bgpio.appendTextJsConsole(text);
     };
-    interpreter.setProperty(scope, 'jsPrint', interpreter
+    interpreter.setProperty(scope, "println", interpreter
             .createNativeFunction(wrapper));
-};
-
-Bgpio.BrowserInterpreter.parseAcornObject = function(acornObj) {
-    return acornObj.isPrimitive ? acornObj.valueOf() : acornObj.toString();
 };
 
 function highlightBlock(id) {

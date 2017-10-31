@@ -152,6 +152,15 @@ Bgpio.getPinDigital = function(pinNumber) {
     }
 };
 
+Bgpio.onGpioChanged = function(callback) {
+    console.log("Bgpio.onGpioChanged(" + callback + ")");
+    if (Bgpio.eventBus) {
+        Bgpio.eventBus.addHandler(com.joebotics.simmer.client.event.GpioEvent.TYPE, function(event) {
+            callback(event.getPinNumber(), event.getValue());
+        });
+    }
+};
+
 Bgpio.appendTextJsConsole = function(text) {
     if (Bgpio.consoleArea) {
         Bgpio.consoleArea.appendText(text + '\n');
