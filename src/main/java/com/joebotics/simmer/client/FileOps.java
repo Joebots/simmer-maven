@@ -178,9 +178,7 @@ public class FileOps {
     }
 
     public void getSetupList(final boolean openDefault) {
-
-        String url = GWT.getModuleBaseURL();
-        url = url.substring(0, url.indexOf("simmer"));
+        String url = GWT.getHostPageBaseURL();
         url = url + "setuplist.txt" + "?v=" + Math.random();
         RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
         try {
@@ -316,10 +314,7 @@ public class FileOps {
 
     protected void readSetupFile(String str, String title, boolean centre) {
         simmer.setT(0);
-        // try {
-        // TODO: Maybe think about some better approach to cache management!
-        String url = GWT.getModuleBaseURL();
-        url = url.substring(0, url.indexOf("simmer"));
+        String url = GWT.getHostPageBaseURL();
         url = url + "circuits/" + str + "?v=" + Math.random();
         loadFileFromURL(url, centre);
     }
