@@ -129,17 +129,13 @@
         </extensions>
     </build>
     <distributionManagement>
-        <site>
-            <id>s3.site</id>
-            <url>s3://updates.build-joebotics.us/site</url>
-        </site>
         <repository>
             <id>s3.release</id>
-            <url>s3://updates.build-joebotics.us/release</url>
+            <url>s3://artifacts_build-joebotics.us/release</url>
         </repository>
         <snapshotRepository>
             <id>s3.snapshot</id>
-            <url>s3://updates.build-joebotics.us/snapshot</url>
+            <url>s3://artifacts_build-joebotics.us/snapshot</url>
         </snapshotRepository>
     </distributionManagement>
 </project>
