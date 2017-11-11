@@ -76,6 +76,7 @@ public class ProgrammingDialog extends Composite implements InterpreterEventHand
         eventBus.addHandler(InterpreterStoppedEvent.TYPE, this);
         eventBus.addHandler(InterpreterPausedEvent.TYPE, this);
         Bgpio.setEventBus(eventBus);
+        useBoardSwitch.setEnabled(Bgpio.hasBoard());
     }
 
     @UiHandler("useBoardSwitch")

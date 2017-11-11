@@ -34,6 +34,9 @@ public class Bgpio {
     public static native void setConsoleArea(TextArea element);
 
     @JsMethod
+    public static native boolean hasBoard();
+
+    @JsMethod
     public static native void setUseBoard(boolean value);
 
     @JsMethod
