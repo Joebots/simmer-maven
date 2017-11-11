@@ -6,7 +6,7 @@
     <groupId>com.joebotics</groupId>
     <artifactId>simmer</artifactId>
     <packaging>war</packaging>
-    <version>1</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>simmer-gwt</name>
 
     <properties>
@@ -88,12 +88,10 @@
     </dependencies>
 
     <build>
-        <!-- Output classes directly into the webapp, so that IDEs and "mvn 
-            process-classes" update them in DevMode -->
+        <!-- Output classes directly into the webapp, so that IDEs and "mvn process-classes" update them in DevMode -->
         <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
 
         <plugins>
-
             <!-- GWT Maven Plugin -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -109,8 +107,7 @@
                         </goals>
                     </execution>
                 </executions>
-                <!-- Plugin configuration. There are many available options, 
-                    see gwt-maven-plugin documentation at codehaus.org -->
+                <!-- Plugin configuration. There are many available options, see gwt-maven-plugin documentation at codehaus.org -->
                 <configuration>
                     <runTarget>simmer.html</runTarget>
                     <modules>
@@ -123,5 +120,22 @@
                 </configuration>
             </plugin>
         </plugins>
+        <extensions>
+            <extension>
+                <groupId>co.axiomzen.maven.wagons</groupId>
+                <artifactId>maven-s3-wagon</artifactId>
+                <version>1.2.6</version>
+            </extension>
+        </extensions>
     </build>
+    <distributionManagement>
+        <repository>
+            <id>s3.release</id>
+            <url>s3://artifacts_build-joebotics.us/release</url>
+        </repository>
+        <snapshotRepository>
+            <id>s3.snapshot</id>
+            <url>s3://artifacts_build-joebotics.us/snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
