@@ -29,7 +29,7 @@ Bgpio.init = function(container, params) {
 Bgpio.setBlocks = function(xmlText) {
     var xml = Blockly.Xml.textToDom(xmlText);
     Blockly.Xml.domToWorkspace(xml, Bgpio.workspace);
-}
+};
 
 Bgpio.getBlocks = function() {
     if (Bgpio.workspace) {
@@ -37,25 +37,25 @@ Bgpio.getBlocks = function() {
         return Blockly.Xml.domToText(xml);
     }
     return null;
-}
+};
 
 Bgpio.clearBlocks = function() {
     if (Bgpio.workspace) {
         Bgpio.workspace.clear();
     }
-}
+};
 
 Bgpio.setCodeArea = function(element) {
     Bgpio.codeArea = element;
-}
+};
 
 Bgpio.setConsoleArea = function(element) {
     Bgpio.consoleArea = element;
-}
+};
 
 Bgpio.resize = function() {
     Blockly.svgResize(Bgpio.workspace);
-}
+};
 
 Bgpio.runMode = {
     selected : 0,
@@ -150,15 +150,15 @@ Bgpio.getRaspPiIp = function() {
 };
 
 Bgpio.hasBoard = function() {
-    return typeof BoardAPI != "undefined";
+    return typeof Bgpio.BoardAPI != "undefined";
 }
 
 Bgpio.setUseBoard = function(value) {
     Bgpio.runMode.selectMode(value ? 1 : 0);
     if (value) {
-        Bgpio.BoardInterpreter.startup();
+        Bgpio.API.connect();
     } else {
-        Bgpio.BoardInterpreter.shutdown();
+        Bgpio.API.disconnect();
     }
 }
 

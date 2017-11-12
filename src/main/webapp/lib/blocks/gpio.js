@@ -53,7 +53,7 @@ var ODROID_C2_PINS = {
     "27" : "36"
 };
 
-var PINS = ODROID_C2_PINS;
+var PINS = GpioConfig || ODROID_C2_PINS;
 
 Blockly.Blocks["pin_changed"] = {
     /**

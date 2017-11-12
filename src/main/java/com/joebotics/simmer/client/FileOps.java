@@ -178,8 +178,9 @@ public class FileOps {
     }
 
     public void getSetupList(final boolean openDefault) {
-        String url = GWT.getHostPageBaseURL();
-        url = url + "setuplist.txt" + "?v=" + Math.random();
+        //String url = GWT.getHostPageBaseURL();
+        //url = url + "setuplist.txt" + "?v=" + Math.random();
+        String url = "setuplist.txt" + "?v=" + Math.random();
         RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
         try {
             requestBuilder.sendRequest(null, new RequestCallback() {
@@ -314,8 +315,8 @@ public class FileOps {
 
     protected void readSetupFile(String str, String title, boolean centre) {
         simmer.setT(0);
-        String url = GWT.getHostPageBaseURL();
-        url = url + "circuits/" + str + "?v=" + Math.random();
+        //String url = GWT.getHostPageBaseURL();
+        String url = "circuits/" + str + "?v=" + Math.random();
         loadFileFromURL(url, centre);
     }
 
