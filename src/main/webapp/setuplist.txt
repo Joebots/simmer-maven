@@ -12,6 +12,7 @@ thevenin.txt Thevenin's Theorem
 norton.txt Norton's Theorem
 -
 +Demo
+demo-blink.txt LED Blink
 demo-traffic-light.txt Traffic Light
 -
 +A/C Circuits

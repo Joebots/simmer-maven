@@ -39,6 +39,13 @@ Bgpio.getBlocks = function() {
     return null;
 };
 
+Bgpio.getBlocksCount = function() {
+    if (Bgpio.workspace) {
+        Bgpio.workspace.getAllBlocks().length;
+    }
+    return 0;
+};
+
 Bgpio.clearBlocks = function() {
     if (Bgpio.workspace) {
         Bgpio.workspace.clear();

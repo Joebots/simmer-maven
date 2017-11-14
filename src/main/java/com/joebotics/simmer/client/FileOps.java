@@ -11,6 +11,7 @@ import com.google.gwt.http.client.Response;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
+import com.joebotics.simmer.client.gui.Bgpio;
 import com.joebotics.simmer.client.gui.Scope;
 import com.joebotics.simmer.client.gui.dialog.ExportAsLocalFileDialog;
 import com.joebotics.simmer.client.gui.dialog.ExportAsTextDialog;
@@ -170,6 +171,7 @@ public class FileOps {
         if (encoded != null) {
             try {
                 String xmlText = Base64Util.decodeString(encoded);
+                Bgpio.clearBlocks();
                 simmer.setBlocklyXml(xmlText);
             } catch (Exception e) {
                 GWT.log("Error", e);
@@ -224,6 +226,7 @@ public class FileOps {
             simmer.getSidePanel().getPowerBar().setValue(50);
             AbstractCircuitElement.voltageRange = 5;
             simmer.setScopeCount(0);
+            Bgpio.clearBlocks();
             simmer.setBlocklyXml(null);
         }
         // cv.repaint();

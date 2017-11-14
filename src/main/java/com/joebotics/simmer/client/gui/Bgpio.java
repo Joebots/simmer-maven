@@ -25,6 +25,9 @@ public class Bgpio {
     public static native String getBlocks();
 
     @JsMethod
+    public static native int getBlocksCount();
+
+    @JsMethod
     public static native String clearBlocks();
 
     @JsMethod
