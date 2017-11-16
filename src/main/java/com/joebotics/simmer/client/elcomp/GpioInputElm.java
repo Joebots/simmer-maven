@@ -23,17 +23,12 @@ public class GpioInputElm extends LogicInputElm implements GpioEventHandler {
     }
 
     public GpioInputElm(int xa, int ya, int xb, int yb, int f, StringTokenizer st) {
-        super(xa, ya);
-        x2 = xb;
-        y2 = yb;
-        flags = f;
+        super(xa, ya, xb, yb, f, st);
         try {
             setGpioPin(gpioManager.getPinByName(st.nextToken()));
         } catch (Exception e) {
             setGpioPin(gpioManager.getAvailablePins().get(0));
         }
-        allocNodes();
-        setupPins();
         Simmer.getInstance().getEventBus().addHandler(GpioEvent.TYPE, this);
     }
 

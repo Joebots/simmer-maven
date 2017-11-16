@@ -25,6 +25,9 @@ public class Bgpio {
     public static native String getBlocks();
 
     @JsMethod
+    public static native int getBlocksCount();
+
+    @JsMethod
     public static native String clearBlocks();
 
     @JsMethod
@@ -32,6 +35,9 @@ public class Bgpio {
 
     @JsMethod
     public static native void setConsoleArea(TextArea element);
+
+    @JsMethod
+    public static native boolean hasBoard();
 
     @JsMethod
     public static native void setUseBoard(boolean value);

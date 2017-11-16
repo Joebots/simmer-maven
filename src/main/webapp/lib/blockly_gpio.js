@@ -16,6 +16,8 @@ Bgpio.PIN_COUNT = 26;
 Bgpio.codeArea = null;
 Bgpio.consoleArea = null;
 
+Bgpio.API = Bgpio.SimmerAPI;
+
 Bgpio.init = function(container, params) {
     Bgpio.workspace = Blockly.inject(container, params);
     Bgpio.workspace.addChangeListener(Bgpio.renderCode);
@@ -27,7 +29,7 @@ Bgpio.init = function(container, params) {
 Bgpio.setBlocks = function(xmlText) {
     var xml = Blockly.Xml.textToDom(xmlText);
     Blockly.Xml.domToWorkspace(xml, Bgpio.workspace);
-}
+};
 
 Bgpio.getBlocks = function() {
     if (Bgpio.workspace) {
@@ -35,25 +37,32 @@ Bgpio.getBlocks = function() {
         return Blockly.Xml.domToText(xml);
     }
     return null;
-}
+};
+
+Bgpio.getBlocksCount = function() {
+    if (Bgpio.workspace) {
+        Bgpio.workspace.getAllBlocks().length;
+    }
+    return 0;
+};
 
 Bgpio.clearBlocks = function() {
     if (Bgpio.workspace) {
         Bgpio.workspace.clear();
     }
-}
+};
 
 Bgpio.setCodeArea = function(element) {
     Bgpio.codeArea = element;
-}
+};
 
 Bgpio.setConsoleArea = function(element) {
     Bgpio.consoleArea = element;
-}
+};
 
 Bgpio.resize = function() {
     Blockly.svgResize(Bgpio.workspace);
-}
+};
 
 Bgpio.runMode = {
     selected : 0,
@@ -75,19 +84,18 @@ Bgpio.runMode = {
     debugStep : Bgpio.BrowserInterpreter.debugStep,
     run : Bgpio.BrowserInterpreter.run,
     stop : Bgpio.BrowserInterpreter.stop,
+    API : Bgpio.SimmerAPI,
     updateState_ : function() {
         if (this.selected === 0) {
-            this.debugInit = Bgpio.BrowserInterpreter.debugInit;
-            this.debugStep = Bgpio.BrowserInterpreter.debugStep;
-            this.run = Bgpio.BrowserInterpreter.run;
-            this.stop = Bgpio.BrowserInterpreter.stop;
+            Bgpio.API = Bgpio.SimmerAPI;
             Bgpio.clearJsConsole('Simulated print output.\n');
         } else {
-            this.debugInit = Bgpio.BoardInterpreter.debugInit;
-            this.debugStep = Bgpio.BoardInterpreter.debugStep;
-            this.run = Bgpio.BoardInterpreter.run;
-            this.stop = Bgpio.BoardInterpreter.stop;
-            Bgpio.clearJsConsole('Board print output.\n');
+            if (Bgpio.BoardAPI) {
+                Bgpio.API = Bgpio.BoardAPI;
+                Bgpio.clearJsConsole('Board print output.\n');
+            } else {
+                Bgpio.clearJsConsole('Board not found.\n');
+            }
         }
     },
 };
@@ -126,53 +134,10 @@ Bgpio.renderCode = function() {
     Bgpio.codeArea.setText(Bgpio.generateJavaScriptCode());
 };
 
-/*******************************************************************************
- * Right content related
- ******************************************************************************/
 Bgpio.setPinDefaults = function() {
     console.log("Bgpio.setPinDefaults()");
-    if (Bgpio.eventBus) {
-        for (var i = 1; i <= Bgpio.PIN_COUNT; i++) {
-            Bgpio.eventBus.fireEvent(new com.joebotics.simmer.client.event.GpioEvent(i + 1, false));
-        }
-    }
-};
-
-Bgpio.setPinDigital = function(pinNumber, value) {
-    console.log("Bgpio.setPinDigital(" + pinNumber + ", " + value + ")");
-    if (Bgpio.eventBus) {
-        Bgpio.eventBus.fireEvent(new com.joebotics.simmer.client.event.GpioEvent(pinNumber, value))
-    }
-};
-
-Bgpio.getPinDigital = function(pinNumber) {
-    console.log("Bgpio.getPinDigital(" + pinNumber + ")");
-    if (Bgpio.eventBus) {
-        Bgpio.eventBus.fireEvent(new com.joebotics.simmer.client.event.GpioEvent(pinNumber, value))
-    }
-};
-
-Bgpio.onGpioChanged = function(callback) {
-    console.log("Bgpio.onGpioChanged(" + callback + ")");
-    if (Bgpio.eventBus) {
-        Bgpio.eventBus.addHandler(com.joebotics.simmer.client.event.GpioEvent.TYPE, function(event) {
-            callback(event.getPinNumber(), event.getValue());
-        });
-    }
-};
-
-Bgpio.appendTextJsConsole = function(text) {
-    if (Bgpio.consoleArea) {
-        Bgpio.consoleArea.appendText(text + '\n');
-    }
-};
-
-Bgpio.clearJsConsole = function(text) {
-    if (Bgpio.consoleArea) {
-        Bgpio.consoleArea.clear();
-        if (text) {
-            Bgpio.consoleArea.setText(text);
-        }
+    for (var i = 0; i < Bgpio.PIN_COUNT; i++) {
+        Bgpio.API.gpioWrite(i + 1, false);
     }
 };
 
@@ -191,12 +156,16 @@ Bgpio.getRaspPiIp = function() {
     return null;
 };
 
+Bgpio.hasBoard = function() {
+    return typeof Bgpio.BoardAPI != "undefined";
+}
+
 Bgpio.setUseBoard = function(value) {
     Bgpio.runMode.selectMode(value ? 1 : 0);
     if (value) {
-        Bgpio.BoardInterpreter.startup();
+        Bgpio.API.connect();
     } else {
-        Bgpio.BoardInterpreter.shutdown();
+        Bgpio.API.disconnect();
     }
 }
 
@@ -230,3 +199,18 @@ Bgpio.notifyStopped = function() {
                 .fireEvent(new com.joebotics.simmer.client.event.InterpreterStoppedEvent())
     }
 }
+
+Bgpio.appendTextJsConsole = function(text) {
+    if (Bgpio.consoleArea) {
+        Bgpio.consoleArea.appendText(text + '\n');
+    }
+};
+
+Bgpio.clearJsConsole = function(text) {
+    if (Bgpio.consoleArea) {
+        Bgpio.consoleArea.clear();
+        if (text) {
+            Bgpio.consoleArea.setText(text);
+        }
+    }
+};

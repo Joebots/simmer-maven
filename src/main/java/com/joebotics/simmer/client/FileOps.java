@@ -11,6 +11,7 @@ import com.google.gwt.http.client.Response;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
+import com.joebotics.simmer.client.gui.Bgpio;
 import com.joebotics.simmer.client.gui.Scope;
 import com.joebotics.simmer.client.gui.dialog.ExportAsLocalFileDialog;
 import com.joebotics.simmer.client.gui.dialog.ExportAsTextDialog;
@@ -170,6 +171,7 @@ public class FileOps {
         if (encoded != null) {
             try {
                 String xmlText = Base64Util.decodeString(encoded);
+                Bgpio.clearBlocks();
                 simmer.setBlocklyXml(xmlText);
             } catch (Exception e) {
                 GWT.log("Error", e);
@@ -178,8 +180,9 @@ public class FileOps {
     }
 
     public void getSetupList(final boolean openDefault) {
-        String url = GWT.getHostPageBaseURL();
-        url = url + "setuplist.txt" + "?v=" + Math.random();
+        //String url = GWT.getHostPageBaseURL();
+        //url = url + "setuplist.txt" + "?v=" + Math.random();
+        String url = "setuplist.txt" + "?v=" + Math.random();
         RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
         try {
             requestBuilder.sendRequest(null, new RequestCallback() {
@@ -223,6 +226,7 @@ public class FileOps {
             simmer.getSidePanel().getPowerBar().setValue(50);
             AbstractCircuitElement.voltageRange = 5;
             simmer.setScopeCount(0);
+            Bgpio.clearBlocks();
             simmer.setBlocklyXml(null);
         }
         // cv.repaint();
@@ -314,8 +318,8 @@ public class FileOps {
 
     protected void readSetupFile(String str, String title, boolean centre) {
         simmer.setT(0);
-        String url = GWT.getHostPageBaseURL();
-        url = url + "circuits/" + str + "?v=" + Math.random();
+        //String url = GWT.getHostPageBaseURL();
+        String url = "circuits/" + str + "?v=" + Math.random();
         loadFileFromURL(url, centre);
     }
 

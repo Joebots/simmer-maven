@@ -2,98 +2,141 @@
 <html>
 <head>
 
-<!-- Properties can be specified to influence deferred binding -->
-<meta name='gwt:property' content='locale=en_UK'>
+    <!-- Properties can be specified to influence deferred binding -->
+    <meta name='gwt:property' content='locale=en_UK'>
 
+    <!-- Titles are optional, but useful -->
+    <title></title>
 
-<!-- Titles are optional, but useful -->
-<title></title>
+    <!-- Configuration -->
+    <script>
+        const ARDUINO_GPIO = {
+            GPIO_2: "2",
+            GPIO_3: "3",
+            GPIO_4: "4",
+            GPIO_5: "5",
+            GPIO_6: "6",
+            GPIO_7: "7",
+            GPIO_8: "8",
+            GPIO_9: "9",
+            GPIO_10: "10",
+            GPIO_11: "11",
+            GPIO_12: "12",
+            GPIO_13: "13"
+        };
+        const RASPBERRY_PI3_GPIO = {
+            GPIO_2: "3",
+            GPIO_3: "5",
+            GPIO_4: "7",
+            GPIO_5: "29",
+            GPIO_6: "31",
+            GPIO_7: "26",
+            GPIO_8: "24",
+            GPIO_9: "21",
+            GPIO_10: "19",
+            GPIO_11: "23",
+            GPIO_12: "32",
+            GPIO_13: "33",
+            GPIO_14: "8",
+            GPIO_15: "10",
+            GPIO_16: "36",
+            GPIO_17: "11",
+            GPIO_18: "12",
+            GPIO_19: "35",
+            GPIO_20: "38",
+            GPIO_21: "40",
+            GPIO_22: "15",
+            GPIO_23: "16",
+            GPIO_24: "18",
+            GPIO_25: "22",
+            GPIO_26: "37",
+            GPIO_27: "13"
+        };
+        const ODROID_C2_GPIO = {
+            GPIO_0: "11",
+            GPIO_1: "12",
+            GPIO_2: "13",
+            GPIO_3: "15",
+            GPIO_4: "16",
+            GPIO_5: "18",
+            GPIO_6: "22",
+            GPIO_7: "7",
+            GPIO_10: "24",
+            GPIO_11: "26",
+            GPIO_12: "19",
+            GPIO_13: "21",
+            GPIO_14: "23",
+            GPIO_21: "29",
+            GPIO_22: "31",
+            GPIO_23: "33",
+            GPIO_24: "35",
+            GPIO_26: "32",
+            GPIO_27: "36"
+        };
+        var GpioConfig = ARDUINO_GPIO;
 
-<!-- JQuery -->
-<script src="lib/jquery-1.12.3.min.js"></script>
-<!-- Socket.IO -->
-<script src="lib/socket.io.js"></script>
-<!-- Google Blockly -->
-<script src="lib/blockly/blockly_compressed.js"></script>
-<script src="lib/blockly/blocks_compressed.js"></script>
-<script src="lib/blockly/javascript_compressed.js"></script>
-<script src="lib/blockly/python_compressed.js"></script>
-<script src="lib/blockly/msg/js/en.js"></script>
-<!-- Custom GPIO Blocks -->
-<script src="lib/blocks/gpio.js"></script>
-<script src="lib/blocks/text.js"></script>
-<script src="lib/blocks/time.js"></script>
-<!-- Acorn JS Interpreter -->
-<script src="lib/acorn/acorn_interpreter.js"></script>
-<!--  Prettify -->
-<script src="lib/prettify/prettify.js"></script>
-<link rel="stylesheet" type="text/css" href="lib/prettify/prettify.css">
-<!-- Custom Scripts -->
-<script src="lib/browser_interpreter.js"></script>
-<script src="lib/board_interpreter.js"></script>
-<script src="lib/blockly_gpio.js"></script>
-<script src="lib/script_executor.js"></script>
+        var BreadboardConfig = {
+            width: 418,
+            height: 655
+        };
 
-<script>
-      const ODROID_C2_GPIO  = {
-          GPIO_0: "11",
-          GPIO_1: "12",
-          GPIO_2: "13",
-          GPIO_3: "15",
-          GPIO_4: "16",
-          GPIO_5: "18",
-          GPIO_6: "22",
-          GPIO_7: "7",
-          GPIO_10: "24",
-          GPIO_11: "26",
-          GPIO_12: "19",
-          GPIO_13: "21",
-          GPIO_14: "23",
-          GPIO_21: "29",
-          GPIO_22: "31",
-          GPIO_23: "33",
-          GPIO_24: "35",
-          GPIO_26: "32",
-          GPIO_27: "36"
-      };
+        var SimmerOptions = {
+            SHOW_CURRENT: true,
+            SHOW_VOLTAGE: true,
+            SHOW_POWER: false,
+            SHOW_VALUES: true,
+            SMALL_GRID: false,
+            EURO_RESISTORS: false,
+            WHITE_BACKGROUND: false,
+            CONVENTIONAL_CURRENT_MOTION: true,
+            SIMULATION_SPEED: 117,
+            CURRENT_SPEED: 50
+        };
+    </script>
 
-      var BreadboardConfig = {
-        width: 418,
-        height: 655
-      };
+    <!-- JQuery -->
+    <script src="lib/jquery-1.12.3.min.js"></script>
+    <!-- Google Blockly -->
+    <script src="lib/blockly/blockly_compressed.js"></script>
+    <script src="lib/blockly/blocks_compressed.js"></script>
+    <script src="lib/blockly/javascript_compressed.js"></script>
+    <script src="lib/blockly/python_compressed.js"></script>
+    <script src="lib/blockly/msg/js/en.js"></script>
+    <!-- Custom GPIO Blocks -->
+    <script src="lib/blocks/gpio.js"></script>
+    <script src="lib/blocks/text.js"></script>
+    <script src="lib/blocks/time.js"></script>
+    <!-- Acorn JS Interpreter -->
+    <script src="lib/acorn/acorn_interpreter.js"></script>
+    <!--  Prettify -->
+    <script src="lib/prettify/prettify.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/prettify/prettify.css">
+    <!-- Custom Scripts -->
+    <script src="lib/browser_interpreter.js"></script>
+    <script src="lib/board_interpreter.js"></script>
+    <script src="lib/simmer_api.js"></script>
+    <script src="lib/blockly_gpio.js"></script>
+    <script src="lib/script_executor.js"></script>
 
-      var SimmerOptions = {
-        SHOW_CURRENT: true,
-        SHOW_VOLTAGE: true,
-        SHOW_POWER: false,
-        SHOW_VALUES: true,
-        SMALL_GRID: false,
-        EURO_RESISTORS: false,
-        WHITE_BACKGROUND: false,
-        CONVENTIONAL_CURRENT_MOTION: true,
-        SIMULATION_SPEED: 117,
-        CURRENT_SPEED: 50
-      };
-
-      var GpioConfig = ODROID_C2_GPIO;
-
-      $(function() {
-        var globalBus = window.parent.globalBus;
-        console.log(globalBus);
-      });
+    <script>
+        $(function () {
+            var globalBus = window.parent.globalBus;
+            console.log(globalBus);
+        });
     </script>
 </head>
 <body>
 
- <!-- This script tag is what actually loads the GWT module.  The -->
- <!-- 'nocache.js' file (also called a "selection script") is     -->
- <!-- produced by the GWT compiler in the module output directory -->
- <!-- or generated automatically in development mode.             -->
- <script language="javascript" src="simmer/simmer.nocache.js"></script>
+<!-- This script tag is what actually loads the GWT module.  The -->
+<!-- 'nocache.js' file (also called a "selection script") is     -->
+<!-- produced by the GWT compiler in the module output directory -->
+<!-- or generated automatically in development mode.             -->
+<script language="javascript" src="simmer/simmer.nocache.js"></script>
 
- <!-- Include a history iframe to enable full GWT history support -->
- <!-- (the id must be exactly as shown)                           -->
- <iframe src="javascript:''" id="__gwt_historyFrame"
-  style="width: 0px; height: 0px; border: 0"></iframe>
+<!-- Include a history iframe to enable full GWT history support -->
+<!-- (the id must be exactly as shown)                           -->
+<iframe src="javascript:''" id="__gwt_historyFrame"
+        style="width: 0px; height: 0px; border: 0"></iframe>
 </body>
 </html>
+

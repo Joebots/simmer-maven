@@ -76,6 +76,7 @@ public class ProgrammingDialog extends Composite implements InterpreterEventHand
         eventBus.addHandler(InterpreterStoppedEvent.TYPE, this);
         eventBus.addHandler(InterpreterPausedEvent.TYPE, this);
         Bgpio.setEventBus(eventBus);
+        useBoardSwitch.setEnabled(Bgpio.hasBoard());
     }
 
     @UiHandler("useBoardSwitch")
@@ -107,16 +108,12 @@ public class ProgrammingDialog extends Composite implements InterpreterEventHand
     public void modalOpeningHandler(OpenEvent<Boolean> event) {
         if (workspacePlayground == null) {
             workspacePlayground = Bgpio.init(blocklyPanel.getElement(), params);
-            Bgpio.resize();
         }
         String xmlText = Simmer.getInstance().getBlocklyXml();
-        Bgpio.clearBlocks();
-        if (xmlText != null && !xmlText.equals(Bgpio.getBlocks())) {
-            Bgpio.clearBlocks();
+        if (xmlText != null && Bgpio.getBlocksCount() == 0) {
             Bgpio.setBlocks(xmlText);
-        } else {
-            Bgpio.clearBlocks();
         }
+        Bgpio.resize();
     }
 
     public void open() {
