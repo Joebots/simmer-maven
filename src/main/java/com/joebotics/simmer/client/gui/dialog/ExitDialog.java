@@ -47,6 +47,13 @@ public class ExitDialog extends Composite {
     
     private native void closeBrowser()
     /*-{
+        if ($wnd.navigator.app) {
+            $wnd.navigator.app.exitApp();
+        } else if (navigator.device) {
+            $wnd.navigator.device.exitApp();
+        } else {
+            $wnd.close();
+        }
         $wnd.close();
     }-*/;
 }
