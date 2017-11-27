@@ -1,4 +1,12 @@
 ### setuplist.txt first line must be a comment
++Demo
+demo-powering-an-led.txt Powering an LED
+demo-capacitor-test.txt Capacitor Test
+demo-blinking-led.txt Blinking LED
+demo-touch-sensor.txt Touch Sensor
+demo-blinking-led-with-blockly.txt Blinking LED with Blockly
+demo-stop-light-with-blockly.txt Stop Light with Blockly
+-
 +Basics
 ohms.txt Ohm's Law
 resistors.txt Resistors
@@ -10,10 +18,6 @@ pot.txt Potentiometer
 potdivide.txt Potentiometer Divider
 thevenin.txt Thevenin's Theorem
 norton.txt Norton's Theorem
--
-+Demo
-demo-blink.txt LED Blink
-demo-traffic-light.txt Traffic Light
 -
 +A/C Circuits
 capac.txt Capacitor

@@ -206,7 +206,7 @@ public class Simmer {
         }
 
         // HACK FOR DEMO
-        startCircuit = "jb-demo.txt";
+        startCircuit = "demo-powering-an-led.txt";
 
         String os = Navigator.getPlatform();
         isMac = (os.toLowerCase().contains("mac"));
