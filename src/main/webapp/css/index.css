@@ -1,0 +1,99 @@
+html, body {
+    background: black;
+    color: white;
+    width: 1280px;
+    height: 800px;
+    overflow: hidden;
+    cursor: default;
+
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+
+    font-face: Verdana;
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    /*border: 1px solid yellow;*/
+}
+
+#burner-controls, #app-controls, #active-component, #active-pin, #active-component-picture {
+    z-index: 100;
+}
+
+#modal, #code, #blockly, #properties, #tabs {
+    display: none;
+    position: absolute;
+    border: none; /*1px solid black;*/
+}
+
+#tabs {
+    background-color: white;
+    color: black;
+    position: absolute;
+    width: 655px;
+    height: 508px;
+    top: 52px;
+    left: 33px;
+}
+
+#tabs-1 {
+    padding: 0px;
+    margin: 0px;
+}
+
+#tabs-2 {
+    height: 473px;
+    padding: 0px;
+    padding-top: 5px;
+    margin: 0px;
+}
+
+.blocklySvg {
+    background-color: #666 !important;
+}
+
+.blocklyTreeLabel {
+    color: black;
+}
+
+.ui-tabs .ui-tabs-nav li a {
+    font-size:8pt !important;
+    /*font-weight: bold;*/
+}
+
+#tabs-close {
+    position: absolute;
+    top: 3px;
+    left: 640px;
+    font-weight: bold;
+    color: darkgray;
+    border: none; /* 2px solid darkgray; */
+    //background: white;
+    padding: 2px;
+}
+
+#ace-frame {
+    width: 100%;
+    height: 100%;
+}
+
+#bbframe{
+    overflow: hidden;
+}
+
+#app-controls{
+    position: absolute;
+    top: 70%;
+    width: 850px;
+    text-align:center;
+}
+
+

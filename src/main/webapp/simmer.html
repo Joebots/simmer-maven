@@ -1,12 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">-->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport"
+          content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
     <!-- Properties can be specified to influence deferred binding -->
-    <meta name='gwt:property' content='locale=en_UK'>
+    <meta name="gwt:property" content="locale=en_US"/>
 
-    <!-- Titles are optional, but useful -->
-    <title></title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/burner.css">
+
+    <script src="lib/jquery-1.12.3.min.js"></script>
+
+    <script src="lib/event-bus-bundle.js"></script>
+    <script src="lib/raphael.min.js"></script>
+    <script src="lib/burner.js"></script>
 
     <!-- Configuration -->
     <script>
@@ -75,9 +85,33 @@
         };
         var GpioConfig = ARDUINO_GPIO;
 
+        var globalBus;
+
+        var mm = function (value) {
+            return Math.floor(value / 0.169);
+        };
+
+        // physical dimensions of breadboard
+        // w: 65 mm, h: 112 mm
+        // 1 pair (PWR and GND), 2 terminal + 1 GPIO columns, 38 rows
+        var rows = 38;
+        var pitch = mm(2.54);
+        var rowWidth = 7 * pitch;
+
+        var topMargin = mm(11);
+        var leftMargin = mm(5);
+
         var BreadboardConfig = {
-            width: 418,
-            height: 655
+            width: mm(65),
+            height: mm(112),
+            thickness: mm(2),
+            pitch: pitch,
+            banks: [
+                {type: "BUS", rows: 2, y: topMargin, x: leftMargin, height: pitch * rows, dir: 'y'},
+                {type: "TERMINAL", rows: rows, y: topMargin, x: mm(16), width: rowWidth},
+                {type: "TERMINAL", rows: rows, y: topMargin, x: mm(36), width: rowWidth},
+                {type: "GPIO", rows: rows, y: topMargin, x: mm(62), width: rowWidth}
+            ]
         };
 
         var SimmerOptions = {
@@ -94,8 +128,6 @@
         };
     </script>
 
-    <!-- JQuery -->
-    <script src="lib/jquery-1.12.3.min.js"></script>
     <!-- Google Blockly -->
     <script src="lib/blockly/blockly_compressed.js"></script>
     <script src="lib/blockly/blocks_compressed.js"></script>
@@ -113,30 +145,74 @@
     <link rel="stylesheet" type="text/css" href="lib/prettify/prettify.css">
     <!-- Custom Scripts -->
     <script src="lib/browser_interpreter.js"></script>
-    <script src="lib/board_interpreter.js"></script>
     <script src="lib/simmer_api.js"></script>
     <script src="lib/blockly_gpio.js"></script>
     <script src="lib/script_executor.js"></script>
-
-    <script>
-        $(function () {
-            var globalBus = window.parent.globalBus;
-            console.log(globalBus);
-        });
-    </script>
 </head>
+
 <body>
 
-<!-- This script tag is what actually loads the GWT module.  The -->
-<!-- 'nocache.js' file (also called a "selection script") is     -->
-<!-- produced by the GWT compiler in the module output directory -->
-<!-- or generated automatically in development mode.             -->
-<script language="javascript" src="simmer/simmer.nocache.js"></script>
+<div id="burner-controls" class="container">
+    <div class="row">
+        <a class="col s2 btn btn-large waves-effect waves-light" id="back-btn"><i
+                class="material-icons">chevron_left</i> Back</a>
+        <div class="col s8 burner-command-desc" id="wizard-text"></div>
+        <a class="col s2 btn btn-large waves-effect waves-light" id="forward-btn">Next <i class="material-icons">chevron_right</i></a>
+    </div>
+</div>
 
-<!-- Include a history iframe to enable full GWT history support -->
-<!-- (the id must be exactly as shown)                           -->
-<iframe src="javascript:''" id="__gwt_historyFrame"
-        style="width: 0px; height: 0px; border: 0"></iframe>
+<div id="app-controls">
+    <div id="wizard-toolbar">
+        <a id="oscope" class="btn-floating btn-large waves-effect waves-light"><i
+                class="material-icons">timeline</i></a>
+        <a id="reset" class="btn-floating btn-large waves-effect waves-light"><i class="material-icons">cached</i></a>
+    </div>
+</div>
+<div id="active-component"></div>
+<div id="active-pin"></div>
+<div id="active-component-picture"></div>
+
+<script src="simmer/simmer.nocache.js"></script>
+
+<script>
+    $(function () {
+        console.log("loading");
+        globalBus = new EventBus();
+
+        var bboard = new BreadBoard(BreadboardConfig);
+
+        globalBus.bind(BreadBoard.CircuitStates.CIRCUIT_WORKING, function (e) {
+            bboard.layout(e.model);
+            window.workingCircuitEvent = e;
+        });
+
+        globalBus.bind(BreadBoard.CircuitStates.CIRCUIT_BROKEN_ANY, function (e) {
+            console.log("BROKEN");
+        });
+
+        globalBus.bind(".*", function (evt) {
+            console.log(evt.model);
+        });
+
+        globalBus.bind(BreadBoard.CircuitStates.SYSTEM_LOADED, function (e) {
+            console.log("system.loaded");
+            bboard.setTarget("breadboard");
+            //bboard.showAllBanks();
+        });
+
+        $("#bblayout").click(function (evt) {
+            top.ALLOW_BB_MOVE = top.ALLOW_BB_MOVE ? !top.ALLOW_BB_MOVE : true;
+        });
+
+        $("#reset").click(function (evt) {
+            globalBus.fire("circuit.working", window.workingCircuitEvent);
+            $("#wizard-text").html("");
+        });
+
+        $("#oscope").click(function (evt) {
+            $("#burner-controls").fadeToggle();
+        });
+    });
+</script>
 </body>
 </html>
-
