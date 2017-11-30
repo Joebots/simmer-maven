@@ -45,48 +45,7 @@ Controller.prototype.bindEventHandlers = function () {
 
     $("#active-component").bind("click", {that: view}, highlighter);
     $("#active-component-picture").bind("click", {that: view}, highlighter);
-
-    $(window).keydown(function (evt) {
-
-        // if(ALLOW_BB_MOVE === false)
-        //     return false;
-
-        switch (evt.key) {
-            case 'r':
-                window.location.reload();
-                break;
-
-            case 'ArrowUp':
-                $("svg").css("top", "-=.5");
-                break;
-
-            case 'ArrowDown':
-                $("svg").css("top", "+=.5");
-                break;
-
-            case 'ArrowLeft':
-                $("svg").css("left", "-=.5");
-                break;
-
-            case 'ArrowRight':
-                $("svg").css("left", "+=.5");
-                break;
-
-            // case '=':
-            //     var r1 = $("rect[width=20]");
-            //     r1.attr("width",   r1.attr("width") + 1);
-            //
-            //     var r2 = $("rect[height=20]");
-            //     r2.attr("height",   r1.attr("height") + 1);
-            //     break;
-            //
-            // case '-':
-            //     $("rect[width=20]").attr("width",   "-=1");
-            //     $("rect[height=20]").attr("height", "-=1");
-            //     break;
-        }
-    });
-}
+};
 
 Controller.prototype.getActiveComponent = function () {
 
@@ -210,12 +169,9 @@ BreadBoard.CircuitStates = {
     CIRCUIT_BROKEN_ANY: "circuit.broken.*"
 };
 
-function BreadBoard(config) {
-    this.banks = config.banks;
-    this.config = config;
-    this.controller = new Controller(this);
-    this.controller.bindEventHandlers(this);
-    $(".burner-command-desc").html(Controller.DEFAULT_INSTRUCTIONS);
+function BreadBoard(defaultConfig) {
+    this.defaultConfig = defaultConfig;
+    this.config = copy(defaultConfig);
 };
 
 function sanity(self) {
@@ -229,6 +185,16 @@ function sanity(self) {
         if (activeStep < 0)
             activeStep = totalSteps - 1;
     }
+}
+
+function copy(o) {
+    var output, v, key;
+    output = Array.isArray(o) ? [] : {};
+    for (key in o) {
+        v = o[key];
+        output[key] = (typeof v === "object") ? copy(v) : v;
+    }
+    return output;
 }
 
 function parsePinouts(circuitModel) {
@@ -361,8 +327,21 @@ function mapPinsToBreadboard(circuitModel, done) {
 }
 
 BreadBoard.prototype.setTarget = function (target) {
-    this.paper = Raphael(target, this.config.width, this.config.height);
+    this.target = target;
+    this.controller = new Controller(this);
+    this.controller.bindEventHandlers(this);
+    $(".burner-command-desc").html(Controller.DEFAULT_INSTRUCTIONS);
+    this.loadConfig();
+    this.applyConfig();
+};
+
+BreadBoard.prototype.applyConfig = function () {
+    $("#" + this.target).empty();
+    this.banks = copy(this.config.banks);
+    this.paper = Raphael(this.target, this.config.width, this.config.height);
+    this.border = this.paper.rect(0, 0, this.config.width, this.config.height);
     this.circuits = this.createBanks(this.banks);
+    this.showAllBanks(this._showAllBanks);
 };
 
 BreadBoard.prototype.doNext = function (e) {
@@ -489,22 +468,30 @@ BreadBoard.prototype.createBanks = function (banks) {
  */
 BreadBoard.prototype.createBank = function (bank) {
 
-    var cfg = bank;
-    var isVert = cfg.dir == 'y';
+    var isVert = bank.dir == 'y';
 
-    var width = cfg.width || 50;
-    var height = cfg.height || 3;
-    var x = cfg.x || 0;
-    var y = cfg.y || 0;
-    var thickness = bank.thickness || this.config.thickness || 3;
-    var pitch = bank.pitch || this.config.pitch || 7;
+    var thickness = this.config.thickness || 3;
+    var pitch = this.config.pitch || 7;
+    if (isVert) {
+        bank.width = bank.width || thickness;
+        bank.height = bank.height || pitch * this.config.rowCount;
+    } else {
+        bank.width = bank.width || pitch * 5;
+        bank.height = bank.height || thickness;
+    }
+    bank.offsetX = bank.offsetX || 0;
+    bank.offsetY = bank.offsetY || 0;
+    bank.rows = bank.rows || this.config.rowCount;
+
+    var x = this.config.leftMargin + bank.offsetX;
+    var y = this.config.topMargin + bank.offsetY;
 
     var result = [];
-    for (var i = 0; i < cfg.rows; i++) {
+    for (var i = 0; i < bank.rows; i++) {
         var x1 = isVert ? x + (i * pitch) : x;
         var y1 = isVert ? y : y + (i * pitch);
-        var w = isVert ? thickness : width;
-        var h = isVert ? height : thickness;
+        var w = bank.width;
+        var h = bank.height;
 
         x1 -= thickness / 2;
         y1 -= thickness / 2;
@@ -526,14 +513,30 @@ BreadBoard.prototype.createBank = function (bank) {
     return result;
 };
 
-BreadBoard.prototype.showAllBanks = function () {
-    var r = this.paper.rect(0, 0, this.config.width, this.config.height);
-    r.attr("stroke", "#f00");
+BreadBoard.prototype.showAllBanks = function (value) {
+    this._showAllBanks = value;
+    this.border.attr("stroke", value ? "#f00" : "#000");
     for (var i in this.circuits) {
         var group = this.circuits[i];
         for (var j in group) {
             var bank = group[j];
-            bank.attr("opacity", 1);
+            bank.attr("opacity", value ? 1 : 0);
         }
+    }
+};
+
+BreadBoard.prototype.saveConfig = function () {
+    window.localStorage.setItem('BreadboardConfig', JSON.stringify(this.config));
+};
+
+BreadBoard.prototype.resetConfig = function () {
+    window.localStorage.removeItem('BreadboardConfig');
+    this.config = copy(this.defaultConfig);
+};
+
+BreadBoard.prototype.loadConfig = function () {
+    var config = window.localStorage.getItem('BreadboardConfig');
+    if (config !== null) {
+        this.config = JSON.parse(config);
     }
 };

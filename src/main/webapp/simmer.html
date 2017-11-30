@@ -94,23 +94,21 @@
         // physical dimensions of breadboard
         // w: 65 mm, h: 112 mm
         // 1 pair (PWR and GND), 2 terminal + 1 GPIO columns, 38 rows
-        var rows = 38;
         var pitch = mm(2.54);
-        var rowWidth = 7 * pitch;
-
-        var topMargin = mm(11);
-        var leftMargin = mm(5);
 
         var BreadboardConfig = {
             width: mm(65),
             height: mm(112),
+            rowCount: 32,
+            leftMargin: mm(11),
+            topMargin: mm(5),
             thickness: mm(2),
             pitch: pitch,
             banks: [
-                {type: "BUS", rows: 2, y: topMargin, x: leftMargin, height: pitch * rows, dir: 'y'},
-                {type: "TERMINAL", rows: rows, y: topMargin, x: mm(16), width: rowWidth},
-                {type: "TERMINAL", rows: rows, y: topMargin, x: mm(36), width: rowWidth},
-                {type: "GPIO", rows: rows, y: topMargin, x: mm(62), width: rowWidth}
+                {type: "BUS", rows: 3, dir: 'y'},
+                {type: "TERMINAL", offsetX: mm(11)},
+                {type: "TERMINAL", offsetX: mm(31)},
+                {type: "GPIO", offsetX: mm(57)}
             ]
         };
 
@@ -126,6 +124,8 @@
             SIMULATION_SPEED: 117,
             CURRENT_SPEED: 50
         };
+
+        var bboard = new BreadBoard(BreadboardConfig);
     </script>
 
     <!-- Google Blockly -->
@@ -179,7 +179,6 @@
         console.log("loading");
         globalBus = new EventBus();
 
-        var bboard = new BreadBoard(BreadboardConfig);
 
         globalBus.bind(BreadBoard.CircuitStates.CIRCUIT_WORKING, function (e) {
             bboard.layout(e.model);
@@ -197,7 +196,6 @@
         globalBus.bind(BreadBoard.CircuitStates.SYSTEM_LOADED, function (e) {
             console.log("system.loaded");
             bboard.setTarget("breadboard");
-            //bboard.showAllBanks();
         });
 
         $("#bblayout").click(function (evt) {
