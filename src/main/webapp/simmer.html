@@ -20,7 +20,8 @@
 
     <!-- Configuration -->
     <script>
-        const ARDUINO_GPIO = {
+        // Mapping simmer pins to hardware pins
+        const ARDUINO_HARDWARE_GPIO = {
             GPIO_2: "2",
             GPIO_3: "3",
             GPIO_4: "4",
@@ -28,13 +29,20 @@
             GPIO_6: "6",
             GPIO_7: "7",
             GPIO_8: "8",
-            GPIO_9: "9",
-            GPIO_10: "10",
-            GPIO_11: "11",
-            GPIO_12: "12",
-            GPIO_13: "13"
+            GPIO_9: "9"
         };
-        const RASPBERRY_PI3_GPIO = {
+        // Mapping simmer pins to BagerBoard rows
+        const ARDUINO_BREADBOARD_GPIO = {
+            GPIO_2: "7",
+            GPIO_3: "11",
+            GPIO_4: "12",
+            GPIO_5: "13",
+            GPIO_6: "15",
+            GPIO_7: "16",
+            GPIO_8: "18",
+            GPIO_9: "19"
+        };
+        const RASPBERRY_PI3_HARDWARE_GPIO = {
             GPIO_2: "3",
             GPIO_3: "5",
             GPIO_4: "7",
@@ -62,7 +70,7 @@
             GPIO_26: "37",
             GPIO_27: "13"
         };
-        const ODROID_C2_GPIO = {
+        const ODROID_C2_HARDWARE_GPIO = {
             GPIO_0: "11",
             GPIO_1: "12",
             GPIO_2: "13",
@@ -83,7 +91,8 @@
             GPIO_26: "32",
             GPIO_27: "36"
         };
-        var GpioConfig = ARDUINO_GPIO;
+        var GpioHardwareConfig = ARDUINO_HARDWARE_GPIO;
+        var GpioBreadBoardConfig = ARDUINO_BREADBOARD_GPIO;
 
         var globalBus;
 
