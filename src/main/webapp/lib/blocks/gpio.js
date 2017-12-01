@@ -3,7 +3,7 @@
 /** Common HSV hue for all blocks in this file. */
 var GPIO_HUE = 250;
 
-var PINS = GpioConfig;
+var PINS = GpioHardwareConfig;
 
 Blockly.Blocks["pin_changed"] = {
     /**

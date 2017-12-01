@@ -197,15 +197,24 @@ function copy(o) {
     return output;
 }
 
+/**
+    Sort model elements to have power, ground and GPIO elements in the
+     head of the list to start circuit building from them
+ */
+function sortModelElements(elements) {
+    var sortOrder = ["VoltageElm", "Ground", "Gpio"];
+    return elements.sort(function (a, b) {
+        var first = a.name || a;
+        var second = b.name || b;
+        return sortOrder.findIndex((item) => second.indexOf(item) > -1) - sortOrder.findIndex((item) => first.indexOf(item) > -1);
+    });
+}
+
 function parsePinouts(circuitModel) {
     var pinOuts = {};
 
     // for( var name in circuitModel.components ){
-    var els = circuitModel.elements.sort(function (a, b) {
-        return a.indexOf("VoltageElm") != -1 ? -1 :
-            a.indexOf("Ground") != -1 ? -1 :
-                a.indexOf("Gpio") != -1 ? -1 : 0;
-    });
+    var els = sortModelElements(circuitModel.elements);
 
     for (var i in els) {
         var name = els[i];
@@ -252,12 +261,12 @@ function mapPinsToBreadboard(circuitModel, done) {
         return element.type === "GPIO";
     });
 
-    var activeBank = 0;
-    var activeRow = 0;
+    var activeTerminalBank = terminalBankIndices[0];
+    var activeTerminalRow = 0;
 
     for (var xy in circuitModel.pinOuts) {
 
-        var components = circuitModel.pinOuts[xy].components;
+        var components = sortModelElements(circuitModel.pinOuts[xy].components);
 
         // get the components at that xy
         for (var i in components) {
@@ -278,12 +287,14 @@ function mapPinsToBreadboard(circuitModel, done) {
                 var pos = pin.post;
                 var mapping = {};
 
+                var activeBank = activeTerminalBank;
+                var activeRow = activeTerminalRow;
                 if (isRail) {
                     activeBank = powerBankIndex;
                     activeRow = parseInt(j);
                 } else if (isGPIO) {
                     activeBank = gpioBankIndex;
-                    activeRow = this.banks[gpioBankIndex].rows - parseInt(GpioConfig[pin.text]);
+                    activeRow = parseInt(GpioBreadBoardConfig[pin.text]) -1;
                 } else if (isGround) {
                     activeBank = powerBankIndex;
                     activeRow = 0;
@@ -313,13 +324,13 @@ function mapPinsToBreadboard(circuitModel, done) {
                 // for each component at this connection point
                 mapping.components[cmp.name] = j;
 
-                if ((++activeBank) >= terminalBankIndices.length) {
-                    activeBank = 0;
+                if (activeBank == activeTerminalBank && (++activeTerminalBank) >= terminalBankIndices.length) {
+                    activeTerminalBank = 0;
                 }
             }
 
-            if ((++activeRow) >= this.banks[0].rows.length) {
-                activeRow = 0;
+            if (activeRow == activeTerminalRow && (++activeTerminalRow) >= this.banks[0].rows.length) {
+                activeTerminalRow = 0;
             }
             done[cmp.name] = mapping;
         }
@@ -391,6 +402,12 @@ BreadBoard.prototype.reset = function (cb) {
     this.clicked = false;
 };
 
+function isExternalComponent(cmp) {
+    var embeddedComponents = ["VoltageElm", "Ground", "Gpio"];
+    return cmp.pins.length != 1
+        || embeddedComponents.findIndex((item) => cmp.name.indexOf(item) > -1) == -1;
+}
+
 BreadBoard.prototype.layout = function (circuitModel, cb) {
     console.log('layout', circuitModel);
     this.reset();
@@ -415,15 +432,16 @@ BreadBoard.prototype.layout = function (circuitModel, cb) {
 
     var els = this.model.elements;
     for (var d in els) {
-
         var cmp = this.model.components[els[d]];
+        // Adding steps for external components only. Internal components like power and GPIO are excluded
         cmp.name = els[d];
-
-        for (var j in cmp.pins) {
-            var bbpin = this.pinsToBb[cmp.pins[j].toString()];
-            console.log(`${this.totalSteps} ${cmp.name} pin ${bbpin.index} of ${cmp.pins.length} : ${cmp.pins[j]}`, bbpin);
-            this.steps.push({component: cmp, bbpin: bbpin});
-            this.totalSteps++;
+        if (isExternalComponent(cmp)) {
+            for (var j in cmp.pins) {
+                var bbpin = this.pinsToBb[cmp.pins[j].toString()];
+                console.log(`${this.totalSteps} ${cmp.name} pin ${bbpin.index} of ${cmp.pins.length} : ${cmp.pins[j]}`, bbpin);
+                this.steps.push({component: cmp, bbpin: bbpin});
+                this.totalSteps++;
+            }
         }
     }
 };
