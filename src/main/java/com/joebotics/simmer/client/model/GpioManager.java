@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import com.google.gwt.i18n.client.Dictionary;
 
 public class GpioManager {
-    private static Dictionary gpioConfig = Dictionary.getDictionary("GpioBreadBoardConfig");
+    private static Dictionary gpioConfig = Dictionary.getDictionary("GpioHardwareConfig");
 
     private List<GpioPin> pins = new ArrayList<>();
 
