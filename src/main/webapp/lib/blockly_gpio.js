@@ -41,7 +41,7 @@ Bgpio.getBlocks = function() {
 
 Bgpio.getBlocksCount = function() {
     if (Bgpio.workspace) {
-        Bgpio.workspace.getAllBlocks().length;
+        return Bgpio.workspace.getTopBlocks().length;
     }
     return 0;
 };
