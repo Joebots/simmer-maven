@@ -11,7 +11,7 @@
         addStyleNames="shifted-window">
         <m:MaterialRow>
             <m:MaterialColumn grid="s11">
-                <ma:tree.MaterialTree ui:field="compTree">
+                <ma:tree.MaterialTree ui:field="compTree" fontSize="1.2em">
                     <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Wire}"
                         target="WireElm" />
                     <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Resistor}"

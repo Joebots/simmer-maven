@@ -8,7 +8,7 @@
         styleName="shifted-window">
         <m:MaterialRow>
             <m:MaterialColumn grid="s11">
-                <ma:tree.MaterialTree ui:field="circuitsTree">
+                <ma:tree.MaterialTree ui:field="circuitsTree" fontSize="1.2em">
                 </ma:tree.MaterialTree>
             </m:MaterialColumn>
             <m:MaterialColumn grid="s1">
