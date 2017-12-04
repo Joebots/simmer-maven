@@ -43,7 +43,8 @@ public class OptionsDialog extends Composite {
     MaterialSwitch showBreadboardBanks;
 
     @UiField
-    MaterialRange breadboardWidth, breadboardHeight, breadboardRowCount, breadboardTopMargin, breadboardLeftMargin;
+    MaterialRange breadboardWidth, breadboardHeight, breadboardRowCount, breadboardTopMargin, breadboardLeftMargin,
+            breadboardRowThickness;
 
     @UiField
     MaterialButton btnSaveConfig, btnResetConfig, btnDownloadConfig, btnUploadConfig;
@@ -133,6 +134,12 @@ public class OptionsDialog extends Composite {
         BreadBoard.applyConfig();
     }
 
+    @UiHandler({"breadboardRowThickness"})
+    public void breadboardRowThicknessHandler(ValueChangeEvent<Integer> event) {
+        BreadBoard.config.thickness = event.getValue();
+        BreadBoard.applyConfig();
+    }
+
     @UiHandler("btnSaveConfig")
     public void btnSaveConfigHandler(ClickEvent event) {
         BreadBoard.saveConfig();
@@ -162,6 +169,7 @@ public class OptionsDialog extends Composite {
         breadboardRowCount.setValue(BreadBoard.config.rowCount);
         breadboardTopMargin.setValue(BreadBoard.config.topMargin);
         breadboardLeftMargin.setValue(BreadBoard.config.leftMargin);
+        breadboardRowThickness.setValue(BreadBoard.config.thickness);
     }
 
     public void open() {
