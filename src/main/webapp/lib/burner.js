@@ -86,6 +86,22 @@ function getSimpleName(component) {
     return model.el.substring(model.el.lastIndexOf(".") + 1, model.el.indexOf("Elm"));
 }
 
+function getPinLabels(bbpin) {
+    var pinidx = bbpin.index;
+    var activePinLabel = pinidx + 1;
+    var label = "pin # " + activePinLabel;
+    if (bbpin.text) {
+        activePinLabel = bbpin.text;
+    }
+    if (bbpin.description) {
+        label += " (" + bbpin.description + ")";
+    }
+    return {
+        activePinLabel: activePinLabel,
+        label: label
+    }
+}
+
 Controller.prototype.showComponent = function (model) {
 
     var view = this.view;
@@ -97,24 +113,14 @@ Controller.prototype.showComponent = function (model) {
 
     var cmpName = getSimpleName(model.el);
     var snbr = view.activeStep + 1;
-    var pinidx = step.bbpin.index;
     var steps = `<div id="pagination">${snbr}/${view.totalSteps}</div>`;
     cmpName = cmpName == "Voltage" ? "Voltage Source" : cmpName;
     var links = "";
 
     var pinInfo = Controller.PIN_INFO[cmpName] || {};
-    var activePinLabel = pinidx + 1;
-    var label = "pin # " + activePinLabel;
 
-    if (step.bbpin.text) {
-        activePinLabel = step.bbpin.text;
-    }
 
-    if (step.bbpin.description) {
-        label += " (" + step.bbpin.description + ")";
-    }
-
-    var railTxt = step.bbpin.isRail ? pinidx == 1 ? "power" : "ground" + " rail on the " : "";
+    var railTxt = step.bbpin.isRail ? (step.bbpin.isPowerRail ? "power" : "ground") + " rail on the " : "";
 
     if (pstep) {
         pstep.bbpin.circuit.attr("opacity", 0);
@@ -129,24 +135,23 @@ Controller.prototype.showComponent = function (model) {
             continue;
 
         if (this.rendered[q] && !step.bbpin.isRail) {
-            var olabel = pinidx == 1 ? "ground" : "power";
-            links = ` where the ${getSimpleName(q)} ${olabel} wire is plugged in`;
-
+            links = ` where the ${getSimpleName(q)} is plugged in`;
             if (pinInfo.hints) {
                 links += "<br/><br/><b><i>Remember " + pinInfo.hints.join(" and ") + "</i></b>";
             }
         }
     }
 
-    var commentary = `Connect the ${label} wire of the ${cmpName} to the ${railTxt}breadboard${links}`;
+    var pinLabels = getPinLabels(step.bbpin);
+    var commentary = `Connect the ${pinLabels.label} wire of the ${cmpName} to the ${railTxt}breadboard${links}`;
     var x = step.bbpin.position.x - 10;
     var y = step.bbpin.position.y - 10;
     $("#active-component").css(cmpBounds).show();
-    $("#active-pin").css({top: y, left: x}).html(activePinLabel).show();
+    $("#active-pin").css({top: y, left: x}).html(pinLabels.activePinLabel).show();
     $(".burner-command-desc").html(commentary + steps);
 
     step.bbpin.circuit.attr("opacity", 1);
-    step.bbpin.circuit.node.setAttribute("fill", label == "power" ? "red" : "white");
+    step.bbpin.circuit.node.setAttribute("fill", step.bbpin.isPowerRail ? "red" : "white");
 
     this.view.steps.previous = step;
 
@@ -202,7 +207,7 @@ function copy(o) {
      head of the list to start circuit building from them
  */
 function sortModelElements(elements) {
-    var sortOrder = ["VoltageElm", "Ground", "Gpio"];
+    var sortOrder = ["VoltageElm", "RailElm", "Ground", "Gpio"];
     return elements.sort(function (a, b) {
         var first = a.name || a;
         var second = b.name || b;
@@ -271,7 +276,8 @@ function mapPinsToBreadboard(circuitModel, done) {
         // get the components at that xy
         for (var i in components) {
             var cmp = components[i];
-            var isRail = cmp.name.indexOf("VoltageElm") != -1;
+            var isVoltageElm = cmp.name.indexOf("VoltageElm") != -1;
+            var isPowerRail = cmp.name.indexOf("RailElm") != -1;
             var isGPIO = cmp.name.indexOf("Gpio") != -1;
             var isGround = cmp.name.indexOf("Ground") != -1;
 
@@ -289,9 +295,13 @@ function mapPinsToBreadboard(circuitModel, done) {
 
                 var activeBank = activeTerminalBank;
                 var activeRow = activeTerminalRow;
-                if (isRail) {
+                if (isVoltageElm) {
                     activeBank = powerBankIndex;
                     activeRow = parseInt(j);
+                } else if (isPowerRail) {
+                    activeBank = powerBankIndex;
+                    // Hardcoded to the +5v rail for now
+                    activeRow = 2;
                 } else if (isGPIO) {
                     activeBank = gpioBankIndex;
                     activeRow = parseInt(GpioBreadBoardConfig[pin.text]) -1;
@@ -309,11 +319,11 @@ function mapPinsToBreadboard(circuitModel, done) {
                         row: activeRow,
                         circuit: this.circuits[activeBank][activeRow],
                         components: {},
-                        isRail: isRail,
-                        isPowerRail: isRail && j == 0,
-                        isGroundRail: isRail && j == 1,
-                        text: pin.text,
-                        description: pin.description,
+                        isRail: isVoltageElm || isPowerRail || isGround,
+                        isPowerRail: (isVoltageElm && j == 0) || isPowerRail,
+                        isGroundRail: (isVoltageElm && j == 1) || isGround,
+                        text: pin.text || null,
+                        description: pin.description || null,
                         index: j
                     };
                     this.postsToBb[pos.toString()] = mapping;
@@ -403,7 +413,7 @@ BreadBoard.prototype.reset = function (cb) {
 };
 
 function isExternalComponent(cmp) {
-    var embeddedComponents = ["VoltageElm", "Ground", "Gpio"];
+    var embeddedComponents = ["VoltageElm", "RailElm", "Ground", "Gpio"];
     return cmp.pins.length != 1
         || embeddedComponents.findIndex((item) => cmp.name.indexOf(item) > -1) == -1;
 }
