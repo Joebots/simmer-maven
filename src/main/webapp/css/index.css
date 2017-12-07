@@ -45,4 +45,13 @@ iframe {
     text-align:center;
 }
 
+#app-version{
+    margin: 5px;
+    color: white;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 200;
+}
+
 
