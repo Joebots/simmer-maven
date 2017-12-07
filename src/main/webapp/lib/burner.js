@@ -121,6 +121,7 @@ Controller.prototype.showComponent = function (model) {
 
 
     var railTxt = step.bbpin.isRail ? (step.bbpin.isPowerRail ? "power" : "ground") + " rail on the " : "";
+    var gpioTxt = step.bbpin.isGPIO ? " GPIO #" + (step.bbpin.row + 1) + " terminal on the " : "";
 
     if (pstep) {
         pstep.bbpin.circuit.attr("opacity", 0);
@@ -143,7 +144,7 @@ Controller.prototype.showComponent = function (model) {
     }
 
     var pinLabels = getPinLabels(step.bbpin);
-    var commentary = `Connect the ${pinLabels.label} wire of the ${cmpName} to the ${railTxt}breadboard${links}`;
+    var commentary = `Connect the ${pinLabels.label} wire of the ${cmpName} to the ${gpioTxt}${railTxt}breadboard${links}`;
     var x = step.bbpin.position.x - 10;
     var y = step.bbpin.position.y - 10;
     $("#active-component").css(cmpBounds).show();
@@ -151,7 +152,7 @@ Controller.prototype.showComponent = function (model) {
     $(".burner-command-desc").html(commentary + steps);
 
     step.bbpin.circuit.attr("opacity", 1);
-    step.bbpin.circuit.node.setAttribute("fill", step.bbpin.isPowerRail ? "red" : "white");
+    step.bbpin.circuit.node.setAttribute("fill", step.bbpin.isPowerRail ? "red" : step.bbpin.isGPIO ? "yellow" : "white");
 
     this.view.steps.previous = step;
 
@@ -322,27 +323,39 @@ function mapPinsToBreadboard(circuitModel, done) {
                         isRail: isVoltageElm || isPowerRail || isGround,
                         isPowerRail: (isVoltageElm && j == 0) || isPowerRail,
                         isGroundRail: (isVoltageElm && j == 1) || isGround,
-                        text: pin.text || null,
-                        description: pin.description || null,
-                        index: j
+                        isGPIO: isGPIO
                     };
                     this.postsToBb[pos.toString()] = mapping;
                 }
-                this.pinsToBb[pin.toString()] = mapping;
+                var pinMapping = {
+                    position: mapping.position,
+                    bank: mapping.bank,
+                    row: mapping.row,
+                    circuit:mapping.circuit,
+                    components: mapping.components,
+                    isRail: mapping.isRail,
+                    isPowerRail: mapping.isPowerRail,
+                    isGroundRail: mapping.isGroundRail,
+                    isGPIO: mapping.isGPIO,
+                    text: pin.text || null,
+                    description: pin.description || null,
+                    index: j
+                };
+                this.pinsToBb[pin.toString()] = pinMapping;
 
                 // component to pin mapping, store the pin index
                 // for each component at this connection point
-                mapping.components[cmp.name] = j;
+                pinMapping.components[cmp.name] = j;
 
                 if (activeBank == activeTerminalBank && (++activeTerminalBank) >= terminalBankIndices.length) {
-                    activeTerminalBank = 0;
+                    activeTerminalBank = terminalBankIndices[0];
                 }
             }
 
             if (activeRow == activeTerminalRow && (++activeTerminalRow) >= this.banks[0].rows.length) {
                 activeTerminalRow = 0;
             }
-            done[cmp.name] = mapping;
+            done[cmp.name] = pinMapping;
         }
     }
 }
