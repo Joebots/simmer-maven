@@ -34,7 +34,6 @@
                 <m:MaterialCheckBox ui:field="backgroundCheckItem" text="{i18n.White_Background}" name="{WHITE_BACKGROUND.name}" />
                 <m:MaterialCheckBox ui:field="conventionCheckItem" text="{i18n.Conventional_Current_Motion}"
                     name="{CONVENTIONAL_CURRENT_MOTION.name}" />
-                <m:MaterialIntegerBox label="Integer value" />
             </m:MaterialColumn>
             <m:MaterialColumn m:id="breadboardTab" grid="s12" height="100%">
                 <m:MaterialRow margin="8">
