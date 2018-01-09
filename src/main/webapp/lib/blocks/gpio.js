@@ -37,10 +37,7 @@ Blockly.Blocks["pin_changed"] = {
 Blockly.JavaScript["pin_changed"] = function(block) {
     var pin = block.getFieldValue("PIN");
     var callback = Blockly.JavaScript.statementToCode(block, "DO");
-    var code = "gpioOn('change', " + pin + ", function(pin, value) {\n" +
-    "    if (pin != " + pin + ") {\n" +
-    "        return;\n" +
-    "    }\n" +
+    var code = "gpioOn('change', " + PINS[pin] + ", function(pin, value) {\n" +
     "    " + callback + "\n" +
     "});"
     return code;

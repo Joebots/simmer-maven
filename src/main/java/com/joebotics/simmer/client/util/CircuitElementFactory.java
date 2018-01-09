@@ -2,6 +2,7 @@ package com.joebotics.simmer.client.util;
 
 import com.joebotics.simmer.client.elcomp.*;
 import com.joebotics.simmer.client.elcomp.chips.*;
+import com.joebotics.simmer.client.elcomp.sensors.KY002Elm;
 
 public class CircuitElementFactory {
 
@@ -268,6 +269,8 @@ public class CircuitElementFactory {
         if (n == "GpioOutputElm")
             return (AbstractCircuitElement) new GpioOutputElm(x1, y1);
 
+        if (n == "KY_002")
+            return (AbstractCircuitElement) new KY002Elm(x1, y1);
         return null;
     }
 
@@ -503,6 +506,9 @@ public class CircuitElementFactory {
 
         if (tint == 401)
             return (AbstractCircuitElement) new GpioInputElm(x1, y1, x2, y2, f, st);
+
+        if (tint == 502)
+            return (AbstractCircuitElement) new KY002Elm(x1, y1, x2, y2, f, st);
         return null;
     }
 }

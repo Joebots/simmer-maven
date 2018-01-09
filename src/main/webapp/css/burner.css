@@ -65,10 +65,17 @@
     display: none;
     vertical-align: middle;
     text-align: center;
-    background: white;
     top: 80%;
-    height: 116px;
-    left: 330px;
+    width: 66%;
+    height: 20%;
+}
+
+#active-component-picture img {
+    max-width: 100%;
+    max-height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
 }
 
 @-webkit-keyframes pulsate-white

@@ -39,7 +39,7 @@ Controller.prototype.bindEventHandlers = function () {
         var cmpName = model.el.substring(model.el.lastIndexOf(".") + 1, model.el.indexOf("Elm"));
 
         var pic = $("#active-component-picture");
-        var img = `<img width="170" height="110" src="imgs/components/${cmpName.toLowerCase()}.png"/>`;
+        var img = `<img src="imgs/components/${cmpName.toLowerCase()}.png"/>`;
         pic.html(img).fadeToggle(this.anim);
     };
 
@@ -204,15 +204,21 @@ function copy(o) {
 }
 
 /**
-    Sort model elements to have power, ground and GPIO elements in the
+    Sort model components to have power, ground and GPIO components in the
      head of the list to start circuit building from them
  */
-function sortModelElements(elements) {
+function sortModelComponents(components) {
     var sortOrder = ["VoltageElm", "RailElm", "Ground", "Gpio"];
-    return elements.sort(function (a, b) {
+    return components.sort(function (a, b) {
+        if (a.footprint != null && b.footprint == null) {
+            return -1;
+        }
+        if (a.footprint == null && b.footprint != null) {
+            return 1;
+        }
         var first = a.name || a;
         var second = b.name || b;
-        return sortOrder.findIndex((item) => second.indexOf(item) > -1) - sortOrder.findIndex((item) => first.indexOf(item) > -1);
+        return Math.sign(sortOrder.findIndex((item) => second.indexOf(item) > -1) - sortOrder.findIndex((item) => first.indexOf(item) > -1));
     });
 }
 
@@ -220,15 +226,15 @@ function parsePinouts(circuitModel) {
     var pinOuts = {};
 
     // for( var name in circuitModel.components ){
-    var els = sortModelElements(circuitModel.elements);
+    var comps = sortModelComponents(circuitModel.components);
 
-    for (var i in els) {
-        var name = els[i];
-        var pins = circuitModel.components[name].pins;
+    for (var i in comps) {
+        var comp = comps[i];
+        var pins = comp.pins;
 
         for (var j = 0; j < pins.length; j++) {
             var pin = pins[j];
-            pin.component = name;
+            pin.component = comp.name;
             pin.index = j;
             var po = pin.post;
             po.toString = function () {
@@ -243,7 +249,7 @@ function parsePinouts(circuitModel) {
                 pinOuts[coords] = {};
                 pinOuts[coords].components = [];
             }
-            pinOuts[coords].components.push({name: name, model: circuitModel.components[name]});
+            pinOuts[coords].components.push({name: comp.name, model: comp});
             pinOuts[coords].position = po;
             pinOuts[coords].text = pin.text;
             pinOuts[coords].description = pin.description;
@@ -272,15 +278,19 @@ function mapPinsToBreadboard(circuitModel, done) {
 
     for (var xy in circuitModel.pinOuts) {
 
-        var components = sortModelElements(circuitModel.pinOuts[xy].components);
+        var components = sortModelComponents(circuitModel.pinOuts[xy].components);
 
         // get the components at that xy
         for (var i in components) {
             var cmp = components[i];
+            var isPackagedElm = cmp.model.footprint != null;
             var isVoltageElm = cmp.name.indexOf("VoltageElm") != -1;
             var isPowerRail = cmp.name.indexOf("RailElm") != -1;
             var isGPIO = cmp.name.indexOf("Gpio") != -1;
             var isGround = cmp.name.indexOf("Ground") != -1;
+
+            var originBank = activeTerminalBank;
+            var originRow = activeTerminalRow;
 
             // map each pinout
             for (var j = 0; j < cmp.model.pins.length; j++) {
@@ -294,6 +304,11 @@ function mapPinsToBreadboard(circuitModel, done) {
                 var pos = pin.post;
                 var mapping = {};
 
+                if (isPackagedElm) {
+                    var lead = cmp.model.footprint.leads[j];
+                    activeTerminalBank = originBank + lead.col;
+                    activeTerminalRow = originRow + lead.row;
+                }
                 var activeBank = activeTerminalBank;
                 var activeRow = activeTerminalRow;
                 if (isVoltageElm) {
@@ -435,7 +450,7 @@ BreadBoard.prototype.layout = function (circuitModel, cb) {
     console.log('layout', circuitModel);
     this.reset();
 
-    this.model = circuitModel || {elements: [], bounds: {}, components: {}};
+    this.model = circuitModel || {bounds: {}, components: {}};
 
     this.totalSteps = 0;
     this.activeStep = -1;
@@ -453,11 +468,10 @@ BreadBoard.prototype.layout = function (circuitModel, cb) {
 
     mapPinsToBreadboard.call(this, circuitModel, done);
 
-    var els = this.model.elements;
-    for (var d in els) {
-        var cmp = this.model.components[els[d]];
+    var comps = this.model.components;
+    for (var d in comps) {
+        var cmp = comps[d];
         // Adding steps for external components only. Internal components like power and GPIO are excluded
-        cmp.name = els[d];
         if (isExternalComponent(cmp)) {
             for (var j in cmp.pins) {
                 var bbpin = this.pinsToBb[cmp.pins[j].toString()];

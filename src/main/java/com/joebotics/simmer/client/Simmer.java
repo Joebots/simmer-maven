@@ -49,6 +49,7 @@ import com.joebotics.simmer.client.gui.menu.*;
 import com.joebotics.simmer.client.gui.util.*;
 import com.joebotics.simmer.client.integration.JSEventBusProxy;
 import com.joebotics.simmer.client.integration.SimmerEvents;
+import com.joebotics.simmer.client.model.FootprintManager;
 import com.joebotics.simmer.client.model.GpioManager;
 import com.joebotics.simmer.client.util.*;
 import com.joebotics.simmer.client.util.HintTypeEnum.HintType;
@@ -149,6 +150,7 @@ public class Simmer {
     private GpioManager gpioManager;
     private String blocklyXml;
     private SimmerEventBus eventBus;
+    private FootprintManager footprintManager;
 
     private static Simmer instance;
 
@@ -156,6 +158,7 @@ public class Simmer {
 
     private Simmer() {
         gpioManager = new GpioManager();
+        footprintManager = new FootprintManager();
         eventBus = new SimmerEventBus();
     }
 
@@ -2002,6 +2005,10 @@ public class Simmer {
 
     public GpioManager getGpioManager() {
         return gpioManager;
+    }
+
+    public FootprintManager getFootprintManager() {
+        return footprintManager;
     }
 
     public String getBlocklyXml() {
