@@ -751,7 +751,7 @@ public class Simmer {
 
         if (!circuitNonLinear) {
             if (!MathUtil.lu_factor(circuitMatrix, circuitMatrixSize, circuitPermute)) {
-                String message = MessageI18N.getMessage("Singular_matrix!");
+                String message = MessageI18N.getMessage("Singular_matrix");
                 stop(message, null);
                 // fire circuit broken event here?
                 // {source: simmer, component: ce, message: "Singular_matrix!"}
