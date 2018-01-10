@@ -41,7 +41,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 
 	private boolean lastClock;
 
-	int rectPointsX[], rectPointsY[];
+	protected int rectPointsX[], rectPointsY[];
 
 	private int sizeX;
 	private int sizeY;

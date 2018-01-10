@@ -25,7 +25,7 @@ import com.google.gwt.json.client.JSONObject;
 import java.io.Serializable;
 
 public class Point implements Serializable{
-	
+
 	private int x;
 	private int y;
 
@@ -47,7 +47,7 @@ public class Point implements Serializable{
 		x = p.x;
 		y = p.y;
 	}
-	
+
 	public int getX() {
 		return x;
 	}

@@ -36,12 +36,14 @@ public class DFlipFlopElm extends ChipElm {
 
 	public DFlipFlopElm(int xx, int yy) {
 		super(xx, yy);
+		footprintName = "DIP6";
 	}
 
 	public DFlipFlopElm(int xa, int ya, int xb, int yb, int f,
 			StringTokenizer st) {
 		super(xa, ya, xb, yb, f, st);
 		getPins()[2].setValue(!getPins()[1].getValue());
+		footprintName = "DIP6";
 	}
 
 	public void execute() {
