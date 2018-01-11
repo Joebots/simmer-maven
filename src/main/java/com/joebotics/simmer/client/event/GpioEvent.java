@@ -8,14 +8,14 @@ import jsinterop.annotations.JsType;
 
 @JsType(name = "GpioEvent")
 public class GpioEvent extends GwtEvent<GpioEventHandler> {
-    public static final Type<GpioEventHandler> TYPE = new Type<GpioEventHandler>();
+    public static final Type<GpioEventHandler> TYPE = new Type<>();
 
-    private String pinNumber;
-    private boolean value;
+    private int pinNumber;
+    private int value;
 
     @JsConstructor
-    public GpioEvent(int pinNumber, boolean value) {
-        this.pinNumber = String.valueOf(pinNumber);
+    public GpioEvent(int pinNumber, int value) {
+        this.pinNumber = pinNumber;
         this.value = value;
     }
 
@@ -31,11 +31,11 @@ public class GpioEvent extends GwtEvent<GpioEventHandler> {
         return TYPE;
     }
 
-    public String getPinNumber() {
+    public int getPinNumber() {
         return pinNumber;
     }
 
-    public boolean getValue() {
+    public int getValue() {
         return value;
     }
 }

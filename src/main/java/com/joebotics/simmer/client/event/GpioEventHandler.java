@@ -5,5 +5,5 @@ import com.google.gwt.event.shared.EventHandler;
 import jsinterop.annotations.JsFunction;
 
 public interface GpioEventHandler extends EventHandler {
-    public void onGpioEvent(GpioEvent event);
+    void onGpioEvent(GpioEvent event);
 }

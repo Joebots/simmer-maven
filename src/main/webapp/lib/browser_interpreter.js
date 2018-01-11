@@ -94,7 +94,7 @@ Bgpio.BrowserInterpreter.stop = function() {
         console.log("Manually stopping running JavaScript");
     Bgpio.BrowserInterpreter.pauseProcess = true;
     clearTimeout(Bgpio.BrowserInterpreter.processId);
-    Bgpio.setPinDefaults();
+    //Bgpio.setPinDefaults();
     Bgpio.notifyStopped();
 };
 
@@ -102,7 +102,7 @@ Bgpio.BrowserInterpreter.prepareNewRun = function() {
     Bgpio.BrowserInterpreter.pauseProcess = false;
     Bgpio.workspace.traceOn(true);
     Bgpio.workspace.highlightBlock(null);
-    Bgpio.setPinDefaults();
+    //Bgpio.setPinDefaults();
     Bgpio.clearJsConsole();
 };
 
@@ -159,7 +159,7 @@ Bgpio.BrowserInterpreter.debugInterpreterInit = function(interpreter, scope) {
         Bgpio.API.gpioOn(callback);
     };
     interpreter.setProperty(scope, "gpioOn", interpreter
-            .createNativeFunction(wrapper));
+            .createAsyncFunction(wrapper));
     
     // Add an API function for write pin value
     var wrapper = function(pin, value) {

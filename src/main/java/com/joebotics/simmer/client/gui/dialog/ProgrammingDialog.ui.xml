@@ -70,7 +70,8 @@
                                 <block type="pin_write"></block>
                                 <block type="pin_read"></block>
                                 <block type="pin_changed"></block>
-                                <block type="pin_binary"></block>
+                                <block type="pin_digital"></block>
+                                <block type="pin_analog"></block>
                             </category>
                             <category name="time">
                                 <block type="sleep_ms"></block>
