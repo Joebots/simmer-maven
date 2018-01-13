@@ -161,11 +161,14 @@ Bgpio.hasBoard = function() {
 }
 
 Bgpio.setUseBoard = function(value) {
-    Bgpio.runMode.selectMode(value ? 1 : 0);
     if (value) {
+        // Board mode
+        Bgpio.runMode.selectMode(1);
         Bgpio.API.connect();
     } else {
         Bgpio.API.disconnect();
+        // Simulator mode
+        Bgpio.runMode.selectMode(0);
     }
 }
 

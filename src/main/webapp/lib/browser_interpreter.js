@@ -94,7 +94,7 @@ Bgpio.BrowserInterpreter.stop = function() {
         console.log("Manually stopping running JavaScript");
     Bgpio.BrowserInterpreter.pauseProcess = true;
     clearTimeout(Bgpio.BrowserInterpreter.processId);
-    Bgpio.setPinDefaults();
+    //Bgpio.setPinDefaults();
     Bgpio.notifyStopped();
 };
 
@@ -102,7 +102,7 @@ Bgpio.BrowserInterpreter.prepareNewRun = function() {
     Bgpio.BrowserInterpreter.pauseProcess = false;
     Bgpio.workspace.traceOn(true);
     Bgpio.workspace.highlightBlock(null);
-    Bgpio.setPinDefaults();
+    //Bgpio.setPinDefaults();
     Bgpio.clearJsConsole();
 };
 
@@ -153,10 +153,20 @@ Bgpio.BrowserInterpreter.debugInterpreterInit = function(interpreter, scope) {
             .createNativeFunction(wrapper));
 
     // Add an API function for listening pin value changes
-    var wrapper = function(event, callback) {
+    var wrapper = function(pin, callback) {
         if (Bgpio.DEBUG)
-            console.log("GPIO event: " + event);
-        Bgpio.API.gpioOn(callback);
+            console.log("pin->" + pin + " on change " + callback);
+        // A durty hack to add callback functions for Simmer
+        var callbackNode = {
+            type: "Program",
+            body: callback.node.body.body
+        };
+        Bgpio.API.gpioOn(pin, function(result) {
+            var valueCode = "var value = " + result + ";";
+            interpreter.appendCode(valueCode);
+            interpreter.appendCode(callbackNode);
+            interpreter.run();
+        });
     };
     interpreter.setProperty(scope, "gpioOn", interpreter
             .createNativeFunction(wrapper));
@@ -171,13 +181,15 @@ Bgpio.BrowserInterpreter.debugInterpreterInit = function(interpreter, scope) {
             .createNativeFunction(wrapper));
     
     // Add an API function for read pin value
-    var wrapper = function(pin) {
+    var wrapper = function(pin, callback) {
         if (Bgpio.DEBUG)
             console.log("get pin->" + pin);
-        return Bgpio.API.gpioRead(pin);
+        Bgpio.API.gpioRead(pin, function(value) {
+            callback(value);
+        });
     };
     interpreter.setProperty(scope, "gpioRead", interpreter
-            .createNativeFunction(wrapper));
+            .createAsyncFunction(wrapper));
     
     // Add an API function for waiting an amount of time
     var wrapper = function(value) {

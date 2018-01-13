@@ -103,8 +103,12 @@
                     <ma:tree.MaterialTreeItem iconType="FOLDER" text="{i18n.Sensors}">
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.KY_002}"
                                                   target="KY_002" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.KY_003}"
-                                                  target="KY_003" />
+                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.KY_009}"
+                                                  target="KY_009" />
+                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.KY_013}"
+                                                  target="KY_013" />
+                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.KY_016}"
+                                                  target="KY_016" />
                     </ma:tree.MaterialTreeItem>
 
                     <!-- Active Components -->

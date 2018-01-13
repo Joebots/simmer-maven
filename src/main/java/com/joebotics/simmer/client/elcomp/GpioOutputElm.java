@@ -92,8 +92,8 @@ public class GpioOutputElm extends LogicOutputElm implements GpioEventHandler {
 
     @Override
     public void onGpioEvent(GpioEvent event) {
-        if (gpioPin.getPinNumber().equals(event.getPinNumber())) {
-            getPins()[0].setValue(event.getValue());
+        if (gpioPin.getPinNumber() == event.getPinNumber()) {
+            getPins()[0].setValue(event.getValue() == 1);
         }
     }
 }

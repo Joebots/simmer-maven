@@ -15,7 +15,7 @@ public class GpioManager {
     public GpioManager() {
         Set<String> keys = gpioConfig.keySet();
         for (String key : keys) {
-            pins.add(new GpioPin(key, gpioConfig.get(key)));
+            pins.add(new GpioPin(key, Integer.parseInt(gpioConfig.get(key))));
         }
     }
 

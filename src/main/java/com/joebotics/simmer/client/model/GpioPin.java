@@ -2,10 +2,10 @@ package com.joebotics.simmer.client.model;
 
 public class GpioPin {
     private String name;
-    private String pinNumber;
+    private int pinNumber;
     private GpioPinState state;
 
-    public GpioPin(String name, String pinNumber) {
+    public GpioPin(String name, int pinNumber) {
         this.name = name;
         this.pinNumber = pinNumber;
         this.state = GpioPinState.UNKNOWN;
@@ -15,7 +15,7 @@ public class GpioPin {
         return name;
     }
 
-    public String getPinNumber() {
+    public int getPinNumber() {
         return pinNumber;
     }
 

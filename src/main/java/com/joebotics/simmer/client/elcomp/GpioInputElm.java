@@ -93,8 +93,8 @@ public class GpioInputElm extends LogicInputElm implements GpioEventHandler {
 
     @Override
     public void onGpioEvent(GpioEvent event) {
-        if (gpioPin.getPinNumber().equals(event.getPinNumber())) {
-            int pos = event.getValue() ? 1 : 0;
+        if (gpioPin.getPinNumber() == event.getPinNumber()) {
+            int pos = event.getValue();
             this.position = pos;
             Simmer.getInstance().needAnalyze();
         }
