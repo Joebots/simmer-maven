@@ -42,7 +42,7 @@ Blockly.JavaScript["pin_changed"] = function(block) {
     var pin = block.getFieldValue("PIN");
     var valueVar = Blockly.JavaScript.variableDB_.getName(block.getFieldValue('VALUE'), Blockly.Variables.NAME_TYPE);
     var callback = Blockly.JavaScript.statementToCode(block, "DO");
-    var code = `gpioOn('change', ${PINS[pin]}, function(pin, ${valueVar}) {\n` +
+    var code = `gpioOn(${PINS[pin]}, function(pin, ${valueVar}) {\n` +
     `    ${callback}\n` +
     `});`;
     return code;
