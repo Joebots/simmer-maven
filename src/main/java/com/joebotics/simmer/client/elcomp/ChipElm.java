@@ -105,7 +105,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 	public void drawChip(Graphics g) {
 		int i;
 		Font oldfont = g.getFont();
-		Font f = new Font("SansSerif", 0, 10 * csize);
+		Font f = new Font("SansSerif", 0, 6 * csize);
 		g.setFont(f);
 		// FontMetrics fm = g.getFontMetrics();
 		for (i = 0; i != getPostCount(); i++) {
@@ -125,7 +125,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 			g.setColor(whiteColor);
 			// int sw = fm.stringWidth(p.text);
 			int sw = (int) g.getContext().measureText(p.getText()).getWidth();
-			int asc = (int) g.getCurrentFontSize();
+			int asc = g.getCurrentFontSize();
 			g.drawString(p.getText(), p.getTextloc().getX() - sw / 2, p.getTextloc().getY() + asc / 2);
 			if (p.isLineOver()) {
 				int ya = p.getTextloc().getY() - asc / 2;
@@ -286,7 +286,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 		int ya = py + getCspc2() * dy * pin.getNumber() + sy;
 		pin.setPost(new Point(xa + dax * getCspc2(), ya + day * getCspc2()));
 		pin.setStub(new Point(xa + dax * getCspc(), ya + day * getCspc()));
-		pin.setTextloc(new Point(xa, ya));
+		pin.setTextloc(new Point(xa + dax * getCspc() / 2, ya));
 		if (pin.isBubble()) {
 			pin.setBubbleX(xa + dax * 10 * csize);
 			pin.setBubbleY(ya + day * 10 * csize);
