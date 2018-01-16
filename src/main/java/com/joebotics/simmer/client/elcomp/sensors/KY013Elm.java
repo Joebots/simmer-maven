@@ -21,12 +21,6 @@ public class KY013Elm extends ChipElm {
         footprintName = "SIP3";
     }
 
-    @Override
-    public void draw(Graphics g) {
-        super.draw(g);
-        drawChipName(g);
-    }
-
     public void execute() {
         getPins()[0].setValue(false);
     }
@@ -58,17 +52,5 @@ public class KY013Elm extends ChipElm {
         getPins()[0].setOutput(getPins()[0].setState(true));
         getPins()[1] = new Pin(1, Side.EAST, "+");
         getPins()[2] = new Pin(2, Side.EAST, "-");
-    }
-
-    protected void drawChipName(Graphics g) {
-        String s = getChipName();
-        if (s == null)
-            return;
-        g.setFont(unitsFont);
-        int w = (int) g.getContext().measureText(s).getWidth();
-        g.setColor(whiteColor);
-        int ya = (int) g.getCurrentFontSize() / 2;
-        int xc = rectPointsX[0] + (rectPointsX[1] - rectPointsX[0]) / 2, yc = rectPointsY[0];
-        g.drawString(s, xc - w / 2, yc - ya - 2);
     }
 }

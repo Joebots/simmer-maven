@@ -38,7 +38,6 @@ public abstract class ChipElm extends AbstractCircuitElement {
 	private int cspc;
 	private int cspc2;
 
-
 	private boolean lastClock;
 
 	protected int rectPointsX[], rectPointsY[];
@@ -140,6 +139,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 		for (i = 0; i != getPostCount(); i++)
 			drawPost(g, getPins()[i].getPost().getX(), getPins()[i].getPost().getY(), getNodes()[i]);
 		g.setFont(oldfont);
+		drawChipName(g);
 	}
 
 	public String dump() {
@@ -201,8 +201,6 @@ public abstract class ChipElm extends AbstractCircuitElement {
 				a++;
 		}
 	}
-
-
 
 	abstract public int getVoltageSourceCount(); // output count
 
@@ -311,6 +309,25 @@ public abstract class ChipElm extends AbstractCircuitElement {
 		cspc2 = cspc * 2;
 		setFlags(getFlags() & ~FLAG_SMALL);
 		setFlags(getFlags() | ((s == 1) ? FLAG_SMALL : 0));
+	}
+
+	private void drawChipName(Graphics g) {
+		String s = getChipName();
+		if (s == null)
+			return;
+		g.setFont(unitsFont);
+		int w = (int) g.getContext().measureText(s).getWidth();
+		g.setColor(whiteColor);
+		int ya = (int) g.getCurrentFontSize() / 2;
+		int xc = rectPointsX[0] + (rectPointsX[1] - rectPointsX[0]) / 2, yc = rectPointsY[0];
+		g.drawString(s, xc - w / 2, yc - ya - 2);
+	}
+
+	public Point getCenterPoint() {
+		Point center = new Point();
+		center.setX(rectPointsX[0] + (rectPointsX[1] - rectPointsX[0]) / 2);
+		center.setY(rectPointsY[0] + (rectPointsY[2] - rectPointsY[0]) / 2);
+		return center;
 	}
 
 	public int getBits() {
