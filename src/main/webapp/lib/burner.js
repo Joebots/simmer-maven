@@ -259,7 +259,7 @@ function parsePinouts(circuitModel) {
     return pinOuts;
 }
 
-function mapPinsToBreadboard(circuitModel, done) {
+function mapPinsToBreadboard(circuitModel, done, componentFilter, activeTerminal) {
     var terminalBankIndices = this.banks.reduce(function (result, element, index) {
         if (!element.type || element.type === "TERMINAL") {
             result.push(index);
@@ -273,8 +273,12 @@ function mapPinsToBreadboard(circuitModel, done) {
         return element.type === "GPIO";
     });
 
-    var activeTerminalBank = terminalBankIndices[0];
-    var activeTerminalRow = 0;
+    if (!activeTerminal) {
+        activeTerminal = {
+            bank: terminalBankIndices[0],
+            row: 0
+        }
+    }
 
     for (var xy in circuitModel.pinOuts) {
 
@@ -283,14 +287,17 @@ function mapPinsToBreadboard(circuitModel, done) {
         // get the components at that xy
         for (var i in components) {
             var cmp = components[i];
+            if (componentFilter && !componentFilter(cmp)) {
+                continue;
+            }
             var isPackagedElm = cmp.model.footprint != null;
             var isVoltageElm = cmp.name.indexOf("VoltageElm") != -1;
             var isPowerRail = cmp.name.indexOf("RailElm") != -1;
             var isGPIO = cmp.name.indexOf("Gpio") != -1;
             var isGround = cmp.name.indexOf("Ground") != -1;
 
-            var originBank = activeTerminalBank;
-            var originRow = activeTerminalRow;
+            var originBank = activeTerminal.bank;
+            var originRow = activeTerminal.row;
 
             // map each pinout
             for (var j = 0; j < cmp.model.pins.length; j++) {
@@ -306,11 +313,11 @@ function mapPinsToBreadboard(circuitModel, done) {
 
                 if (isPackagedElm) {
                     var lead = cmp.model.footprint.leads[j];
-                    activeTerminalBank = originBank + lead.col;
-                    activeTerminalRow = originRow + lead.row;
+                    activeTerminal.bank = originBank + lead.col;
+                    activeTerminal.row = originRow + lead.row;
                 }
-                var activeBank = activeTerminalBank;
-                var activeRow = activeTerminalRow;
+                var activeBank = activeTerminal.bank;
+                var activeRow = activeTerminal.row;
                 if (isVoltageElm) {
                     activeBank = powerBankIndex;
                     activeRow = parseInt(j);
@@ -362,17 +369,18 @@ function mapPinsToBreadboard(circuitModel, done) {
                 // for each component at this connection point
                 pinMapping.components[cmp.name] = j;
 
-                if (activeBank == activeTerminalBank && (++activeTerminalBank) >= terminalBankIndices.length) {
-                    activeTerminalBank = terminalBankIndices[0];
+                if (activeBank == activeTerminal.bank && (++activeTerminal.bank) >= terminalBankIndices.length) {
+                    activeTerminal.bank = terminalBankIndices[0];
                 }
             }
 
-            if (activeRow == activeTerminalRow && (++activeTerminalRow) >= this.banks[0].rows.length) {
-                activeTerminalRow = 0;
+            if (activeRow == activeTerminal.row && (++activeTerminal.row) >= this.banks[0].rows.length) {
+                activeTerminal.row = 0;
             }
             done[cmp.name] = pinMapping;
         }
     }
+    return activeTerminal;
 }
 
 BreadBoard.prototype.setTarget = function (target) {
@@ -466,7 +474,12 @@ BreadBoard.prototype.layout = function (circuitModel, cb) {
     var done = {};
     this.steps = [];
 
-    mapPinsToBreadboard.call(this, circuitModel, done);
+    var activeTerminal = mapPinsToBreadboard.call(this, circuitModel, done, function (cmp) {
+        return cmp.name.indexOf("Wire") == -1;
+    });
+    mapPinsToBreadboard.call(this, circuitModel, done, function (cmp) {
+        return cmp.name.indexOf("Wire") != -1;
+    }, activeTerminal);
 
     var comps = this.model.components;
     for (var d in comps) {

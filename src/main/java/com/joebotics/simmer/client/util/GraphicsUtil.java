@@ -37,4 +37,9 @@ public class GraphicsUtil {
 	public static void drawThickPolygon(Graphics g, Polygon p) {
 		drawThickPolygon(g, p.getXpoints(), p.getYpoints(), p.getNpoints());
 	}
+	public static void drawThickRect(Graphics g, Point topLeft, Point bottomRight) {
+		int xs[] = new int[] {topLeft.getX(), bottomRight.getX(), bottomRight.getX(), topLeft.getX()};
+		int ys[] = new int[] {topLeft.getY(), topLeft.getY(), bottomRight.getY(), bottomRight.getY()};
+		drawThickPolygon(g, xs, ys, 4);
+	}
 }

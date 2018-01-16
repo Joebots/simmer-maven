@@ -179,7 +179,7 @@ public class Pin {
 			
 			int xc = stub.getX() + dx / 4;
 			int yc = stub.getY() + dy / 4;
-			return new Point(xc + 5,  yc + 5);
+			return new Point(xc - 5,  yc - 8);
 		} else {
 			return textloc;
 		}

@@ -1,5 +1,8 @@
 package com.joebotics.simmer.client.elcomp.sensors;
 
+import com.joebotics.simmer.client.gui.util.Graphics;
+import com.joebotics.simmer.client.gui.util.Point;
+import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 /**
@@ -22,5 +25,16 @@ public class KY016Elm extends KY009Elm {
 
     public int getDumpType() {
         return 516;
+    }
+
+    @Override
+    public void draw(Graphics g) {
+        drawChip(g);
+        Point centerPoint = getCenterPoint();
+        int radius = 12;
+        GraphicsUtil.drawThickCircle(g, centerPoint.getX(), centerPoint.getY(), radius);
+        radius -= 4;
+        g.setColor(getLEDColor());
+        g.fillOval(centerPoint.getX() - radius, centerPoint.getY() - radius, radius * 2, radius * 2);
     }
 }

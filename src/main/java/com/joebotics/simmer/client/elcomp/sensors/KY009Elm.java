@@ -1,9 +1,14 @@
 package com.joebotics.simmer.client.elcomp.sensors;
 
+import com.google.gwt.core.client.GWT;
 import com.joebotics.simmer.client.elcomp.ChipElm;
 import com.joebotics.simmer.client.elcomp.Pin;
 import com.joebotics.simmer.client.elcomp.Side;
+import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Graphics;
+import com.joebotics.simmer.client.gui.util.Point;
+import com.joebotics.simmer.client.util.Diode;
+import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 /**
@@ -11,6 +16,7 @@ import com.joebotics.simmer.client.util.StringTokenizer;
  * KY-009 3-color full-color LED SMD modules
  */
 public class KY009Elm extends ChipElm {
+
     public KY009Elm(int xx, int yy) {
         super(xx, yy);
         footprintName = "SIP4";
@@ -22,13 +28,7 @@ public class KY009Elm extends ChipElm {
     }
 
     @Override
-    public void draw(Graphics g) {
-        super.draw(g);
-        drawChipName(g);
-    }
-
     public void execute() {
-        getPins()[0].setValue(false);
     }
 
     @Override
@@ -41,14 +41,17 @@ public class KY009Elm extends ChipElm {
         return 0;
     }
 
+    @Override
     public int getDumpType() {
         return 509;
     }
 
+    @Override
     public int getPostCount() {
         return 4;
     }
 
+    @Override
     public void setupPins() {
         setSizeX(2);
         setSizeY(4);
@@ -60,15 +63,27 @@ public class KY009Elm extends ChipElm {
         getPins()[3] = new Pin(3, Side.EAST, "-");
     }
 
-    protected void drawChipName(Graphics g) {
-        String s = getChipName();
-        if (s == null)
-            return;
-        g.setFont(unitsFont);
-        int w = (int) g.getContext().measureText(s).getWidth();
-        g.setColor(whiteColor);
-        int ya = (int) g.getCurrentFontSize() / 2;
-        int xc = rectPointsX[0] + (rectPointsX[1] - rectPointsX[0]) / 2, yc = rectPointsY[0];
-        g.drawString(s, xc - w / 2, yc - ya - 2);
+    @Override
+    public void draw(Graphics g) {
+        drawChip(g);
+        Point centerPoint = getCenterPoint();
+        int radius = 12;
+        Point topLeft = new Point(centerPoint.getX() - radius, centerPoint.getY() - radius);
+        Point bottomRight = new Point(centerPoint.getX() + radius, centerPoint.getY() + radius);
+        GraphicsUtil.drawThickRect(g, topLeft, bottomRight);
+        radius -= 4;
+        g.setColor(getLEDColor());
+        g.fillOval(centerPoint.getX() - radius, centerPoint.getY() - radius, radius * 2, radius * 2);
+    }
+
+    protected Color getLEDColor() {
+        double redVoltage = getPins()[0].getVoltage();
+        double greenVoltage = getPins()[1].getVoltage();
+        double blueVoltage = getPins()[2].getVoltage();
+        double summaryVoltage = redVoltage + greenVoltage + blueVoltage;
+        double weight = 255;
+        return new Color((int) (redVoltage/summaryVoltage * weight), (int) (greenVoltage/summaryVoltage * weight),
+                (int) (blueVoltage/summaryVoltage * weight));
+
     }
 }
