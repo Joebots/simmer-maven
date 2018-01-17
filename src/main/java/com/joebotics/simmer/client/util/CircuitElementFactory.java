@@ -2,10 +2,7 @@ package com.joebotics.simmer.client.util;
 
 import com.joebotics.simmer.client.elcomp.*;
 import com.joebotics.simmer.client.elcomp.chips.*;
-import com.joebotics.simmer.client.elcomp.sensors.KY002Elm;
-import com.joebotics.simmer.client.elcomp.sensors.KY009Elm;
-import com.joebotics.simmer.client.elcomp.sensors.KY013Elm;
-import com.joebotics.simmer.client.elcomp.sensors.KY016Elm;
+import com.joebotics.simmer.client.elcomp.sensors.*;
 
 public class CircuitElementFactory {
 
@@ -275,6 +272,9 @@ public class CircuitElementFactory {
         if (n == "KY_002")
             return (AbstractCircuitElement) new KY002Elm(x1, y1);
 
+        if (n == "KY_003")
+            return (AbstractCircuitElement) new KY003Elm(x1, y1);
+
         if (n == "KY_009")
             return (AbstractCircuitElement) new KY009Elm(x1, y1);
 
@@ -522,6 +522,9 @@ public class CircuitElementFactory {
         // Sensors
         if (tint == 502)
             return (AbstractCircuitElement) new KY002Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 503)
+            return (AbstractCircuitElement) new KY003Elm(x1, y1, x2, y2, f, st);
 
         if (tint == 509)
             return (AbstractCircuitElement) new KY009Elm(x1, y1, x2, y2, f, st);

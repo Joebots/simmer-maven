@@ -6,6 +6,7 @@ demo-blinking-led.txt Blinking LED
 demo-touch-sensor.txt Touch Sensor
 demo-blinking-led-with-blockly.txt Blinking LED with Blockly
 demo-stop-light-with-blockly.txt Stop Light with Blockly
+demo-rpm-counter-with-blockly.txt Magnetic RPM Counter
 demo-temperature-sensor-LED-with-blockly.txt Temperature Sensor Controlling RGB LED
 -
 +Basics
