@@ -57,9 +57,9 @@ public class KY009Elm extends ChipElm {
         setSizeY(4);
         setPins(new Pin[getPostCount()]);
 
-        getPins()[0] = new Pin(0, Side.EAST, "R");
-        getPins()[1] = new Pin(1, Side.EAST, "G");
-        getPins()[2] = new Pin(2, Side.EAST, "B");
+        getPins()[0] = new Pin(0, Side.EAST, "B");
+        getPins()[1] = new Pin(1, Side.EAST, "R");
+        getPins()[2] = new Pin(2, Side.EAST, "G");
         getPins()[3] = new Pin(3, Side.EAST, "-");
     }
 
@@ -77,9 +77,9 @@ public class KY009Elm extends ChipElm {
     }
 
     protected Color getLEDColor() {
-        double redVoltage = getPins()[0].getVoltage();
-        double greenVoltage = getPins()[1].getVoltage();
-        double blueVoltage = getPins()[2].getVoltage();
+        double redVoltage = getPins()[1].getVoltage();
+        double greenVoltage = getPins()[2].getVoltage();
+        double blueVoltage = getPins()[0].getVoltage();
         double summaryVoltage = redVoltage + greenVoltage + blueVoltage;
         double weight = 255;
         return new Color((int) (redVoltage/summaryVoltage * weight), (int) (greenVoltage/summaryVoltage * weight),
