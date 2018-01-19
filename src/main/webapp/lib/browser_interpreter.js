@@ -11,6 +11,7 @@ Bgpio.BrowserInterpreter = {};
 
 Bgpio.BrowserInterpreter.myInterpreter = null;
 Bgpio.BrowserInterpreter.stepping = false;
+Bgpio.BrowserInterpreter.hasCallbacks = false;
 Bgpio.BrowserInterpreter.pauseProcess = false;
 Bgpio.BrowserInterpreter.sleepTime = 0;
 
@@ -34,6 +35,7 @@ Bgpio.BrowserInterpreter.debugStep = function() {
         Bgpio.notifyStarted(true);
         try {
             var ok = Bgpio.BrowserInterpreter.myInterpreter.step();
+            ok = ok || Bgpio.BrowserInterpreter.hasCallbacks;
         } finally {
             if (!ok) {
                 // Program complete, no more code to execute.
@@ -71,6 +73,7 @@ Bgpio.BrowserInterpreter.run = function() {
         var stop = false;
         try {
             var ok = Bgpio.BrowserInterpreter.myInterpreter.step();
+            ok = ok || Bgpio.BrowserInterpreter.hasCallbacks;
         } finally {
             if (!ok)
                 stop = true;
@@ -83,6 +86,8 @@ Bgpio.BrowserInterpreter.run = function() {
             Bgpio.BrowserInterpreter.sleepTime = 0;
         }
         if (stop) {
+            clearTimeout(Bgpio.BrowserInterpreter.processId);
+            Bgpio.API.reset();
             Bgpio.notifyStopped();
         }
     };
@@ -92,9 +97,11 @@ Bgpio.BrowserInterpreter.run = function() {
 Bgpio.BrowserInterpreter.stop = function() {
     if (Bgpio.DEBUG)
         console.log("Manually stopping running JavaScript");
+    Bgpio.BrowserInterpreter.hasCallbacks = false
     Bgpio.BrowserInterpreter.pauseProcess = true;
     clearTimeout(Bgpio.BrowserInterpreter.processId);
     //Bgpio.setPinDefaults();
+    Bgpio.API.reset();
     Bgpio.notifyStopped();
 };
 
@@ -165,8 +172,8 @@ Bgpio.BrowserInterpreter.debugInterpreterInit = function(interpreter, scope) {
             var valueCode = "var value = " + result + ";";
             interpreter.appendCode(valueCode);
             interpreter.appendCode(callbackNode);
-            interpreter.run();
         });
+        Bgpio.BrowserInterpreter.hasCallbacks = true;
     };
     interpreter.setProperty(scope, "gpioOn", interpreter
             .createNativeFunction(wrapper));

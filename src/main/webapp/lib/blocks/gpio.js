@@ -115,7 +115,7 @@ Blockly.Blocks["pin_read"] = {
  */
 Blockly.JavaScript["pin_read"] = function(block) {
     var pin = block.getFieldValue("PIN");
-    var code = "gpioRead(" + PINS[pin] + ");\n";
+    var code = "gpioRead(" + PINS[pin] + ")";
     return [ code, Blockly.JavaScript.ORDER_ATOMIC ];
 };
 

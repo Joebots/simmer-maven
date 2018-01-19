@@ -33,4 +33,7 @@ SimmerAPI.prototype.gpioOn = function(pinNumber, callback) {
     }
 };
 
+SimmerAPI.prototype.reset = function() {
+}
+
 Bgpio.SimmerAPI = new SimmerAPI(Bgpio);

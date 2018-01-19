@@ -10,7 +10,7 @@ var Bgpio = Bgpio || {};
 
 Bgpio.workspace = null;
 Bgpio.eventBus = null;
-Bgpio.DEBUG = true;
+Bgpio.DEBUG = false;
 Bgpio.PIN_COUNT = 26;
 
 Bgpio.codeArea = null;
