@@ -16,6 +16,45 @@ Bgpio.PIN_COUNT = 26;
 Bgpio.codeArea = null;
 Bgpio.consoleArea = null;
 
+Bgpio.BrowserInterpreter = new Worker("lib/worker_interpreter.js");
+Bgpio.BrowserInterpreter.onmessage = function (event) {
+    var method = event.data.method;
+    var params = event.data.params;
+    if (!method) {
+        return;
+    }
+    switch (method) {
+        case 'notifyStarted':
+            Bgpio.notifyStarted(params.debug);
+            break;
+        case 'notifyStopped':
+            Bgpio.notifyStopped();
+            break;
+        case 'clearJsConsole':
+            Bgpio.clearJsConsole();
+            break;
+        case 'appendTextJsConsole':
+            Bgpio.appendTextJsConsole(params.text);
+            break;
+        case 'highlightBlock':
+            Bgpio.workspace.highlightBlock(params.id);
+            break;
+        case 'gpioWrite':
+            Bgpio.API.gpioWrite(params.pin, params.value);
+            break;
+        case 'gpioRead':
+            Bgpio.API.gpioRead(params.pin, function (value) {
+                Bgpio.BrowserInterpreter.postMessage({method: 'callback', params: {callbackId: params.callbackId, args: [value]}});
+            });
+            break;
+        case 'gpioOn':
+            Bgpio.API.gpioOn(params.pin, function (value) {
+                Bgpio.BrowserInterpreter.postMessage({method: 'callback', params: {callbackId: params.callbackId, args: [value]}});
+            });
+            break;
+    }
+};
+
 Bgpio.API = Bgpio.SimmerAPI;
 
 Bgpio.init = function(container, params) {
@@ -80,10 +119,24 @@ Bgpio.runMode = {
             this.selected = 0;
         this.updateState_();
     },
-    debugInit : Bgpio.BrowserInterpreter.debugInit,
-    debugStep : Bgpio.BrowserInterpreter.debugStep,
-    run : Bgpio.BrowserInterpreter.run,
-    stop : Bgpio.BrowserInterpreter.stop,
+    debugInit : function() {
+        Bgpio.workspace.traceOn(true);
+        Bgpio.workspace.highlightBlock(null);
+        Bgpio.clearJsConsole();
+        Bgpio.BrowserInterpreter.postMessage({method: 'debugInit', params: {code: Bgpio.generateJavaScriptCode()}});
+    },
+    debugStep : function() {
+        Bgpio.BrowserInterpreter.postMessage({method: 'debugStep', params: null});
+    },
+    run : function() {
+        Bgpio.workspace.traceOn(true);
+        Bgpio.workspace.highlightBlock(null);
+        Bgpio.clearJsConsole();
+        Bgpio.BrowserInterpreter.postMessage({method: 'run', params: {code: Bgpio.generateJavaScriptCode()}});
+    },
+    stop : function() {
+        Bgpio.BrowserInterpreter.postMessage({method: 'stop', params: null});
+    },
     API : Bgpio.SimmerAPI,
     updateState_ : function() {
         if (this.selected === 0) {
@@ -103,6 +156,24 @@ Bgpio.runMode = {
 /*******************************************************************************
  * Blockly related
  ******************************************************************************/
+Bgpio.prepareJavaScript = function () {
+    Blockly.JavaScript.addReservedWords("highlightBlock");
+    Blockly.JavaScript.addReservedWords("setDiagramPin");
+    Blockly.JavaScript.addReservedWords("delayMs");
+    Blockly.JavaScript.addReservedWords("jsPrint");
+
+    Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+    if (BrowserInterpreter.stepping) {
+        Blockly.JavaScript.STATEMENT_PREFIX = "highlightBlock(%1);\n";
+    } else {
+        Blockly.JavaScript.STATEMENT_PREFIX = null;
+    }
+    var code = generateJavaScriptCode();
+    if (BrowserInterpreter.DEBUG)
+        console.log("About to execute code:\n" + code);
+    return code;
+};
+
 Bgpio.generateJavaScriptCode = function() {
     return Blockly.JavaScript.workspaceToCode(Bgpio.workspace);
 };

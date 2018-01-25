@@ -11,14 +11,14 @@ SimmerAPI.prototype.disconnect = function() {
 };
 
 SimmerAPI.prototype.gpioWrite = function(pinNumber, value) {
-    console.log("SimmerAPI.gpioWrite(" + pinNumber + ", " + value + ")");
+    console.log(`SimmerAPI.gpioWrite(${pinNumber}, ${value})`);
     if (this.board.eventBus) {
         this.board.eventBus.fireEvent(new com.joebotics.simmer.client.event.GpioEvent(pinNumber, value))
     }
 };
 
 SimmerAPI.prototype.gpioRead = function(pinNumber, callback) {
-    console.log("SimmerAPI.gpioRead(" + pinNumber + ")");
+    console.log(`SimmerAPI.gpioRead(${pinNumber}, ${callback})`);
     /*if (this.board.eventBus) {
         this.board.eventBus.fireEvent(new com.joebotics.simmer.client.event.GpioEvent(pinNumber, value))
     }*/
@@ -34,6 +34,6 @@ SimmerAPI.prototype.gpioOn = function(pinNumber, callback) {
 };
 
 SimmerAPI.prototype.reset = function() {
-}
+};
 
 Bgpio.SimmerAPI = new SimmerAPI(Bgpio);
