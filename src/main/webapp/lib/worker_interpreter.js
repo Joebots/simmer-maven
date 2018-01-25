@@ -19,9 +19,9 @@ BrowserInterpreter.API = {
         self.postMessage({method: 'gpioWrite', params: {pin: pin, value: value}})
     },
     gpioRead: function (pin, callback) {
-        var callbackId = "gpioRead" + pin;
+        var callbackId = "gpioRead_" + pin;
         BrowserInterpreter.API._callbacks[callbackId] = callback;
-        self.postMessage({method: 'gpioOn', params: {pin: pin, callbackId: callbackId}})
+        self.postMessage({method: 'gpioRead', params: {pin: pin, callbackId: callbackId}})
     },
     gpioOn: function (pin, callback) {
         var callbackId = "gpioOn_" + pin;
