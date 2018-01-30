@@ -42,6 +42,9 @@ Bgpio.BrowserInterpreter.onmessage = function (event) {
         case 'gpioWrite':
             Bgpio.API.gpioWrite(params.pin, params.value);
             break;
+        case 'servoWrite':
+            Bgpio.API.servoWrite(params.pin, params.angle);
+            break;
         case 'gpioRead':
             Bgpio.API.gpioRead(params.pin, function (value) {
                 Bgpio.BrowserInterpreter.postMessage({method: 'callback', params: {callbackId: params.callbackId, args: [value]}});

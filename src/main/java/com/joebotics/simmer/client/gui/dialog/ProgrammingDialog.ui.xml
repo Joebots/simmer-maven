@@ -68,6 +68,7 @@
                             <category name="Functions" custom="PROCEDURE"></category>
                             <category name="GPIO">
                                 <block type="pin_write"></block>
+                                <block type="servo_write"></block>
                                 <block type="pin_read"></block>
                                 <block type="pin_changed"></block>
                                 <block type="pin_digital"></block>
