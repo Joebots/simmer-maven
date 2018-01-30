@@ -18,6 +18,9 @@ BrowserInterpreter.API = {
     gpioWrite: function (pin, value) {
         self.postMessage({method: 'gpioWrite', params: {pin: pin, value: value}})
     },
+    servoWrite: function (pin, angle) {
+        self.postMessage({method: 'servoWrite', params: {pin: pin, angle: angle}})
+    },
     gpioRead: function (pin, callback) {
         var callbackId = "gpioRead_" + pin;
         BrowserInterpreter.API._callbacks[callbackId] = callback;
@@ -177,6 +180,15 @@ BrowserInterpreter.debugInterpreterInit = function (interpreter, scope) {
         BrowserInterpreter.API.gpioWrite(pin, value);
     };
     interpreter.setProperty(scope, "gpioWrite", interpreter
+        .createNativeFunction(wrapper));
+
+    // Add an API function for write pin value
+    var wrapper = function (pin, value) {
+        if (BrowserInterpreter.DEBUG)
+            console.log("servo->" + pin + " set " + value);
+        BrowserInterpreter.API.servoWrite(pin, value);
+    };
+    interpreter.setProperty(scope, "servoWrite", interpreter
         .createNativeFunction(wrapper));
 
     // Add an API function for read pin value
