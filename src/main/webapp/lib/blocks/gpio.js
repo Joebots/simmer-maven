@@ -104,7 +104,7 @@ Blockly.Blocks["servo_write"] = {
         }).map(function(key) {
             return [ key, key ];
         });
-        this.appendValueInput("VALUE", "Number")
+        this.appendValueInput("ANGLE", "Number")
             .appendField("turn GPIO")
             .appendField(new Blockly.FieldDropdown(arr), "PIN")
             .appendField("servo to")
@@ -127,10 +127,10 @@ Blockly.Blocks["servo_write"] = {
  */
 Blockly.JavaScript["servo_write"] = function(block) {
     var pin = block.getFieldValue("PIN");
-    var value = Blockly.JavaScript.valueToCode(block, "VALUE",
+    var angle = Blockly.JavaScript.valueToCode(block, "ANGLE",
             Blockly.JavaScript.ORDER_ATOMIC)
         || "0";
-    var code = "gpioServoWrite(" + PINS[pin] + ", " + value + ");\n";
+    var code = "servoWrite(" + PINS[pin] + ", " + angle + ");\n";
     return code;
 };
 

@@ -17,10 +17,10 @@ SimmerAPI.prototype.gpioWrite = function(pinNumber, value) {
     }
 };
 
-SimmerAPI.prototype.gpioServoWrite = function(pinNumber, value) {
-    console.log(`SimmerAPI.gpioServoWrite(${pinNumber}, ${value})`);
+SimmerAPI.prototype.servoWrite = function(pinNumber, angle) {
+    console.log(`SimmerAPI.servoWrite(${pinNumber}, ${angle})`);
     if (this.board.eventBus) {
-        this.board.eventBus.fireEvent(new com.joebotics.simmer.client.event.GpioEvent(pinNumber, value))
+        this.board.eventBus.fireEvent(new com.joebotics.simmer.client.event.GpioEvent(pinNumber, angle))
     }
 };
 
