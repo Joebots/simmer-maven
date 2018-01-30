@@ -57,7 +57,9 @@ Blockly.Blocks["pin_write"] = {
     init : function() {
         this.setHelpUrl("");
         this.setColour(GPIO_HUE);
-        var arr = Object.keys(PINS).map(function(key) {
+        var arr = Object.keys(PINS).filter(function (key) {
+            return !key.startsWith("ANALOG");
+        }).map(function(key) {
             return [ key, key ];
         });
         this.appendValueInput("VALUE", "pin_value")
@@ -84,6 +86,51 @@ Blockly.JavaScript["pin_write"] = function(block) {
             Blockly.JavaScript.ORDER_ATOMIC)
             || "0";
     var code = "gpioWrite(" + PINS[pin] + ", " + value + ");\n";
+    return code;
+};
+
+
+Blockly.Blocks["servo_write"] = {
+    /**
+     * Description.
+     *
+     * @this Blockly.Block
+     */
+    init : function() {
+        this.setHelpUrl("");
+        this.setColour(GPIO_HUE);
+        var arr = Object.keys(PINS).filter(function (key) {
+            return !key.startsWith("ANALOG");
+        }).map(function(key) {
+            return [ key, key ];
+        });
+        this.appendValueInput("VALUE", "Number")
+            .appendField("turn GPIO")
+            .appendField(new Blockly.FieldDropdown(arr), "PIN")
+            .appendField("servo to")
+            .setCheck("Number");
+        this.appendDummyInput()
+            .appendField("degrees");
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setTooltip("");
+    }
+};
+
+/**
+ * Description.
+ *
+ * @param {!Blockly.Block}
+ *            block Block to generate the code from.
+ * @return {string} Completed code.
+ */
+Blockly.JavaScript["servo_write"] = function(block) {
+    var pin = block.getFieldValue("PIN");
+    var value = Blockly.JavaScript.valueToCode(block, "VALUE",
+            Blockly.JavaScript.ORDER_ATOMIC)
+        || "0";
+    var code = "gpioServoWrite(" + PINS[pin] + ", " + value + ");\n";
     return code;
 };
 
