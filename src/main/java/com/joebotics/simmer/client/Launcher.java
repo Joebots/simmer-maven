@@ -51,35 +51,42 @@ package com.joebotics.simmer.client;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.Window;
+import com.joebotics.simmer.client.integration.JSEventBusProxy;
+import com.joebotics.simmer.client.integration.SimmerEvents;
 
 import java.util.logging.Logger;
 
 public class Launcher implements EntryPoint {
 
-	public static Simmer mysim;
+    public static Simmer mysim;
 
-	public static final String versionString = "1.0.1";
-	private static final Logger lager = Logger.getLogger(Launcher.class.getName());
+    public static final String versionString = "1.0.1";
+    private static final Logger lager = Logger.getLogger(Launcher.class.getName());
 
-	public void onModuleLoad() {
-		mysim = Simmer.getInstance(); //new Simmer();
-		mysim.init();
-		mysim.getFileOps().dumpCircuit();
+    public void onModuleLoad() {
+        mysim = Simmer.getInstance(); // new Simmer();
+        mysim.init();
+        mysim.getFileOps().dumpCircuit();
 
-		Window.addResizeHandler(new ResizeHandler() {
+        Window.addResizeHandler(new ResizeHandler() {
 
-			public void onResize(ResizeEvent event) {
-				mysim.setCanvasSize();
-				mysim.getSidePanel().setiFrameHeight();
+            public void onResize(ResizeEvent event) {
+                mysim.setCanvasSize();
+                mysim.getSidePanel().setiFrameHeight();
 
-			}
-		});
+            }
+        });
 
-		mysim.updateCircuit();
+        mysim.updateCircuit();
 
-		lager.info(mysim.getFileOps().dumpCircuit());
+        JSONObject data = new JSONObject();
+        data.put("version", new JSONString(versionString));
+        JSEventBusProxy.fireEvent(SimmerEvents.SYSTEM_LOADED, data);
 
-	}
+        lager.info(mysim.getFileOps().dumpCircuit());
+    }
 
 }

@@ -19,12 +19,13 @@
 
 package com.joebotics.simmer.client.elcomp;
 
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 //import java.awt.*;
 //import java.util.StringTokenizer;
@@ -101,7 +102,8 @@ public class Switch2Elm extends SwitchElm {
 	public EditInfo getEditInfo(int n) {
 		if (n == 1) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Center Off", hasCenterOff());
+			ei.checkbox = new MaterialCheckBox("Center Off");
+            ei.checkbox.setValue(hasCenterOff());
 			return ei;
 		}
 		return super.getEditInfo(n);
@@ -131,7 +133,7 @@ public class Switch2Elm extends SwitchElm {
 	public void setEditValue(int n, EditInfo ei) {
 		if (n == 1) {
 			setFlags(getFlags() & ~FLAG_CENTER_OFF);
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(getFlags() | FLAG_CENTER_OFF);
 			if (hasCenterOff())
 				setMomentary(false);

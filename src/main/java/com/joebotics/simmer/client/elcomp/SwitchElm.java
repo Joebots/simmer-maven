@@ -19,12 +19,13 @@
 
 package com.joebotics.simmer.client.elcomp;
 
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 
 // import java.awt.*;
@@ -104,7 +105,8 @@ public class SwitchElm extends AbstractCircuitElement {
 	public EditInfo getEditInfo(int n) {
 		if (n == 0) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Momentary Switch", momentary);
+			ei.checkbox = new MaterialCheckBox("Momentary Switch");
+            ei.checkbox.setValue(momentary);
 			return ei;
 		}
 		return null;
@@ -141,7 +143,7 @@ public class SwitchElm extends AbstractCircuitElement {
 
 	public void setEditValue(int n, EditInfo ei) {
 		if (n == 0)
-			momentary = ei.checkbox.getState();
+			momentary = ei.checkbox.getValue();
 	}
 
 	public void setPoints() {

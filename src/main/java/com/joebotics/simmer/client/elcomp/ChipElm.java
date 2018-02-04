@@ -20,14 +20,16 @@
 package com.joebotics.simmer.client.elcomp;
 
 import com.joebotics.simmer.client.elcomp.chips.DecadeElm;
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Font;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.GraphicsUtil;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 public abstract class ChipElm extends AbstractCircuitElement {
 	private int bits;
@@ -36,10 +38,9 @@ public abstract class ChipElm extends AbstractCircuitElement {
 	private int cspc;
 	private int cspc2;
 
-
 	private boolean lastClock;
 
-	int rectPointsX[], rectPointsY[];
+	protected int rectPointsX[], rectPointsY[];
 
 	private int sizeX;
 	private int sizeY;
@@ -49,9 +50,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 			bits = (this instanceof DecadeElm) ? 10 : 4;
 		setNoDiagonal(true);
 		setupPins();
-
-		if( sim.getMainMenuBar() != null )
-			setSize(sim.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem() != null && sim.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().getState() ? 1 : 2);
+		setSize(sim.getOptions().getBoolean(OptionKey.SMALL_GRID) ? 1 : 2);
 	}
 	
 	public ChipElm(int xa, int ya, int xb, int yb, int f, StringTokenizer st) {
@@ -88,13 +87,13 @@ public abstract class ChipElm extends AbstractCircuitElement {
 	}
 
 	public void drag(int xx, int yy) {
-		yy = sim.getSimmerController().snapGrid(yy);
+		yy = sim.snapGrid(yy);
 		if (xx < getX1()) {
 			xx = getX1();
 			yy = getY1();
 		} else {
 			setY1(setY2(yy));
-			setX2(sim.getSimmerController().snapGrid(xx));
+			setX2(sim.snapGrid(xx));
 		}
 		setPoints();
 	}
@@ -106,7 +105,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 	public void drawChip(Graphics g) {
 		int i;
 		Font oldfont = g.getFont();
-		Font f = new Font("SansSerif", 0, 10 * csize);
+		Font f = new Font("SansSerif", 0, 6 * csize);
 		g.setFont(f);
 		// FontMetrics fm = g.getFontMetrics();
 		for (i = 0; i != getPostCount(); i++) {
@@ -118,8 +117,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 			p.setCurcount(updateDotCount(p.getCurrent(), p.getCurcount()));
 			drawDots(g, b, a, p.getCurcount());
 			if (p.isBubble()) {
-				g.setColor(sim.getMainMenuBar().getOptionsMenuBar().getBackgroundCheckItem().getState() ? Color.white
-						: Color.black);
+				g.setColor(sim.getOptions().getBoolean(OptionKey.WHITE_BACKGROUND) ? Color.white : Color.black);
 				GraphicsUtil.drawThickCircle(g, p.getBubbleX(), p.getBubbleY(), 1);
 				g.setColor(lightGrayColor);
 				GraphicsUtil.drawThickCircle(g, p.getBubbleX(), p.getBubbleY(), 3);
@@ -127,7 +125,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 			g.setColor(whiteColor);
 			// int sw = fm.stringWidth(p.text);
 			int sw = (int) g.getContext().measureText(p.getText()).getWidth();
-			int asc = (int) g.getCurrentFontSize();
+			int asc = g.getCurrentFontSize();
 			g.drawString(p.getText(), p.getTextloc().getX() - sw / 2, p.getTextloc().getY() + asc / 2);
 			if (p.isLineOver()) {
 				int ya = p.getTextloc().getY() - asc / 2;
@@ -141,6 +139,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 		for (i = 0; i != getPostCount(); i++)
 			drawPost(g, getPins()[i].getPost().getX(), getPins()[i].getPost().getY(), getNodes()[i]);
 		g.setFont(oldfont);
+		drawChipName(g);
 	}
 
 	public String dump() {
@@ -170,12 +169,14 @@ public abstract class ChipElm extends AbstractCircuitElement {
 	public EditInfo getEditInfo(int n) {
 		if (n == 0) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Flip X", (getFlags() & FLAG_FLIP_X) != 0);
+			ei.checkbox = new MaterialCheckBox("Flip X");
+            ei.checkbox.setValue((getFlags() & FLAG_FLIP_X) != 0);
 			return ei;
 		}
 		if (n == 1) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Flip Y", (getFlags() & FLAG_FLIP_Y) != 0);
+			ei.checkbox = new MaterialCheckBox("Flip Y");
+            ei.checkbox.setValue((getFlags() & FLAG_FLIP_Y) != 0);
 			return ei;
 		}
 		return null;
@@ -201,8 +202,6 @@ public abstract class ChipElm extends AbstractCircuitElement {
 		}
 	}
 
-
-
 	abstract public int getVoltageSourceCount(); // output count
 
 	public boolean needsBits() {
@@ -221,14 +220,14 @@ public abstract class ChipElm extends AbstractCircuitElement {
 
 	public void setEditValue(int n, EditInfo ei) {
 		if (n == 0) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(getFlags() | FLAG_FLIP_X);
 			else
 				setFlags(getFlags() & ~FLAG_FLIP_X);
 			setPoints();
 		}
 		if (n == 1) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(getFlags() | FLAG_FLIP_Y);
 			else
 				setFlags(getFlags() & ~FLAG_FLIP_Y);
@@ -287,7 +286,7 @@ public abstract class ChipElm extends AbstractCircuitElement {
 		int ya = py + getCspc2() * dy * pin.getNumber() + sy;
 		pin.setPost(new Point(xa + dax * getCspc2(), ya + day * getCspc2()));
 		pin.setStub(new Point(xa + dax * getCspc(), ya + day * getCspc()));
-		pin.setTextloc(new Point(xa, ya));
+		pin.setTextloc(new Point(xa + dax * getCspc() / 2, ya));
 		if (pin.isBubble()) {
 			pin.setBubbleX(xa + dax * 10 * csize);
 			pin.setBubbleY(ya + day * 10 * csize);
@@ -310,6 +309,25 @@ public abstract class ChipElm extends AbstractCircuitElement {
 		cspc2 = cspc * 2;
 		setFlags(getFlags() & ~FLAG_SMALL);
 		setFlags(getFlags() | ((s == 1) ? FLAG_SMALL : 0));
+	}
+
+	private void drawChipName(Graphics g) {
+		String s = getChipName();
+		if (s == null)
+			return;
+		g.setFont(unitsFont);
+		int w = (int) g.getContext().measureText(s).getWidth();
+		g.setColor(whiteColor);
+		int ya = (int) g.getCurrentFontSize() / 2;
+		int xc = rectPointsX[0] + (rectPointsX[1] - rectPointsX[0]) / 2, yc = rectPointsY[0];
+		g.drawString(s, xc - w / 2, yc - ya - 2);
+	}
+
+	public Point getCenterPoint() {
+		Point center = new Point();
+		center.setX(rectPointsX[0] + (rectPointsX[1] - rectPointsX[0]) / 2);
+		center.setY(rectPointsY[0] + (rectPointsY[2] - rectPointsY[0]) / 2);
+		return center;
 	}
 
 	public int getBits() {

@@ -22,9 +22,10 @@ package com.joebotics.simmer.client.elcomp.chips;
 import com.joebotics.simmer.client.elcomp.ChipElm;
 import com.joebotics.simmer.client.elcomp.Pin;
 import com.joebotics.simmer.client.elcomp.Side;
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 //import java.awt.*;
 //import java.util.StringTokenizer;
@@ -90,51 +91,60 @@ public class SeqGenElm extends ChipElm {
 		// My code
 		if (n == 0) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Bit 0 set", (data & 1) != 0);
+			ei.checkbox = new MaterialCheckBox("Bit 0 set");
+            ei.checkbox.setValue((data & 1) != 0);
 			return ei;
 		}
 
 		if (n == 1) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Bit 1 set", (data & 2) != 0);
+			ei.checkbox = new MaterialCheckBox("Bit 1 set");
+            ei.checkbox.setValue((data & 2) != 0);
 			return ei;
 		}
 		if (n == 2) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Bit 2 set", (data & 4) != 0);
+			ei.checkbox = new MaterialCheckBox("Bit 2 set");
+            ei.checkbox.setValue((data & 4) != 0);
 			return ei;
 		}
 		if (n == 3) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Bit 3 set", (data & 8) != 0);
+			ei.checkbox = new MaterialCheckBox("Bit 3 set");
+            ei.checkbox.setValue((data & 8) != 0);
 			return ei;
 		}
 
 		if (n == 4) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Bit 4 set", (data & 16) != 0);
+			ei.checkbox = new MaterialCheckBox("Bit 4 set");
+            ei.checkbox.setValue((data & 16) != 0);
 			return ei;
 		}
 		if (n == 5) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Bit 5 set", (data & 32) != 0);
+			ei.checkbox = new MaterialCheckBox("Bit 5 set");
+            ei.checkbox.setValue((data & 32) != 0);
 			return ei;
 		}
 
 		if (n == 6) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Bit 6 set", (data & 64) != 0);
+			ei.checkbox = new MaterialCheckBox("Bit 6 set");
+            ei.checkbox.setValue((data & 64) != 0);
 			return ei;
 		}
 
 		if (n == 7) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Bit 7 set", (data & 128) != 0);
+			ei.checkbox = new MaterialCheckBox("Bit 7 set");
+            ei.checkbox.setValue((data & 128) != 0);
 			return ei;
 		}
 		if (n == 8) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("One shot", oneshot);
+			ei.checkbox = new MaterialCheckBox("One shot");
+            ei.checkbox.setValue(oneshot);
 			return ei;
 		}
 		return null;
@@ -162,63 +172,63 @@ public class SeqGenElm extends ChipElm {
 
 	public void setEditValue(int n, EditInfo ei) {
 		if (n == 0) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				data |= 1;
 			else
 				data &= ~1;
 			setPoints();
 		}
 		if (n == 1) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				data |= 2;
 			else
 				data &= ~2;
 			setPoints();
 		}
 		if (n == 2) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				data |= 4;
 			else
 				data &= ~4;
 			setPoints();
 		}
 		if (n == 3) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				data |= 8;
 			else
 				data &= ~8;
 			setPoints();
 		}
 		if (n == 4) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				data |= 16;
 			else
 				data &= ~16;
 			setPoints();
 		}
 		if (n == 5) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				data |= 32;
 			else
 				data &= ~32;
 			setPoints();
 		}
 		if (n == 6) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				data |= 64;
 			else
 				data &= ~64;
 			setPoints();
 		}
 		if (n == 7) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				data |= 128;
 			else
 				data &= ~128;
 			setPoints();
 		}
 		if (n == 8) {
-			if (ei.checkbox.getState()) {
+			if (ei.checkbox.getValue()) {
 				oneshot = true;
 				position = 8;
 			} else {

@@ -1,12 +1,10 @@
 package com.joebotics.simmer.client.gui.menu;
 
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.joebotics.simmer.client.Simmer;
 import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
-import com.joebotics.simmer.client.gui.dialog.EditDialog;
 import com.joebotics.simmer.client.gui.Editable;
 import com.joebotics.simmer.client.gui.util.MenuCommand;
 import com.joebotics.simmer.client.gui.util.Rectangle;
@@ -183,15 +181,8 @@ public class EditMenu extends MenuBar{
     public void doEdit(Editable eable) {
         doSelectNone();
         pushUndo();
-
-        if (simmer.getEditDialog() != null) {
-            // requestFocus();
-            simmer.getEditDialog().setVisible(false);
-            simmer.setEditDialog(null);
-        }
-
-        simmer.setEditDialog(new EditDialog(eable, simmer));
-        simmer.getEditDialog().show();
+        simmer.getEditDialog().setContent(eable);
+        simmer.getEditDialog().open();
     }
 
     public void doPaste() {
@@ -230,9 +221,9 @@ public class EditMenu extends MenuBar{
             int spacew = simmer.getCircuitArea().width - oldbb.width - newbb.width;
             int spaceh = simmer.getCircuitArea().height - oldbb.height - newbb.height;
             if (spacew > spaceh)
-                dx = simmer.getSimmerController().snapGrid(oldbb.x + oldbb.width - newbb.x + simmer.getGridSize());
+                dx = simmer.snapGrid(oldbb.x + oldbb.width - newbb.x + simmer.getGridSize());
             else
-                dy = simmer.getSimmerController().snapGrid(oldbb.y + oldbb.height - newbb.y + simmer.getGridSize());
+                dy = simmer.snapGrid(oldbb.y + oldbb.height - newbb.y + simmer.getGridSize());
             for (i = oldsz; i != simmer.getElmList().size(); i++) {
                 AbstractCircuitElement ce = simmer.getElm(i);
                 ce.move(dx, dy);

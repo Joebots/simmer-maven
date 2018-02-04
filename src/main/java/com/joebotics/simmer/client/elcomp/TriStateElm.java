@@ -71,8 +71,8 @@ public class TriStateElm extends AbstractCircuitElement {
 	}
 
 	public void drag(int xx, int yy) {
-		xx = sim.getSimmerController().snapGrid(xx);
-		yy = sim.getSimmerController().snapGrid(yy);
+		xx = sim.snapGrid(xx);
+		yy = sim.snapGrid(yy);
 		if (abs(getX1() - xx) < abs(getY1() - yy))
 			xx = getX1();
 		else

@@ -33,6 +33,7 @@ import com.joebotics.simmer.client.gui.Scrollbar;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.GraphicsUtil;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 public class PotElm extends AbstractCircuitElement implements Command, MouseWheelHandler {
@@ -93,7 +94,7 @@ public class PotElm extends AbstractCircuitElement implements Command, MouseWhee
 		int segments = 16;
 		int i;
 		int ox = 0;
-		int hs = sim.getMainMenuBar().getOptionsMenuBar().getEuroResistorCheckItem().getState() ? 6 : 8;
+		int hs = sim.getOptions().getBoolean(OptionKey.EURO_RESISTORS) ? 6 : 8;
 		double v1 = getVolts()[0];
 		double v2 = getVolts()[1];
 		double v3 = getVolts()[2];
@@ -102,7 +103,7 @@ public class PotElm extends AbstractCircuitElement implements Command, MouseWhee
 		setPowerColor(g, true);
 		double segf = 1. / segments;
 		int divide = (int) (segments * position);
-		if (!sim.getMainMenuBar().getOptionsMenuBar().getEuroResistorCheckItem().getState()) {
+		if (!sim.getOptions().getBoolean(OptionKey.EURO_RESISTORS)) {
 			// draw zigzag
 			for (i = 0; i != segments; i++) {
 				int nx = 0;
@@ -223,14 +224,14 @@ public class PotElm extends AbstractCircuitElement implements Command, MouseWhee
 		super.setPoints();
 		int offset = 0;
 		if (abs(getDx()) > abs(getDy())) {
-			setDx(sim.getSimmerController().snapGrid(getDx() / 2) * 2);
+			setDx(sim.snapGrid(getDx() / 2) * 2);
 			setX2(getPoint1().getX() + getDx());
 			getPoint2().setX(getX2());
 //			getPoint2().x = setX2(getPoint1().getX() + getDx());
 			offset = (getDx() < 0) ? getDy() : -getDy();
 			getPoint2().setY(getPoint1().getY());
 		} else {
-			setDy(sim.getSimmerController().snapGrid(getDy() / 2) * 2);
+			setDy(sim.snapGrid(getDy() / 2) * 2);
 			setY2(getPoint1().getY() + getDy());
 			getPoint2().setY(getY2());
 //			getPoint2().y = setY2(getPoint1().getY() + getDy());

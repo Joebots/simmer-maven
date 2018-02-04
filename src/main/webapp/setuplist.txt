@@ -1,4 +1,15 @@
 ### setuplist.txt first line must be a comment
++Demo
+demo-powering-an-led.txt Powering an LED
+demo-capacitor-test.txt Capacitor Test
+demo-blinking-led.txt Blinking LED
+demo-touch-sensor.txt Touch Sensor
+demo-blinking-led-with-blockly.txt Blinking LED with Blockly
+demo-stop-light-with-blockly.txt Stop Light with Blockly
+demo-rpm-counter-with-blockly.txt Magnetic RPM Counter
+demo-temperature-sensor-LED-with-blockly.txt Temperature Sensor Controlling RGB LED
+demo-robotic-arm-blockly.txt Robotic Arm
+-
 +Basics
 ohms.txt Ohm's Law
 resistors.txt Resistors

@@ -23,11 +23,12 @@ package com.joebotics.simmer.client.elcomp;
 //import java.util.StringTokenizer;
 import java.util.Vector;
 
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Font;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 public class TextElm extends GraphicElm {
 	final int FLAG_BAR = 2;
@@ -116,13 +117,14 @@ public class TextElm extends GraphicElm {
 			return new EditInfo("Size", size, 5, 100);
 		if (n == 2) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Center", (getFlags() & FLAG_CENTER) != 0);
+			ei.checkbox = new MaterialCheckBox("Center");
+            ei.checkbox.setValue((getFlags() & FLAG_CENTER) != 0);
 			return ei;
 		}
 		if (n == 3) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Draw Bar On Top",
-					(getFlags() & FLAG_BAR) != 0);
+			ei.checkbox = new MaterialCheckBox("Draw Bar On Top");
+            ei.checkbox.setValue((getFlags() & FLAG_BAR) != 0);
 			return ei;
 		}
 		return null;
@@ -149,13 +151,13 @@ public class TextElm extends GraphicElm {
 		if (n == 1)
 			size = (int) ei.value;
 		if (n == 3) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(getFlags() | FLAG_BAR);
 			else
 				setFlags(getFlags() & ~FLAG_BAR);
 		}
 		if (n == 2) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(getFlags() | FLAG_CENTER);
 			else
 				setFlags(getFlags() & ~FLAG_CENTER);

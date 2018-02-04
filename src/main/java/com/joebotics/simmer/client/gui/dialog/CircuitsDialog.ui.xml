@@ -1,0 +1,26 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui"
+    xmlns:m="urn:import:gwt.material.design.client.ui" xmlns:ma="urn:import:gwt.material.design.addins.client">
+    <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N' />
+    <ui:style>
+    </ui:style>
+    <ma:window.MaterialWindow ui:field="modal" title="{i18n.Circuits}" toolbarColor="GREEN"
+        styleName="shifted-window">
+        <m:MaterialRow>
+            <m:MaterialColumn grid="s11">
+                <ma:tree.MaterialTree ui:field="circuitsTree" fontSize="1.2em">
+                </ma:tree.MaterialTree>
+            </m:MaterialColumn>
+            <m:MaterialColumn grid="s1">
+                <m:MaterialButton ui:field="btnCollapse" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                    tooltip="Collapse" iconType="VERTICAL_ALIGN_CENTER" />
+                <m:MaterialButton ui:field="btnExpand" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                    tooltip="Expand" iconType="ZOOM_OUT_MAP" />
+                <m:MaterialLink ui:field="btnImport" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                    tooltip="Open" iconType="FILE_UPLOAD" />
+                <m:MaterialLink ui:field="btnExport" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                    tooltip="Save" iconType="FILE_DOWNLOAD" />
+            </m:MaterialColumn>
+        </m:MaterialRow>
+    </ma:window.MaterialWindow>
+</ui:UiBinder>

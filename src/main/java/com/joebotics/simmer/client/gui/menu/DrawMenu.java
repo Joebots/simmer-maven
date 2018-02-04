@@ -13,6 +13,7 @@ import com.joebotics.simmer.client.util.MessageI18N;
 import java.util.Vector;
 
 /**
+ * @deprecated Functionality is moved to the {@code SchematicDialog} class
  * Created by joe on 7/18/16.
  */
 public class DrawMenu extends MenuBar {

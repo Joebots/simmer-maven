@@ -27,6 +27,8 @@ import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
+import gwt.material.design.client.ui.MaterialCheckBox;
+
 
 //import java.awt.*;
 //import java.util.StringTokenizer;
@@ -82,7 +84,8 @@ public class ProbeElm extends AbstractCircuitElement {
 	public EditInfo getEditInfo(int n) {
 		if (n == 0) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Show Voltage", mustShowVoltage());
+			ei.checkbox = new MaterialCheckBox("Show Voltage");
+            ei.checkbox.setValue(mustShowVoltage());
 			return ei;
 		}
 		return null;
@@ -99,7 +102,7 @@ public class ProbeElm extends AbstractCircuitElement {
 
 	public void setEditValue(int n, EditInfo ei) {
 		if (n == 0) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(FLAG_SHOWVOLTAGE);
 			else
 				setFlags(getFlags() & ~FLAG_SHOWVOLTAGE);

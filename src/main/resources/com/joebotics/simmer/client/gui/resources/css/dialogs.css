@@ -1,0 +1,17 @@
+@CHARSET "UTF-8";
+
+.shifted-window {
+    margin: 0 !important;
+    top: 0 !important;
+    width: calc(100% - 450px) !important;
+    height: 100% !important;
+}
+
+.shifted-dialog {
+    left: -418px !important;
+    width: calc(80% - 450px) !important;
+}
+
+.fixed-height {
+    height: 50% !important;
+}

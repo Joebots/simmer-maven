@@ -19,11 +19,12 @@
 
 package com.joebotics.simmer.client.elcomp;
 
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 
 //import java.awt.*;
@@ -62,12 +63,14 @@ public class WireElm extends AbstractCircuitElement {
 	public EditInfo getEditInfo(int n) {
 		if (n == 0) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Show Current", mustShowCurrent());
+			ei.checkbox = new MaterialCheckBox("Show Current");
+            ei.checkbox.setValue(mustShowCurrent());
 			return ei;
 		}
 		if (n == 1) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Show Voltage", mustShowVoltage());
+			ei.checkbox = new MaterialCheckBox("Show Voltage");
+            ei.checkbox.setValue(mustShowVoltage());
 			return ei;
 		}
 		return null;
@@ -109,13 +112,13 @@ public class WireElm extends AbstractCircuitElement {
 
 	public void setEditValue(int n, EditInfo ei) {
 		if (n == 0) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(FLAG_SHOWCURRENT);
 			else
 				setFlags(getFlags() & ~FLAG_SHOWCURRENT);
 		}
 		if (n == 1) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(FLAG_SHOWVOLTAGE);
 			else
 				setFlags(getFlags() & ~FLAG_SHOWVOLTAGE);

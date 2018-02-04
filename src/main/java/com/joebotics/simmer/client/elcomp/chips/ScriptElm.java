@@ -1,16 +1,16 @@
 package com.joebotics.simmer.client.elcomp.chips;
 
-import com.google.gwt.core.shared.GWT;
-import com.google.gwt.user.client.ui.TextArea;
 import com.joebotics.simmer.client.elcomp.ChipElm;
 import com.joebotics.simmer.client.elcomp.Pin;
 import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Graphics;
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.util.Base64Util;
 import com.joebotics.simmer.client.util.ScriptExecutor;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
+import gwt.material.design.client.ui.MaterialTextArea;
 
 /**
  * Created by joe on 8/14/16.
@@ -83,11 +83,13 @@ public class ScriptElm extends ChipElm {
 		switch (n) {
 		case 0:
 			ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Flip X", (getFlags() & FLAG_FLIP_X) != 0);
+			ei.checkbox = new MaterialCheckBox("Flip X");
+            ei.checkbox.setValue((getFlags() & FLAG_FLIP_X) != 0);
 			return ei;
 		case 1:
 			ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Flip Y", (getFlags() & FLAG_FLIP_Y) != 0);
+			ei.checkbox = new MaterialCheckBox("Flip Y");
+            ei.checkbox.setValue((getFlags() & FLAG_FLIP_Y) != 0);
 			return ei;
 		case 2:
 			ei = new EditInfo("# of Pins", pinsCount, 1, 8);
@@ -95,7 +97,7 @@ public class ScriptElm extends ChipElm {
 			return ei;
 		case 3:
 			ei = new EditInfo("Script");
-			ei.texta = new TextArea();
+			ei.texta = new MaterialTextArea();
 			ei.texta.setText(scriptlet);
 			ei.setDimensionless();
 			return ei;
@@ -106,13 +108,13 @@ public class ScriptElm extends ChipElm {
 	public void setEditValue(int n, EditInfo ei) {
 		switch (n) {
 		case 0:
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(getFlags() | FLAG_FLIP_X);
 			else
 				setFlags(getFlags() & ~FLAG_FLIP_X);
 			break;
 		case 1:
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(getFlags() | FLAG_FLIP_Y);
 			else
 				setFlags(getFlags() & ~FLAG_FLIP_Y);

@@ -39,6 +39,7 @@ import com.joebotics.simmer.client.gui.menu.ScopePopupMenu;
 import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Rectangle;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 public class Scope {
@@ -117,7 +118,7 @@ public class Scope {
 
 	void clear2dView() {
 		if (imageContext != null) {
-			if (simmer.getMainMenuBar().getOptionsMenuBar().getBackgroundCheckItem().getState()) {
+			if (simmer.getOptions().getBoolean(OptionKey.WHITE_BACKGROUND)) {
 				imageContext.setFillStyle("#ffffff");
 			} else {
 				imageContext.setFillStyle("#000000");
@@ -472,7 +473,7 @@ public class Scope {
 		if (alphadiv > 2) {
 			alphadiv = 0;
 			imageContext.setGlobalAlpha(0.01);
-			if (simmer.getMainMenuBar().getOptionsMenuBar().getBackgroundCheckItem().getState()) {
+			if (simmer.getOptions().getBoolean(OptionKey.WHITE_BACKGROUND)) {
 				imageContext.setFillStyle("#ffffff");
 			} else {
 				imageContext.setFillStyle("#000000");
@@ -504,7 +505,7 @@ public class Scope {
 			draw_ox = x2;
 			draw_oy = y2;
 		}
-		if (simmer.getMainMenuBar().getOptionsMenuBar().getBackgroundCheckItem().getState()) {
+		if (simmer.getOptions().getBoolean(OptionKey.WHITE_BACKGROUND)) {
 			imageContext.setStrokeStyle("#000000");
 		} else {
 			imageContext.setStrokeStyle("#ffffff");

@@ -1,23 +1,28 @@
 package com.joebotics.simmer.client;
 
+import java.util.logging.Logger;
+
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.http.client.*;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.MenuBar;
-import com.google.gwt.user.client.ui.MenuItem;
 import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
+import com.joebotics.simmer.client.gui.Bgpio;
+import com.joebotics.simmer.client.gui.Scope;
 import com.joebotics.simmer.client.gui.dialog.ExportAsLocalFileDialog;
 import com.joebotics.simmer.client.gui.dialog.ExportAsTextDialog;
 import com.joebotics.simmer.client.gui.dialog.ExportAsUrlDialog;
-import com.joebotics.simmer.client.gui.Scope;
 import com.joebotics.simmer.client.gui.util.LoadFile;
-import com.joebotics.simmer.client.gui.util.MenuCommand;
+import com.joebotics.simmer.client.util.Base64Util;
 import com.joebotics.simmer.client.util.CircuitElementFactory;
 import com.joebotics.simmer.client.util.HintTypeEnum;
 import com.joebotics.simmer.client.util.MessageI18N;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
-
-import java.util.logging.Logger;
 
 public class FileOps {
     private Simmer simmer;
@@ -26,7 +31,12 @@ public class FileOps {
 
     public FileOps(Simmer simmer) {
         this.simmer = simmer;
-    }// this is the file generation logic!  :)
+    }// this is the file generation logic! :)
+
+    public String getCircuitUrl() {
+        String dataAsBase64 = Base64Util.encodeString(dumpCircuit());
+        return "data:application/octet-stream;name=document.pdf;base64," + dataAsBase64;
+    }
 
     public void doExportAsLocalFile() {
         String dump = dumpCircuit();
@@ -51,13 +61,15 @@ public class FileOps {
 
     public String dumpCircuit() {
         int i;
-        int f = (simmer.getMainMenuBar().getOptionsMenuBar().getDotsCheckItem().getState()) ? 1 : 0;
-        f |= (simmer.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().getState()) ? 2 : 0;
-        f |= (simmer.getMainMenuBar().getOptionsMenuBar().getVoltsCheckItem().getState()) ? 0 : 4;
-        f |= (simmer.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState()) ? 8 : 0;
-        f |= (simmer.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().getState()) ? 0 : 16;
+        int f = (simmer.getOptions().getBoolean(OptionKey.SHOW_CURRENT)) ? 1 : 0;
+        f |= (simmer.getOptions().getBoolean(OptionKey.SMALL_GRID)) ? 2 : 0;
+        f |= (simmer.getOptions().getBoolean(OptionKey.SHOW_VOLTAGE)) ? 0 : 4;
+        f |= (simmer.getOptions().getBoolean(OptionKey.SHOW_POWER)) ? 8 : 0;
+        f |= (simmer.getOptions().getBoolean(OptionKey.SHOW_VALUES)) ? 0 : 16;
         // 32 = linear scale in afilter
-        String dump = "$ " + f + " " + simmer.getTimeStep() + " " + simmer.getIterCount() + " " + simmer.getSidePanel().getCurrentBar().getValue() + " " + AbstractCircuitElement.voltageRange + " " + simmer.getSidePanel().getPowerBar().getValue() + "\n";
+        String dump = "$ " + f + " " + simmer.getTimeStep() + " " + simmer.getIterCount() + " "
+                + simmer.getOptions().getInteger(OptionKey.CURRENT_SPEED) + " " + AbstractCircuitElement.voltageRange
+                + " " + simmer.getSidePanel().getPowerBar().getValue() + "\n";
 
         for (i = 0; i != simmer.getElmList().size(); i++)
             dump += simmer.getElm(i).dump() + "\n";
@@ -69,19 +81,21 @@ public class FileOps {
         }
         if (simmer.getHintType() != HintTypeEnum.HintType.HINT_UNSET)
             dump += "h " + simmer.getHintType() + " " + simmer.getHintItem1() + " " + simmer.getHintItem2() + "\n";
+        // Blockly blocks
+        if (simmer.getBlocklyXml() != null) {
+            dump += "& " + Base64Util.encodeString(simmer.getBlocklyXml());
+        }
         return dump;
     }
 
     protected void processSetupList(byte b[], int len, final boolean openDefault) {
-        MenuBar currentMenuBar;
-        MenuBar stack[] = new MenuBar[6];
+        TreeNode<CircuitLinkInfo> stack[] = new TreeNode[6];
         int stackptr = 0;
-        currentMenuBar = new MenuBar(true);
-        currentMenuBar.setAutoOpen(true);
-        simmer.getMainMenuBar().addItem(MessageI18N.getMessage("Circuits"), currentMenuBar);
-        stack[stackptr++] = currentMenuBar;
+        TreeNode<CircuitLinkInfo> circuitsTree = new TreeNode(null);
+        TreeNode<CircuitLinkInfo> currentNode = circuitsTree;
+        stack[stackptr++] = currentNode;
         int p;
-        for (p = 0; p < len; ) {
+        for (p = 0; p < len;) {
             int l;
             for (l = 0; l != len - p; l++)
                 if (b[l + p] == '\n') {
@@ -89,17 +103,18 @@ public class FileOps {
                     break;
                 }
             String line = new String(b, p, l - 1);
-            if (line.charAt(0) == '#')
-                ;
-            else if (line.charAt(0) == '+') {
-                // MenuBar n = new Menu(line.substring(1));
-                MenuBar n = new MenuBar(true);
-                n.setAutoOpen(true);
-                currentMenuBar.addItem(line.substring(1), n);
-                currentMenuBar = stack[stackptr++] = n;
-            } else if (line.charAt(0) == '-') {
-                currentMenuBar = stack[--stackptr - 1];
-            } else {
+            switch (line.charAt(0)) {
+            case '#':
+                // Commented out record
+                break;
+            case '+':
+                TreeNode n = currentNode.addChild(new CircuitLinkInfo(line.substring(1)));
+                currentNode = stack[stackptr++] = n;
+                break;
+            case '-':
+                currentNode = stack[--stackptr - 1];
+                break;
+            default:
                 int i = line.indexOf(' ');
                 if (i > 0) {
                     String title = line.substring(i + 1);
@@ -107,8 +122,7 @@ public class FileOps {
                     if (line.charAt(0) == '>')
                         first = true;
                     String file = line.substring(first ? 1 : 0, i);
-                    // menu.add(getMenuItem(title, MessageI18N.getMessage("setup_") + file));
-                    currentMenuBar.addItem(new MenuItem(title, new MenuCommand("circuits", "setup " + file)));
+                    currentNode.addChild(new CircuitLinkInfo(title, file));
                     if (first && simmer.getStartCircuit() == null) {
                         simmer.setStartCircuit(file);
                         simmer.setStartLabel(title);
@@ -119,6 +133,7 @@ public class FileOps {
             }
             p += l;
         }
+        simmer.setCircuitsTree(circuitsTree);
     }
 
     public void readHint(StringTokenizer st) {
@@ -130,17 +145,17 @@ public class FileOps {
     public void readOptions(StringTokenizer st) {
         int flags = new Integer(st.nextToken()).intValue();
         // IES - remove inteaction
-        simmer.getMainMenuBar().getOptionsMenuBar().getDotsCheckItem().setState((flags & 1) != 0);
-        simmer.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().setState((flags & 2) != 0);
-        simmer.getMainMenuBar().getOptionsMenuBar().getVoltsCheckItem().setState((flags & 4) == 0);
-        simmer.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().setState((flags & 8) == 8);
-        simmer.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().setState((flags & 16) == 0);
+        simmer.getOptions().setValue(OptionKey.SHOW_CURRENT, (flags & 1) != 0);
+        simmer.getOptions().setValue(OptionKey.SMALL_GRID, (flags & 2) != 0);
+        simmer.getOptions().setValue(OptionKey.SHOW_VOLTAGE, (flags & 4) == 0);
+        simmer.getOptions().setValue(OptionKey.SHOW_POWER, (flags & 8) == 8);
+        simmer.getOptions().setValue(OptionKey.SHOW_VALUES, (flags & 16) == 0);
         simmer.setTimeStep(new Double(st.nextToken()).doubleValue());
         double sp = new Double(st.nextToken()).doubleValue();
         int sp2 = (int) (Math.log(10 * sp) * 24 + 61.5);
         // int sp2 = (int) (Math.log(sp)*24+1.5);
-        simmer.getSidePanel().getSpeedBar().setValue(sp2);
-        simmer.getSidePanel().getCurrentBar().setValue(new Integer(st.nextToken()).intValue());
+        simmer.getOptions().setValue(OptionKey.SIMULATION_SPEED, sp2);
+        simmer.getOptions().setValue(OptionKey.CURRENT_SPEED, new Integer(st.nextToken()).intValue());
         AbstractCircuitElement.voltageRange = new Double(st.nextToken()).doubleValue();
 
         try {
@@ -151,11 +166,23 @@ public class FileOps {
         simmer.setGrid();
     }
 
-    public void getSetupList(final boolean openDefault) {
+    public void readBlocks(StringTokenizer st) {
+        String encoded = st.nextToken();
+        if (encoded != null) {
+            try {
+                String xmlText = Base64Util.decodeString(encoded);
+                Bgpio.clearBlocks();
+                simmer.setBlocklyXml(xmlText);
+            } catch (Exception e) {
+                GWT.log("Error", e);
+            }
+        }
+    }
 
-        String url = GWT.getModuleBaseURL();
-        url = url.substring(0,url.indexOf("circuitjs1"));
-        url = url +  "setuplist.txt" + "?v=" + Math.random();
+    public void getSetupList(final boolean openDefault) {
+        //String url = GWT.getHostPageBaseURL();
+        //url = url + "setuplist.txt" + "?v=" + Math.random();
+        String url = "setuplist.txt" + "?v=" + Math.random();
         RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
         try {
             requestBuilder.sendRequest(null, new RequestCallback() {
@@ -178,14 +205,14 @@ public class FileOps {
         }
 
         String s = "";
-        if( s != null && s.isEmpty() && Character.isUpperCase(s.charAt(0))){
+        if (s != null && s.isEmpty() && Character.isUpperCase(s.charAt(0))) {
 
         }
     }
 
     public void readSetup(byte b[], int len, boolean retain, boolean centre) {
 
-//        log("readSetup " + b.length );
+        // log("readSetup " + b.length );
         int i;
         if (!retain) {
             for (i = 0; i != simmer.getElmList().size(); i++) {
@@ -195,20 +222,15 @@ public class FileOps {
             simmer.getElmList().clear();
             simmer.setHintType(HintTypeEnum.HintType.HINT_UNSET);
             simmer.setTimeStep(5e-6);
-            simmer.getMainMenuBar().getOptionsMenuBar().getDotsCheckItem().setState(false);
-            simmer.getMainMenuBar().getOptionsMenuBar().getSmallGridCheckItem().setState(false);
-            simmer.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().setState(false);
-            simmer.getMainMenuBar().getOptionsMenuBar().getVoltsCheckItem().setState(true);
-            simmer.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().setState(true);
             simmer.setGrid();
-            simmer.getSidePanel().getSpeedBar().setValue(117); // 57
-            simmer.getSidePanel().getCurrentBar().setValue(50);
             simmer.getSidePanel().getPowerBar().setValue(50);
             AbstractCircuitElement.voltageRange = 5;
             simmer.setScopeCount(0);
+            Bgpio.clearBlocks();
+            simmer.setBlocklyXml(null);
         }
         // cv.repaint();
-        for (int p = 0; p < len; ) {
+        for (int p = 0; p < len;) {
             int l;
             int linelen = len - p; // IES - changed to allow the last line to
             // not end with a delim.
@@ -220,7 +242,7 @@ public class FileOps {
                     break;
                 }
             String line = new String(b, p, linelen);
-            StringTokenizer st = new StringTokenizer(line, " +\t\n\r\f");
+            StringTokenizer st = new StringTokenizer(line, " \t\n\r\f");
             while (st.hasMoreTokens()) {
                 String type = st.nextToken();
                 int tint = type.charAt(0);
@@ -241,6 +263,10 @@ public class FileOps {
                         readOptions(st);
                         break;
                     }
+                    if (tint == '&') {
+                        readBlocks(st);
+                        break;
+                    }
                     if (tint == '%' || tint == '?' || tint == 'B') {
                         // ignore afilter-specific stuff
                         break;
@@ -254,8 +280,8 @@ public class FileOps {
                     int y2 = new Integer(st.nextToken()).intValue();
                     int f = new Integer(st.nextToken()).intValue();
 
-                    AbstractCircuitElement newce = CircuitElementFactory.createCircuitElement(tint, x1, y1, x2, y2, f, st);
-
+                    AbstractCircuitElement newce = CircuitElementFactory.createCircuitElement(tint, x1, y1, x2, y2, f,
+                            st);
                     if (newce == null) {
                         System.out.println(MessageI18N.getMessage("unrecognized_dump_type_") + type);
                         break;
@@ -292,11 +318,8 @@ public class FileOps {
 
     protected void readSetupFile(String str, String title, boolean centre) {
         simmer.setT(0);
-        // try {
-        // TODO: Maybe think about some better approach to cache management!
-        String url = GWT.getModuleBaseURL();
-        url = url.substring(0, url.indexOf("circuitjs1"));
-        url = url + "circuits/" + str + "?v=" + Math.random();
+        //String url = GWT.getHostPageBaseURL();
+        String url = "circuits/" + str + "?v=" + Math.random();
         loadFileFromURL(url, centre);
     }
 
@@ -314,7 +337,7 @@ public class FileOps {
     }
 
     public void loadFileFromURL(String url, final boolean centre) {
-        lager.info("loadFileFromUrl:" + url );
+        lager.info("loadFileFromUrl:" + url);
 
         RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
         try {

@@ -19,14 +19,16 @@
 
 package com.joebotics.simmer.client.elcomp;
 
-import com.joebotics.simmer.client.gui.widget.Checkbox;
-import com.joebotics.simmer.client.gui.widget.Choice;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.GraphicsUtil;
+import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
+import gwt.material.design.client.ui.MaterialListBox;
 
 public class CapacitorElm extends AbstractCircuitElement {
 	public static final int FLAG_BACK_EULER = 2;
@@ -74,7 +76,7 @@ public class CapacitorElm extends AbstractCircuitElement {
 		GraphicsUtil.drawThickLine(g, getPoint1(), getLead1());
 		setPowerColor(g, false);
 		GraphicsUtil.drawThickLine(g, plate1[0], plate1[1]);
-		if (sim.getMainMenuBar().getOptionsMenuBar().getPowerCheckItem().getState())
+		if (sim.getOptions().getBoolean(OptionKey.SHOW_POWER))
 			g.setColor(Color.gray);
 
 		// draw second lead and plate
@@ -93,7 +95,7 @@ public class CapacitorElm extends AbstractCircuitElement {
 			drawDots(g, getPoint2(), getLead2(), -getCurcount());
 		}
 		drawPosts(g);
-		if (sim.getMainMenuBar().getOptionsMenuBar().getShowValuesCheckItem().getState()) {
+		if (sim.getOptions().getBoolean(OptionKey.SHOW_VALUES)) {
 			String s = getShortUnitText(capacitance, "F");
 			drawValues(g, s, hs);
 		}
@@ -112,14 +114,14 @@ public class CapacitorElm extends AbstractCircuitElement {
 			return new EditInfo("Capacitance (F)", capacitance, 0, 0);
 		if (n == 1) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.choice = new Choice();
+			ei.choice = new MaterialListBox();
 			for (CapacitorType value : CapacitorType.values()) {
-				ei.choice.add(value.getTitle());
+				ei.choice.addItem(value.getTitle());
 			}
-			ei.choice.select(type.ordinal());
+			ei.choice.setSelectedIndex(type.ordinal());
 			
-			ei.checkbox = new Checkbox("Trapezoidal Approximation",
-					isTrapezoidal());
+			ei.checkbox = new MaterialCheckBox("Trapezoidal Approximation");
+			ei.checkbox.setValue(isTrapezoidal());
 			return ei;
 		}
 		return null;
@@ -153,7 +155,7 @@ public class CapacitorElm extends AbstractCircuitElement {
 			capacitance = ei.value;
 		if (n == 1) {
 			type = CapacitorType.values()[ei.choice.getSelectedIndex()];
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(getFlags() & ~FLAG_BACK_EULER);
 			else
 				setFlags(getFlags() | FLAG_BACK_EULER);

@@ -19,13 +19,14 @@
 
 package com.joebotics.simmer.client.elcomp;
 
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Color;
 import com.joebotics.simmer.client.gui.util.Font;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 
 //import java.awt.*;
@@ -96,7 +97,8 @@ public class LogicOutputElm extends AbstractCircuitElement {
 			return new EditInfo("Threshold", threshold, 10, -10);
 		if (n == 1) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Current Required", needsPullDown());
+			ei.checkbox = new MaterialCheckBox("Current Required");
+            ei.checkbox.setValue(needsPullDown());
 			return ei;
 		}
 		return null;
@@ -138,7 +140,7 @@ public class LogicOutputElm extends AbstractCircuitElement {
 		if (n == 0)
 			threshold = ei.value;
 		if (n == 1) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(FLAG_PULLDOWN);
 			else
 				setFlags(getFlags() & ~FLAG_PULLDOWN);

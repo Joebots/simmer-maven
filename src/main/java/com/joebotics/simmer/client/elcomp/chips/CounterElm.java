@@ -22,9 +22,10 @@ package com.joebotics.simmer.client.elcomp.chips;
 import com.joebotics.simmer.client.elcomp.ChipElm;
 import com.joebotics.simmer.client.elcomp.Pin;
 import com.joebotics.simmer.client.elcomp.Side;
-import com.joebotics.simmer.client.gui.widget.Checkbox;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.util.StringTokenizer;
+
+import gwt.material.design.client.ui.MaterialCheckBox;
 
 //import java.awt.*;
 //import java.util.StringTokenizer;
@@ -84,17 +85,20 @@ public class CounterElm extends ChipElm {
 	public EditInfo getEditInfo(int n) {
 		if (n == 0) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Flip X", (getFlags() & FLAG_FLIP_X) != 0);
+			ei.checkbox = new MaterialCheckBox("Flip X");
+            ei.checkbox.setValue((getFlags() & FLAG_FLIP_X) != 0);
 			return ei;
 		}
 		if (n == 1) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Flip Y", (getFlags() & FLAG_FLIP_Y) != 0);
+			ei.checkbox = new MaterialCheckBox("Flip Y");
+            ei.checkbox.setValue((getFlags() & FLAG_FLIP_Y) != 0);
 			return ei;
 		}
 		if (n == 2) {
 			EditInfo ei = new EditInfo("", 0, -1, -1);
-			ei.checkbox = new Checkbox("Invert reset pin", invertreset);
+			ei.checkbox = new MaterialCheckBox("Invert reset pin");
+            ei.checkbox.setValue(invertreset);
 			return ei;
 		}
 		return null;
@@ -120,21 +124,21 @@ public class CounterElm extends ChipElm {
 
 	public void setEditValue(int n, EditInfo ei) {
 		if (n == 0) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(getFlags() | FLAG_FLIP_X);
 			else
 				setFlags(getFlags() & ~FLAG_FLIP_X);
 			setPoints();
 		}
 		if (n == 1) {
-			if (ei.checkbox.getState())
+			if (ei.checkbox.getValue())
 				setFlags(getFlags() | FLAG_FLIP_Y);
 			else
 				setFlags(getFlags() & ~FLAG_FLIP_Y);
 			setPoints();
 		}
 		if (n == 2) {
-			if (ei.checkbox.getState()) {
+			if (ei.checkbox.getValue()) {
 				invertreset = true;
 				getPins()[1].setBubble(true);
 			} else {

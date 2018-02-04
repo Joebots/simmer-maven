@@ -1,20 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module rename-to="circuitjs1">
+<module rename-to="simmer">
     <inherits name="com.google.gwt.user.User" />
     <inherits name="com.google.gwt.http.HTTP" />
-    <inherits name='com.google.gwt.user.theme.clean.Clean'/>
-    <inherits name="com.google.gwt.json.JSON"/>
-    <inherits name="com.google.gwt.json.JSON"/>
-    <inherits name="com.google.gwt.json.JSON"/>
-    <inherits name="com.google.gwt.logging.Logging"/>
+    <inherits name='com.google.gwt.user.theme.clean.Clean' />
+    <inherits name="com.google.gwt.json.JSON" />
+    <inherits name="com.google.gwt.json.JSON" />
+    <inherits name="com.google.gwt.json.JSON" />
+    <inherits name="com.google.gwt.logging.Logging" />
 
-    <set-property name="gwt.logging.enabled" value="TRUE"/>
-    <set-property name="gwt.logging.consoleHandler" value="ENABLED"/>
-    <set-property name="gwt.logging.logLevel" value="INFO"/>
-    
-    <set-property name="compiler.stackMode" value="emulated"/>
-	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true"/>
-	<set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true"/>
+    <!-- Internationalisation -->
+    <inherits name="com.google.gwt.i18n.I18N" />
+
+    <!--GWT Material -->
+    <inherits name="gwt.material.design.GwtMaterialDesign" />
+    <inherits name="gwt.material.design.addins.GwtMaterialAddins" />
+    <inherits name="gwt.material.design.jquery.JQuery" />
+    <inherits name="gwt.material.design.themes.ThemeGreen" />
+
+    <set-property name="gwt.logging.enabled" value="TRUE" />
+    <set-property name="gwt.logging.consoleHandler" value="ENABLED" />
+    <set-property name="gwt.logging.logLevel" value="INFO" />
+
+    <set-property name="compiler.stackMode" value="emulated" />
+    <set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true" />
+    <set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" />
 
     <entry-point class="com.joebotics.simmer.client.Launcher" />
+
+    <set-property name="compiler.stackMode" value="emulated"/>
+    <set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true"/>
+    <set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true"/>
 </module>
