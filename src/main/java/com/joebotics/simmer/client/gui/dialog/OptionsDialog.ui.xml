@@ -52,15 +52,19 @@
                         <m:MaterialLabel text="{i18n.breadboardRowThickness}" />
                         <m:MaterialRange ui:field="breadboardRowThickness" min="1" max="15"/>
                     </m:MaterialColumn>
-                    <m:MaterialColumn grid="s1">
-                        <m:MaterialButton ui:field="btnSaveConfig" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                    <m:MaterialColumn grid="s1" styleName="center">
+                        <m:MaterialButton ui:field="btnSaveConfig" margin="8" type="FLOATING" text="Hello2" waves="LIGHT" size="MEDIUM"
                                           iconType="SAVE" />
+                        <m:MaterialLabel text="Save" styleName="center" />
                         <m:MaterialButton ui:field="btnResetConfig" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
                                           iconType="SETTINGS_BACKUP_RESTORE" />
+                        <m:MaterialLabel text="Restore" styleName="center" />
                         <m:MaterialButton ui:field="btnDownloadConfig" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
                                           iconType="FILE_DOWNLOAD" />
+                        <m:MaterialLabel text="Download" styleName="center" />
                         <m:MaterialButton ui:field="btnUploadConfig" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
                                           iconType="FILE_UPLOAD" />
+                        <m:MaterialLabel text="Upload" styleName="center" />
                     </m:MaterialColumn>
                 </m:MaterialRow>
             </m:MaterialColumn>
