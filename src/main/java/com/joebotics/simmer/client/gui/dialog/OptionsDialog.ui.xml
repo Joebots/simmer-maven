@@ -40,7 +40,7 @@
                     <m:MaterialColumn grid="s11" height="100%">
                         <m:MaterialSwitch ui:field="showBreadboardBanks" onLabel="{i18n.showBreadboardBanks}" />
                         <m:MaterialLabel text="{i18n.breadboardWidth}" />
-                        <m:MaterialRange ui:field="breadboardWidth" min="300" max="400"/>
+                        <m:MaterialRange ui:field="breadboardWidth" min="300"  max="400"/>
                         <m:MaterialLabel text="{i18n.breadboardHeight}" />
                         <m:MaterialRange ui:field="breadboardHeight" min="400" max="700"/>
                         <m:MaterialLabel text="{i18n.breadboardRowCount}" />
@@ -50,7 +50,7 @@
                         <m:MaterialLabel text="{i18n.breadboardLeftMargin}" />
                         <m:MaterialRange ui:field="breadboardLeftMargin" min="0" max="120"/>
                         <m:MaterialLabel text="{i18n.breadboardRowThickness}" />
-                        <m:MaterialRange ui:field="breadboardRowThickness" min="1" max="15"/>
+                        <m:MaterialRange ui:field="breadboardRowThickness" min="1" max="15" />
                     </m:MaterialColumn>
                     <m:MaterialColumn grid="s1">
                         <m:MaterialButton ui:field="btnSaveConfig" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
