@@ -52,7 +52,7 @@
                         <m:MaterialLabel text="{i18n.breadboardRowThickness}" />
                         <m:MaterialRange ui:field="breadboardRowThickness" min="1" max="15" />
                     </m:MaterialColumn>
-                    <m:MaterialColumn grid="s1">
+                    <m:MaterialColumn grid="s1" styleName="center">
                         <m:MaterialButton ui:field="btnSaveConfig" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
                                           iconType="SAVE"  iconPosition="NONE"/>
                         <m:MaterialLabel text="Save" textColor="BLACK" textAlign="CENTER" marginLeft="12" marginRight="12" />
