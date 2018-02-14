@@ -92,12 +92,16 @@
             <m:MaterialColumn grid="s1">
                 <m:MaterialButton ui:field="btnRun" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
                     iconType="PLAY_ARROW" />
+                <m:MaterialLabel text="Run" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
                 <m:MaterialButton ui:field="btnDebug" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
                     iconType="BUG_REPORT" />
+                <m:MaterialLabel text="Debug" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
                 <m:MaterialButton ui:field="btnNextStep" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
                     iconType="SKIP_NEXT" enabled="false" />
+                <m:MaterialLabel text="Skip" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
                 <m:MaterialButton ui:field="btnStop" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
                     iconType="STOP" iconColor="RED" enabled="false"/>
+                <m:MaterialLabel text="Stop" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
             </m:MaterialColumn>
         </m:MaterialRow>
     </ma:window.MaterialWindow>
