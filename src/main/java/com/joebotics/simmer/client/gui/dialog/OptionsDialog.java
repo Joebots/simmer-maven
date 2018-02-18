@@ -21,6 +21,7 @@ import gwt.material.design.client.ui.MaterialButton;
 import gwt.material.design.client.ui.MaterialCheckBox;
 import gwt.material.design.client.ui.MaterialRange;
 import gwt.material.design.client.ui.MaterialSwitch;
+import gwt.material.design.client.ui.MaterialTab;
 
 public class OptionsDialog extends Composite {
 
@@ -49,6 +50,9 @@ public class OptionsDialog extends Composite {
     @UiField
     MaterialButton btnSaveConfig, btnResetConfig, btnDownloadConfig, btnUploadConfig;
 
+    @UiField
+    MaterialTab optionTabs;
+
     private Options model;
 
     public OptionsDialog() {
@@ -69,6 +73,7 @@ public class OptionsDialog extends Composite {
     @UiHandler("modal")
     public void modalOpeningHandler(OpenEvent<Boolean> event) {
         fillBreadboardFields();
+        optionTabs.reinitialize();
     }
 
     @UiHandler("modal")

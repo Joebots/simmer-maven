@@ -8,7 +8,7 @@
     <ma:window.MaterialWindow ui:field="modal" title="{i18n.Options}" toolbarColor="GREEN"
                               styleName="shifted-window">
         <m:MaterialRow margin="8">
-            <m:MaterialTab backgroundColor="WHITE">
+            <m:MaterialTab backgroundColor="WHITE" ui:field="optionTabs">
                 <m:MaterialTabItem waves="LIGHT" grid="s2">
                     <m:MaterialLink text="{i18n.Emulator}" href="#emulatorTab" styleName="active" />
                 </m:MaterialTabItem>
