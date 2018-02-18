@@ -107,3 +107,13 @@
     95%  {background: red; opacity: .12}
     100% {background: yellow; opacity: .1}
 }
+
+/*To Make Popup menus in front of all other components*/
+
+.gwt-MenuBarPopup {
+    z-index: 1000;
+    background: white;
+}
+.gwt-PopupPanel{
+    z-index: 150;
+}
