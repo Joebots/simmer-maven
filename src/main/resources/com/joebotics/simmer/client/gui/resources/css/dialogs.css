@@ -33,7 +33,7 @@ input[type=range] {
     border: none;
     outline: none;
     width: 100%;
-    margin: 22px 0px; /*value pointer position*/
+    margin: 25px 0px; /*value pointer position*/
     padding: 0
 }
 
@@ -68,7 +68,7 @@ input[type=range] + .thumb.active {
 
 input[type=range] + .thumb.active .value {
     color: #fff;
-    margin-left: -1px;
+    margin-left: 0px;
     margin-top: 8px;
     font-size: 10px
 }
@@ -82,7 +82,7 @@ input[type=range] {
 }
 
 input[type=range]::-webkit-slider-runnable-track {
-    height: 3px;
+    height: 5px;
     background: #c2c0c2;
     border: none
 }
@@ -90,13 +90,13 @@ input[type=range]::-webkit-slider-runnable-track {
 input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     border: none;
-    height: 20px;
-    width: 20px;
+    height: 27px;
+    width: 27px;
     border-radius: 50%;
     background-color: #66bb6a;
     -webkit-transform-origin: 50% 50%;
     transform-origin: 50% 50%;
-    margin: -8px 0 0 0; /*Param to fix pointer position on the line*/
+    margin: -12px 0 0 0; /*Param to fix pointer position on the line*/
     transition: .3s
 }
 
@@ -109,15 +109,16 @@ input[type=range] {
 }
 
 input[type=range]::-moz-range-track {
-    height: 3px;
+    height: 12px;
     background: #ddd;
-    border: none
+    border: none;
+    border-radius: 2px;
 }
 
 input[type=range]::-moz-range-thumb {
     border: none;
-    height: 14px;
-    width: 14px;
+    height: 40px;
+    width: 40px;
     border-radius: 50%;
     background: #66bb6a;
     margin-top: -5px
@@ -133,7 +134,7 @@ input[type=range]:focus::-moz-range-track {
 }
 
 input[type=range]::-ms-track {
-    height: 5px;
+    height: 12px;
     background: transparent;
     border-color: transparent;
     border-width: 6px 0;
@@ -147,7 +148,7 @@ input[type=range]::-ms-fill-lower {
 input[type=range]::-ms-fill-upper {
     background: #ddd
 }
-/*Here is te*/
+
 input[type=range]::-ms-thumb {
     border: none;
     height: 65px !important; /*range type pointer size*/
