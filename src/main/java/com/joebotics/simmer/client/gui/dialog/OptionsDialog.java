@@ -1,8 +1,10 @@
 package com.joebotics.simmer.client.gui.dialog;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -86,13 +88,26 @@ public class OptionsDialog extends Composite {
     @UiHandler("speedBar")
     public void speedBarHandler(ChangeEvent event) {
         model.setValue(OptionKey.SIMULATION_SPEED, speedBar.getValue());
+        speedBar.getThumb().getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
+    }
+    @UiHandler("speedBar")
+    public void speedBarHandler(TouchStartEvent event) {
+        model.setValue(OptionKey.SIMULATION_SPEED, speedBar.getValue());
+        speedBar.getThumb().getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
     }
 
     @UiHandler("currentBar")
     public void currentBarHandler(ChangeEvent event) {
         model.setValue(OptionKey.CURRENT_SPEED, currentBar.getValue());
-    }
+        currentBar.getThumb().getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
 
+    }
+    @UiHandler("currentBar")
+    public void currentBarHandler(TouchStartEvent event) {
+        model.setValue(OptionKey.CURRENT_SPEED, currentBar.getValue());
+        currentBar.getThumb().getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
+
+    }
     @UiHandler({ "smallGridCheckItem", "backgroundCheckItem" })
     public void checkGridHandler(ValueChangeEvent<Boolean> event) {
         checkItemHandler(event);
@@ -108,36 +123,82 @@ public class OptionsDialog extends Composite {
     public void breadboardWidthHandler(ValueChangeEvent<Integer> event) {
         BreadBoard.config.width = event.getValue();
         BreadBoard.applyConfig();
+        breadboardWidth.getThumb().getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
+    }
+    @UiHandler({"breadboardWidth"})
+    public void breadboardWidthHandler(TouchStartEvent event) {
+
+        breadboardWidth.getThumb().getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
+
     }
 
     @UiHandler({"breadboardHeight"})
     public void breadboardHeightHandler(ValueChangeEvent<Integer> event) {
         BreadBoard.config.height = event.getValue();
         BreadBoard.applyConfig();
-    }
+        breadboardHeight.getThumb().getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
 
+    }
+    @UiHandler({"breadboardHeight"})
+    public void breadboardHeightHandler(TouchStartEvent event) {
+
+        breadboardHeight.getThumb().getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
+
+    }
     @UiHandler({"breadboardRowCount"})
     public void breadboardRowCountHandler(ValueChangeEvent<Integer> event) {
         BreadBoard.config.rowCount = event.getValue();
         BreadBoard.applyConfig();
+        breadboardRowCount.getThumb().getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
+
+
+    }
+    @UiHandler({"breadboardRowCount"})
+    public void breadboardRowCountHandler(TouchStartEvent event) {
+        breadboardRowCount.getThumb().getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
+
     }
 
     @UiHandler({"breadboardTopMargin"})
     public void breadboardTopMarginHandler(ValueChangeEvent<Integer> event) {
         BreadBoard.config.topMargin = event.getValue();
         BreadBoard.applyConfig();
+        breadboardTopMargin.getThumb().getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
+
+    }
+
+    @UiHandler({"breadboardTopMargin"})
+    public void breadboardTopMarginHandler(TouchStartEvent event) {
+
+        breadboardTopMargin.getThumb().getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
+
     }
 
     @UiHandler({"breadboardLeftMargin"})
     public void breadboardLeftMarginHandler(ValueChangeEvent<Integer> event) {
         BreadBoard.config.leftMargin = event.getValue();
         BreadBoard.applyConfig();
+        breadboardLeftMargin.getThumb().getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
+
+    }
+    @UiHandler({"breadboardLeftMargin"})
+    public void breadboardLeftMarginHandler(TouchStartEvent event) {
+
+        breadboardLeftMargin.getThumb().getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
+
     }
 
     @UiHandler({"breadboardRowThickness"})
     public void breadboardRowThicknessHandler(ValueChangeEvent<Integer> event) {
         BreadBoard.config.thickness = event.getValue();
         BreadBoard.applyConfig();
+        breadboardRowThickness.getThumb().getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
+
+    }
+    @UiHandler({"breadboardRowThickness"})
+    public void breadboardRowThicknessHandler(TouchStartEvent event) {
+        breadboardRowThickness.getThumb().getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
+
     }
 
     @UiHandler("btnSaveConfig")
