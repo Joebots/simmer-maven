@@ -9,13 +9,13 @@
                               styleName="shifted-window">
         <m:MaterialRow margin="8">
             <m:MaterialTab backgroundColor="WHITE">
-                <m:MaterialTabItem waves="LIGHT" flex="NONE" grid="s2">
-                    <m:MaterialLink text="{i18n.Emulator}" href="#emulatorTab" />
+                <m:MaterialTabItem waves="LIGHT" grid="s2">
+                    <m:MaterialLink text="{i18n.Emulator}" href="#emulatorTab" styleName="active" />
                 </m:MaterialTabItem>
-                <m:MaterialTabItem waves="LIGHT" flex="NONE" grid="s2">
+                <m:MaterialTabItem waves="LIGHT" grid="s2">
                     <m:MaterialLink text="{i18n.Breadboard}" href="#breadboardTab" />
                 </m:MaterialTabItem>
-                <m:MaterialTabItem waves="LIGHT" flex="NONE" grid="s2">
+                <m:MaterialTabItem waves="LIGHT" grid="s2">
                     <m:MaterialLink text="{i18n.Hardware}" href="#hardwareTab" />
                 </m:MaterialTabItem>
             </m:MaterialTab>
