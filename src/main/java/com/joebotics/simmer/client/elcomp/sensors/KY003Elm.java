@@ -4,12 +4,16 @@ import com.joebotics.simmer.client.elcomp.ChipElm;
 import com.joebotics.simmer.client.elcomp.Pin;
 import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.util.StringTokenizer;
+import com.joebotics.simmer.client.gui.EditInfo;
+import gwt.material.design.client.ui.MaterialSwitch;
 
 /**
  * Created by gologuzov on 17.01.18.
  * KY-003 Hall magnetic sensor module
  */
 public class KY003Elm extends ChipElm {
+    public int sensorValue = 0;
+
     public KY003Elm(int xx, int yy) {
         super(xx, yy);
         footprintName = "SIP3";
@@ -51,5 +55,27 @@ public class KY003Elm extends ChipElm {
         getPins()[0].setOutput(getPins()[0].setState(true));
         getPins()[1] = new Pin(1, Side.EAST, "+");
         getPins()[2] = new Pin(2, Side.EAST, "-");
+    }
+
+    @Override
+    public void setEditValue(int n, EditInfo ei) {
+        if (n == 2) {
+            sensorValue = ei.switchElm.getValue() ? 1 : 0;
+        }
+        else {
+            super.setEditValue(n, ei);
+        }
+    }
+
+    @Override
+    public EditInfo getEditInfo(int n) {
+        if (n == 2) {
+            EditInfo ei = new EditInfo("", 0, -1, -1);
+            ei.switchElm = new MaterialSwitch("1", "0");
+            ei.switchElm.setValue(sensorValue == 1);
+            return ei;
+        }
+
+        return super.getEditInfo(n);
     }
 }
