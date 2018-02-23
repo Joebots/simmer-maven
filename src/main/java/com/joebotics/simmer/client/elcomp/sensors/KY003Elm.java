@@ -5,6 +5,9 @@ import com.joebotics.simmer.client.elcomp.Pin;
 import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.util.StringTokenizer;
 import com.joebotics.simmer.client.gui.EditInfo;
+import com.joebotics.simmer.client.gui.util.Graphics;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.dom.client.ImageElement;
 import gwt.material.design.client.ui.MaterialSwitch;
 
 /**
@@ -12,7 +15,9 @@ import gwt.material.design.client.ui.MaterialSwitch;
  * KY-003 Hall magnetic sensor module
  */
 public class KY003Elm extends ChipElm {
-    public int sensorValue = 0;
+    private int sensorValue = 0;
+
+    private final ImageElement magnet = ImageElement.as(new Image("imgs/components/magnet.svg").getElement());
 
     public KY003Elm(int xx, int yy) {
         super(xx, yy);
@@ -77,5 +82,11 @@ public class KY003Elm extends ChipElm {
         }
 
         return super.getEditInfo(n);
+    }
+
+    public void draw(Graphics g) {
+        g.getContext().drawImage(magnet, rectPointsX[0] + magnet.getWidth() / 2, rectPointsY[0] + magnet.getHeight() / 2);
+
+        super.draw(g);
     }
 }
