@@ -32,6 +32,13 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
     public void onClick(ClickEvent e) {
         e.preventDefault();
 
+        Point p = new Point(e.getX(), e.getY());
+        AbstractCircuitElement element = simmer.getMouseElm();
+
+        if(element != null) {
+            element.click(e);
+        }
+
         if ((e.getNativeButton() == NativeEvent.BUTTON_MIDDLE))
             scrollValues(e.getNativeEvent().getClientX(), e.getNativeEvent().getClientY(), 0);
     }

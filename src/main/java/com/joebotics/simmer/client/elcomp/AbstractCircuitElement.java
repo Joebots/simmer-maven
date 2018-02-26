@@ -28,6 +28,7 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.joebotics.simmer.client.Simmer;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.Editable;
@@ -1264,5 +1265,9 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
             result.put("footprint", footprint.toJSONObject());
         }
         return result;
+    }
+
+    public void click(ClickEvent event) {
+
     }
 }

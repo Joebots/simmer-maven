@@ -6,8 +6,12 @@ import com.joebotics.simmer.client.elcomp.Side;
 import com.joebotics.simmer.client.util.StringTokenizer;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Graphics;
-import com.google.gwt.user.client.ui.Image;
+import com.joebotics.simmer.client.gui.util.Point;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.canvas.dom.client.Context2d;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.joebotics.simmer.client.gui.util.Rectangle;
 import gwt.material.design.client.ui.MaterialSwitch;
 
 /**
@@ -18,6 +22,8 @@ public class KY003Elm extends ChipElm {
     private int sensorValue = 0;
 
     private final ImageElement magnet = ImageElement.as(new Image("imgs/components/magnet.svg").getElement());
+    private final ImageElement switchIcon = ImageElement.as(new Image("imgs/components/switchCombined.svg").getElement());
+    private Rectangle switchRect = new Rectangle();
 
     public KY003Elm(int xx, int yy) {
         super(xx, yy);
@@ -87,6 +93,34 @@ public class KY003Elm extends ChipElm {
     public void draw(Graphics g) {
         g.getContext().drawImage(magnet, rectPointsX[0] + magnet.getWidth() / 2, rectPointsY[0] + magnet.getHeight() / 2);
 
+        drawSwitch(g, sensorValue == 1);
         super.draw(g);
+    }
+
+    @Override
+    public void click(ClickEvent event) {
+        if(switchRect.contains(event.getX(), event.getY())) {
+            sensorValue = sensorValue == 1 ? 0 : 1;
+        }
+    }
+
+    protected void drawSwitch(Graphics g, boolean on) {
+        Context2d context = g.getContext();
+        Point center = getCenterPoint();
+        switchRect.setBounds(center.getX() - switchIcon.getWidth() / 2, center.getY() + switchIcon.getHeight() / 4,
+                switchIcon.getWidth(), switchIcon.getHeight() / 2);
+
+        if (on) {
+            context.drawImage(switchIcon, 0, switchIcon.getHeight() / 2,
+                    switchIcon.getWidth(), switchIcon.getHeight() / 2,
+                    switchRect.x, switchRect.y,
+                    switchIcon.getWidth(), switchIcon.getHeight() / 2);
+        }
+        else {
+            context.drawImage(switchIcon, 0, 0,
+                    switchIcon.getWidth(), switchIcon.getHeight() / 2,
+                    switchRect.x, switchRect.y,
+                    switchIcon.getWidth(), switchIcon.getHeight() / 2);
+        }
     }
 }
