@@ -137,7 +137,7 @@ input[type=range]::-ms-track {
     height: 12px;
     background: transparent;
     border-color: transparent;
-    border-width: 6px 0;
+        border-width: 6px 0;
     color: transparent
 }
 
