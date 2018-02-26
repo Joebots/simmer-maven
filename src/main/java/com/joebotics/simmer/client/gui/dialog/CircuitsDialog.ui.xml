@@ -13,13 +13,17 @@
             </m:MaterialColumn>
             <m:MaterialColumn grid="s1">
                 <m:MaterialButton ui:field="btnCollapse" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
-                    tooltip="Collapse" iconType="VERTICAL_ALIGN_CENTER" />
+                    iconType="VERTICAL_ALIGN_CENTER" />
+                <m:MaterialLabel text="Collapse" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
                 <m:MaterialButton ui:field="btnExpand" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
-                    tooltip="Expand" iconType="ZOOM_OUT_MAP" />
+                    iconType="ZOOM_OUT_MAP" />
+                <m:MaterialLabel text="Expand" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
                 <m:MaterialLink ui:field="btnImport" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
-                    tooltip="Open" iconType="FILE_UPLOAD" />
+                     iconType="FILE_UPLOAD" />
+                <m:MaterialLabel text="Open" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
                 <m:MaterialLink ui:field="btnExport" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
-                    tooltip="Save" iconType="FILE_DOWNLOAD" />
+                    iconType="FILE_DOWNLOAD" />
+                <m:MaterialLabel text="Save" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
             </m:MaterialColumn>
         </m:MaterialRow>
     </ma:window.MaterialWindow>

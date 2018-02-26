@@ -40,7 +40,7 @@
                     <m:MaterialColumn grid="s11" height="100%">
                         <m:MaterialSwitch ui:field="showBreadboardBanks" onLabel="{i18n.showBreadboardBanks}" />
                         <m:MaterialLabel text="{i18n.breadboardWidth}" />
-                        <m:MaterialRange ui:field="breadboardWidth" min="300" max="400"/>
+                        <m:MaterialRange ui:field="breadboardWidth" min="300"  max="400"/>
                         <m:MaterialLabel text="{i18n.breadboardHeight}" />
                         <m:MaterialRange ui:field="breadboardHeight" min="400" max="700"/>
                         <m:MaterialLabel text="{i18n.breadboardRowCount}" />
@@ -50,17 +50,21 @@
                         <m:MaterialLabel text="{i18n.breadboardLeftMargin}" />
                         <m:MaterialRange ui:field="breadboardLeftMargin" min="0" max="120"/>
                         <m:MaterialLabel text="{i18n.breadboardRowThickness}" />
-                        <m:MaterialRange ui:field="breadboardRowThickness" min="1" max="15"/>
+                        <m:MaterialRange ui:field="breadboardRowThickness" min="1" max="15" />
                     </m:MaterialColumn>
-                    <m:MaterialColumn grid="s1">
+                    <m:MaterialColumn grid="s1" styleName="center">
                         <m:MaterialButton ui:field="btnSaveConfig" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
-                                          iconType="SAVE" />
+                                          iconType="SAVE"  iconPosition="NONE"/>
+                        <m:MaterialLabel text="Save" textColor="BLACK" textAlign="CENTER" marginLeft="12" marginRight="12" />
                         <m:MaterialButton ui:field="btnResetConfig" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
                                           iconType="SETTINGS_BACKUP_RESTORE" />
+                        <m:MaterialLabel text="Restore" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
                         <m:MaterialButton ui:field="btnDownloadConfig" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
                                           iconType="FILE_DOWNLOAD" />
+                        <m:MaterialLabel text="Download" textColor="BLACK" textAlign="CENTER"/>
                         <m:MaterialButton ui:field="btnUploadConfig" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
                                           iconType="FILE_UPLOAD" />
+                        <m:MaterialLabel text="Upload" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
                     </m:MaterialColumn>
                 </m:MaterialRow>
             </m:MaterialColumn>
