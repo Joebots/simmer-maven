@@ -54,4 +54,15 @@ iframe {
     z-index: 200;
 }
 
+.window > .window-toolbar > .window-action {
+    float: left;
+    margin: 0;
+    padding: 4px;
+    font-size: 1.7em;
+}
 
+.window > .window-toolbar > .window-title {
+    float: none;
+    margin-left: 10px;
+    vertical-align: text-top;
+}
