@@ -22,7 +22,7 @@ public class KY003Elm extends ChipElm {
     private int sensorValue = 0;
 
     private final ImageElement magnet = ImageElement.as(new Image("imgs/components/magnet.svg").getElement());
-    private final ImageElement switchIcon = ImageElement.as(new Image("imgs/components/switchCombined.svg").getElement());
+    private final ImageElement switchIcon = ImageElement.as(new Image("imgs/components/switchSprite.svg").getElement());
     private Rectangle switchRect = new Rectangle();
 
     public KY003Elm(int xx, int yy) {
@@ -71,7 +71,7 @@ public class KY003Elm extends ChipElm {
     @Override
     public void setEditValue(int n, EditInfo ei) {
         if (n == 2) {
-            sensorValue = ei.switchElm.getValue() ? 1 : 0;
+            getPins()[0].setOutput(ei.switchElm.getValue());
         }
         else {
             super.setEditValue(n, ei);
@@ -83,7 +83,7 @@ public class KY003Elm extends ChipElm {
         if (n == 2) {
             EditInfo ei = new EditInfo("", 0, -1, -1);
             ei.switchElm = new MaterialSwitch("1", "0");
-            ei.switchElm.setValue(sensorValue == 1);
+            ei.switchElm.setValue(getPins()[0].isOutput());
             return ei;
         }
 
@@ -91,16 +91,18 @@ public class KY003Elm extends ChipElm {
     }
 
     public void draw(Graphics g) {
-        g.getContext().drawImage(magnet, rectPointsX[0] + magnet.getWidth() / 2, rectPointsY[0] + magnet.getHeight() / 2);
+        Point center = getCenterPoint();
+        g.getContext().drawImage(magnet, center.getX() - magnet.getWidth() / 2, rectPointsY[0] + magnet.getHeight() / 2);
 
-        drawSwitch(g, sensorValue == 1);
+        drawSwitch(g, getPins()[0].isOutput());
         super.draw(g);
     }
 
     @Override
-    public void click(ClickEvent event) {
-        if(switchRect.contains(event.getX(), event.getY())) {
-            sensorValue = sensorValue == 1 ? 0 : 1;
+    public void click(Point point) {
+        if(switchRect.contains(point.getX(), point.getY())) {
+            Pin sPin = getPins()[0];
+            sPin.setOutput(!sPin.isOutput());
         }
     }
 
