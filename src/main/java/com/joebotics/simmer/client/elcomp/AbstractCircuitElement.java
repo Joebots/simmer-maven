@@ -1265,4 +1265,8 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
         }
         return result;
     }
+
+    public void click(Point point) {
+
+    }
 }

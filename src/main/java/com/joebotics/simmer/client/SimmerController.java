@@ -32,6 +32,13 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
     public void onClick(ClickEvent e) {
         e.preventDefault();
 
+        Point p = new Point(e.getX(), e.getY());
+        AbstractCircuitElement element = simmer.getMouseElm();
+
+        if(element != null) {
+            element.click(p);
+        }
+
         if ((e.getNativeButton() == NativeEvent.BUTTON_MIDDLE))
             scrollValues(e.getNativeEvent().getClientX(), e.getNativeEvent().getClientY(), 0);
     }
@@ -446,6 +453,13 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         e.preventDefault();
         Touch touch = e.getTouches().get(0);
         Point p = new Point(touch.getClientX(), touch.getClientY());
+
+        AbstractCircuitElement element = simmer.getMouseElm();
+
+        if(element != null) {
+            element.click(p);
+        }
+
         finder.selectElement(p);
         dragHelper.startDrag(p);
     }
@@ -461,6 +475,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
     @Override
     public void onTouchEnd(TouchEndEvent e) {
         e.preventDefault();
+
         if (!simmer.isDragging()) {
             doSwitch();
         }
