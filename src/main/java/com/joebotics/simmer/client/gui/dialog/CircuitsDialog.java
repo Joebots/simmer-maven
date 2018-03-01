@@ -16,6 +16,7 @@ import com.joebotics.simmer.client.TreeNode;
 import com.joebotics.simmer.client.gui.Bgpio;
 import com.joebotics.simmer.client.gui.util.LoadFile;
 
+import com.joebotics.simmer.client.util.FileUtils;
 import gwt.material.design.addins.client.tree.MaterialTree;
 import gwt.material.design.addins.client.tree.MaterialTreeItem;
 import gwt.material.design.addins.client.window.MaterialWindow;
@@ -49,7 +50,11 @@ public class CircuitsDialog extends Composite {
     @UiField
     MaterialLink btnExport;
 
+    private FileUtils fileUtils;
+
     public CircuitsDialog() {
+        this.fileUtils = new FileUtils();
+
         initWidget(uiBinder.createAndBindUi(this));
 
         modal.setCenterOn(CenterOn.CENTER_ON_SMALL);
@@ -114,9 +119,8 @@ public class CircuitsDialog extends Composite {
     @UiHandler("btnExport")
     public void btnExportHandler(ClickEvent event) {
         Simmer.getInstance().setBlocklyXml(Bgpio.getBlocks());
-        btnExport.getElement().setAttribute("download", "my circuit.txt");
         String url = Simmer.getInstance().getFileOps().getCircuitUrl();
-        btnExport.setHref(url);
+        this.fileUtils.download(url, Simmer.getInstance().getCircuitModel().getTitle());
         modal.close();
     }
 
