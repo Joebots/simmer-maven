@@ -373,7 +373,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         }
         if (menu == "circuits" && item.indexOf("setup ") == 0) {
             simmer.getMainMenuBar().getEditMenu().pushUndo();
-            simmer.getFileOps().readSetupFile(item.substring(6), "", true);
+            simmer.getFileOps().readSetupFile(item.substring(6), true);
         }
 
         // IES: Moved from itemStateChanged()

@@ -127,7 +127,7 @@ public class FileOps {
                         simmer.setStartCircuit(file);
                         simmer.setStartLabel(title);
                         if (openDefault && simmer.getStopMessage() == null)
-                            readSetupFile(simmer.getStartCircuit(), simmer.getStartLabel(), true);
+                            readSetupFile(simmer.getStartCircuit(), true);
                     }
                 }
             }
@@ -210,9 +210,7 @@ public class FileOps {
         }
     }
 
-    public void readSetup(byte b[], int len, boolean retain, boolean centre) {
-
-        // log("readSetup " + b.length );
+    public void readSetup(byte b[], int len, String title, boolean retain, boolean centre) {
         int i;
         if (!retain) {
             for (i = 0; i != simmer.getElmList().size(); i++) {
@@ -228,7 +226,9 @@ public class FileOps {
             simmer.setScopeCount(0);
             Bgpio.clearBlocks();
             simmer.setBlocklyXml(null);
+            simmer.getCircuitModel().setTitle(null);
         }
+        simmer.getCircuitModel().setTitle(title);
         // cv.repaint();
         for (int p = 0; p < len;) {
             int l;
@@ -313,14 +313,22 @@ public class FileOps {
     }
 
     public void readSetup(String text, boolean retain, boolean centre) {
-        readSetup(text.getBytes(), text.length(), retain, centre);
+        readSetup(text, "my circuit.txt", retain, centre);
     }
 
-    protected void readSetupFile(String str, String title, boolean centre) {
+    public void readSetup(String text, String title, boolean centre) {
+        readSetup(text, title, false, centre);
+    }
+
+    public void readSetup(String text, String title, boolean retain, boolean centre) {
+        readSetup(text.getBytes(), text.length(), title, retain, centre);
+    }
+
+    protected void readSetupFile(String str, boolean centre) {
         simmer.setT(0);
         //String url = GWT.getHostPageBaseURL();
         String url = "circuits/" + str + "?v=" + Math.random();
-        loadFileFromURL(url, centre);
+        loadFileFromURL(url, str, centre);
     }
 
     public void createNewLoadFile() {
@@ -336,7 +344,7 @@ public class FileOps {
         simmer.setLoadFileInput(newlf);
     }
 
-    public void loadFileFromURL(String url, final boolean centre) {
+    public void loadFileFromURL(String url, String title, final boolean centre) {
         lager.info("loadFileFromUrl:" + url);
 
         RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
@@ -349,7 +357,7 @@ public class FileOps {
                 public void onResponseReceived(Request request, Response response) {
                     if (response.getStatusCode() == Response.SC_OK) {
                         String text = response.getText();
-                        readSetup(text.getBytes(), text.length(), false, centre);
+                        readSetup(text.getBytes(), text.length(), title,false, centre);
                     } else
                         lager.info(MessageI18N.getMessage("Bad_file_server_response") + response.getStatusText());
                 }
