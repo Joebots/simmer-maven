@@ -109,6 +109,8 @@
                                                   target="KY_004" />
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.KY_009}"
                                                   target="KY_009" />
+                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.KY_010}"
+                                                  target="KY_010" />
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.KY_013}"
                                                   target="KY_013" />
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.KY_016}"
