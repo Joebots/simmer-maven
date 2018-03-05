@@ -123,6 +123,8 @@
                                                   target="KY_021" />
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.KY_031}"
                                                   target="KY_031" />
+                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.KY_033}"
+                                                  target="KY_033" />
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.SG90}"
                                                   target="SG90" />
                     </ma:tree.MaterialTreeItem>

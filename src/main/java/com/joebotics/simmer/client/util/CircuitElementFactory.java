@@ -302,6 +302,9 @@ public class CircuitElementFactory {
         if (n == "KY_031")
             return new KY031Elm(x1, y1);
 
+        if (n == "KY_033")
+            return new KY033Elm(x1, y1);
+
         if (n == "SG90")
             return new SG90(x1, y1);
         return null;
