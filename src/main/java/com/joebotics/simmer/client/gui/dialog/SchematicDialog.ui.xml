@@ -19,227 +19,248 @@
 
                     <!-- Passive Components -->
                     <ma:tree.MaterialTreeItem ui:id="components-passive" iconType="FOLDER" text="{i18n.Passive_Components}">
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Capacitor}"
+                        <ma:tree.MaterialTreeItem ui:id="components-passive-add-capacitor" iconType="EXTENSION" text="{i18n.Add_Capacitor}"
                             target="CapacitorElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Inductor}"
+                        <ma:tree.MaterialTreeItem ui:id="components-passive-add-inductor" iconType="EXTENSION" text="{i18n.Add_Inductor}"
                             target="InductorElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Switch}"
+                        <ma:tree.MaterialTreeItem ui:id="components-passive-add-switch" iconType="EXTENSION" text="{i18n.Add_Switch}"
                             target="SwitchElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Push_Switch}"
+                        <ma:tree.MaterialTreeItem ui:id="components-passive-add-push-switch" iconType="EXTENSION" text="{i18n.Add_Push_Switch}"
                             target="PushSwitchElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_SPDT_Switch}"
+                        <ma:tree.MaterialTreeItem ui:id="components-passive-add-spdt-switch" iconType="EXTENSION" text="{i18n.Add_SPDT_Switch}"
                             target="Switch2Elm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Potentiometer}"
+                        <ma:tree.MaterialTreeItem ui:id="components-passive-add-potentiometer" iconType="EXTENSION" text="{i18n.Add_Potentiometer}"
                             target="PotElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Transformer}"
+                        <ma:tree.MaterialTreeItem ui:id="components-passive-add-transformer" iconType="EXTENSION" text="{i18n.Add_Transformer}"
                             target="TransformerElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Tapped_Transformer}"
+                        <ma:tree.MaterialTreeItem ui:id="components-passive-add-taped-transformer" iconType="EXTENSION" text="{i18n.Add_Tapped_Transformer}"
                             target="TappedTransformerElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Transmission_Line}"
+                        <ma:tree.MaterialTreeItem ui:id="components-passive-add-transmission-line" iconType="EXTENSION" text="{i18n.Add_Transmission_Line}"
                             target="TransLineElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Relay}"
+                        <ma:tree.MaterialTreeItem ui:id="components-passive-add-relay" iconType="EXTENSION" text="{i18n.Add_Relay}"
                             target="RelayElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Memristor}"
+                        <ma:tree.MaterialTreeItem ui:id="components-passive-add-memristor" iconType="EXTENSION" text="{i18n.Add_Memristor}"
                             target="MemristorElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Spark_Gap}"
+                        <ma:tree.MaterialTreeItem ui:id="components-passive-add-spark-gap" iconType="EXTENSION" text="{i18n.Add_Spark_Gap}"
                             target="SparkGapElm" />
                     </ma:tree.MaterialTreeItem>
 
                     <!-- Inputs and Sources -->
                     <ma:tree.MaterialTreeItem ui:id="components-inputs-sources" iconType="FOLDER" text="{i18n.Inputs_and_Sources}">
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Ground}"
+                        <ma:tree.MaterialTreeItem ui:id="components-inputs-sources-add-ground" iconType="EXTENSION" text="{i18n.Add_Ground}"
                             target="GroundElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION"
+                        <ma:tree.MaterialTreeItem ui:id="components-inputs-sources-add-voltage-source2" iconType="EXTENSION"
                             text="{i18n.Add_Voltage_Source__2_terminal_}" target="DCVoltageElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION"
+                        <ma:tree.MaterialTreeItem ui:id="components-inputs-sources-add-ac-voltage-source2" iconType="EXTENSION"
                             text="{i18n.Add_A_C_Voltage_Source__2_terminal_}" target="ACVoltageElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION"
+                        <ma:tree.MaterialTreeItem ui:id="components-inputs-sources-add-voltage-source1" iconType="EXTENSION"
                             text="{i18n.Add_Voltage_Source__1_terminal_}" target="RailElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION"
+                        <ma:tree.MaterialTreeItem ui:id="components-inputs-sources-add-ac-voltage-source1" iconType="EXTENSION"
                             text="{i18n.Add_A_C_Voltage_Source__1_terminal_}" target="ACRailElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION"
+                        <ma:tree.MaterialTreeItem ui:id="components-inputs-sources-add-square-voltage-source" iconType="EXTENSION"
                             text="{i18n.Add_Square_Wave_Source__1_terminal_}" target="SquareRailElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Clock}"
+                        <ma:tree.MaterialTreeItem ui:id="components-inputs-sources-add-clock" iconType="EXTENSION" text="{i18n.Add_Clock}"
                             target="ClockElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_A_C_Sweep}"
+                        <ma:tree.MaterialTreeItem ui:id="components-inputs-sources-add-ac-sweep" iconType="EXTENSION" text="{i18n.Add_A_C_Sweep}"
                             target="SweepElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Variable_Voltage}"
+                        <ma:tree.MaterialTreeItem ui:id="components-inputs-sources-add-variable-voltage" iconType="EXTENSION" text="{i18n.Add_Variable_Voltage}"
                             target="VarRailElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Antenna}"
+                        <ma:tree.MaterialTreeItem ui:id="components-inputs-sources-add-antenna" iconType="EXTENSION" text="{i18n.Add_Antenna}"
                             target="AntennaElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_AM_Source}"
+                        <ma:tree.MaterialTreeItem ui:id="components-inputs-sources-add-am-source" iconType="EXTENSION" text="{i18n.Add_AM_Source}"
                             target="AMElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_FM_Source}"
+                        <ma:tree.MaterialTreeItem ui:id="components-inputs-sources-add-fm-source" iconType="EXTENSION" text="{i18n.Add_FM_Source}"
                             target="FMElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Current_Source}"
+                        <ma:tree.MaterialTreeItem ui:id="components-inputs-sources-add-current-source" iconType="EXTENSION" text="{i18n.Add_Current_Source}"
                             target="CurrentElm" />
                     </ma:tree.MaterialTreeItem>
 
                     <!-- Outputs and Labels -->
                     <ma:tree.MaterialTreeItem ui:id="components-labels" iconType="FOLDER" text="{i18n.Outputs_and_Labels}">
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Analog_Output}"
+                        <ma:tree.MaterialTreeItem ui:id="components-labels-add-analog-output" iconType="EXTENSION" text="{i18n.Add_Analog_Output}"
                             target="OutputElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_LED}"
+                        <ma:tree.MaterialTreeItem ui:id="components-labels-add-led" iconType="EXTENSION" text="{i18n.Add_LED}"
                             target="LEDElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Lamp__beta_}"
+                        <ma:tree.MaterialTreeItem ui:id="components-labels-add-lamp" iconType="EXTENSION" text="{i18n.Add_Lamp__beta_}"
                             target="LampElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Text}"
+                        <ma:tree.MaterialTreeItem ui:id="components-labels-add-text" iconType="EXTENSION" text="{i18n.Add_Text}"
                             target="TextElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Box}"
+                        <ma:tree.MaterialTreeItem ui:id="components-labels-add-box" iconType="EXTENSION" text="{i18n.Add_Box}"
                             target="BoxElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Scope_Probe}"
+                        <ma:tree.MaterialTreeItem ui:id="components-labels-add-scope-probe" iconType="EXTENSION" text="{i18n.Add_Scope_Probe}"
                             target="ProbeElm" />
                     </ma:tree.MaterialTreeItem>
 
                     <!-- GPIO -->
                     <ma:tree.MaterialTreeItem ui:id="components-gpio" iconType="FOLDER" text="{i18n.Gpio}">
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Gpio_Input}"
+                        <ma:tree.MaterialTreeItem ui:id="components-gpio-add-gpio-input" iconType="EXTENSION" text="{i18n.Add_Gpio_Input}"
                             target="GpioInputElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Gpio_Output}"
+                        <ma:tree.MaterialTreeItem ui:id="components-gpio-add-gpio-output" iconType="EXTENSION" text="{i18n.Add_Gpio_Output}"
                             target="GpioOutputElm" />
                     </ma:tree.MaterialTreeItem>
 
                     <!-- Arduino Sensors Kit -->
                     <ma:tree.MaterialTreeItem ui:id="components-sensor-kits" iconType="FOLDER" text="{i18n.Sensors}">
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.KY_002}"
+                        <ma:tree.MaterialTreeItem ui:id="components-sensor-kits-ky-002" iconType="EXTENSION" text="{i18n.KY_002}"
                                                   target="KY_002" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.KY_003}"
+                        <ma:tree.MaterialTreeItem ui:id="components-sensor-kits-ky-003" iconType="EXTENSION" text="{i18n.KY_003}"
                                                   target="KY_003" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.KY_009}"
+                        <ma:tree.MaterialTreeItem ui:id="components-sensor-kits-ky-009" iconType="EXTENSION" text="{i18n.KY_009}"
                                                   target="KY_009" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.KY_013}"
+                        <ma:tree.MaterialTreeItem ui:id="components-sensor-kits-ky-013" iconType="EXTENSION" text="{i18n.KY_013}"
                                                   target="KY_013" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.KY_016}"
+                        <ma:tree.MaterialTreeItem ui:id="components-sensor-kits-ky-016" iconType="EXTENSION" text="{i18n.KY_016}"
                                                   target="KY_016" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.SG90}"
+                        <ma:tree.MaterialTreeItem ui:id="components-sensor-kits-sg90" iconType="EXTENSION" text="{i18n.SG90}"
                                                   target="SG90" />
                     </ma:tree.MaterialTreeItem>
 
                     <!-- Active Components -->
                     <ma:tree.MaterialTreeItem ui:id="components-active" iconType="FOLDER" text="{i18n.Active_Components}">
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Diode}"
+                        <ma:tree.MaterialTreeItem ui:id="components-active-add-diode" iconType="EXTENSION" text="{i18n.Add_Diode}"
                             target="DiodeElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Zener_Diode}"
+                        <ma:tree.MaterialTreeItem ui:id="components-active-add-zener-diode" iconType="EXTENSION" text="{i18n.Add_Zener_Diode}"
                             target="ZenerElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION"
+                        <ma:tree.MaterialTreeItem ui:id="components-active-add-transistor-bipolar-npn" iconType="EXTENSION"
                             text="{i18n.Add_Transistor__bipolar_NPN_}" target="NTransistorElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION"
+                        <ma:tree.MaterialTreeItem ui:id="components-active-add-transistor-bipolar-pnp" iconType="EXTENSION"
                             text="{i18n.Add_Transistor__bipolar_PNP_}" target="PTransistorElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_MOSFET__N_Channel_}"
+                        <ma:tree.MaterialTreeItem ui:id="components-active-add-mosfet-n-channel" iconType="EXTENSION" text="{i18n.Add_MOSFET__N_Channel_}"
                             target="NMosfetElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_MOSFET__P_Channel_}"
+                        <ma:tree.MaterialTreeItem ui:id="components-active-add-mosfet-p-channel" iconType="EXTENSION" text="{i18n.Add_MOSFET__P_Channel_}"
                             target="PMosfetElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_JFET__N_Channel_}"
+                        <ma:tree.MaterialTreeItem ui:id="components-active-add-jfet-n-channel" iconType="EXTENSION" text="{i18n.Add_JFET__N_Channel_}"
                             target="NJfetElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_JFET__P_Channel_}"
+                        <ma:tree.MaterialTreeItem ui:id="components-active-add-jfet-p-channel" iconType="EXTENSION" text="{i18n.Add_JFET__P_Channel_}"
                             target="PJfetElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_SCR}"
+                        <ma:tree.MaterialTreeItem ui:id="components-active-add-scr" iconType="EXTENSION" text="{i18n.Add_SCR}"
                             target="SCRElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Tunnel_Diode}"
+                        <ma:tree.MaterialTreeItem ui:id="components-active-add-tunnel-diode" iconType="EXTENSION" text="{i18n.Add_Tunnel_Diode}"
                             target="TunnelDiodeElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Triode}"
+                        <ma:tree.MaterialTreeItem ui:id="components-active-add-triode" iconType="EXTENSION" text="{i18n.Add_Triode}"
                             target="TriodeElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Varactor_Varicap}"
+                        <ma:tree.MaterialTreeItem ui:id="components-active-add-varactor-varicap" iconType="EXTENSION" text="{i18n.Add_Varactor_Varicap}"
                             target="VaractorElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Diac}"
+                        <ma:tree.MaterialTreeItem ui:id="components-active-add-diac" iconType="EXTENSION" text="{i18n.Add_Diac}"
                             target="DiacElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Triac}"
+                        <ma:tree.MaterialTreeItem ui:id="components-active-add-triac" iconType="EXTENSION" text="{i18n.Add_Triac}"
                             target="TriacElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Photoresistor}"
+                        <ma:tree.MaterialTreeItem ui:id="components-active-add-photoresistor" iconType="EXTENSION" text="{i18n.Add_Photoresistor}"
                             target="PhotoResistorElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Thermistor}"
+                        <ma:tree.MaterialTreeItem ui:id="components-active-add-thermistor" iconType="EXTENSION" text="{i18n.Add_Thermistor}"
                             target="ThermistorElm" />
                     </ma:tree.MaterialTreeItem>
 
                     <!-- Active Building Blocks -->
                     <ma:tree.MaterialTreeItem ui:id="components-building-blocks" iconType="FOLDER" text="{i18n.Active_Building_Blocks}">
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Op_Amp____on_top_}"
+                        <ma:tree.MaterialTreeItem ui:id="components-building-blocks-add-op-amp-top" iconType="EXTENSION" text="{i18n.Add_Op_Amp____on_top_}"
                             target="OpAmpElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Op_Amp____on_top_}"
+                        <ma:tree.MaterialTreeItem ui:id="components-building-blocks-add-op-amp-swap-top" iconType="EXTENSION" text="{i18n.Add_Op_Amp____on_top_}"
                             target="OpAmpSwapElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Analog_Switch__SPST_}"
+                        <ma:tree.MaterialTreeItem ui:id="components-building-blocks-add-analog-switch-spst" iconType="EXTENSION" text="{i18n.Add_Analog_Switch__SPST_}"
                             target="AnalogSwitchElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Analog_Switch__SPDT_}"
+                        <ma:tree.MaterialTreeItem ui:id="components-building-blocks-add-analog-switch-spdt" iconType="EXTENSION" text="{i18n.Add_Analog_Switch__SPDT_}"
                             target="AnalogSwitch2Elm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Tristate_Buffer}"
+                        <ma:tree.MaterialTreeItem ui:id="components-building-blocks-add-tristate-buffer" iconType="EXTENSION" text="{i18n.Add_Tristate_Buffer}"
                             target="TriStateElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Schmitt_Trigger}"
+                        <ma:tree.MaterialTreeItem ui:id="components-building-blocks-add-schmitt-trigger" iconType="EXTENSION" text="{i18n.Add_Schmitt_Trigger}"
                             target="SchmittElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION"
+                        <ma:tree.MaterialTreeItem ui:id="components-building-blocks-add-schmitt-trigger-inverting" iconType="EXTENSION"
                             text="{i18n.Add_Schmitt_Trigger__Inverting_}" target="InvertingSchmittElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_CCII_}"
+                        <ma:tree.MaterialTreeItem ui:id="components-building-blocks-add-ccii" iconType="EXTENSION" text="{i18n.Add_CCII_}"
                             target="CC2Elm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_CCII_}"
+                        <ma:tree.MaterialTreeItem ui:id="components-building-blocksadd-ccii-neg" iconType="EXTENSION" text="{i18n.Add_CCII_}"
                             target="CC2NegElm" />
                     </ma:tree.MaterialTreeItem>
 
                     <!-- Logic Gates, Input and Output -->
                     <ma:tree.MaterialTreeItem ui:id="components-logic" iconType="FOLDER" text="{i18n.Logic_Gates_Input_and_Output}">
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Logic_Input}"
+                        <ma:tree.MaterialTreeItem ui:id="components-logic-add-logic-input"  iconType="EXTENSION" text="{i18n.Add_Logic_Input}"
                             target="LogicInputElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Logic_Output}"
+                        <ma:tree.MaterialTreeItem ui:id="components-logic-add-logic-output" iconType="EXTENSION" text="{i18n.Add_Logic_Output}"
                             target="LogicOutputElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Inverter}"
+                        <ma:tree.MaterialTreeItem ui:id="components-logic-add-inverter" iconType="EXTENSION" text="{i18n.Add_Inverter}"
                             target="InverterElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_NAND_Gate}"
+                        <ma:tree.MaterialTreeItem ui:id="components-logic-add-nand-gate" iconType="EXTENSION" text="{i18n.Add_NAND_Gate}"
                             target="NandGateElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_NOR_Gate}"
+                        <ma:tree.MaterialTreeItem ui:id="components-logic-add-nor-gate" iconType="EXTENSION" text="{i18n.Add_NOR_Gate}"
                             target="NorGateElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_AND_Gate}"
+                        <ma:tree.MaterialTreeItem ui:id="components-logic-add-and-gate" iconType="EXTENSION" text="{i18n.Add_AND_Gate}"
                             target="AndGateElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_OR_Gate}"
+                        <ma:tree.MaterialTreeItem ui:id="components-logic-add-or-gate" iconType="EXTENSION" text="{i18n.Add_OR_Gate}"
                             target="OrGateElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_XOR_Gate}"
+                        <ma:tree.MaterialTreeItem ui:id="components-logic-add-xor-gate" iconType="EXTENSION" text="{i18n.Add_XOR_Gate}"
                             target="XorGateElm" />
                     </ma:tree.MaterialTreeItem>
 
                     <!-- Digital Chips -->
                     <ma:tree.MaterialTreeItem ui:id="components-digital-chips" iconType="FOLDER" text="{i18n.Digital_Chips}">
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_D_Flip_Flop}"
+                        <ma:tree.MaterialTreeItem ui:id="components-digital-chips-add-d-flip-flop"
+                                                  iconType="EXTENSION" text="{i18n.Add_D_Flip_Flop}"
                             target="DFlipFlopElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_JK_Flip_Flop}"
+                        <ma:tree.MaterialTreeItem ui:id="components-digital-chips-add-jk-flip-flop"
+                                                  iconType="EXTENSION" text="{i18n.Add_JK_Flip_Flop}"
                             target="JKFlipFlopElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_T_Flip_Flop}"
+                        <ma:tree.MaterialTreeItem ui:id="components-digital-chips-add-t-flip-flop"
+                                                  iconType="EXTENSION" text="{i18n.Add_T_Flip_Flop}"
                             target="TFlipFlopElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_7_Segment_LED}"
+                        <ma:tree.MaterialTreeItem ui:id="components-digital-chips-add-7-segment-led"
+                                                  iconType="EXTENSION" text="{i18n.Add_7_Segment_LED}"
                             target="SevenSegElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_7_Segment_Decoder}"
+                        <ma:tree.MaterialTreeItem ui:id="components-digital-chips-add-7-segment-decoder"
+                                                  iconType="EXTENSION" text="{i18n.Add_7_Segment_Decoder}"
                             target="SevenSegDecoderElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Multiplexer}"
+                        <ma:tree.MaterialTreeItem ui:id="components-digital-chips-add-multiplexer"
+                                                  iconType="EXTENSION" text="{i18n.Add_Multiplexer}"
                             target="MultiplexerElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Demultiplexer}"
+                        <ma:tree.MaterialTreeItem ui:id="components-digital-chips-add-demultiplexer"
+                                                  iconType="EXTENSION" text="{i18n.Add_Demultiplexer}"
                             target="DeMultiplexerElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_SIPO_shift_register}"
+                        <ma:tree.MaterialTreeItem ui:id="components-digital-chips-add-sipo-shift-register"
+                                                  iconType="EXTENSION" text="{i18n.Add_SIPO_shift_register}"
                             target="SipoShiftElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_PISO_shift_register}"
+                        <ma:tree.MaterialTreeItem ui:id="components-digital-chips-add-piso-shift-register"
+                                                  iconType="EXTENSION" text="{i18n.Add_PISO_shift_register}"
                             target="PisoShiftElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Counter}"
+                        <ma:tree.MaterialTreeItem ui:id="components-digital-chips-add-counter"
+                                                  iconType="EXTENSION" text="{i18n.Add_Counter}"
                             target="CounterElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Decade_Counter}"
+                        <ma:tree.MaterialTreeItem ui:id="components-digital-chips-add-decode-counter"
+                                                  iconType="EXTENSION" text="{i18n.Add_Decade_Counter}"
                             target="DecadeElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Latch}"
+                        <ma:tree.MaterialTreeItem ui:id="components-digital-chips-add-latch"
+                                                  iconType="EXTENSION" text="{i18n.Add_Latch}"
                             target="LatchElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Sequence_generator}"
+                        <ma:tree.MaterialTreeItem ui:id="components-digital-chips-add-sequence-generator"
+                                                  iconType="EXTENSION" text="{i18n.Add_Sequence_generator}"
                             target="SeqGenElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Full_Adder}"
+                        <ma:tree.MaterialTreeItem ui:id="components-digital-chips-add-full-adder"
+                                                  iconType="EXTENSION" text="{i18n.Add_Full_Adder}"
                             target="FullAdderElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Half_Adder}"
+                        <ma:tree.MaterialTreeItem ui:id="components-digital-chips-add-half-adder"
+                                                  iconType="EXTENSION" text="{i18n.Add_Half_Adder}"
                             target="HalfAdderElm" />
                     </ma:tree.MaterialTreeItem>
 
                     <!-- Analog and Hybrid Chips -->
-                    <ma:tree.MaterialTreeItem ui:id="components-analog-hybrid-chips " iconType="FOLDER" text="{i18n.Analog_and_Hybrid_Chips}">
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_555_Timer}"
+                    <ma:tree.MaterialTreeItem ui:id="components-analog-hybrid-chips" iconType="FOLDER" text="{i18n.Analog_and_Hybrid_Chips}">
+                        <ma:tree.MaterialTreeItem ui:id="components-analog-hybrid-chips-add-555-timer"
+                                                  iconType="EXTENSION" text="{i18n.Add_555_Timer}"
                             target="TimerElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Phase_Comparator}"
+                        <ma:tree.MaterialTreeItem ui:id="components-analog-hybrid-chips-add-phase-comparator"
+                                                  iconType="EXTENSION" text="{i18n.Add_Phase_Comparator}"
                             target="PhaseCompElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_DAC}"
+                        <ma:tree.MaterialTreeItem ui:id="components-analog-hybrid-chips-add-dac"
+                                                  iconType="EXTENSION" text="{i18n.Add_DAC}"
                             target="DACElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_ADC}"
+                        <ma:tree.MaterialTreeItem ui:id="components-analog-hybrid-chips-add-adc"
+                                                  iconType="EXTENSION" text="{i18n.Add_ADC}"
                             target="ADCElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_VCO}"
+                        <ma:tree.MaterialTreeItem ui:id="components-analog-hybrid-chips-add-vco"
+                                                  iconType="EXTENSION" text="{i18n.Add_VCO}"
                             target="VCOElm" />
-                        <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Monostable}"
+                        <ma:tree.MaterialTreeItem ui:id="components-analog-hybrid-chips-add-monostable"
+                                                  iconType="EXTENSION" text="{i18n.Add_Monostable}"
                             target="MonostableElm" />
                     </ma:tree.MaterialTreeItem>
 
