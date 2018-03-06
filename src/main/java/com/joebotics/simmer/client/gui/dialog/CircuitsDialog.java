@@ -52,6 +52,8 @@ public class CircuitsDialog extends Composite {
 
     private FileUtils fileUtils;
 
+    private final String circuitIdPrefix = "circuit";
+
     public CircuitsDialog() {
         this.fileUtils = new FileUtils();
 
@@ -88,14 +90,21 @@ public class CircuitsDialog extends Composite {
 
     private MaterialTreeItem parseNode(TreeNode<CircuitLinkInfo> node) {
         MaterialTreeItem item;
+        String nodeName;
         if (node.hasChildren()) {
-            item = new MaterialTreeItem(node.getData().getName(), IconType.FOLDER);
+            nodeName = node.getData().getName();
+
+            item = new MaterialTreeItem(nodeName, IconType.FOLDER);
+            item.setId(circuitIdPrefix + "-" + nodeName.toLowerCase().replace(' ', '-'));
             for (TreeNode<CircuitLinkInfo> child : node) {
                 item.add(parseNode(child));
             }
         } else {
-            item = new MaterialTreeItem(node.getData().getName(), IconType.FILE_DOWNLOAD);
+            nodeName = node.getData().getName();
+
+            item = new MaterialTreeItem(nodeName, IconType.FILE_DOWNLOAD);
             item.setTarget(node.getData().getTarget());
+            item.setId(circuitIdPrefix + "-" + nodeName.toLowerCase().replace(' ', '-'));
         }
         return item;
     }
