@@ -12,13 +12,13 @@
         <m:MaterialRow>
             <m:MaterialColumn grid="s11">
                 <ma:tree.MaterialTree ui:field="compTree" fontSize="1.2em">
-                    <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Wire}"
+                    <ma:tree.MaterialTreeItem ui:id="components-add-wire" iconType="EXTENSION" text="{i18n.Add_Wire}"
                         target="WireElm" />
-                    <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Resistor}"
+                    <ma:tree.MaterialTreeItem ui:id="components-add-resistor" iconType="EXTENSION" text="{i18n.Add_Resistor}"
                         target="ResistorElm" />
 
                     <!-- Passive Components -->
-                    <ma:tree.MaterialTreeItem iconType="FOLDER" text="{i18n.Passive_Components}">
+                    <ma:tree.MaterialTreeItem ui:id="components-passive" iconType="FOLDER" text="{i18n.Passive_Components}">
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Capacitor}"
                             target="CapacitorElm" />
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Inductor}"
@@ -46,7 +46,7 @@
                     </ma:tree.MaterialTreeItem>
 
                     <!-- Inputs and Sources -->
-                    <ma:tree.MaterialTreeItem iconType="FOLDER" text="{i18n.Inputs_and_Sources}">
+                    <ma:tree.MaterialTreeItem ui:id="components-inputs-sources" iconType="FOLDER" text="{i18n.Inputs_and_Sources}">
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Ground}"
                             target="GroundElm" />
                         <ma:tree.MaterialTreeItem iconType="EXTENSION"
@@ -76,7 +76,7 @@
                     </ma:tree.MaterialTreeItem>
 
                     <!-- Outputs and Labels -->
-                    <ma:tree.MaterialTreeItem iconType="FOLDER" text="{i18n.Outputs_and_Labels}">
+                    <ma:tree.MaterialTreeItem ui:id="components-labels" iconType="FOLDER" text="{i18n.Outputs_and_Labels}">
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Analog_Output}"
                             target="OutputElm" />
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_LED}"
@@ -92,7 +92,7 @@
                     </ma:tree.MaterialTreeItem>
 
                     <!-- GPIO -->
-                    <ma:tree.MaterialTreeItem iconType="FOLDER" text="{i18n.Gpio}">
+                    <ma:tree.MaterialTreeItem ui:id="components-gpio" iconType="FOLDER" text="{i18n.Gpio}">
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Gpio_Input}"
                             target="GpioInputElm" />
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Gpio_Output}"
@@ -100,7 +100,7 @@
                     </ma:tree.MaterialTreeItem>
 
                     <!-- Arduino Sensors Kit -->
-                    <ma:tree.MaterialTreeItem iconType="FOLDER" text="{i18n.Sensors}">
+                    <ma:tree.MaterialTreeItem ui:id="components-sensor-kits" iconType="FOLDER" text="{i18n.Sensors}">
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.KY_002}"
                                                   target="KY_002" />
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.KY_003}"
@@ -116,7 +116,7 @@
                     </ma:tree.MaterialTreeItem>
 
                     <!-- Active Components -->
-                    <ma:tree.MaterialTreeItem iconType="FOLDER" text="{i18n.Active_Components}">
+                    <ma:tree.MaterialTreeItem ui:id="components-active" iconType="FOLDER" text="{i18n.Active_Components}">
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Diode}"
                             target="DiodeElm" />
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Zener_Diode}"
@@ -152,7 +152,7 @@
                     </ma:tree.MaterialTreeItem>
 
                     <!-- Active Building Blocks -->
-                    <ma:tree.MaterialTreeItem iconType="FOLDER" text="{i18n.Active_Building_Blocks}">
+                    <ma:tree.MaterialTreeItem ui:id="components-building-blocks" iconType="FOLDER" text="{i18n.Active_Building_Blocks}">
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Op_Amp____on_top_}"
                             target="OpAmpElm" />
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Op_Amp____on_top_}"
@@ -174,7 +174,7 @@
                     </ma:tree.MaterialTreeItem>
 
                     <!-- Logic Gates, Input and Output -->
-                    <ma:tree.MaterialTreeItem iconType="FOLDER" text="{i18n.Logic_Gates_Input_and_Output}">
+                    <ma:tree.MaterialTreeItem ui:id="components-logic" iconType="FOLDER" text="{i18n.Logic_Gates_Input_and_Output}">
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Logic_Input}"
                             target="LogicInputElm" />
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Logic_Output}"
@@ -194,7 +194,7 @@
                     </ma:tree.MaterialTreeItem>
 
                     <!-- Digital Chips -->
-                    <ma:tree.MaterialTreeItem iconType="FOLDER" text="{i18n.Digital_Chips}">
+                    <ma:tree.MaterialTreeItem ui:id="components-digital-chips" iconType="FOLDER" text="{i18n.Digital_Chips}">
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_D_Flip_Flop}"
                             target="DFlipFlopElm" />
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_JK_Flip_Flop}"
@@ -228,7 +228,7 @@
                     </ma:tree.MaterialTreeItem>
 
                     <!-- Analog and Hybrid Chips -->
-                    <ma:tree.MaterialTreeItem iconType="FOLDER" text="{i18n.Analog_and_Hybrid_Chips}">
+                    <ma:tree.MaterialTreeItem ui:id="components-analog-hybrid-chips " iconType="FOLDER" text="{i18n.Analog_and_Hybrid_Chips}">
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_555_Timer}"
                             target="TimerElm" />
                         <ma:tree.MaterialTreeItem iconType="EXTENSION" text="{i18n.Add_Phase_Comparator}"
