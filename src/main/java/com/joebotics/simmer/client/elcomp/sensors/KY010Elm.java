@@ -8,18 +8,17 @@ import com.google.gwt.user.client.ui.Image;
 import com.joebotics.simmer.client.gui.util.Point;
 
 /**
- * Created by gologuzov on 04.01.18.
- * KY-002 Vibration Switch Element
+ * KY-010 Optical broken module
  */
-public class KY002Elm extends ChipElm {
-    private final ImageElement vibration = ImageElement.as(new Image("imgs/components/vibration.svg").getElement());
+public class KY010Elm extends ChipElm {
+    private final ImageElement lightIcon = ImageElement.as(new Image("imgs/components/light.svg").getElement());
 
-    public KY002Elm(int xx, int yy) {
+    public KY010Elm(int xx, int yy) {
         super(xx, yy);
         footprintName = "SIP3";
     }
 
-    public KY002Elm(int xa, int ya, int xb, int yb, int f, StringTokenizer st) {
+    public KY010Elm(int xa, int ya, int xb, int yb, int f, StringTokenizer st) {
         super(xa, ya, xb, yb, f, st);
         footprintName = "SIP3";
     }
@@ -30,7 +29,7 @@ public class KY002Elm extends ChipElm {
 
     @Override
     public String getChipName() {
-        return "KY-002";
+        return "KY-010";
     }
 
     @Override
@@ -60,7 +59,7 @@ public class KY002Elm extends ChipElm {
     @Override
     public void draw(Graphics g) {
         Point center = getCenterPoint();
-        g.getContext().drawImage(vibration, center.getX() - vibration.getWidth() / 2, center.getY() - vibration.getHeight() / 2);
+        g.getContext().drawImage(lightIcon, center.getX() - lightIcon.getWidth() / 2, center.getY() - lightIcon.getHeight() / 2);
 
         super.draw(g);
     }

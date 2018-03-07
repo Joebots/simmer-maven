@@ -19,10 +19,10 @@
                     iconType="ZOOM_OUT_MAP" />
                 <m:MaterialLabel text="Expand" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
                 <m:MaterialLink ui:field="btnImport" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
-                     iconType="FILE_UPLOAD" />
+                     iconType="FOLDER_OPEN" />
                 <m:MaterialLabel text="Open" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
                 <m:MaterialLink ui:field="btnExport" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
-                    iconType="FILE_DOWNLOAD" />
+                    iconType="SAVE" />
                 <m:MaterialLabel text="Save" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
             </m:MaterialColumn>
         </m:MaterialRow>

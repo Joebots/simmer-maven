@@ -8,20 +8,19 @@ import com.google.gwt.user.client.ui.Image;
 import com.joebotics.simmer.client.gui.util.Point;
 
 /**
- * Created by gologuzov on 04.01.18.
- * KY-002 Vibration Switch Element
+ * KY-024﻿ Linear magnetic Hall sensors
  */
-public class KY002Elm extends ChipElm {
-    private final ImageElement vibration = ImageElement.as(new Image("imgs/components/vibration.svg").getElement());
+public class KY024Elm extends ChipElm {
+    private final ImageElement magnet = ImageElement.as(new Image("imgs/components/magneticField.svg").getElement());
 
-    public KY002Elm(int xx, int yy) {
+    public KY024Elm(int xx, int yy) {
         super(xx, yy);
-        footprintName = "SIP3";
+        footprintName = "SIP4";
     }
 
-    public KY002Elm(int xa, int ya, int xb, int yb, int f, StringTokenizer st) {
+    public KY024Elm(int xa, int ya, int xb, int yb, int f, StringTokenizer st) {
         super(xa, ya, xb, yb, f, st);
-        footprintName = "SIP3";
+        footprintName = "SIP4";
     }
 
     public void execute() {
@@ -30,7 +29,7 @@ public class KY002Elm extends ChipElm {
 
     @Override
     public String getChipName() {
-        return "KY-002";
+        return "KY-024";
     }
 
     @Override
@@ -43,24 +42,27 @@ public class KY002Elm extends ChipElm {
     }
 
     public int getPostCount() {
-        return 3;
+        return 4;
     }
 
     public void setupPins() {
         setSizeX(2);
-        setSizeY(3);
+        setSizeY(4);
         setPins(new Pin[getPostCount()]);
 
-        getPins()[0] = new Pin(0, Side.EAST, "S");
-        getPins()[0].setOutput(getPins()[0].setState(true));
+        getPins()[0] = new Pin(0, Side.EAST, "DS"); // Digital Signal
         getPins()[1] = new Pin(1, Side.EAST, "+");
         getPins()[2] = new Pin(2, Side.EAST, "-");
+        getPins()[3] = new Pin(3, Side.EAST, "AS"); // Analog Signal
+
+        getPins()[0].setOutput(getPins()[0].setState(true));
+        getPins()[3].setOutput(getPins()[3].setState(true));
     }
 
     @Override
     public void draw(Graphics g) {
         Point center = getCenterPoint();
-        g.getContext().drawImage(vibration, center.getX() - vibration.getWidth() / 2, center.getY() - vibration.getHeight() / 2);
+        g.getContext().drawImage(magnet, center.getX() - magnet.getWidth() / 2, center.getY() - magnet.getHeight() / 2);
 
         super.draw(g);
     }

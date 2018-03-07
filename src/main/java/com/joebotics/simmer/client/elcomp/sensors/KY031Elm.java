@@ -8,18 +8,17 @@ import com.google.gwt.user.client.ui.Image;
 import com.joebotics.simmer.client.gui.util.Point;
 
 /**
- * Created by gologuzov on 04.01.18.
- * KY-002 Vibration Switch Element
+ * KY-031 Knock-sensor module
  */
-public class KY002Elm extends ChipElm {
-    private final ImageElement vibration = ImageElement.as(new Image("imgs/components/vibration.svg").getElement());
+public class KY031Elm extends ChipElm {
+    private final ImageElement hammer = ImageElement.as(new Image("imgs/components/hammer.svg").getElement());
 
-    public KY002Elm(int xx, int yy) {
+    public KY031Elm(int xx, int yy) {
         super(xx, yy);
         footprintName = "SIP3";
     }
 
-    public KY002Elm(int xa, int ya, int xb, int yb, int f, StringTokenizer st) {
+    public KY031Elm(int xa, int ya, int xb, int yb, int f, StringTokenizer st) {
         super(xa, ya, xb, yb, f, st);
         footprintName = "SIP3";
     }
@@ -30,7 +29,7 @@ public class KY002Elm extends ChipElm {
 
     @Override
     public String getChipName() {
-        return "KY-002";
+        return "KY-031";
     }
 
     @Override
@@ -51,16 +50,16 @@ public class KY002Elm extends ChipElm {
         setSizeY(3);
         setPins(new Pin[getPostCount()]);
 
-        getPins()[0] = new Pin(0, Side.EAST, "S");
-        getPins()[0].setOutput(getPins()[0].setState(true));
+        getPins()[0] = new Pin(0, Side.EAST, "-");
         getPins()[1] = new Pin(1, Side.EAST, "+");
-        getPins()[2] = new Pin(2, Side.EAST, "-");
+        getPins()[2] = new Pin(2, Side.EAST, "S");
+        getPins()[2].setOutput(getPins()[2].setState(true));
     }
 
     @Override
     public void draw(Graphics g) {
         Point center = getCenterPoint();
-        g.getContext().drawImage(vibration, center.getX() - vibration.getWidth() / 2, center.getY() - vibration.getHeight() / 2);
+        g.getContext().drawImage(hammer, center.getX() - hammer.getWidth() / 2, center.getY() - hammer.getHeight() / 2);
 
         super.draw(g);
     }

@@ -275,8 +275,14 @@ public class CircuitElementFactory {
         if (n == "KY_003")
             return  new KY003Elm(x1, y1);
 
+        if (n == "KY_004")
+            return  new KY004Elm(x1, y1);
+
         if (n == "KY_009")
             return  new KY009Elm(x1, y1);
+
+        if (n == "KY_010")
+            return  new KY010Elm(x1, y1);
 
         if (n == "KY_013")
             return  new KY013Elm(x1, y1);
@@ -284,8 +290,23 @@ public class CircuitElementFactory {
         if (n == "KY_016")
             return  new KY016Elm(x1, y1);
 
-        if (n == "KY_016")
-            return new KY016Elm(x1, y1);
+        if (n == "KY_017")
+            return new KY017Elm(x1, y1);
+
+        if (n == "KY_020")
+            return new KY020Elm(x1, y1);
+
+        if (n == "KY_021")
+            return new KY021Elm(x1, y1);
+
+        if (n == "KY_024")
+            return new KY024Elm(x1, y1);
+
+        if (n == "KY_031")
+            return new KY031Elm(x1, y1);
+
+        if (n == "KY_033")
+            return new KY033Elm(x1, y1);
 
         if (n == "SG90")
             return new SG90(x1, y1);
