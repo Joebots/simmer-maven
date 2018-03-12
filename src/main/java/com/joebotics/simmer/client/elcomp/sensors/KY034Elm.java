@@ -58,7 +58,6 @@ public class KY034Elm extends ChipElm {
         getPins()[0] = new Pin(0, Side.EAST, "-");
         getPins()[1] = new Pin(1, Side.EAST, "NC"); // Pin not connected
         getPins()[2] = new Pin(2, Side.EAST, "S");
-        getPins()[2].setOutput(getPins()[2].setState(true));
 
     }
 
