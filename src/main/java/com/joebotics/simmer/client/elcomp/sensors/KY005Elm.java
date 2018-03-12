@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.canvas.dom.client.Context2d;
 
 /**
- * KY-005 nfrared emission sensor module
+ * KY-005 Infrared emission sensor module
  */
 public class KY005Elm extends ChipElm {
     private final ImageElement irSprite = ImageElement.as(new Image("imgs/components/irSprite.svg").getElement());
@@ -41,7 +41,7 @@ public class KY005Elm extends ChipElm {
     }
 
     public int getDumpType() {
-        return 502;
+        return 505;
     }
 
     public int getPostCount() {

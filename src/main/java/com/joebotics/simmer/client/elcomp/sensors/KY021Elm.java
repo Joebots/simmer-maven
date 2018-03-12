@@ -38,7 +38,7 @@ public class KY021Elm extends ChipElm {
     }
 
     public int getDumpType() {
-        return 502;
+        return 521;
     }
 
     public int getPostCount() {

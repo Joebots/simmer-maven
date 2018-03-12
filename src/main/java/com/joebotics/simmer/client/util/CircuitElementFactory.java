@@ -586,6 +586,9 @@ public class CircuitElementFactory {
         if (tint == 509)
             return  new KY009Elm(x1, y1, x2, y2, f, st);
 
+        if (tint == 510)
+            return  new KY010Elm(x1, y1, x2, y2, f, st);
+
         if (tint == 512)
             return  new KY012Elm(x1, y1, x2, y2, f, st);
 
@@ -595,8 +598,26 @@ public class CircuitElementFactory {
         if (tint == 516)
             return  new KY016Elm(x1, y1, x2, y2, f, st);
 
+        if (tint == 517)
+            return  new KY017Elm(x1, y1, x2, y2, f, st);
+
         if (tint == 519)
             return  new KY019Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 520)
+            return  new KY020Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 521)
+            return  new KY021Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 524)
+            return  new KY024Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 531)
+            return  new KY031Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 533)
+            return  new KY033Elm(x1, y1, x2, y2, f, st);
 
         if (tint == 534)
             return  new KY034Elm(x1, y1, x2, y2, f, st);
