@@ -15,7 +15,7 @@ import com.google.gwt.canvas.dom.client.Context2d;
 public class KY005Elm extends ChipElm {
     private final ImageElement irSprite = ImageElement.as(new Image("imgs/components/irSprite.svg").getElement());
     private Rectangle iconRect = new Rectangle();
-    
+
     public KY005Elm(int xx, int yy) {
         super(xx, yy);
         footprintName = "SIP3";
@@ -27,7 +27,8 @@ public class KY005Elm extends ChipElm {
     }
 
     public void execute() {
-        getPins()[2].setValue(false);
+        Pin signalPin = getPins()[2];
+        signalPin.setOutput(signalPin.getVoltage() > 0);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class KY005Elm extends ChipElm {
 
     @Override
     public int getVoltageSourceCount() {
-        return 1;
+        return 0;
     }
 
     public int getDumpType() {
