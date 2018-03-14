@@ -26,11 +26,6 @@ public class KY005Elm extends ChipElm {
         footprintName = "SIP3";
     }
 
-    public void execute() {
-        Pin signalPin = getPins()[2];
-        signalPin.setOutput(signalPin.getVoltage() > 0);
-    }
-
     @Override
     public String getChipName() {
         return "KY-005";
@@ -62,7 +57,7 @@ public class KY005Elm extends ChipElm {
 
     @Override
     public void draw(Graphics g) {
-        drawState(g, getPins()[2].isOutput());
+        drawState(g, getPostVoltage(2) != 0);
 
         super.draw(g);
     }
