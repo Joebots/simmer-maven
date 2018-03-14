@@ -278,11 +278,23 @@ public class CircuitElementFactory {
         if (n == "KY_004")
             return  new KY004Elm(x1, y1);
 
+        if (n == "KY_005")
+            return  new KY005Elm(x1, y1);
+
+        if (n == "KY_006")
+            return  new KY006Elm(x1, y1);
+
+        if (n == "KY_008")
+            return  new KY008Elm(x1, y1);
+
         if (n == "KY_009")
             return  new KY009Elm(x1, y1);
 
         if (n == "KY_010")
             return  new KY010Elm(x1, y1);
+
+        if (n == "KY_012")
+            return  new KY012Elm(x1, y1);
 
         if (n == "KY_013")
             return  new KY013Elm(x1, y1);
@@ -292,6 +304,9 @@ public class CircuitElementFactory {
 
         if (n == "KY_017")
             return new KY017Elm(x1, y1);
+
+        if (n == "KY_019")
+            return new KY019Elm(x1, y1);
 
         if (n == "KY_020")
             return new KY020Elm(x1, y1);
@@ -307,6 +322,9 @@ public class CircuitElementFactory {
 
         if (n == "KY_033")
             return new KY033Elm(x1, y1);
+
+        if (n == "KY_034")
+            return new KY034Elm(x1, y1);
 
         if (n == "SG90")
             return new SG90(x1, y1);
@@ -553,14 +571,56 @@ public class CircuitElementFactory {
         if (tint == 503)
             return  new KY003Elm(x1, y1, x2, y2, f, st);
 
+        if (tint == 504)
+            return  new KY004Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 505)
+            return  new KY005Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 506)
+            return  new KY006Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 508)
+            return  new KY008Elm(x1, y1, x2, y2, f, st);
+
         if (tint == 509)
             return  new KY009Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 510)
+            return  new KY010Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 512)
+            return  new KY012Elm(x1, y1, x2, y2, f, st);
 
         if (tint == 513)
             return  new KY013Elm(x1, y1, x2, y2, f, st);
 
         if (tint == 516)
             return  new KY016Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 517)
+            return  new KY017Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 519)
+            return  new KY019Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 520)
+            return  new KY020Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 521)
+            return  new KY021Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 524)
+            return  new KY024Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 531)
+            return  new KY031Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 533)
+            return  new KY033Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 534)
+            return  new KY034Elm(x1, y1, x2, y2, f, st);
 
         if (tint == 590)
             return  new SG90(x1, y1, x2, y2, f, st);

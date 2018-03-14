@@ -19,8 +19,6 @@ import gwt.material.design.client.ui.MaterialSwitch;
  * KY-003 Hall magnetic sensor module
  */
 public class KY003Elm extends ChipElm {
-    private int sensorValue = 0;
-
     private final ImageElement magnet = ImageElement.as(new Image("imgs/components/magnet.svg").getElement());
     private final ImageElement switchIcon = ImageElement.as(new Image("imgs/components/switchSprite.svg").getElement());
     private Rectangle switchRect = new Rectangle();
@@ -63,7 +61,6 @@ public class KY003Elm extends ChipElm {
         setPins(new Pin[getPostCount()]);
 
         getPins()[0] = new Pin(0, Side.EAST, "S");
-        getPins()[0].setOutput(getPins()[0].setState(true));
         getPins()[1] = new Pin(1, Side.EAST, "+");
         getPins()[2] = new Pin(2, Side.EAST, "-");
     }

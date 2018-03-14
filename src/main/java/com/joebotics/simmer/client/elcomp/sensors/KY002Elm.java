@@ -52,7 +52,6 @@ public class KY002Elm extends ChipElm {
         setPins(new Pin[getPostCount()]);
 
         getPins()[0] = new Pin(0, Side.EAST, "S");
-        getPins()[0].setOutput(getPins()[0].setState(true));
         getPins()[1] = new Pin(1, Side.EAST, "+");
         getPins()[2] = new Pin(2, Side.EAST, "-");
     }

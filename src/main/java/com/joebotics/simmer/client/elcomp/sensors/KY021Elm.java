@@ -38,7 +38,7 @@ public class KY021Elm extends ChipElm {
     }
 
     public int getDumpType() {
-        return 502;
+        return 521;
     }
 
     public int getPostCount() {
@@ -53,7 +53,6 @@ public class KY021Elm extends ChipElm {
         getPins()[0] = new Pin(0, Side.EAST, "-");
         getPins()[1] = new Pin(1, Side.EAST, "+");
         getPins()[2] = new Pin(2, Side.EAST, "S");
-        getPins()[2].setOutput(getPins()[2].setState(true));
     }
 
     @Override

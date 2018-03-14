@@ -38,7 +38,7 @@ public class KY024Elm extends ChipElm {
     }
 
     public int getDumpType() {
-        return 502;
+        return 524;
     }
 
     public int getPostCount() {
@@ -54,9 +54,6 @@ public class KY024Elm extends ChipElm {
         getPins()[1] = new Pin(1, Side.EAST, "+");
         getPins()[2] = new Pin(2, Side.EAST, "-");
         getPins()[3] = new Pin(3, Side.EAST, "AS"); // Analog Signal
-
-        getPins()[0].setOutput(getPins()[0].setState(true));
-        getPins()[3].setOutput(getPins()[3].setState(true));
     }
 
     @Override
