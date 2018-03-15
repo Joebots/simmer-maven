@@ -271,11 +271,11 @@ public class Simmer {
 
         } else {
 
-            fileOps.readSetup(null, 0, "blank.txt", false, false);
+            fileOps.readSetup(null, 0, false, false);
 
             if (stopMessage == null && startCircuit != null) {
                 fileOps.getSetupList(false);
-                fileOps.readSetupFile(startCircuit, true);
+                fileOps.readSetupFile(startCircuit, startLabel, true);
             } else
                 fileOps.getSetupList(true);
         }
@@ -1673,10 +1673,6 @@ public class Simmer {
 
     public MouseMode getMouseMode() {
         return mouseMode;
-    }
-
-    public CircuitModel getCircuitModel() {
-        return circuitModel;
     }
 
     public List<CircuitNode> getNodeList() {
