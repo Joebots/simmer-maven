@@ -161,4 +161,21 @@ public class Rectangle implements Serializable{
 		result.put("height", new JSONNumber(this.height));
 		return result;
 	}
+	public void rotate(Point origin, double angle) {
+				Point point1 = new Point(x, x + width);
+				Point point2 = new Point(y, y + height);
+				Point newPoint1 = rotatePoint(point1, origin, angle);
+				Point newPoint2 = rotatePoint(point2, origin, angle);
+				x = newPoint1.getX();
+				y = newPoint1.getY();
+				width = newPoint2.getX() - newPoint1.getX();
+				height = newPoint2.getY() - newPoint1.getY();
+			}
+
+			private Point rotatePoint(Point origin, Point point, double angle) {
+				Point normalizedPoint = new Point(point.getX() - origin.getX(), point.getY() - origin.getY());
+				int rotatedX = (int)Math.round(normalizedPoint.getX() * Math.cos(angle) - normalizedPoint.getY() * Math.sin(angle));
+				int rotatedY = (int)Math.round(normalizedPoint.getX() * Math.sin(angle) + normalizedPoint.getY() * Math.cos(angle));
+				return new Point(point.getX() + rotatedX, point.getY() + rotatedY);
+			}
 }

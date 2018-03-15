@@ -80,7 +80,10 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         Anchor.wrap(DOM.getElementById("view_in_scope1")).addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                dragHelper.startDrag(p);
+                simmer.setSelectedCircuitElement(finder.selectElement(p));
+                finder.selectElement(p);
+                menuPerformed("elm", "viewInScope");
+                /*dragHelper.startDrag(p);
                 simmer.setSelectedCircuitElement(finder.selectElement(p));
                 AbstractCircuitElement element = finder.selectElement(p);
                 simmer.getSelectedCircuitElement();
@@ -95,7 +98,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
 
                 }
                 dragHelper.doDrag(p);
-                dragHelper.stopDrag();
+                dragHelper.stopDrag();*/
             }
         });
         Anchor.wrap(DOM.getElementById("rotate-left")).addClickHandler(new ClickHandler() {
@@ -104,34 +107,9 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
                 dragHelper.startDrag(p);
                 simmer.setSelectedCircuitElement(finder.selectElement(p));
                 AbstractCircuitElement element = finder.selectElement(p);
-                int abslentx = Math.abs(element.getX2() - element.getX1());
-                int abslenty = Math.abs(element.getY2() - element.getY1());
-                int lentx = Math.abs(element.getX2() - element.getX1());
-                int lenty = Math.abs(element.getY2() - element.getY1());
-                if (simmer.getSelectedCircuitElement().getY1() > simmer.getSelectedCircuitElement().getY2()) {
-                    p.setY(simmer.getSelectedCircuitElement().getY2() + abslenty / 2);
-
-                } else if ((simmer.getSelectedCircuitElement().getY1() < simmer.getSelectedCircuitElement().getY2())) {
-
-                    p.setY(simmer.getSelectedCircuitElement().getY1() + abslenty / 2);
-
-                } else {
-                    p.setY(simmer.getSelectedCircuitElement().getY2());
-                }
-                if (simmer.getSelectedCircuitElement().getX1() >= simmer.getSelectedCircuitElement().getX2()) {
-                    p.setX(simmer.getSelectedCircuitElement().getX2() + abslentx / 2);
-
-                } else if (simmer.getSelectedCircuitElement().getX1() >= simmer.getSelectedCircuitElement().getX2()) {
-                    p.setX(simmer.getSelectedCircuitElement().getX1() + abslentx / 2);
-
-                } else {
-                    p.setX(simmer.getSelectedCircuitElement().getX1());
-                }
-                simmer.getSelectedCircuitElement().setX1(element.getX2() - lenty);
-                simmer.getSelectedCircuitElement().setY1(element.getY2() + lentx);
-
+                p =element.getCenterPoint();
+                element.rotate(p,Math.PI/2);
                 dragHelper.doDrag(p);
-
                 dragHelper.stopDrag();
 
             }
@@ -142,37 +120,11 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
                 dragHelper.startDrag(p);
                 simmer.setSelectedCircuitElement(finder.selectElement(p));
                 AbstractCircuitElement element = finder.selectElement(p);
-                int abslentx = Math.abs(element.getX2() - element.getX1());
-                int abslenty = Math.abs(element.getY2() - element.getY1());
-                int lentx = Math.abs(element.getX2() - element.getX1());
-                int lenty = Math.abs(element.getY2() - element.getY1());
-                if (simmer.getSelectedCircuitElement().getY1() > simmer.getSelectedCircuitElement().getY2()) {
-                    p.setY(simmer.getSelectedCircuitElement().getY2() + abslenty / 2);
-
-                } else if ((simmer.getSelectedCircuitElement().getY1() < simmer.getSelectedCircuitElement().getY2())) {
-                    p.setY(simmer.getSelectedCircuitElement().getY1() + abslenty / 2);
-
-                } else {
-                    p.setY(simmer.getSelectedCircuitElement().getY2());
-                }
-                if (simmer.getSelectedCircuitElement().getX1() >= simmer.getSelectedCircuitElement().getX2()) {
-                    p.setX(simmer.getSelectedCircuitElement().getX2() + abslentx / 2);
-
-                } else if (simmer.getSelectedCircuitElement().getX1() >= simmer.getSelectedCircuitElement().getX2()) {
-                    p.setX(simmer.getSelectedCircuitElement().getX1() + abslentx / 2);
-
-                } else {
-                    p.setX(simmer.getSelectedCircuitElement().getX1());
-                }
-
-                simmer.getSelectedCircuitElement().setX1(element.getX2() + lenty);
-                simmer.getSelectedCircuitElement().setY1(element.getY2() - lentx);
-
-                dragHelper.doDrag(p);
-                dragHelper.startDrag(p);
+                p =element.getCenterPoint();
+                element.rotate(p,-Math.PI/2);
                 dragHelper.doDrag(p);
                 dragHelper.stopDrag();
-                ;
+
 
 
             }
