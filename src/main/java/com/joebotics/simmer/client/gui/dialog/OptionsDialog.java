@@ -146,9 +146,7 @@ public class OptionsDialog extends Composite {
     }
     @UiHandler({"breadboardHeight"})
     public void breadboardHeightHandler(TouchStartEvent event) {
-
         breadboardHeight.getThumb().getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
-
     }
     @UiHandler({"breadboardRowCount"})
     public void breadboardRowCountHandler(ValueChangeEvent<Integer> event) {

@@ -1269,4 +1269,28 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
     public void click(Point point) {
 
     }
+    public Point getCenterPoint() {
+        return new Point(Math.round(x1 + (x2- x1) / 2),Math.round(y1 + (y2 - y1) / 2));
+    }
+
+    public void rotate(Point origin, double angle) {
+        Point point1 = new Point(x1, y1);
+        Point point2 = new Point(x2, y2);
+        Point newPoint1 = rotatePoint(point1, origin, angle);
+        Point newPoint2 = rotatePoint(point2, origin, angle);
+        x1 = newPoint1.getX();
+        y1 = newPoint1.getY();
+        x2 = newPoint2.getX();
+        y2 = newPoint2.getY();
+        boundingBox.rotate(origin, angle);
+        setPoints();
+    }
+
+    private Point rotatePoint(Point origin, Point point, double angle) {
+        Point normalizedPoint = new Point(point.getX() - origin.getX(), point.getY() - origin.getY());
+        int rotatedX = (int)Math.round(normalizedPoint.getX() * Math.cos(angle) - normalizedPoint.getY() * Math.sin(angle));
+        int rotatedY = (int)Math.round(normalizedPoint.getX() * Math.sin(angle) + normalizedPoint.getY() * Math.cos(angle));
+        return new Point(point.getX() + rotatedX, point.getY() + rotatedY);
+    }
+
 }

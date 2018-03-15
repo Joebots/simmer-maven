@@ -178,21 +178,30 @@
 
 <div id="burner-controls" class="container">
     <div class="row">
-        <a class="col s2 btn btn-large waves-effect waves-light" id="back-btn">
-            Back
-            <i class="material-icons left">chevron_left</i></a>
+        <a class="col s2 btn btn-large waves-effect waves-light" id="back-btn"><i
+                class="material-icons">chevron_left</i> Back</a>
         <div class="col s8 burner-command-desc" id="wizard-text"></div>
-        <a class="col s2 btn btn-large waves-effect waves-light" id="forward-btn">
-            Next
-            <i class="material-icons right">chevron_right</i></a>
+        <a class="col s2 btn btn-large waves-effect waves-light" id="forward-btn">Next <i class="material-icons">chevron_right</i></a>
     </div>
 </div>
 
 <div id="app-controls">
     <div id="wizard-toolbar">
-        <a id="oscope" class="btn-floating btn-large waves-effect waves-light"><i
-                class="material-icons">timeline</i></a>
-        <a id="reset" class="btn-floating btn-large waves-effect waves-light"><i class="material-icons">cached</i></a>
+        <div id="circuit-context-buttons">
+            <a id="oscope"two class=" btn-floating btn-large waves-effect waves-light"><i class="material-icons">timeline</i></a>
+            <a id="reset" class=" btn-floating btn-large waves-effect waves-light"><i class="material-icons">cached</i></a>
+
+        </div>
+        <div id="component-context-buttons" style="display: none">
+            <a id="edit" class=" btn-floating btn-large waves-effect waves-light"><i class="material-icons">mode_edit</i></a>
+            <a id="view_in_scope1" class=" btn-floating btn-large waves-effect waves-light"><i class="material-icons">visibility</i></a>
+            <a id="cut"  class=" btn-floating btn-large waves-effect waves-light"><i class="material-icons">content_cut</i></a>
+            <a id="copy" class=" btn-floating btn-large waves-effect waves-light"><i class="material-icons">content_copy</i></a>
+            <a id="rotate-left" class=" btn-floating btn-large waves-effect waves-light"><i class="material-icons">rotate_left</i></a>
+            <a id="rotate-right" class=" btn-floating btn-large waves-effect waves-light"><i class="material-icons">rotate_right</i></a>
+            <a id="delete" name="delete" class=" btn-floating btn-large waves-effect waves-light"><i class="material-icons">delete</i></a>
+
+        </div>
     </div>
 </div>
 <div id="active-component"></div>
