@@ -171,6 +171,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
                 dragHelper.doDrag(p);
                 dragHelper.startDrag(p);
                 dragHelper.doDrag(p);
+                dragHelper.stopDrag();
                 ;
 
 
@@ -250,7 +251,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
     @Override
     public void onMouseDown(MouseDownEvent e) {
         e.preventDefault();
-        Point p = new Point(e.getX(), e.getY());
+        p = new Point(e.getX(), e.getY());
 
         // IES - hack to only handle left button events in the web version.
         if (e.getNativeButton() != NativeEvent.BUTTON_LEFT)
@@ -261,6 +262,17 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             simmer.setTempMouseMode(simmer.getMouseMode());
             // if ((ex & MouseEvent.ALT_DOWN_MASK) != 0 &&
             // (ex & MouseEvent.META_DOWN_MASK) != 0)
+            Document.get().getElementById("component-context-buttons").getStyle().setProperty("display", "none");
+            Document.get().getElementById("circuit-context-buttons").getStyle().setProperty("display", "block");
+            if (finder.selectElement(p) != null) {
+                Document.get().getElementById("component-context-buttons").getStyle().setProperty("display", "block");
+                Document.get().getElementById("circuit-context-buttons").getStyle().setProperty("display", "none");
+
+
+            }
+            if(simmer.getContextPanel()!=null){
+                simmer.getContextPanel().hide();
+            }
             if (e.isAltKeyDown() && e.isMetaKeyDown())
                 simmer.setTempMouseMode(MouseModeEnum.MouseMode.DRAG_COLUMN);
             // else if ((ex & MouseEvent.ALT_DOWN_MASK) != 0 &&
@@ -608,13 +620,16 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         e.preventDefault();
         touch = e.getTouches().get(0);
         p = new Point(touch.getClientX(), touch.getClientY());
-        Document.get().getElementById("last-seven").getStyle().setProperty("display", "none");
-        Document.get().getElementById("first-two").getStyle().setProperty("display", "block");
+        Document.get().getElementById("component-context-buttons").getStyle().setProperty("display", "none");
+        Document.get().getElementById("circuit-context-buttons").getStyle().setProperty("display", "block");
         if (finder.selectElement(p) != null) {
-            Document.get().getElementById("last-seven").getStyle().setProperty("display", "block");
-            Document.get().getElementById("first-two").getStyle().setProperty("display", "none");
+            Document.get().getElementById("component-context-buttons").getStyle().setProperty("display", "block");
+            Document.get().getElementById("circuit-context-buttons").getStyle().setProperty("display", "none");
 
 
+        }
+        if(simmer.getContextPanel()!=null){
+            simmer.getContextPanel().hide();
         }
         dragHelper.startDrag(p);
     }
