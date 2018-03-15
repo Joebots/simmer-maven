@@ -89,7 +89,7 @@ function getSimpleName(component) {
 function getPinLabels(bbpin) {
     var pinidx = bbpin.index;
     var activePinLabel = pinidx + 1;
-    var label = bbpin.text ? `pin "${bbpin.text}"` : `pin # ${activePinLabel}`;
+    var label = "pin # " + activePinLabel;
     if (bbpin.text) {
         activePinLabel = bbpin.text;
     }
@@ -144,7 +144,7 @@ Controller.prototype.showComponent = function (model) {
     }
 
     var pinLabels = getPinLabels(step.bbpin);
-    var commentary = `Connect ${pinLabels.label} wire of the ${cmpName} to the ${gpioTxt}${railTxt}breadboard${links}`;
+    var commentary = `Connect the ${pinLabels.label} wire of the ${cmpName} to the ${gpioTxt}${railTxt}breadboard${links}`;
     var x = step.bbpin.position.x - 10;
     var y = step.bbpin.position.y - 10;
     $("#active-component").css(cmpBounds).show();
