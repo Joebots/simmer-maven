@@ -16,6 +16,7 @@
     height: 50% !important;
 }
 
+
 .range-field {
     position: relative
 }
@@ -30,7 +31,7 @@ input[type=range] {
     border: none;
     outline: none;
     width: 100%;
-    margin: 25px 0px; /*value pointer position*
+    margin: 25px 0px; /*value pointer position*/
     padding: 0
 }
 
@@ -134,7 +135,7 @@ input[type=range]::-ms-track {
     height: 12px;
     background: transparent;
     border-color: transparent;
-    border-width: 6px 0;
+        border-width: 6px 0;
     color: transparent
 }
 

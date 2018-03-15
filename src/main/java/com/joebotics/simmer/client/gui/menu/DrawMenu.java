@@ -197,9 +197,6 @@ public class DrawMenu extends MenuBar {
         mi.setScheduledCommand(new MenuCommand("main", t));
         mainMenuItems.add(mi);
         mainMenuItemNames.add(t);
-        mi.getElement().getStyle().setProperty("border","6px solid #e7e7e7");
-        mi.getElement().getStyle().setProperty("padding","1px");
-        mi.getElement().getStyle().setBorderColor("white");
         return mi;
     }
 

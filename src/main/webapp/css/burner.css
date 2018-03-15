@@ -113,45 +113,8 @@
 .gwt-MenuBarPopup {
     z-index: 1000;
     background: white;
-    border-radius: 5px;
 }
 .gwt-PopupPanel{
-
-    border: 6px solid #e7e7e7;
     z-index: 150;
-}
-.menuPopupTopLeft{
-    background: no-repeat 0px 0px;
-}
-.gwt-MenuBarPopup .menuPopupTop .menuPopupTopCenter{
-    background: no-repeat 0px 0px;
-    padding: 0px;
-}
-.gwt-MenuBarPopup .menuPopupTop  .menuPopupTopRight{
-    padding: 0px;
-    background: no-repeat 0px 0px;
-}
-.gwt-MenuBarPopup .menuPopupTop  .menuPopupTopLeft{
-    padding: 0px;
-    background: no-repeat 0px 0px;
-}
-.gwt-MenuBarPopup .menuPopupMiddle  .menuPopupMiddleLeft{
-    padding: 0px;
-    background: no-repeat 0px 0px;
-}
-.gwt-MenuBarPopup .menuPopupMiddle  .menuPopupMiddleRight{
-    padding: 0px;
-    background: no-repeat 0px 0px;
-}
-.gwt-MenuBarPopup .menuPopupBottom  .menuPopupBottomLeft{
-    padding: 0px;
-    background: no-repeat 0px 0px;
-}
-.gwt-MenuBarPopup .menuPopupBottom  .menuPopupBottomCenter{
-    padding: 0px;
-    background: no-repeat 0px 0px;
-}
-.gwt-MenuBarPopup .menuPopupBottom  .menuPopupBottomRight{
-    padding: 0px;
-    background: no-repeat 0px 0px;
+
 }

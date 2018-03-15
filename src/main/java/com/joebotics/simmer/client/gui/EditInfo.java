@@ -23,14 +23,12 @@ import gwt.material.design.client.ui.MaterialCheckBox;
 import gwt.material.design.client.ui.MaterialListBox;
 import gwt.material.design.client.ui.MaterialTextArea;
 import gwt.material.design.client.ui.MaterialTextBox;
-import gwt.material.design.client.ui.MaterialSwitch;
 
 public class EditInfo {
 
 	public MaterialCheckBox checkbox;
 	// Scrollbar bar;
 	public MaterialListBox choice;
-	public MaterialSwitch switchElm;
 	public boolean dimensionless;
 	public boolean forceLargeM;
 	public String name, text;

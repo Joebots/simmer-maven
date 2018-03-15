@@ -36,15 +36,15 @@ public class LoadFile extends FileUpload implements ChangeHandler {
 			var reader = new FileReader();
 			reader.onload = function(e) {
 				var text = reader.result;
-				@com.joebotics.simmer.client.gui.util.LoadFile::doLoadCallback(*)(text, oFiles[0].name);
+				@com.joebotics.simmer.client.gui.util.LoadFile::doLoadCallback(Ljava/lang/String;)(text);
 			};
 
 			reader.readAsText(oFiles[0]);
 		}
 	 }-*/;
 
-	static public void doLoadCallback(String text, String title) {
-		sim.getFileOps().readSetup(text, title, false);
+	static public void doLoadCallback(String s) {
+		sim.getFileOps().readSetup(s, false);
 		sim.getFileOps().createNewLoadFile();
 	}
 
