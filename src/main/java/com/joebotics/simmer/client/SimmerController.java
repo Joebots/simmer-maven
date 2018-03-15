@@ -275,14 +275,14 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             }
             if (e.isAltKeyDown() && e.isMetaKeyDown())
                 simmer.setTempMouseMode(MouseModeEnum.MouseMode.DRAG_COLUMN);
-            // else if ((ex & MouseEvent.ALT_DOWN_MASK) != 0 &&
-            // (ex & MouseEvent.SHIFT_DOWN_MASK) != 0)
+                // else if ((ex & MouseEvent.ALT_DOWN_MASK) != 0 &&
+                // (ex & MouseEvent.SHIFT_DOWN_MASK) != 0)
             else if (e.isAltKeyDown() && e.isShiftKeyDown())
                 simmer.setTempMouseMode(MouseModeEnum.MouseMode.DRAG_ROW);
-            // else if ((ex & MouseEvent.SHIFT_DOWN_MASK) != 0)
+                // else if ((ex & MouseEvent.SHIFT_DOWN_MASK) != 0)
             else if (e.isShiftKeyDown())
                 simmer.setTempMouseMode(MouseModeEnum.MouseMode.SELECT);
-            // else if ((ex & MouseEvent.ALT_DOWN_MASK) != 0)
+                // else if ((ex & MouseEvent.ALT_DOWN_MASK) != 0)
             else if (e.isAltKeyDown())
                 simmer.setTempMouseMode(MouseModeEnum.MouseMode.DRAG_ALL);
             else if (e.isControlKeyDown() || e.isMetaKeyDown())
