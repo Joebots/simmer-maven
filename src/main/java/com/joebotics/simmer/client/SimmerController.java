@@ -1,9 +1,13 @@
 package com.joebotics.simmer.client;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.*;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.joebotics.simmer.client.elcomp.*;
@@ -16,9 +20,29 @@ import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.MessageI18N;
 import com.joebotics.simmer.client.util.MouseModeEnum;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SimmerController implements MouseDownHandler, MouseWheelHandler, MouseMoveHandler, MouseUpHandler,
         MouseOutHandler, TouchCancelHandler, TouchEndHandler, TouchMoveHandler, TouchStartHandler, ClickHandler,
         DoubleClickHandler, ContextMenuHandler, Event.NativePreviewHandler {
+    private Element delete = DOM.getElementById("delete");
+    private Element cut = DOM.getElementById("cut");
+    private Element edit = DOM.getElementById("edit");
+    private Element view_in_scope = DOM.getElementById("view_in_scope1  ");
+    private Element copy = DOM.getElementById("copy");
+    private Element rotateLeft = DOM.getElementById("rotate-left");
+    private Element rotateRight = DOM.getElementById("rotate-right");
+    //find custom elements
+    private int delta1;
+    private int delta2;
+
+    private Touch touch;
+    private Point p;
+    private Boolean view = false;
+
+    private List<Point> pointList;
+
     private final Simmer simmer;
     private final CircuitElementFinder finder;
     private final CirciutElmDragHelper dragHelper;
@@ -27,6 +51,93 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         this.simmer = simmer;
         this.finder = new CircuitElementFinder(simmer);
         this.dragHelper = new CirciutElmDragHelper(simmer);
+        pointList = new ArrayList<>();
+        Anchor.wrap(DOM.getElementById("delete")).addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                simmer.setSelectedCircuitElement(finder.selectElement(p));
+                finder.selectElement(p);
+                menuPerformed("key", "delete");
+            }
+        });
+        Anchor.wrap(DOM.getElementById("cut")).addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                simmer.setSelectedCircuitElement(finder.selectElement(p));
+                finder.selectElement(p);
+                menuPerformed("key", "cut");
+
+            }
+        });
+        Anchor.wrap(DOM.getElementById("edit")).addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                simmer.setSelectedCircuitElement(finder.selectElement(p));
+                finder.selectElement(p);
+                menuPerformed("elm", "edit");
+            }
+        });
+        Anchor.wrap(DOM.getElementById("view_in_scope1")).addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                simmer.setSelectedCircuitElement(finder.selectElement(p));
+                finder.selectElement(p);
+                menuPerformed("elm", "viewInScope");
+                /*dragHelper.startDrag(p);
+                simmer.setSelectedCircuitElement(finder.selectElement(p));
+                AbstractCircuitElement element = finder.selectElement(p);
+                simmer.getSelectedCircuitElement();
+
+                if (view) {
+                    menuPerformed("key","paste");
+                    view = false;
+                } else {
+                    menuPerformed("key","cut");
+
+                    view=true;
+
+                }
+                dragHelper.doDrag(p);
+                dragHelper.stopDrag();*/
+            }
+        });
+        Anchor.wrap(DOM.getElementById("rotate-left")).addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                dragHelper.startDrag(p);
+                simmer.setSelectedCircuitElement(finder.selectElement(p));
+                AbstractCircuitElement element = finder.selectElement(p);
+                p =element.getCenterPoint();
+                element.rotate(p,Math.PI/2);
+                dragHelper.doDrag(p);
+                dragHelper.stopDrag();
+
+            }
+        });
+        Anchor.wrap(DOM.getElementById("rotate-right")).addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                dragHelper.startDrag(p);
+                simmer.setSelectedCircuitElement(finder.selectElement(p));
+                AbstractCircuitElement element = finder.selectElement(p);
+                p =element.getCenterPoint();
+                element.rotate(p,-Math.PI/2);
+                dragHelper.doDrag(p);
+                dragHelper.stopDrag();
+
+
+
+            }
+        });
+        Anchor.wrap(DOM.getElementById("copy")).addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                simmer.setSelectedCircuitElement(finder.selectElement(p));
+                finder.selectElement(p);
+                menuPerformed("key", "copy");
+            }
+        });
+
     }
 
     public void onClick(ClickEvent e) {
@@ -69,7 +180,9 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             simmer.setContextPanel(new PopupPanel(true));
             simmer.getContextPanel().add(simmer.getElmMenuBar());
             simmer.getContextPanel().setPopupPosition(e.getNativeEvent().getClientX(), e.getNativeEvent().getClientY());
-            simmer.getContextPanel().show();
+
+            //getElement().getStyle().setProperty("background","red");
+            //simmer.getContextPanel().show();
         } else {
             simmer.doMainMenuChecks();
             simmer.setContextPanel(new PopupPanel(true));
@@ -77,6 +190,10 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             x = Math.max(0, Math.min(e.getNativeEvent().getClientX(), simmer.getCv().getCoordinateSpaceWidth() - 400));
             y = Math.max(0, Math.min(e.getNativeEvent().getClientY(), simmer.getCv().getCoordinateSpaceHeight() - 450));
             simmer.getContextPanel().setPopupPosition(x, y);
+
+/*
+            simmer.getContextPanel().getElement().getStyle().setProperty("background","red");
+*/
             simmer.getContextPanel().show();
         }
     }
@@ -93,7 +210,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
     @Override
     public void onMouseDown(MouseDownEvent e) {
         e.preventDefault();
-        Point p = new Point(e.getX(), e.getY());
+        p = new Point(e.getX(), e.getY());
 
         // IES - hack to only handle left button events in the web version.
         if (e.getNativeButton() != NativeEvent.BUTTON_LEFT)
@@ -104,16 +221,27 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             simmer.setTempMouseMode(simmer.getMouseMode());
             // if ((ex & MouseEvent.ALT_DOWN_MASK) != 0 &&
             // (ex & MouseEvent.META_DOWN_MASK) != 0)
+            Document.get().getElementById("component-context-buttons").getStyle().setProperty("display", "none");
+            Document.get().getElementById("circuit-context-buttons").getStyle().setProperty("display", "block");
+            if (finder.selectElement(p) != null) {
+                Document.get().getElementById("component-context-buttons").getStyle().setProperty("display", "block");
+                Document.get().getElementById("circuit-context-buttons").getStyle().setProperty("display", "none");
+
+
+            }
+            if(simmer.getContextPanel()!=null){
+                simmer.getContextPanel().hide();
+            }
             if (e.isAltKeyDown() && e.isMetaKeyDown())
                 simmer.setTempMouseMode(MouseModeEnum.MouseMode.DRAG_COLUMN);
-            // else if ((ex & MouseEvent.ALT_DOWN_MASK) != 0 &&
-            // (ex & MouseEvent.SHIFT_DOWN_MASK) != 0)
+                // else if ((ex & MouseEvent.ALT_DOWN_MASK) != 0 &&
+                // (ex & MouseEvent.SHIFT_DOWN_MASK) != 0)
             else if (e.isAltKeyDown() && e.isShiftKeyDown())
                 simmer.setTempMouseMode(MouseModeEnum.MouseMode.DRAG_ROW);
-            // else if ((ex & MouseEvent.SHIFT_DOWN_MASK) != 0)
+                // else if ((ex & MouseEvent.SHIFT_DOWN_MASK) != 0)
             else if (e.isShiftKeyDown())
                 simmer.setTempMouseMode(MouseModeEnum.MouseMode.SELECT);
-            // else if ((ex & MouseEvent.ALT_DOWN_MASK) != 0)
+                // else if ((ex & MouseEvent.ALT_DOWN_MASK) != 0)
             else if (e.isAltKeyDown())
                 simmer.setTempMouseMode(MouseModeEnum.MouseMode.DRAG_ALL);
             else if (e.isControlKeyDown() || e.isMetaKeyDown())
@@ -287,7 +415,6 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         if (item == "cut") {
             if (menu != "elm")
                 simmer.setMouseElm(null);
-
             simmer.getMainMenuBar().getEditMenu().doCut();
         }
         if (item == "copy") {
@@ -434,7 +561,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             return true;
         return false;
     }
-    
+
     private void doSwitch() {
         AbstractCircuitElement mouseElm = simmer.getMouseElm();
         if (mouseElm != null && mouseElm instanceof SwitchElm) {
@@ -447,7 +574,6 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             simmer.needAnalyze();
         }
     }
-
     @Override
     public void onTouchStart(TouchStartEvent e) {
         e.preventDefault();
@@ -461,14 +587,27 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         }
 
         finder.selectElement(p);
+        touch = e.getTouches().get(0);
+        p = new Point(touch.getClientX(), touch.getClientY());
+        Document.get().getElementById("component-context-buttons").getStyle().setProperty("display", "none");
+        Document.get().getElementById("circuit-context-buttons").getStyle().setProperty("display", "block");
+        if (finder.selectElement(p) != null) {
+            Document.get().getElementById("component-context-buttons").getStyle().setProperty("display", "block");
+            Document.get().getElementById("circuit-context-buttons").getStyle().setProperty("display", "none");
+
+
+        }
+        if(simmer.getContextPanel()!=null){
+            simmer.getContextPanel().hide();
+        }
         dragHelper.startDrag(p);
     }
 
     @Override
     public void onTouchMove(TouchMoveEvent e) {
         e.preventDefault();
-        Touch touch = e.getTouches().get(0);
-        Point p = new Point(touch.getClientX(), touch.getClientY());
+        touch = e.getTouches().get(0);
+        p = new Point(touch.getClientX(), touch.getClientY());
         dragHelper.doDrag(p);
     }
 
@@ -480,6 +619,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             doSwitch();
         }
         dragHelper.stopDrag();
+
     }
 
     @Override
