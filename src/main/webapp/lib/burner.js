@@ -446,6 +446,9 @@ BreadBoard.prototype.reset = function (cb) {
     }
 
     this.clicked = false;
+    this.activeStep = 0;
+
+    $("#active-component-picture").hide();
 };
 
 function isExternalComponent(cmp) {
