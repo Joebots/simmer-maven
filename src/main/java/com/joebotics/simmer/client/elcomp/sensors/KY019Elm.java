@@ -18,12 +18,12 @@ public class KY019Elm extends ChipElm {
 
     public KY019Elm(int xx, int yy) {
         super(xx, yy);
-        footprintName = "SIP3";
+        footprintName = "SIP6";
     }
 
     public KY019Elm(int xa, int ya, int xb, int yb, int f, StringTokenizer st) {
         super(xa, ya, xb, yb, f, st);
-        footprintName = "SIP3";
+        footprintName = "SIP6";
     }
 
     @Override
@@ -36,12 +36,32 @@ public class KY019Elm extends ChipElm {
         return 0;
     }
 
+    @Override
+    public void execute() {
+        Pin sPin = getPins()[2];
+        Pin nc = getPins()[3];
+        Pin no = getPins()[5];
+        double commonVoltage = getPins()[4].getVoltage();
+        boolean sHigh = sPin.getValue();
+
+        if(sHigh) {
+            nc.setVoltage(commonVoltage);
+            no.setVoltage(0);
+        }
+        else {
+            no.setVoltage(commonVoltage);
+            nc.setVoltage(0);
+        }
+        no.setValue(sHigh);
+        nc.setValue(!sHigh);
+    }
+
     public int getDumpType() {
         return 519;
     }
 
     public int getPostCount() {
-        return 3;
+        return 6;
     }
 
     public void setupPins() {
@@ -53,11 +73,16 @@ public class KY019Elm extends ChipElm {
         getPins()[1] = new Pin(1, Side.EAST, "+");
         getPins()[2] = new Pin(2, Side.EAST, "S");
 
+        getPins()[3] = new Pin(0, Side.WEST, "NC");
+        getPins()[4] = new Pin(1, Side.WEST, "C");
+        getPins()[5] = new Pin(2, Side.WEST, "NO");
+
+        getPins()[4].setValue(true);
     }
 
     @Override
     public void draw(Graphics g) {
-        drawState(g, getPostVoltage(2) != 0);
+        drawState(g, getPins()[2].getValue());
         super.draw(g);
     }
 
