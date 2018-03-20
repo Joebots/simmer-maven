@@ -62,10 +62,10 @@ Blockly.Blocks["pin_write"] = {
         }).map(function(key) {
             return [ key, key ];
         });
-        this.appendValueInput("VALUE", "pin_value")
+        this.appendValueInput("VALUE")
             .appendField("set GPIO")
             .appendField(new Blockly.FieldDropdown(arr), "PIN")
-            .appendField("to").setCheck("pin_value");
+            .appendField("to").setCheck("Number");
         this.setInputsInline(false);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
@@ -148,7 +148,7 @@ Blockly.Blocks["pin_read"] = {
         });
         this.appendDummyInput().appendField("get GPIO").appendField(
                 new Blockly.FieldDropdown(arr), "PIN")
-        this.setOutput(true, "pin_value");
+        this.setOutput(true, "Number");
         this.setTooltip("");
     }
 };
@@ -178,7 +178,7 @@ Blockly.Blocks["pin_digital"] = {
         this.appendDummyInput("")
             .appendField(new Blockly.FieldDropdown([ [ "HIGH", "1" ],
                         [ "LOW", "0" ] ]), "VALUE");
-        this.setOutput(true, "pin_value");
+        this.setOutput(true, "Number");
         this.setTooltip("Set a value for digital pin High (1) or Low (0).");
     }
 };
@@ -207,7 +207,7 @@ Blockly.Blocks["pin_analog"] = {
         this.setColour(GPIO_HUE);
         this.appendDummyInput("")
             .appendField(new Blockly.FieldNumber("0", 0, 1023, 1), "VALUE");
-        this.setOutput(true, "pin_value");
+        this.setOutput(true, "Number");
         this.setTooltip("Set a value for analog pin from 0 to 1023.");
     }
 };
