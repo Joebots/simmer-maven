@@ -280,6 +280,14 @@ function mapPinsToBreadboard(circuitModel, done, componentFilter, activeTerminal
         }
     }
 
+    const sensorsSet = new Set([]);
+    Object.keys(circuitModel.pinOuts)
+    .filter(pin => circuitModel.pinOuts[pin].components[0].model.footprint)
+    .map(pin => circuitModel.pinOuts[pin])
+    .forEach(pin => sensorsSet.add(pin.components[0].model.name));
+
+    const sensors = [...sensorsSet];
+
     for (var xy in circuitModel.pinOuts) {
 
         var components = sortModelComponents(circuitModel.pinOuts[xy].components);
@@ -314,7 +322,7 @@ function mapPinsToBreadboard(circuitModel, done, componentFilter, activeTerminal
                 if (isPackagedElm) {
                     var lead = cmp.model.footprint.leads[j];
                     activeTerminal.bank = originBank + lead.col;
-                    activeTerminal.row = originRow + lead.row;
+                    activeTerminal.row = originRow + lead.row + sensors.indexOf(cmp.model.name);
                 }
                 var activeBank = activeTerminal.bank;
                 var activeRow = activeTerminal.row;
