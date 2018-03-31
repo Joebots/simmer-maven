@@ -14,9 +14,9 @@
     </ui:style>
 
     <g:DockLayoutPanel unit='PX' ui:field="layoutPanel" styleName="{style.main-panel}">
-        <g:east size="418">
+        <g:east size="400">
             <g:DockLayoutPanel unit='PCT' ui:field="eastPanel">
-                <g:south size="15">
+                <g:south size="21">
                     <jb:ToolsPanel ui:field="toolsPanel" />
                 </g:south>
                 <g:center>
