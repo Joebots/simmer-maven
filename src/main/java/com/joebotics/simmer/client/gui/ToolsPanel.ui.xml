@@ -6,16 +6,36 @@
     </ui:style>
     <g:HTMLPanel>
         <g:HTMLPanel styleName="center">
-            <m:MaterialButton ui:field="schematicButton" type="FLOATING" waves="LIGHT" size="LARGE"
-                iconType="ADD" />
-            <m:MaterialButton ui:field="fileButton" type="FLOATING" waves="LIGHT" size="LARGE"
-                iconType="FOLDER" />
-            <m:MaterialButton ui:field="optionsButton" type="FLOATING" waves="LIGHT" size="LARGE"
-                iconType="SETTINGS" />
-            <m:MaterialButton ui:field="programmingButton" type="FLOATING" waves="LIGHT" size="LARGE"
-                iconType="EXTENSION" />
-            <m:MaterialButton ui:field="powerButton" type="FLOATING" waves="LIGHT" size="LARGE"
-                iconType="POWER_SETTINGS_NEW" />
+            <div >
+                <div style="display: inline-block;vertical-align: top;text-align: center;width: 60px;">
+                    <m:MaterialButton ui:field="schematicButton" type="FLOATING" waves="LIGHT" size="LARGE"
+                                      iconType="ADD"/>
+                    <span style="color:white;display: block;">Add Element</span>
+                </div>
+                <div style="display: inline-block;vertical-align: top;text-align: center;width: 60px;">
+                    <m:MaterialButton ui:field="fileButton" type="FLOATING" waves="LIGHT" size="LARGE"
+                                      iconType="FOLDER"/>
+                    <span style="color:white;display: block;">Open</span>
+
+                </div>
+                <div style="display: inline-block;vertical-align: top;text-align: center;width: 60px;">
+                    <m:MaterialButton ui:field="optionsButton" type="FLOATING" waves="LIGHT" size="LARGE"
+                                      iconType="SETTINGS"/>
+                    <span style="color:white;display: block;">Settings</span>
+
+                </div>
+                <div style="display: inline-block;vertical-align: top;text-align: center;width: 60px;">
+                    <m:MaterialButton ui:field="programmingButton" type="FLOATING" waves="LIGHT" size="LARGE"
+                                      iconType="EXTENSION"/>
+                    <span style="color:white;display: block;">Code Blocks</span>
+                </div>
+                <div style="display: inline-block;vertical-align: top;text-align: center;width: 60px;">
+                    <m:MaterialButton ui:field="powerButton" type="FLOATING" waves="LIGHT" size="LARGE"
+                                      iconType="POWER_SETTINGS_NEW"/>
+                    <span style="color:white;display: block;">Exit</span>
+                </div>
+                
+            </div>
         </g:HTMLPanel>
         <jbd:SchematicDialog ui:field="schematicDialog" />
         <jbd:CircuitsDialog ui:field="circuitsDialog" />
