@@ -26,11 +26,11 @@ public class OrderPartsDialog extends Composite {
 
     public void open() {
 
-        modal.setHeight("600px");
-        modal.setWidth("600px");
+        modal.setHeight("500px");
+        modal.setWidth("500px");
         modal.open();
     }
-    @UiHandler("close_btn")
+    @UiHandler("close")
     public void popupTestDialogButtonHandler(ClickEvent e) {
         modal.close();
     }

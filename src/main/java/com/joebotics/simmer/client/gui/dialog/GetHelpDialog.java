@@ -34,7 +34,7 @@ public class GetHelpDialog extends Composite {
         modal.open();
 
     }
-    @UiHandler("close_btn")
+    @UiHandler("close")
     public void popupTestDialogButtonHandler(ClickEvent e) {
         modal.close();
     }
