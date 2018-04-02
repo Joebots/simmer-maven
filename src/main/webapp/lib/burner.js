@@ -322,7 +322,8 @@ function mapPinsToBreadboard(circuitModel, done, componentFilter, activeTerminal
                 if (isPackagedElm) {
                     var lead = cmp.model.footprint.leads[j];
                     activeTerminal.bank = originBank + lead.col;
-                    activeTerminal.row = originRow + lead.row + sensors.indexOf(cmp.model.name);
+                    const componentIndex = sensors.indexOf(cmp.model.name);
+                    activeTerminal.row = originRow + lead.row + (componentIndex ? 2 : 0);
                 }
                 var activeBank = activeTerminal.bank;
                 var activeRow = activeTerminal.row;
