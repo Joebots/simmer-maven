@@ -83,12 +83,12 @@ public class ToolsPanel extends Composite {
         programmingDialog.open();
     }
     @UiHandler("orderPartsButton")
-    public void iframeButtonHandler(ClickEvent e) {
+    public void partsButtonHandler(ClickEvent e) {
         orderParts.open();
     }
 
     @UiHandler("getHelpDialog")
-    public void popupTestDialogButtonHandler(ClickEvent e) {
+    public void helpButtonHandler(ClickEvent e) {
         getHelp.open();
     }
 }
