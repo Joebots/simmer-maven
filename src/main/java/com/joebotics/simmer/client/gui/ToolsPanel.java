@@ -7,11 +7,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import com.joebotics.simmer.client.gui.dialog.CircuitsDialog;
-import com.joebotics.simmer.client.gui.dialog.ExitDialog;
-import com.joebotics.simmer.client.gui.dialog.OptionsDialog;
-import com.joebotics.simmer.client.gui.dialog.ProgrammingDialog;
-import com.joebotics.simmer.client.gui.dialog.SchematicDialog;
+import com.joebotics.simmer.client.gui.dialog.*;
 
 import gwt.material.design.client.ui.MaterialButton;
 
@@ -51,6 +47,12 @@ public class ToolsPanel extends Composite {
     
     @UiField
     ExitDialog exitDialog;
+
+    @UiField
+    OrderPartsDialog orderParts;
+
+    @UiField
+    GetHelpDialog getHelp;
     
     public ToolsPanel() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -79,5 +81,14 @@ public class ToolsPanel extends Composite {
     @UiHandler("programmingButton")
     public void programmingButtonHandler(ClickEvent e) {
         programmingDialog.open();
+    }
+    @UiHandler("orderPartsButton")
+    public void partsButtonHandler(ClickEvent e) {
+        orderParts.open();
+    }
+
+    @UiHandler("getHelpDialog")
+    public void helpButtonHandler(ClickEvent e) {
+        getHelp.open();
     }
 }
