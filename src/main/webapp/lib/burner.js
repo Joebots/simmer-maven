@@ -259,6 +259,11 @@ function parsePinouts(circuitModel) {
     return pinOuts;
 }
 
+
+window.addEventListener('DOMContentLoaded', () => {
+  BurnerNew.load('#burner');
+  });
+
 function mapPinsToBreadboard(circuitModel, done, componentFilter, activeTerminal) {
     var terminalBankIndices = this.banks.reduce(function (result, element, index) {
         if (!element.type || element.type === "TERMINAL") {
@@ -282,11 +287,13 @@ function mapPinsToBreadboard(circuitModel, done, componentFilter, activeTerminal
 
     for (var xy in circuitModel.pinOuts) {
 
+
         var components = sortModelComponents(circuitModel.pinOuts[xy].components);
 
         // get the components at that xy
         for (var i in components) {
             var cmp = components[i];
+            var componentName = cmp.name;
             if (componentFilter && !componentFilter(cmp)) {
                 continue;
             }
@@ -345,7 +352,8 @@ function mapPinsToBreadboard(circuitModel, done, componentFilter, activeTerminal
                         isRail: isVoltageElm || isPowerRail || isGround,
                         isPowerRail: (isVoltageElm && j == 0) || isPowerRail,
                         isGroundRail: (isVoltageElm && j == 1) || isGround,
-                        isGPIO: isGPIO
+                        isGPIO: isGPIO,
+                        component: componentName
                     };
                     this.postsToBb[pos.toString()] = mapping;
                 }
@@ -361,7 +369,8 @@ function mapPinsToBreadboard(circuitModel, done, componentFilter, activeTerminal
                     isGPIO: mapping.isGPIO,
                     text: pin.text || null,
                     description: pin.description || null,
-                    index: j
+                    index: j,
+                    component: componentName
                 };
                 this.pinsToBb[pin.toString()] = pinMapping;
 
@@ -393,16 +402,17 @@ BreadBoard.prototype.setTarget = function (target) {
 };
 
 BreadBoard.prototype.applyConfig = function () {
-    $("#" + this.target).empty();
+//    $("#" + this.target).empty();
     this.banks = copy(this.config.banks);
-    this.paper = Raphael(this.target, this.config.width, this.config.height);
-    this.border = this.paper.rect(0, 0, this.config.width, this.config.height);
+//    this.paper = Raphael(this.target, this.config.width, this.config.height);
+//    this.border = this.paper.rect(0, 0, this.config.width, this.config.height);
     this.circuits = this.createBanks(this.banks);
-    this.showAllBanks(this._showAllBanks);
+//    this.showAllBanks(this._showAllBanks);
 };
 
 BreadBoard.prototype.doNext = function (e) {
-
+BurnerNew.next();
+return;
     var self = e.data.that;
 
     self.activeStep++;
@@ -414,7 +424,8 @@ BreadBoard.prototype.doNext = function (e) {
 };
 
 BreadBoard.prototype.doBack = function (e) {
-
+BurnerNew.prev();
+return;
     var self = e.data.that;
 
     self.activeStep--;
@@ -484,6 +495,23 @@ BreadBoard.prototype.layout = function (circuitModel, cb) {
         return cmp.name.indexOf("Wire") != -1;
     }, activeTerminal);
 
+	BurnerNew.layout(this.model.components
+      .map(component => ({
+        pins: component.pins.map(pin => {
+          const data = this.pinsToBb[pin.toString()];
+
+          return {
+            bank: data.bank,
+            row: data.row,
+            text: data.text,
+            isRail: data.isRail,
+            isPowerRail: data.isPowerRail,
+            isGPIO: data.isGPIO,
+            isGroundRail: data.isGroundRail
+          };
+        })
+      })));
+
     var comps = this.model.components;
     for (var d in comps) {
         var cmp = comps[d];
@@ -538,7 +566,7 @@ BreadBoard.prototype.createBanks = function (banks) {
  * @param bank
  */
 BreadBoard.prototype.createBank = function (bank) {
-
+return [];
     var isVert = bank.dir == 'y';
 
     var thickness = this.config.thickness || 3;

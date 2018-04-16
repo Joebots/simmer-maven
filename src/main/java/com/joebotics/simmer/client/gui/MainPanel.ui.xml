@@ -21,7 +21,7 @@
                 </g:south>
                 <g:center>
                     <g:HTMLPanel>
-                        <div id="breadboard">{#breadboard}</div>
+                        <div><canvas id="burner" width="384" height="532"></canvas></div>
                     </g:HTMLPanel>
                 </g:center>
             </g:DockLayoutPanel>
