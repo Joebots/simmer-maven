@@ -238,6 +238,7 @@
         globalBus.bind(BreadBoard.CircuitStates.SYSTEM_LOADED, function (e) {
             console.log("system.loaded");
             bboard.setTarget("breadboard");
+            BurnerNew.load('#burner');
         });
 
         $("#bblayout").click(function (evt) {

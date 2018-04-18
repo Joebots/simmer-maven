@@ -259,11 +259,6 @@ function parsePinouts(circuitModel) {
     return pinOuts;
 }
 
-
-window.addEventListener('DOMContentLoaded', () => {
-  BurnerNew.load('#burner');
-  });
-
 function mapPinsToBreadboard(circuitModel, done, componentFilter, activeTerminal) {
     var terminalBankIndices = this.banks.reduce(function (result, element, index) {
         if (!element.type || element.type === "TERMINAL") {
@@ -450,11 +445,6 @@ BreadBoard.prototype.reset = function (cb) {
     setTimeout(function () {
         $(".burner-command-desc").html(Controller.DEFAULT_INSTRUCTIONS);
     }, 10);
-
-    for (var i in this.steps) {
-        var step = this.steps[i];
-        step.bbpin.circuit.node.setAttribute("fill", "black");
-    }
 
     this.clicked = false;
     this.activeStep = 0;
