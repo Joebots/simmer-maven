@@ -45,7 +45,7 @@
     border: 2px solid white;
 }
 
-#active-pin{
+.active-pin{
     /*animation: pulsate-yellow .75s infinite;*/
     width: 20px;
     height: 20px;

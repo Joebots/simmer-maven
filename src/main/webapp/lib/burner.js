@@ -145,7 +145,7 @@ Controller.prototype.showComponent = function (model) {
     var x = step.bbpin.position.x - 10;
     var y = step.bbpin.position.y - 10;
     $("#active-component").css(cmpBounds).show();
-    $("#active-pin").css({top: y, left: x}).html(pinLabels.activePinLabel).show();
+    $(".active-pin").css({top: y, left: x}).html(pinLabels.activePinLabel).show();
     $(".burner-command-desc").html(commentary + steps);
 
     this.view.steps.previous = step;
@@ -434,7 +434,7 @@ BreadBoard.prototype.reset = function (cb) {
     this.rendered = {};
     console.log("reset", $("#wizard-text"), Controller.DEFAULT_INSTRUCTIONS);
 
-    $("#active-pin").hide();
+    $(".active-pin").hide();
 
     setTimeout(function () {
         $(".burner-command-desc").html(Controller.DEFAULT_INSTRUCTIONS);

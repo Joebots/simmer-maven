@@ -24,7 +24,7 @@ iframe {
     /*border: 1px solid yellow;*/
 }
 
-#burner-controls, #app-controls, #active-component, #active-pin, #active-component-picture {
+#burner-controls, #app-controls, #active-component, .active-pin, #active-component-picture {
     z-index: 100;
 }
 
