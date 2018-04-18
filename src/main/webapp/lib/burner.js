@@ -123,9 +123,6 @@ Controller.prototype.showComponent = function (model) {
     var railTxt = step.bbpin.isRail ? (step.bbpin.isPowerRail ? "power" : "ground") + " rail on the " : "";
     var gpioTxt = step.bbpin.isGPIO ? " GPIO #" + (step.bbpin.row + 1) + " terminal on the " : "";
 
-    if (pstep) {
-        pstep.bbpin.circuit.attr("opacity", 0);
-    }
 
     if (snbr == 1) {
         this.rendered = {};
@@ -150,9 +147,6 @@ Controller.prototype.showComponent = function (model) {
     $("#active-component").css(cmpBounds).show();
     $("#active-pin").css({top: y, left: x}).html(pinLabels.activePinLabel).show();
     $(".burner-command-desc").html(commentary + steps);
-
-    step.bbpin.circuit.attr("opacity", 1);
-    step.bbpin.circuit.node.setAttribute("fill", step.bbpin.isPowerRail ? "red" : step.bbpin.isGPIO ? "yellow" : "white");
 
     this.view.steps.previous = step;
 
@@ -406,8 +400,8 @@ BreadBoard.prototype.applyConfig = function () {
 };
 
 BreadBoard.prototype.doNext = function (e) {
-BurnerNew.next();
-return;
+	BurnerNew.next();
+
     var self = e.data.that;
 
     self.activeStep++;
@@ -419,8 +413,8 @@ return;
 };
 
 BreadBoard.prototype.doBack = function (e) {
-BurnerNew.prev();
-return;
+	BurnerNew.prev();
+
     var self = e.data.that;
 
     self.activeStep--;
@@ -507,12 +501,10 @@ BreadBoard.prototype.layout = function (circuitModel, cb) {
         var cmp = comps[d];
         // Adding steps for external components only. Internal components like power and GPIO are excluded
         if (isExternalComponent(cmp)) {
-            for (var j in cmp.pins) {
-                var bbpin = this.pinsToBb[cmp.pins[j].toString()];
-                console.log(`${this.totalSteps} ${cmp.name} pin ${bbpin.index} of ${cmp.pins.length} : ${cmp.pins[j]}`, bbpin);
-                this.steps.push({component: cmp, bbpin: bbpin});
-                this.totalSteps++;
-            }
+            var bbpin = this.pinsToBb[cmp.pins[0].toString()];
+            console.log(`${this.totalSteps} ${cmp.name} pin ${bbpin.index} of ${cmp.pins.length} : ${cmp.pins[0]}`, bbpin);
+            this.steps.push({component: cmp, bbpin: bbpin});
+            this.totalSteps++;
         }
     }
 };
