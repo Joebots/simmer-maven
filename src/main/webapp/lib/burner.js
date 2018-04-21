@@ -86,20 +86,23 @@ function getSimpleName(component) {
     return model.el.substring(model.el.lastIndexOf(".") + 1, model.el.indexOf("Elm"));
 }
 
-function getPinLabels(bbpin) {
-    var pinidx = bbpin.index;
-    var activePinLabel = pinidx + 1;
-    var label = bbpin.text ? `pin "${bbpin.text}"` : `pin # ${activePinLabel}`;
-    if (bbpin.text) {
-        activePinLabel = bbpin.text;
-    }
-    if (bbpin.description) {
-        label += " (" + bbpin.description + ")";
-    }
-    return {
-        activePinLabel: activePinLabel,
-        label: label
-    }
+function getPinLabels(pins) {
+    return pins.map(pin => {
+        var pinidx = pin.index;
+            var activePinLabel = pinidx + 1;
+            var label = pin.text ? `pin "${pin.text}"` : `pin # ${activePinLabel}`;
+            if (pin.text) {
+                activePinLabel = pin.text;
+            }
+            if (pin.description) {
+                label += " (" + pin.description + ")";
+            }
+            return {
+                activePinLabel: activePinLabel,
+                label: label,
+                position: pin.position
+            }
+    });
 }
 
 Controller.prototype.showComponent = function (model) {
@@ -140,12 +143,31 @@ Controller.prototype.showComponent = function (model) {
         }
     }
 
-    var pinLabels = getPinLabels(step.bbpin);
+    var pinLabels = getPinLabels(step.pins);
     var commentary = `Connect ${pinLabels.label} wire of the ${cmpName} to the ${gpioTxt}${railTxt}breadboard${links}`;
-    var x = step.bbpin.position.x - 10;
-    var y = step.bbpin.position.y - 10;
+
+
+    // Empty pins placeholder
+    $('.active-pins').empty();
+
+    // Create pins elements
+    var fragment = document.createDocumentFragment();
+
+    pinLabels
+    .forEach(pin => {
+        var pinElement = document.createElement('div');
+        var x = pin.position.x - 10;
+        var y = pin.position.y - 10;
+        $(pinElement).css({top: y, left: x}).html(pin.activePinLabel);
+        fragment.appendChild(pinElement);
+    });
+
+    var pinsHolder = document.querySelector('.active-pins');
+    pinsHolder.appendChild(fragment);
+
+
     $("#active-component").css(cmpBounds).show();
-    $(".active-pin").css({top: y, left: x}).html(pinLabels.activePinLabel).show();
+//    $(".active-pin").css({top: y, left: x}).html(pinLabels.activePinLabel).show();
     $(".burner-command-desc").html(commentary + steps);
 
     this.view.steps.previous = step;
@@ -434,7 +456,7 @@ BreadBoard.prototype.reset = function (cb) {
     this.rendered = {};
     console.log("reset", $("#wizard-text"), Controller.DEFAULT_INSTRUCTIONS);
 
-    $(".active-pin").hide();
+    $(".active-pins").empty();
 
     setTimeout(function () {
         $(".burner-command-desc").html(Controller.DEFAULT_INSTRUCTIONS);
@@ -480,6 +502,7 @@ BreadBoard.prototype.layout = function (circuitModel, cb) {
     }, activeTerminal);
 
 	BurnerNew.layout(this.model.components
+	  .filter(component => isExternalComponent(component) && component.pins.length)
       .map(component => ({
         pins: component.pins.map(pin => {
           const data = this.pinsToBb[pin.toString()];
@@ -500,10 +523,11 @@ BreadBoard.prototype.layout = function (circuitModel, cb) {
     for (var d in comps) {
         var cmp = comps[d];
         // Adding steps for external components only. Internal components like power and GPIO are excluded
-        if (isExternalComponent(cmp)) {
+        if (isExternalComponent(cmp) && cmp.pins.length) {
             var bbpin = this.pinsToBb[cmp.pins[0].toString()];
-            console.log(`${this.totalSteps} ${cmp.name} pin ${bbpin.index} of ${cmp.pins.length} : ${cmp.pins[0]}`, bbpin);
-            this.steps.push({component: cmp, bbpin: bbpin});
+            var pins = cmp.pins.map(pin => this.pinsToBb[pin.toString()])
+//            console.log(`${this.totalSteps} ${cmp.name} pin ${bbpin.index} of ${cmp.pins.length} : ${cmp.pins[0]}`, bbpin);
+            this.steps.push({component: cmp, bbpin, pins});
             this.totalSteps++;
         }
     }
