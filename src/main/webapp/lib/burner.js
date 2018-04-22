@@ -144,7 +144,7 @@ Controller.prototype.showComponent = function (model) {
     }
 
     var pinLabels = getPinLabels(step.pins);
-    var commentary = `Connect ${pinLabels.label} wire of the ${cmpName} to the ${gpioTxt}${railTxt}breadboard${links}`;
+    var commentary = `Connect the ${cmpName} to the breadboard${links}`;
 
 
     // Empty pins placeholder
@@ -167,7 +167,6 @@ Controller.prototype.showComponent = function (model) {
 
 
     $("#active-component").css(cmpBounds).show();
-//    $(".active-pin").css({top: y, left: x}).html(pinLabels.activePinLabel).show();
     $(".burner-command-desc").html(commentary + steps);
 
     this.view.steps.previous = step;
@@ -413,12 +412,8 @@ BreadBoard.prototype.setTarget = function (target) {
 };
 
 BreadBoard.prototype.applyConfig = function () {
-//    $("#" + this.target).empty();
     this.banks = copy(this.config.banks);
-//    this.paper = Raphael(this.target, this.config.width, this.config.height);
-//    this.border = this.paper.rect(0, 0, this.config.width, this.config.height);
     this.circuits = this.createBanks(this.banks);
-//    this.showAllBanks(this._showAllBanks);
 };
 
 BreadBoard.prototype.doNext = function (e) {
@@ -510,7 +505,7 @@ BreadBoard.prototype.layout = function (circuitModel, cb) {
           return {
             bank: data.bank,
             row: data.row,
-            text: data.text,
+            text: data.text || data.description || data.index + 1,
             isRail: data.isRail,
             isPowerRail: data.isPowerRail,
             isGPIO: data.isGPIO,
@@ -526,7 +521,6 @@ BreadBoard.prototype.layout = function (circuitModel, cb) {
         if (isExternalComponent(cmp) && cmp.pins.length) {
             var bbpin = this.pinsToBb[cmp.pins[0].toString()];
             var pins = cmp.pins.map(pin => this.pinsToBb[pin.toString()])
-//            console.log(`${this.totalSteps} ${cmp.name} pin ${bbpin.index} of ${cmp.pins.length} : ${cmp.pins[0]}`, bbpin);
             this.steps.push({component: cmp, bbpin, pins});
             this.totalSteps++;
         }
