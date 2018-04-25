@@ -412,6 +412,30 @@ BreadBoard.prototype.setTarget = function (target) {
 };
 
 BreadBoard.prototype.applyConfig = function () {
+    window.BurnerNew.loadConfig({
+        breadboard: {
+            banks: this.config.banks.map(bank =>
+                Object.assign({
+                    rows: this.config.rowCount,
+                    topMargin: this.config.topMargin,
+                    leftMargin: this.config.leftMargin,
+                    offsetX: 0,
+                    offsetY: 0,
+                    thickness: this.config.thickness,
+                    pitch: this.config.pitch,
+                    vertical: bank.dir === 'y',
+                    height: bank.dir === 'y' ? this.config.height : 0
+                }, bank)
+            ),
+            width: this.config.width,
+            height: this.config.height
+        },
+        connections: {
+            topMargin: this.config.topMargin,
+            leftMargin: 10,
+            pitch: this.config.pitch
+        }
+    });
     this.banks = copy(this.config.banks);
     this.circuits = this.createBanks(this.banks);
 };
