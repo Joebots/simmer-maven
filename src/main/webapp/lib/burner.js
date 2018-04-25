@@ -436,6 +436,11 @@ BreadBoard.prototype.applyConfig = function () {
             pitch: this.config.pitch
         }
     });
+
+    if(this._showAllBanks) {
+        BurnerNew.highlightAll(this._showAllBanks);
+    }
+
     this.banks = copy(this.config.banks);
     this.circuits = this.createBanks(this.banks);
 };
@@ -637,15 +642,8 @@ return [];
 };
 
 BreadBoard.prototype.showAllBanks = function (value) {
+    BurnerNew.highlightAll(value);
     this._showAllBanks = value;
-    this.border.attr("stroke", value ? "#f00" : "#000");
-    for (var i in this.circuits) {
-        var group = this.circuits[i];
-        for (var j in group) {
-            var bank = group[j];
-            bank.attr("opacity", value ? 1 : 0);
-        }
-    }
 };
 
 BreadBoard.prototype.saveConfig = function () {
