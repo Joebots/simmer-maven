@@ -17,6 +17,7 @@
     <script src="lib/event-bus-bundle.js"></script>
     <script src="lib/raphael.min.js"></script>
     <script src="lib/burner.js"></script>
+    <script src="lib/burner_new.js"></script>
 
     <!-- Configuration -->
     <script>
@@ -167,6 +168,7 @@
     <script src="lib/blocks/gpio.js"></script>
     <script src="lib/blocks/text.js"></script>
     <script src="lib/blocks/time.js"></script>
+    <script src="lib/origami/origami.min.js"></script>
     <!-- Custom Scripts -->
     <script src="lib/file_utils.js"></script>
     <script src="lib/simmer_api.js"></script>
@@ -208,7 +210,7 @@
     </div>
 </div>
 <div id="active-component"></div>
-<div id="active-pin"></div>
+<div class="active-pins"></div>
 <div id="active-component-picture"></div>
 <div id="app-version"></div>
 
@@ -236,6 +238,7 @@
         globalBus.bind(BreadBoard.CircuitStates.SYSTEM_LOADED, function (e) {
             console.log("system.loaded");
             bboard.setTarget("breadboard");
+            BurnerNew.load('#burner');
         });
 
         $("#bblayout").click(function (evt) {

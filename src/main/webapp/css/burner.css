@@ -45,12 +45,11 @@
     border: 2px solid white;
 }
 
-#active-pin{
+.active-pins > div{
     /*animation: pulsate-yellow .75s infinite;*/
     width: 20px;
     height: 20px;
     background: yellow;
-    display: none;
     position: absolute;
     border-radius: 10px;
     /*opacity: .7;*/
