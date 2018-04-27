@@ -10,9 +10,23 @@ module.exports = class Bank extends GraphicElement {
 
   draw(context) {
     this.rows
-      .forEach(row => {
+      .forEach((row, i) => {
+        let rowColor = 'white';
+
+        switch (row.type) {
+          case 'GPIO':
+            rowColor = 'yellow';
+            break;
+          case 'BUS':
+            // Hardcode power rail
+            if (i === 2) {
+              rowColor = 'red';
+            }
+            break;
+        }
+
         context.rect(row.x, row.y, row.width, row.height, {
-          background: row.active ? 'white' : 'black'
+          background: row.active ? rowColor : 'black'
         });
       });
   }
@@ -49,6 +63,7 @@ module.exports = class Bank extends GraphicElement {
         y: Math.floor(y1),
         width: w,
         height: h,
+        type: this.config.type,
         active: this.activeRows[i]
       });
     }
