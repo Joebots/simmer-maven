@@ -424,7 +424,7 @@ BreadBoard.prototype.applyConfig = function () {
                     thickness: this.config.thickness,
                     pitch: this.config.pitch,
                     vertical: bank.dir === 'y',
-                    height: bank.dir === 'y' ? this.config.height : 0
+                    height: bank.dir === 'y' ? this.config.height - (this.config.pitch * 4) : 0
                 }, bank)
             ),
             width: this.config.width,

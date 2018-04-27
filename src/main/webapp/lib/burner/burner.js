@@ -77,8 +77,8 @@ class Burner {
         accumulator[current.bank].rows.push(current.row);
         accumulator[current.bank].connections.push({
           title: current.text,
-          x: this.config.connections.leftMargin,
-          y: this.config.connections.topMargin + current.row * this.config.connections.pitch
+          x: current.isRail ? this.railPosition(current.bank, current.row) : this.config.connections.leftMargin,
+          y: current.isRail ? this.config.breadboard.height - this.config.connections.pitch : this.config.connections.topMargin + current.row * this.config.connections.pitch
         });
 
         return accumulator;
@@ -93,6 +93,11 @@ class Burner {
           }))
       };
     });
+  }
+
+  railPosition(bankIndex, row) {
+    const bank = this.config.breadboard.banks[bankIndex];
+    return bank.offsetX + bank.leftMargin + (row * bank.pitch);
   }
 
   reset() {
