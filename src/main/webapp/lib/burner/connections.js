@@ -51,10 +51,15 @@ module.exports = class Connections extends GraphicElement {
       const previousConnection = connections[i - 1];
       const connection = connections[i];
 
-      const distance = connection.background.y + (connection.background.width * 2)- previousConnection.background.y;
+      const distance = connection.background.y + (connection.background.width * 2) - previousConnection.background.y;
 
       if(distance >= 0) {
-        connection.background.y -= distance + 1;
+        if(connection.background.y === previousConnection.background.y) {
+            connection.background.x += connection.background.width * 2;
+        }
+        else {
+            connection.background.y -= distance + 1;
+        }
       }
     }
 
