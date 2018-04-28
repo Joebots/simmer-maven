@@ -397,12 +397,12 @@ function mapPinsToBreadboard(circuitModel, done, componentFilter, activeTerminal
                 // for each component at this connection point
                 pinMapping.components[cmp.name] = j;
 
-                if (activeBank == activeTerminal.bank && (++activeTerminal.bank) >= terminalBankIndices.length) {
+                if (activeBank == activeTerminal.bank && (++activeTerminal.bank) >= terminalBankIndices[0] + terminalBankIndices.length) {
                     activeTerminal.bank = terminalBankIndices[0];
                 }
             }
 
-            if (activeRow == activeTerminal.row && (++activeTerminal.row) >= this.banks[0].rows.length) {
+            if (activeRow == activeTerminal.row && (++activeTerminal.row) >= this.banks[terminalBankIndices[0]].rows.length) {
                 activeTerminal.row = 0;
             }
             done[cmp.name] = pinMapping;
@@ -460,7 +460,7 @@ BreadBoard.prototype.doNext = function (e) {
     var self = e.data.that;
 
     self.activeStep++;
-    sanity(self)
+    sanity(self);
     var model = self.controller.getActiveComponent();
     self.controller.showComponent(model);
 
