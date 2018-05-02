@@ -296,6 +296,9 @@ public class CircuitElementFactory {
         if (n == "KY_010")
             return  new KY010Elm(x1, y1);
 
+        if (n == "KY_011")
+            return  new KY011Elm(x1, y1);
+
         if (n == "KY_012")
             return  new KY012Elm(x1, y1);
 
@@ -594,6 +597,9 @@ public class CircuitElementFactory {
 
         if (tint == 510)
             return  new KY010Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 511)
+            return  new KY011Elm(x1, y1, x2, y2, f, st);
 
         if (tint == 512)
             return  new KY012Elm(x1, y1, x2, y2, f, st);
