@@ -101,6 +101,8 @@
 
                     <!-- Arduino Sensors Kit -->
                     <ma:tree.MaterialTreeItem ui:id="components-sensor-kits" iconType="FOLDER" text="{i18n.Sensors}">
+                        <ma:tree.MaterialTreeItem ui:id="components-sensor-kits-ky-001" iconType="EXTENSION" text="{i18n.KY_001}"
+                                                  target="KY_001" />
                         <ma:tree.MaterialTreeItem ui:id="components-sensor-kits-ky-002" iconType="EXTENSION" text="{i18n.KY_002}"
                                                   target="KY_002" />
                         <ma:tree.MaterialTreeItem ui:id="components-sensor-kits-ky-003" iconType="EXTENSION" text="{i18n.KY_003}"

@@ -269,6 +269,9 @@ public class CircuitElementFactory {
         if (n == "GpioOutputElm")
             return  new GpioOutputElm(x1, y1);
 
+        if (n == "KY_001")
+            return  new KY001Elm(x1, y1);
+
         if (n == "KY_002")
             return  new KY002Elm(x1, y1);
 
@@ -565,6 +568,9 @@ public class CircuitElementFactory {
             return  new GpioInputElm(x1, y1, x2, y2, f, st);
 
         // Sensors
+        if (tint == 501)
+            return  new KY001Elm(x1, y1, x2, y2, f, st);
+
         if (tint == 502)
             return  new KY002Elm(x1, y1, x2, y2, f, st);
 
