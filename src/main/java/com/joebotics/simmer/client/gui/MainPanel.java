@@ -34,25 +34,16 @@ public class MainPanel extends Composite {
     DockLayoutPanel eastPanel;
     
     @UiField
-    ToolsPanel toolsPanel;
-    
-    @UiField
     EditDialog editDialog;
     
     public MainPanel() {
         initWidget(uiBinder.createAndBindUi(this));
-        // eastPanel.setWidgetSize(toolsPanel,
-        // RootLayoutPanel.get().getOffsetHeight() - height);
         layoutPanel.setWidgetSize(eastPanel, Display.BREADBOARD_WIDTH);
     }
     
     @UiFactory
     Canvas createCanvas() {
         return Canvas.createIfSupported();
-    }
-    
-    public MainPanel(String firstName) {
-        initWidget(uiBinder.createAndBindUi(this));
     }
     
     public Canvas getCanvas() {

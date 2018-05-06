@@ -1,11 +1,13 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui"
-    xmlns:c="urn:import:com.google.gwt.canvas.client" xmlns:m="urn:import:gwt.material.design.client.ui" xmlns:jb="urn:import:com.joebotics.simmer.client.gui"
-    xmlns:jbm="urn:import:com.joebotics.simmer.client.gui.menu"
-    xmlns:jbd="urn:import:com.joebotics.simmer.client.gui.dialog">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:c="urn:import:com.google.gwt.canvas.client"
+             xmlns:jb="urn:import:com.joebotics.simmer.client.gui"
+             xmlns:m='urn:import:gwt.material.design.client.ui'
+             xmlns:jbd="urn:import:com.joebotics.simmer.client.gui.dialog">
 
-    <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N' />
-    <ui:import field="com.joebotics.simmer.client.gui.util.Display.*" />
+    <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N'/>
+    <ui:import field="com.joebotics.simmer.client.gui.util.Display.*"/>
 
     <ui:style>
         .main-panel {
@@ -13,24 +15,44 @@
         }
     </ui:style>
 
-    <g:DockLayoutPanel unit='PX' ui:field="layoutPanel" styleName="{style.main-panel}">
-        <g:east size="400">
-            <g:DockLayoutPanel unit='PCT' ui:field="eastPanel">
-                <g:south size="21">
-                    <jb:ToolsPanel ui:field="toolsPanel" />
-                </g:south>
-                <g:center>
-                    <g:HTMLPanel>
-                        <div><canvas id="burner" width="384" height="532"></canvas></div>
-                    </g:HTMLPanel>
-                </g:center>
-            </g:DockLayoutPanel>
-        </g:east>
-        <g:center>
-            <g:HTMLPanel>
-                <c:Canvas ui:field="canvas"></c:Canvas>
-                <jbd:EditDialog ui:field="editDialog" />
-            </g:HTMLPanel>
-        </g:center>
-    </g:DockLayoutPanel>
+    <m:MaterialPanel>
+        <m:MaterialHeader ui:field="header">
+            <m:MaterialNavBar activates="sidenavDrawer" backgroundColor="GREEN" shadow="1">
+
+            </m:MaterialNavBar>
+        </m:MaterialHeader>
+
+        <m:MaterialSideNavDrawer m:id="sidenavDrawer" ui:field="sideNav" width="300">
+            <m:MaterialLink ui:field="fileButton" iconType="FOLDER" text="Open"/>
+            <m:MaterialLink ui:field="optionsButton" iconType="SETTINGS" text="Options"/>
+            <m:MaterialLink ui:field="programmingButton" iconType="EXTENSION" text="Code Blocks"/>
+            <m:MaterialLink ui:field="orderPartsButton" iconType="SHOPPING_CART" text="Order Parts"/>
+            <m:MaterialLink ui:field="getHelpDialog" iconType="FORUM" text="Assistant"/>
+            <m:MaterialLink ui:field="powerButton" iconType="POWER_SETTINGS_NEW" text="Exit"/>
+        </m:MaterialSideNavDrawer>
+
+        <m:MaterialContainer>
+            <m:MaterialRow textAlign="CENTER" paddingTop="60">
+                <g:DockLayoutPanel unit='PX' ui:field="layoutPanel" styleName="{style.main-panel}">
+                    <g:east size="400">
+                        <g:DockLayoutPanel unit='PCT' ui:field="eastPanel">
+                            <g:center>
+                                <g:HTMLPanel>
+                                    <div>
+                                        <canvas id="burner" width="384" height="532"></canvas>
+                                    </div>
+                                </g:HTMLPanel>
+                            </g:center>
+                        </g:DockLayoutPanel>
+                    </g:east>
+                    <g:center>
+                        <g:HTMLPanel>
+                            <c:Canvas ui:field="canvas" />
+                            <jbd:EditDialog ui:field="editDialog"/>
+                        </g:HTMLPanel>
+                    </g:center>
+                </g:DockLayoutPanel>
+            </m:MaterialRow>
+        </m:MaterialContainer>
+    </m:MaterialPanel>
 </ui:UiBinder> 
