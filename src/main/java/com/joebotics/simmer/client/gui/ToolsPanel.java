@@ -82,6 +82,7 @@ public class ToolsPanel extends Composite {
     public void programmingButtonHandler(ClickEvent e) {
         programmingDialog.open();
     }
+
     @UiHandler("orderPartsButton")
     public void partsButtonHandler(ClickEvent e) {
         orderParts.open();

@@ -1,11 +1,11 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui"
-    xmlns:m="urn:import:gwt.material.design.client.ui" xmlns:ma="urn:import:gwt.material.design.addins.client">
-    <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N' />
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:m="urn:import:gwt.material.design.client.ui"
+             xmlns:ma="urn:import:gwt.material.design.addins.client">
+    <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N'/>
     <ui:style>
     </ui:style>
-    <ma:window.MaterialWindow ui:field="modal" title="{i18n.Circuits}" toolbarColor="GREEN"
-        styleName="shifted-window">
+    <ma:window.MaterialWindow ui:field="modal" title="{i18n.Circuits}" toolbarColor="GREEN" styleName="shifted-window">
         <m:MaterialRow>
             <m:MaterialColumn grid="s11">
                 <ma:tree.MaterialTree ui:field="circuitsTree" fontSize="1.2em">
@@ -13,16 +13,18 @@
             </m:MaterialColumn>
             <m:MaterialColumn grid="s1">
                 <m:MaterialButton ui:field="btnCollapse" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
-                    iconType="VERTICAL_ALIGN_CENTER" />
+                                  iconType="VERTICAL_ALIGN_CENTER"/>
                 <m:MaterialLabel text="Collapse" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
+
                 <m:MaterialButton ui:field="btnExpand" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
-                    iconType="ZOOM_OUT_MAP" />
+                                  iconType="ZOOM_OUT_MAP"/>
                 <m:MaterialLabel text="Expand" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
+
                 <m:MaterialLink ui:field="btnImport" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
-                     iconType="FOLDER_OPEN" />
+                                iconType="FOLDER_OPEN"/>
                 <m:MaterialLabel text="Open" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
-                <m:MaterialLink ui:field="btnExport" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
-                    iconType="SAVE" />
+
+                <m:MaterialLink ui:field="btnExport" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM" iconType="SAVE"/>
                 <m:MaterialLabel text="Save" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
             </m:MaterialColumn>
         </m:MaterialRow>

@@ -19,12 +19,6 @@
 
 package com.joebotics.simmer.client;
 
-import java.util.List;
-import java.util.logging.Logger;
-
-// GWT conversion (c) 2015 by Iain Sharp
-// For information about the theory behind this, see Electronic Circuit & System Simulation Methods by Pillage
-
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -35,25 +29,69 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window.Navigator;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.MenuItem;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
+
 import com.joebotics.simmer.client.breadboard.interpreter.BreadboardCircuitParserListener;
 import com.joebotics.simmer.client.breadboard.interpreter.CircuitParser;
 import com.joebotics.simmer.client.breadboard.interpreter.CircuitParserListener;
-import com.joebotics.simmer.client.elcomp.*;
+import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
+import com.joebotics.simmer.client.elcomp.CapacitorElm;
+import com.joebotics.simmer.client.elcomp.CircuitNode;
+import com.joebotics.simmer.client.elcomp.CircuitNodeLink;
+import com.joebotics.simmer.client.elcomp.CurrentElm;
+import com.joebotics.simmer.client.elcomp.GraphicElm;
+import com.joebotics.simmer.client.elcomp.GroundElm;
+import com.joebotics.simmer.client.elcomp.InductorElm;
+import com.joebotics.simmer.client.elcomp.RailElm;
+import com.joebotics.simmer.client.elcomp.ResistorElm;
+import com.joebotics.simmer.client.elcomp.SwitchElm;
+import com.joebotics.simmer.client.elcomp.VoltageElm;
+import com.joebotics.simmer.client.elcomp.WireElm;
 import com.joebotics.simmer.client.event.SimmerEventBus;
 import com.joebotics.simmer.client.gui.MainPanel;
 import com.joebotics.simmer.client.gui.Scope;
 import com.joebotics.simmer.client.gui.SidePanel;
-import com.joebotics.simmer.client.gui.dialog.*;
-import com.joebotics.simmer.client.gui.menu.*;
-import com.joebotics.simmer.client.gui.util.*;
+import com.joebotics.simmer.client.gui.dialog.AboutBox;
+import com.joebotics.simmer.client.gui.dialog.EditDialog;
+import com.joebotics.simmer.client.gui.dialog.ExportAsLocalFileDialog;
+import com.joebotics.simmer.client.gui.dialog.ExportAsTextDialog;
+import com.joebotics.simmer.client.gui.dialog.ExportAsUrlDialog;
+import com.joebotics.simmer.client.gui.dialog.ImportFromTextDialog;
+import com.joebotics.simmer.client.gui.menu.DrawMenu;
+import com.joebotics.simmer.client.gui.menu.ElementPopupMenu;
+import com.joebotics.simmer.client.gui.menu.MainMenuBar;
+import com.joebotics.simmer.client.gui.menu.ScrollValuePopup;
+import com.joebotics.simmer.client.gui.util.Color;
+import com.joebotics.simmer.client.gui.util.Display;
+import com.joebotics.simmer.client.gui.util.Font;
+import com.joebotics.simmer.client.gui.util.Graphics;
+import com.joebotics.simmer.client.gui.util.LoadFile;
+import com.joebotics.simmer.client.gui.util.Point;
+import com.joebotics.simmer.client.gui.util.Rectangle;
+import com.joebotics.simmer.client.gui.util.RowInfo;
 import com.joebotics.simmer.client.integration.JSEventBusProxy;
 import com.joebotics.simmer.client.integration.SimmerEvents;
 import com.joebotics.simmer.client.model.FootprintManager;
 import com.joebotics.simmer.client.model.GpioManager;
-import com.joebotics.simmer.client.util.*;
+import com.joebotics.simmer.client.util.FindPathInfo;
 import com.joebotics.simmer.client.util.HintTypeEnum.HintType;
+import com.joebotics.simmer.client.util.MathUtil;
+import com.joebotics.simmer.client.util.MessageI18N;
 import com.joebotics.simmer.client.util.MouseModeEnum.MouseMode;
+import com.joebotics.simmer.client.util.OptionKey;
+import com.joebotics.simmer.client.util.Options;
+import com.joebotics.simmer.client.util.QueryParameters;
+
+import java.util.List;
+import java.util.logging.Logger;
+
+// GWT conversion (c) 2015 by Iain Sharp
+// For information about the theory behind this, see Electronic Circuit & System Simulation Methods by Pillage
 
 public class Simmer {
     public static final String muString = "u";
@@ -152,6 +190,8 @@ public class Simmer {
     private SimmerEventBus eventBus;
     private FootprintManager footprintManager;
 
+    private MainPanel mainPanel;
+
     private static Simmer instance;
 
     private static final Logger lager = Logger.getLogger(Simmer.class.getName());
@@ -228,8 +268,8 @@ public class Simmer {
          */
 
         // main.setLayout(new CircuitLayout());
-        MainPanel mainPanel = new MainPanel();
-        editDialog = mainPanel.getEditDialog();
+        mainPanel = new MainPanel();
+//        editDialog = mainPanel.getEditDialog();
         // layoutPanel = new DockLayoutPanel(Unit.PX);
         sidePanel = new SidePanel(this);
         popupDrawMenu = new DrawMenu(this, true);
@@ -242,7 +282,7 @@ public class Simmer {
             // {source: simmer, component: ce, message:
             // "Voltage_source/wire_loop_with_no_resistance!"}
             String message = MessageI18N
-                    .getMessage("Not_working._You_need_a_browser_that_supports_the_CANVAS_element.");
+                .getMessage("Not_working._You_need_a_browser_that_supports_the_CANVAS_element.");
             JSEventBusProxy.fireError(SimmerEvents.SYSTEM_ERROR, message);
             RootPanel.get().add(new Label(message));
             return;
@@ -470,7 +510,7 @@ public class Simmer {
             for (i = 0; i != getNodeList().size(); i++)
                 if (!closure[i] && !getCircuitNode(i).internal) {
                     String message = MessageI18N.getMessage("node_") + " " + i + " "
-                            + MessageI18N.getMessage("_unconnected");
+                        + MessageI18N.getMessage("_unconnected");
                     lager.info(message);
                     JSEventBusProxy.fireError(SimmerEvents.CIRCUIT_BROKEN, message, getCircuitNode(i));
                     stampResistor(0, i, 1e8);
@@ -485,7 +525,7 @@ public class Simmer {
             // look for inductors with no current path
             if (ce instanceof InductorElm) {
                 FindPathInfo fpi = new FindPathInfo(FindPathInfo.INDUCT, ce, ce.getNode(1), getNodeList().size(),
-                        getElmList());
+                    getElmList());
 
                 // first try findPath with maximum depth of 5, to avoid
                 // slowdowns
@@ -497,7 +537,7 @@ public class Simmer {
             // look for current sources with no current path
             if (ce instanceof CurrentElm) {
                 FindPathInfo fpi = new FindPathInfo(FindPathInfo.INDUCT, ce, ce.getNode(1), getNodeList().size(),
-                        getElmList());
+                    getElmList());
                 if (!fpi.findPath(ce.getNode(0))) {
                     String message = MessageI18N.getMessage("No_path_for_current_source!");
                     stop(message, ce);
@@ -512,7 +552,7 @@ public class Simmer {
             // IES
             if ((ce instanceof VoltageElm && ce.getPostCount() == 2) || ce instanceof WireElm) {
                 FindPathInfo fpi = new FindPathInfo(FindPathInfo.VOLTAGE, ce, ce.getNode(1), getNodeList().size(),
-                        getElmList());
+                    getElmList());
                 if (fpi.findPath(ce.getNode(0))) {
                     String message = MessageI18N.getMessage("Voltage_source/wire_loop_with_no_resistance!");
                     stop(message, ce);
@@ -527,7 +567,7 @@ public class Simmer {
             // look for shorted caps, or caps w/ voltage but no R
             if (ce instanceof CapacitorElm) {
                 FindPathInfo fpi = new FindPathInfo(FindPathInfo.SHORT, ce, ce.getNode(1), getNodeList().size(),
-                        getElmList());
+                    getElmList());
                 if (fpi.findPath(ce.getNode(0))) {
                     lager.fine(ce + MessageI18N.getMessage("_shorted"));
                     ce.reset();
@@ -627,7 +667,7 @@ public class Simmer {
                     }
                     if (elt.getType() != RowInfo.ROW_NORMAL) {
                         lager.fine(MessageI18N.getMessage("type_already_") + elt.getType()
-                                + MessageI18N.getMessage("_for_") + qp + "!");
+                            + MessageI18N.getMessage("_for_") + qp + "!");
                         continue;
                     }
                     elt.setType(RowInfo.ROW_CONST);
@@ -844,7 +884,7 @@ public class Simmer {
         int c = mainMenuBar.getDrawMenu().getMainMenuItems().size();
         for (int i = 0; i < c; i++)
             mainMenuBar.getDrawMenu().getMainMenuItems().get(i)
-                    .setState(mainMenuBar.getDrawMenu().getMainMenuItemNames().get(i) == mouseModeStr);
+                .setState(mainMenuBar.getDrawMenu().getMainMenuItemNames().get(i) == mouseModeStr);
     }
 
     public CircuitNode getCircuitNode(int n) {
@@ -871,7 +911,7 @@ public class Simmer {
             CapacitorElm ce = (CapacitorElm) c2;
 
             return "res.f = " + AbstractCircuitElement
-                    .getUnitText(1 / (2 * Math.PI * Math.sqrt(ie.getInductance() * ce.getCapacitance())), "Hz");
+                .getUnitText(1 / (2 * Math.PI * Math.sqrt(ie.getInductance() * ce.getCapacitance())), "Hz");
         }
         if (hintType == HintType.HINT_RC) {
             if (!(c1 instanceof ResistorElm))
@@ -896,7 +936,7 @@ public class Simmer {
             CapacitorElm ce = (CapacitorElm) c2;
 
             return "f.3db = " + AbstractCircuitElement
-                    .getUnitText(1 / (2 * Math.PI * re.getResistance() * ce.getCapacitance()), "Hz");
+                .getUnitText(1 / (2 * Math.PI * re.getResistance() * ce.getCapacitance()), "Hz");
         }
         if (hintType == HintType.HINT_3DB_L) {
             if (!(c1 instanceof ResistorElm))
@@ -909,7 +949,7 @@ public class Simmer {
             InductorElm ie = (InductorElm) c2;
 
             return "f.3db = "
-                    + AbstractCircuitElement.getUnitText(re.getResistance() / (2 * Math.PI * ie.getInductance()), "Hz");
+                + AbstractCircuitElement.getUnitText(re.getResistance() / (2 * Math.PI * ie.getInductance()), "Hz");
         }
         if (hintType == HintType.HINT_TWINT) {
             if (!(c1 instanceof ResistorElm))
@@ -922,7 +962,7 @@ public class Simmer {
             CapacitorElm ce = (CapacitorElm) c2;
 
             return "fc = " + AbstractCircuitElement
-                    .getUnitText(1 / (2 * Math.PI * re.getResistance() * ce.getCapacitance()), "Hz");
+                .getUnitText(1 / (2 * Math.PI * re.getResistance() * ce.getCapacitance()), "Hz");
         }
         return null;
     }
@@ -945,7 +985,9 @@ public class Simmer {
         // enableUndoRedo();
     }
 
-    /** end options menu **/
+    /**
+     * end options menu
+     **/
     private void bindEventHandlers() {
         cv.sinkEvents(Event.MOUSEEVENTS | Event.TOUCHEVENTS | Event.KEYEVENTS);
         cv.addMouseDownHandler(simmerController);
@@ -1006,7 +1048,7 @@ public class Simmer {
         long lit = lastIterTime;
         if (1000 >= steprate * (tm - lastIterTime))
             return;
-        for (iter = 1;; iter++) {
+        for (iter = 1; ; iter++) {
             int i, j, k, subiter;
             for (i = 0; i != getElmList().size(); i++) {
                 AbstractCircuitElement ce = getElm(i);
@@ -1105,7 +1147,7 @@ public class Simmer {
             }
             if (subiter > 5)
                 System.out.print(MessageI18N.getMessage("converged_after_") + subiter
-                        + MessageI18N.getMessage("_iterations") + "\n");
+                    + MessageI18N.getMessage("_iterations") + "\n");
             if (subiter == subiterCount) {
                 stop(MessageI18N.getMessage("Convergence_failed!"), null);
                 break;
@@ -1122,11 +1164,8 @@ public class Simmer {
     }
 
     public void setCanvasSize() {
-        int width, height;
-        width = RootLayoutPanel.get().getOffsetWidth();
-        height = RootLayoutPanel.get().getOffsetHeight();
-        // height = height - Display.MENUBARHEIGHT;
-        width = width - Display.BREADBOARD_WIDTH;
+        int width = Math.round(RootLayoutPanel.get().getOffsetWidth() * .666f);
+        int height = Math.round(RootLayoutPanel.get().getOffsetHeight() * .98f - 64);
         if (cv != null) {
             cv.setWidth(width + "PX");
             cv.setHeight(height + "PX");
@@ -1512,7 +1551,7 @@ public class Simmer {
         }
         // mydrawtime += System.currentTimeMillis() - mydrawstarttime;
         if (tempMouseMode == MouseMode.DRAG_ROW || tempMouseMode == MouseMode.DRAG_COLUMN
-                || tempMouseMode == MouseMode.DRAG_POST || tempMouseMode == MouseMode.DRAG_SELECTED)
+            || tempMouseMode == MouseMode.DRAG_POST || tempMouseMode == MouseMode.DRAG_SELECTED)
             for (i = 0; i != getElmList().size(); i++) {
 
                 AbstractCircuitElement ce = getElm(i);
@@ -1542,7 +1581,7 @@ public class Simmer {
                     CircuitNodeLink cnl = cn.links.get(0);
 
                     for (j = 0; j != getElmList().size(); j++) { // TODO:
-                                                                 // (hausen)
+                        // (hausen)
                         // see if this
                         // change does not
                         // break stuff
@@ -1624,7 +1663,7 @@ public class Simmer {
 
             if (badnodes > 0)
                 info[i++] = badnodes + ((badnodes == 1) ? MessageI18N.getMessage("_bad_connection")
-                        : MessageI18N.getMessage("_bad_connections"));
+                    : MessageI18N.getMessage("_bad_connections"));
 
             // find where to show data; below circuit, not too high unless we
             // need it
@@ -1738,7 +1777,7 @@ public class Simmer {
     protected void setDragging(boolean state) {
         this.dragging = state;
     }
-    
+
     protected boolean isDragging() {
         return this.dragging;
     }
