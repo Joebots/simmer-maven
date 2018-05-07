@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
 import gwt.material.design.client.MaterialDesignBase;
-import gwt.material.design.client.ui.MaterialColumn;
+import gwt.material.design.client.ui.MaterialNavBar;
 
 public class MainPanel extends Composite {
 
@@ -27,6 +27,9 @@ public class MainPanel extends Composite {
 
     @UiField
     Canvas canvas;
+
+    @UiField
+    MaterialNavBar navBar;
 
     public MainPanel() {
         initWidget(uiBinder.createAndBindUi(this));

@@ -179,18 +179,6 @@
 
 <body>
 
-<div id="burner-controls" class="container" style="display: none;">
-    <div class="row">
-        <a class="col s2 btn btn-large waves-effect waves-light" id="back-btn">
-            Back
-            <i class="material-icons left">chevron_left</i></a>
-        <div class="col s8 burner-command-desc" id="wizard-text"></div>
-        <a class="col s2 btn btn-large waves-effect waves-light" id="forward-btn">
-            Next
-            <i class="material-icons right">chevron_right</i></a>
-    </div>
-</div>
-
 <div id="app-controls" style="display: none;">
     <div id="wizard-toolbar">
         <div id="circuit-context-buttons">
@@ -210,10 +198,10 @@
         </div>
     </div>
 </div>
-<div id="active-component" style="display: none;"></div>
-<div class="active-pins" style="display: none;"></div>
-<div id="active-component-picture" style="display: none;"></div>
-<div id="app-version" style="display: none;"></div>
+<div id="active-component"></div>
+<div class="active-pins"></div>
+<div id="active-component-picture"></div>
+<div id="app-version"></div>
 
 <script src="simmer/simmer.nocache.js"></script>
 
@@ -240,20 +228,16 @@
             console.log("system.loaded");
             bboard.setTarget("breadboard");
             BurnerNew.load('#burner');
+            $("#reset").click(function (evt) {
+                globalBus.fire("circuit.working", window.workingCircuitEvent);
+                $("#wizard-text").html("");
+            });
         });
 
         $("#bblayout").click(function (evt) {
             top.ALLOW_BB_MOVE = top.ALLOW_BB_MOVE ? !top.ALLOW_BB_MOVE : true;
         });
 
-        $("#reset").click(function (evt) {
-            globalBus.fire("circuit.working", window.workingCircuitEvent);
-            $("#wizard-text").html("");
-        });
-
-        $("#oscope").click(function (evt) {
-            $("#burner-controls").fadeToggle();
-        });
     });
 </script>
 </body>

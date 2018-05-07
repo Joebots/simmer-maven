@@ -15,12 +15,13 @@
 
     <m:MaterialPanel>
         <m:MaterialHeader ui:field="header">
-            <m:MaterialNavBar activates="sidenavDrawer" backgroundColor="GREEN" shadow="1">
+            <m:MaterialNavBar ui:field="navBar" activates="sidenavDrawer" backgroundColor="GREEN" shadow="1">
 
             </m:MaterialNavBar>
         </m:MaterialHeader>
 
         <m:MaterialSideNavDrawer m:id="sidenavDrawer" ui:field="sideNav" width="300">
+            <m:MaterialLink ui:field="circuitButton" iconType="BORDER_CLEAR" text="Circuit"/>
             <m:MaterialLink ui:field="openButton" iconType="FOLDER" text="Open"/>
             <m:MaterialLink ui:field="optionsButton" iconType="SETTINGS" text="Options"/>
             <m:MaterialLink ui:field="codeBlocksButton" iconType="EXTENSION" text="Code Blocks"/>
@@ -34,7 +35,7 @@
                 <m:MaterialColumn grid="s8">
                     <c:Canvas ui:field="canvas"/>
                 </m:MaterialColumn>
-                <m:MaterialColumn grid="s4">
+                <m:MaterialColumn grid="s4" paddingTop="20">
                     <m:MaterialRow>
                         <g:HTMLPanel>
                             <div>
@@ -46,17 +47,16 @@
                         <m:MaterialColumn grid="s8">
                             <m:MaterialCard backgroundColor="GREEN_LIGHTEN_2">
                                 <m:MaterialCardContent textColor="WHITE">
-                                    <m:MaterialLabel
-                                            text="I am a very simple card. I am good at containing small bits of information. I am convenient because I require little markup to use effectively."/>
+                                    <m:MaterialLabel class="burner-command-desc" />
                                 </m:MaterialCardContent>
                             </m:MaterialCard>
                         </m:MaterialColumn>
                         <m:MaterialColumn grid="s4">
-                            <m:MaterialButton text="Next" waves="DEFAULT" backgroundColor="GREEN_DARKEN_4" textColor="WHITE"
+                            <m:MaterialButton m:id="forward-btn" text="Next" waves="DEFAULT" backgroundColor="GREEN_DARKEN_4" textColor="WHITE"
                                               size="MEDIUM" marginBottom="10"/>
-                            <m:MaterialButton text="Back" waves="DEFAULT" backgroundColor="GREEN_DARKEN_4" textColor="WHITE"
+                            <m:MaterialButton m:id="back-btn" text="Back" waves="DEFAULT" backgroundColor="GREEN_DARKEN_4" textColor="WHITE"
                                               size="MEDIUM" marginBottom="10"/>
-                            <m:MaterialButton text="Reset" waves="DEFAULT" backgroundColor="GREEN_DARKEN_4" textColor="WHITE"
+                            <m:MaterialButton m:id="reset" text="Reset" waves="DEFAULT" backgroundColor="GREEN_DARKEN_4" textColor="WHITE"
                                               size="MEDIUM"/>
                         </m:MaterialColumn>
                     </m:MaterialRow>
