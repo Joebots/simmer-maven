@@ -39,6 +39,7 @@ import com.joebotics.simmer.client.elcomp.ResistorElm;
 import com.joebotics.simmer.client.elcomp.SwitchElm;
 import com.joebotics.simmer.client.gui.ComponentToolbar;
 import com.joebotics.simmer.client.gui.EditOptions;
+import com.joebotics.simmer.client.gui.MainToolbar;
 import com.joebotics.simmer.client.gui.Scope;
 import com.joebotics.simmer.client.gui.dialog.AboutBox;
 import com.joebotics.simmer.client.gui.dialog.ImportFromTextDialog;
@@ -150,7 +151,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             if (finder.selectElement(p) != null) {
                 simmer.setToolbar(new ComponentToolbar(this));
             } else {
-                simmer.clearToolbar();
+                simmer.setToolbar(new MainToolbar(this));
             }
 
             if (simmer.getContextPanel() != null) {

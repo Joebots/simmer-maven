@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import gwt.material.design.client.MaterialDesignBase;
 import gwt.material.design.client.ui.MaterialNavBar;
+import gwt.material.design.client.ui.MaterialPanel;
 
 public class MainPanel extends Composite {
 
@@ -31,6 +32,9 @@ public class MainPanel extends Composite {
     @UiField
     MaterialNavBar navBar;
 
+    @UiField
+    MaterialPanel mainContainer;
+
     private Widget cuttentToolbar;
 
     public MainPanel() {
@@ -42,18 +46,8 @@ public class MainPanel extends Composite {
         return Canvas.createIfSupported();
     }
 
-    @UiHandler("openButton")
-    public void onOpenButtonClick(ClickEvent event) {
-
-    }
-
     @UiHandler("optionsButton")
     public void onOptionsButtonClick(ClickEvent event) {
-
-    }
-
-    @UiHandler("codeBlocksButton")
-    public void onCodeBlocksButtonClick(ClickEvent event) {
 
     }
 
@@ -67,13 +61,12 @@ public class MainPanel extends Composite {
 
     }
 
-    @UiHandler("exitButton")
-    public void onExitButtonClick(ClickEvent event) {
-
-    }
-
     public Canvas getCanvas() {
         return canvas;
+    }
+
+    public Widget getMainContainer() {
+        return mainContainer;
     }
 
     public void setToolbar(Widget widget) {

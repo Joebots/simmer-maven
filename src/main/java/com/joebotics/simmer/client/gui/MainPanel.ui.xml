@@ -1,6 +1,5 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:c="urn:import:com.google.gwt.canvas.client"
              xmlns:m='urn:import:gwt.material.design.client.ui'>
 
@@ -11,7 +10,7 @@
 
     </ui:style>
 
-    <m:MaterialPanel>
+    <m:MaterialPanel ui:field="mainContainer">
         <m:MaterialHeader>
             <m:MaterialNavBar ui:field="navBar" activates="sidenavDrawer" backgroundColor="GREEN" shadow="1">
 
@@ -19,47 +18,20 @@
         </m:MaterialHeader>
 
         <m:MaterialSideNavDrawer m:id="sidenavDrawer" ui:field="sideNav" width="300">
-            <m:MaterialLink ui:field="circuitButton" iconType="BORDER_CLEAR" text="Circuit"/>
-            <m:MaterialLink ui:field="openButton" iconType="FOLDER" text="Open"/>
-            <m:MaterialLink ui:field="optionsButton" iconType="SETTINGS" text="Options"/>
-            <m:MaterialLink ui:field="codeBlocksButton" iconType="EXTENSION" text="Code Blocks"/>
-            <m:MaterialLink ui:field="orderPartsButton" iconType="SHOPPING_CART" text="Order Parts"/>
+            <m:MaterialLink ui:field="circuitButton" iconType="DEVELOPER_BOARD" text="Circuit"/>
+            <m:MaterialLink ui:field="blocksButton" iconType="STORAGE" text="Blocks"/>
+            <m:MaterialLink ui:field="codeButton" iconType="DESCRIPTION" text="Code"/>
+            <m:MaterialLink ui:field="controlsButton" iconType="KEYBOARD" text="Controls"/>
             <m:MaterialLink ui:field="assistantDialog" iconType="FORUM" text="Assistant"/>
-            <m:MaterialLink ui:field="exitButton" iconType="POWER_SETTINGS_NEW" text="Exit"/>
+            <m:MaterialLink ui:field="orderPartsButton" iconType="SHOPPING_CART" text="Order Parts"/>
+            <m:MaterialLink ui:field="optionsButton" iconType="SETTINGS" text="Options"/>
         </m:MaterialSideNavDrawer>
 
         <m:MaterialContainer>
-            <m:MaterialRow>
-                <m:MaterialColumn grid="s8">
-                    <c:Canvas ui:field="canvas"/>
-                </m:MaterialColumn>
-                <m:MaterialColumn grid="s4" paddingTop="20">
-                    <m:MaterialRow>
-                        <g:HTMLPanel>
-                            <div>
-                                <canvas id="burner"/>
-                            </div>
-                        </g:HTMLPanel>
-                    </m:MaterialRow>
-                    <m:MaterialRow>
-                        <m:MaterialColumn grid="s8">
-                            <m:MaterialCard backgroundColor="GREEN_LIGHTEN_2">
-                                <m:MaterialCardContent textColor="WHITE">
-                                    <m:MaterialLabel class="burner-command-desc" />
-                                </m:MaterialCardContent>
-                            </m:MaterialCard>
-                        </m:MaterialColumn>
-                        <m:MaterialColumn grid="s4">
-                            <m:MaterialButton m:id="forward-btn" text="Next" waves="DEFAULT" backgroundColor="GREEN_DARKEN_4" textColor="WHITE"
-                                              size="MEDIUM" marginBottom="10"/>
-                            <m:MaterialButton m:id="back-btn" text="Back" waves="DEFAULT" backgroundColor="GREEN_DARKEN_4" textColor="WHITE"
-                                              size="MEDIUM" marginBottom="10"/>
-                            <m:MaterialButton m:id="reset" text="Reset" waves="DEFAULT" backgroundColor="GREEN_DARKEN_4" textColor="WHITE"
-                                              size="MEDIUM"/>
-                        </m:MaterialColumn>
-                    </m:MaterialRow>
-                </m:MaterialColumn>
-            </m:MaterialRow>
+            <c:Canvas ui:field="canvas"/>
+            <m:MaterialContainer ui:field="contentContainer">
+
+            </m:MaterialContainer>
         </m:MaterialContainer>
     </m:MaterialPanel>
 </ui:UiBinder> 

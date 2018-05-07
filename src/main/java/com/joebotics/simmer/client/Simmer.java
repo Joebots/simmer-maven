@@ -54,7 +54,9 @@ import com.joebotics.simmer.client.elcomp.SwitchElm;
 import com.joebotics.simmer.client.elcomp.VoltageElm;
 import com.joebotics.simmer.client.elcomp.WireElm;
 import com.joebotics.simmer.client.event.SimmerEventBus;
+import com.joebotics.simmer.client.gui.ControlsPanel;
 import com.joebotics.simmer.client.gui.MainPanel;
+import com.joebotics.simmer.client.gui.MainToolbar;
 import com.joebotics.simmer.client.gui.Scope;
 import com.joebotics.simmer.client.gui.SidePanel;
 import com.joebotics.simmer.client.gui.dialog.AboutBox;
@@ -272,11 +274,13 @@ public class Simmer {
         mainPanel = new MainPanel();
 //        editDialog = mainPanel.getEditDialog();
         // layoutPanel = new DockLayoutPanel(Unit.PX);
+        mainPanel.setToolbar(new MainToolbar(simmerController));
         sidePanel = new SidePanel(this);
         popupDrawMenu = new DrawMenu(this, true);
         mainMenuBar = new MainMenuBar(this);
 
         RootLayoutPanel.get().add(mainPanel);
+        RootPanel.get("controls-container").add(new ControlsPanel());
         cv = mainPanel.getCanvas();
         if (cv == null) {
             // fire circuit broken event here
@@ -1165,8 +1169,11 @@ public class Simmer {
     }
 
     public void setCanvasSize() {
-        int width = Math.round(RootLayoutPanel.get().getOffsetWidth() * .666f);
+        int width = Math.round(RootLayoutPanel.get().getOffsetWidth() - 400);
         int height = Math.round(RootLayoutPanel.get().getOffsetHeight() * .98f - 64);
+
+        mainPanel.getMainContainer().setWidth(width + "px");
+
         if (cv != null) {
             cv.setWidth(width + "PX");
             cv.setHeight(height + "PX");
