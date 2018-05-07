@@ -1,12 +1,12 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:m='urn:import:gwt.material.design.client.ui'>
-    <m:MaterialNavSection float="RIGHT">
-        <m:MaterialLink m:id="edit" iconType="MODE_EDIT" textColor="WHITE" waves="LIGHT"/>
-        <m:MaterialLink m:id="view_in_scope1" iconType="VISIBILITY" textColor="WHITE" waves="LIGHT"/>
-        <m:MaterialLink m:id="cut" iconType="CONTENT_CUT" textColor="WHITE" waves="LIGHT"/>
-        <m:MaterialLink m:id="copy" iconType="CONTENT_COPY" textColor="WHITE" waves="LIGHT"/>
-        <m:MaterialLink m:id="rotate-left" iconType="ROTATE_LEFT" textColor="WHITE" waves="LIGHT"/>
-        <m:MaterialLink m:id="rotate-right" iconType="ROTATE_RIGHT" textColor="WHITE" waves="LIGHT"/>
-        <m:MaterialLink m:id="delete" iconType="DELETE" textColor="WHITE" waves="LIGHT"/>
+    <m:MaterialNavSection float="LEFT" marginLeft="250">
+        <m:MaterialLink ui:field="edit" iconType="MODE_EDIT" textColor="WHITE" waves="LIGHT"/>
+        <m:MaterialLink ui:field="view" iconType="VISIBILITY" textColor="WHITE" waves="LIGHT"/>
+        <m:MaterialLink ui:field="cut" iconType="CONTENT_CUT" textColor="WHITE" waves="LIGHT"/>
+        <m:MaterialLink ui:field="copy" iconType="CONTENT_COPY" textColor="WHITE" waves="LIGHT"/>
+        <m:MaterialLink ui:field="rotateLeft" iconType="ROTATE_LEFT" textColor="WHITE" waves="LIGHT"/>
+        <m:MaterialLink ui:field="rotateRight" iconType="ROTATE_RIGHT" textColor="WHITE" waves="LIGHT"/>
+        <m:MaterialLink ui:field="delete" iconType="DELETE" textColor="WHITE" waves="LIGHT"/>
     </m:MaterialNavSection>
 </ui:UiBinder>

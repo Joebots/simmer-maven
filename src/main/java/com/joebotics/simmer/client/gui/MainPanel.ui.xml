@@ -8,13 +8,11 @@
     <ui:import field="com.joebotics.simmer.client.gui.util.Display.*"/>
 
     <ui:style>
-        .main-panel {
-            background-color: black;
-        }
+
     </ui:style>
 
     <m:MaterialPanel>
-        <m:MaterialHeader ui:field="header">
+        <m:MaterialHeader>
             <m:MaterialNavBar ui:field="navBar" activates="sidenavDrawer" backgroundColor="GREEN" shadow="1">
 
             </m:MaterialNavBar>

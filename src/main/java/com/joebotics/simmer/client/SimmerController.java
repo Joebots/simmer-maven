@@ -28,9 +28,7 @@ import com.google.gwt.event.dom.client.TouchMoveEvent;
 import com.google.gwt.event.dom.client.TouchMoveHandler;
 import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.event.dom.client.TouchStartHandler;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.PopupPanel;
 
@@ -39,6 +37,7 @@ import com.joebotics.simmer.client.elcomp.CapacitorElm;
 import com.joebotics.simmer.client.elcomp.InductorElm;
 import com.joebotics.simmer.client.elcomp.ResistorElm;
 import com.joebotics.simmer.client.elcomp.SwitchElm;
+import com.joebotics.simmer.client.gui.ComponentToolbar;
 import com.joebotics.simmer.client.gui.EditOptions;
 import com.joebotics.simmer.client.gui.Scope;
 import com.joebotics.simmer.client.gui.dialog.AboutBox;
@@ -60,50 +59,6 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         this.simmer = simmer;
         this.finder = new CircuitElementFinder(simmer);
         this.dragHelper = new CirciutElmDragHelper(simmer);
-
-        Anchor.wrap(DOM.getElementById("delete")).addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                menuPerformed("key", "delete");
-            }
-        });
-        Anchor.wrap(DOM.getElementById("cut")).addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                menuPerformed("key", "cut");
-
-            }
-        });
-        Anchor.wrap(DOM.getElementById("edit")).addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                menuPerformed("elm", "edit");
-            }
-        });
-        Anchor.wrap(DOM.getElementById("view_in_scope1")).addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                menuPerformed("elm", "viewInScope");
-            }
-        });
-        Anchor.wrap(DOM.getElementById("rotate-left")).addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                rotateElement(false);
-            }
-        });
-        Anchor.wrap(DOM.getElementById("rotate-right")).addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                rotateElement(true);
-            }
-        });
-        Anchor.wrap(DOM.getElementById("copy")).addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                menuPerformed("key", "copy");
-            }
-        });
     }
 
     public void rotateElement(boolean clockwise) {
@@ -191,14 +146,13 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             simmer.setTempMouseMode(simmer.getMouseMode());
             // if ((ex & MouseEvent.ALT_DOWN_MASK) != 0 &&
             // (ex & MouseEvent.META_DOWN_MASK) != 0)
-            Document.get().getElementById("component-context-buttons").getStyle().setProperty("display", "none");
-            Document.get().getElementById("circuit-context-buttons").getStyle().setProperty("display", "block");
+
             if (finder.selectElement(p) != null) {
-                Document.get().getElementById("component-context-buttons").getStyle().setProperty("display", "block");
-                Document.get().getElementById("circuit-context-buttons").getStyle().setProperty("display", "none");
-
-
+                simmer.setToolbar(new ComponentToolbar(this));
+            } else {
+                simmer.clearToolbar();
             }
+
             if (simmer.getContextPanel() != null) {
                 simmer.getContextPanel().hide();
             }

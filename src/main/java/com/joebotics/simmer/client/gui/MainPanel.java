@@ -31,6 +31,8 @@ public class MainPanel extends Composite {
     @UiField
     MaterialNavBar navBar;
 
+    private Widget cuttentToolbar;
+
     public MainPanel() {
         initWidget(uiBinder.createAndBindUi(this));
     }
@@ -72,6 +74,19 @@ public class MainPanel extends Composite {
 
     public Canvas getCanvas() {
         return canvas;
+    }
+
+    public void setToolbar(Widget widget) {
+        removeToolbar();
+        cuttentToolbar = widget;
+        navBar.add(cuttentToolbar);
+    }
+
+    public void removeToolbar() {
+        if (cuttentToolbar != null) {
+            cuttentToolbar.removeFromParent();
+        }
+        cuttentToolbar = null;
     }
 
 }

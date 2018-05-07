@@ -35,6 +35,7 @@ import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 import com.joebotics.simmer.client.breadboard.interpreter.BreadboardCircuitParserListener;
 import com.joebotics.simmer.client.breadboard.interpreter.CircuitParser;
@@ -1696,6 +1697,14 @@ public class Simmer {
     public void updateVoltageSource(int n1, int n2, int vs, double v) {
         int vn = getNodeList().size() + vs;
         stampRightSide(vn, v);
+    }
+
+    public void setToolbar(Widget toolbar) {
+        mainPanel.setToolbar(toolbar);
+    }
+
+    public void clearToolbar() {
+        mainPanel.removeToolbar();
     }
 
     public SimmerController getSimmerController() {
