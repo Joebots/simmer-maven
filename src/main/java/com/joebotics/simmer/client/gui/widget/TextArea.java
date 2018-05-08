@@ -1,11 +1,19 @@
 package com.joebotics.simmer.client.gui.widget;
 
-import gwt.material.design.client.ui.MaterialTextArea;
+import com.google.gwt.dom.client.Style;
+
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 
 @JsType
-public class TextArea extends MaterialTextArea {
+public class TextArea extends com.google.gwt.user.client.ui.TextArea {
+
+    public TextArea() {
+        super();
+        getElement().getStyle().setBorderStyle(Style.BorderStyle.NONE);
+        getElement().getStyle().setProperty("resize", "none");
+    }
+
 
     @JsMethod
     @Override
@@ -25,8 +33,7 @@ public class TextArea extends MaterialTextArea {
     }
 
     @JsMethod
-    @Override
     public void clear() {
-        super.clear();
+        super.setText("");
     }
 }

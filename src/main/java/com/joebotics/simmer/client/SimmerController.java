@@ -37,6 +37,7 @@ import com.joebotics.simmer.client.elcomp.CapacitorElm;
 import com.joebotics.simmer.client.elcomp.InductorElm;
 import com.joebotics.simmer.client.elcomp.ResistorElm;
 import com.joebotics.simmer.client.elcomp.SwitchElm;
+import com.joebotics.simmer.client.gui.Bgpio;
 import com.joebotics.simmer.client.gui.ComponentToolbar;
 import com.joebotics.simmer.client.gui.EditOptions;
 import com.joebotics.simmer.client.gui.MainToolbar;
@@ -55,6 +56,8 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
     private final Simmer simmer;
     private final CircuitElementFinder finder;
     private final CirciutElmDragHelper dragHelper;
+
+    private boolean useBoard;
 
     public SimmerController(Simmer simmer) {
         this.simmer = simmer;
@@ -546,5 +549,18 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
     public void onTouchCancel(TouchCancelEvent e) {
         e.preventDefault();
         dragHelper.stopDrag();
+    }
+
+    public boolean isUseBoard() {
+        return useBoard;
+    }
+
+    public void setUseBoard(boolean useBoard) {
+        this.useBoard = useBoard;
+    }
+
+    public void switchUseBoard() {
+        useBoard = !useBoard;
+        Bgpio.setUseBoard(useBoard);
     }
 }

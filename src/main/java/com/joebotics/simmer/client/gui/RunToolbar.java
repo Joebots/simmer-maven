@@ -15,6 +15,7 @@ import com.joebotics.simmer.client.event.InterpreterPausedEvent;
 import com.joebotics.simmer.client.event.InterpreterStartedEvent;
 import com.joebotics.simmer.client.event.InterpreterStoppedEvent;
 
+import gwt.material.design.client.constants.Color;
 import gwt.material.design.client.ui.MaterialLink;
 import gwt.material.design.client.ui.MaterialNavSection;
 
@@ -32,21 +33,38 @@ public class RunToolbar extends Composite implements InterpreterEventHandler {
     @UiField
     MaterialLink run, debug, connect;
 
-    public RunToolbar(SimmerController controller) {
+    private SimmerController controller;
+
+    RunToolbar(SimmerController controller) {
         initWidget(uiBinder.createAndBindUi(this));
 
-        connect.setVisible(Bgpio.hasBoard());
+        this.controller = controller;
 
         EventBus eventBus = Simmer.getInstance().getEventBus();
         eventBus.addHandler(InterpreterStartedEvent.TYPE, this);
         eventBus.addHandler(InterpreterStoppedEvent.TYPE, this);
         eventBus.addHandler(InterpreterPausedEvent.TYPE, this);
         Bgpio.setEventBus(eventBus);
+
+        checkConnectButtonState();
+    }
+
+    private void checkConnectButtonState() {
+        if (!Bgpio.hasBoard()) {
+            connect.setIconColor(Color.GREEN_DARKEN_4);
+        } else if (controller.isUseBoard()) {
+            connect.setIconColor(Color.BLUE);
+        } else {
+            connect.setIconColor(Color.WHITE);
+        }
     }
 
     @UiHandler("connect")
     public void onConnectClick(ClickEvent event) {
-
+        if (Bgpio.hasBoard()) {
+            controller.switchUseBoard();
+            checkConnectButtonState();
+        }
     }
 
     @UiHandler("save")

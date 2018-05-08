@@ -4,7 +4,7 @@
     <m:MaterialNavSection float="RIGHT">
         <m:MaterialLink ui:field="run" iconType="PLAY_ARROW" textColor="WHITE" waves="LIGHT"/>
         <m:MaterialLink ui:field="debug" iconType="BUG_REPORT" textColor="WHITE" waves="LIGHT"/>
-        <m:MaterialLink ui:field="connect" iconType="USB" textColor="WHITE" waves="LIGHT"/>
+        <m:MaterialLink ui:field="connect" iconType="POWER" textColor="WHITE" waves="LIGHT"/>
         <m:MaterialLink ui:field="save" iconType="SAVE" textColor="WHITE" waves="LIGHT"/>
         <m:MaterialLink ui:field="shot" iconType="PHOTO_CAMERA" textColor="WHITE" waves="LIGHT"/>
         <m:MaterialLink ui:field="help" iconType="HELP_OUTLINE" textColor="WHITE" waves="LIGHT"/>
