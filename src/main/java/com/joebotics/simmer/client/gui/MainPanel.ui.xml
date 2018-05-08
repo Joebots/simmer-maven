@@ -1,7 +1,9 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:c="urn:import:com.google.gwt.canvas.client"
-             xmlns:m='urn:import:gwt.material.design.client.ui'>
+             xmlns:c='urn:import:com.google.gwt.canvas.client'
+             xmlns:m='urn:import:gwt.material.design.client.ui'
+             xmlns:jbd='urn:import:com.joebotics.simmer.client.gui.dialog'
+             xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
     <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N'/>
     <ui:import field="com.joebotics.simmer.client.gui.util.Display.*"/>
@@ -12,7 +14,8 @@
 
     <m:MaterialPanel ui:field="mainContainer">
         <m:MaterialHeader>
-            <m:MaterialNavBar ui:field="navBar" activates="sidenavDrawer" backgroundColor="GREEN" shadow="1">
+            <m:MaterialNavBar ui:field="navBar" activates="sidenavDrawer" backgroundColor="GREEN" shadow="1"
+                              paddingRight="30">
 
             </m:MaterialNavBar>
         </m:MaterialHeader>
@@ -30,8 +33,15 @@
         <m:MaterialContainer ui:field="canvasContainer">
             <c:Canvas ui:field="canvas"/>
         </m:MaterialContainer>
+        <g:HTMLPanel ui:field="activeComponentsContainer">
+            <div id="active-component"></div>
+            <div class="active-pins"></div>
+            <div id="active-component-picture"></div>
+            <div id="app-version"></div>
+        </g:HTMLPanel>
         <m:MaterialContainer ui:field="contentContainer">
 
         </m:MaterialContainer>
+        <jbd:CircuitsDialog ui:field="circuitsDialog"/>
     </m:MaterialPanel>
 </ui:UiBinder> 

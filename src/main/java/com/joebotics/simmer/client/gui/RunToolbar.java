@@ -15,7 +15,6 @@ import com.joebotics.simmer.client.event.InterpreterPausedEvent;
 import com.joebotics.simmer.client.event.InterpreterStartedEvent;
 import com.joebotics.simmer.client.event.InterpreterStoppedEvent;
 
-import gwt.material.design.client.constants.Color;
 import gwt.material.design.client.ui.MaterialLink;
 import gwt.material.design.client.ui.MaterialNavSection;
 
@@ -46,25 +45,13 @@ public class RunToolbar extends Composite implements InterpreterEventHandler {
         eventBus.addHandler(InterpreterPausedEvent.TYPE, this);
         Bgpio.setEventBus(eventBus);
 
-        checkConnectButtonState();
-    }
+        controller.checkBoardConnectionState(connect);
 
-    private void checkConnectButtonState() {
-        if (!Bgpio.hasBoard()) {
-            connect.setIconColor(Color.GREEN_DARKEN_4);
-        } else if (controller.isUseBoard()) {
-            connect.setIconColor(Color.BLUE);
-        } else {
-            connect.setIconColor(Color.WHITE);
-        }
     }
 
     @UiHandler("connect")
     public void onConnectClick(ClickEvent event) {
-        if (Bgpio.hasBoard()) {
-            controller.switchUseBoard();
-            checkConnectButtonState();
-        }
+        controller.switchUseBoard(connect);
     }
 
     @UiHandler("save")
@@ -84,7 +71,7 @@ public class RunToolbar extends Composite implements InterpreterEventHandler {
 
     @UiHandler("open")
     public void onOpenClick(ClickEvent event) {
-
+        controller.showCircuitDoalog();
     }
 
     @UiHandler("export")

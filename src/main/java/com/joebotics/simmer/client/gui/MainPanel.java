@@ -8,9 +8,11 @@ import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import com.joebotics.simmer.client.SimmerController;
+import com.joebotics.simmer.client.gui.dialog.CircuitsDialog;
 import com.joebotics.simmer.client.gui.views.AssistantView;
 import com.joebotics.simmer.client.gui.views.BlocksView;
 import com.joebotics.simmer.client.gui.views.CodeView;
@@ -47,6 +49,12 @@ public class MainPanel extends Composite {
 
     @UiField
     MaterialContainer contentContainer, canvasContainer;
+
+    @UiField
+    CircuitsDialog circuitsDialog;
+
+    @UiField
+    HTMLPanel activeComponentsContainer;
 
     private Widget cuttentToolbar;
 
@@ -139,10 +147,12 @@ public class MainPanel extends Composite {
 
         if (content != null) {
             canvasContainer.setVisible(false);
+            activeComponentsContainer.setVisible(false);
             contentContainer.setVisible(true);
             contentContainer.add(content);
         } else {
             canvasContainer.setVisible(true);
+            activeComponentsContainer.setVisible(true);
             contentContainer.setVisible(false);
             contentContainer.clear();
         }
@@ -150,6 +160,10 @@ public class MainPanel extends Composite {
 
     public boolean isCanvasVisible() {
         return canvasContainer.isVisible();
+    }
+
+    public void showCircuitsDialog() {
+        circuitsDialog.open();
     }
 
 }

@@ -5,7 +5,7 @@
     <ui:import field="com.joebotics.simmer.client.util.OptionKey.*"/>
 
     <m:MaterialPanel backgroundColor="WHITE" height="100%">
-        <m:MaterialRow margin="8">
+        <m:MaterialRow>
             <m:MaterialTab backgroundColor="WHITE" ui:field="optionTabs">
                 <m:MaterialTabItem waves="LIGHT" grid="s2">
                     <m:MaterialLink text="{i18n.Emulator}" href="#emulatorTab" styleName="active"/>

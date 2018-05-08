@@ -3,7 +3,11 @@
              xmlns:ma='urn:import:gwt.material.design.client.ui.html'>
 
     <m:MaterialPanel height="100%" backgroundColor="WHITE">
-        <ma:Heading size="H5" text="Not implemented yet"/>
+        <m:MaterialRow>
+            <m:MaterialColumn grid="s12">
+                <ma:Heading size="H5" text="Not implemented yet"/>
+            </m:MaterialColumn>
+        </m:MaterialRow>
     </m:MaterialPanel>
 
 </ui:UiBinder>

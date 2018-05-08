@@ -10,7 +10,7 @@
 
     <m:MaterialPanel>
         <m:MaterialRow>
-            <m:MaterialColumn grid="s12">
+            <m:MaterialColumn grid="s12" backgroundColor="WHITE">
                 <g:HTMLPanel ui:field="toolboxPanel">
                     <!-- Toolbox -->
                     <xml id="toolbox" style="display: none">

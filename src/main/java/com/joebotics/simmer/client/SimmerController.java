@@ -49,6 +49,9 @@ import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.MessageI18N;
 import com.joebotics.simmer.client.util.MouseModeEnum;
 
+import gwt.material.design.client.constants.Color;
+import gwt.material.design.client.ui.MaterialLink;
+
 public class SimmerController implements MouseDownHandler, MouseWheelHandler, MouseMoveHandler, MouseUpHandler,
     MouseOutHandler, TouchCancelHandler, TouchEndHandler, TouchMoveHandler, TouchStartHandler, ClickHandler,
     DoubleClickHandler, ContextMenuHandler, Event.NativePreviewHandler {
@@ -543,8 +546,27 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         this.useBoard = useBoard;
     }
 
-    public void switchUseBoard() {
+    public void switchUseBoard(MaterialLink connect) {
+        if (!Bgpio.hasBoard()) {
+            return;
+        }
+
         useBoard = !useBoard;
         Bgpio.setUseBoard(useBoard);
+        checkBoardConnectionState(connect);
+    }
+
+    public void checkBoardConnectionState(MaterialLink connect) {
+        if (!Bgpio.hasBoard()) {
+            connect.setIconColor(Color.GREEN_DARKEN_4);
+        } else if (isUseBoard()) {
+            connect.setIconColor(Color.BLUE);
+        } else {
+            connect.setIconColor(Color.WHITE);
+        }
+    }
+
+    public void showCircuitDoalog() {
+        simmer.getMainPanel().showCircuitsDialog();
     }
 }

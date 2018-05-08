@@ -9,7 +9,6 @@ import com.google.gwt.user.client.ui.Composite;
 
 import com.joebotics.simmer.client.SimmerController;
 
-import gwt.material.design.client.constants.Color;
 import gwt.material.design.client.ui.MaterialLink;
 import gwt.material.design.client.ui.MaterialNavSection;
 
@@ -34,25 +33,13 @@ public class MainToolbar extends Composite {
 
         this.controller = controller;
 
-        checkConnectButtonState();
-    }
+        controller.checkBoardConnectionState(connect);
 
-    private void checkConnectButtonState() {
-        if (!Bgpio.hasBoard()) {
-            connect.setIconColor(Color.GREEN_DARKEN_4);
-        } else if (controller.isUseBoard()) {
-            connect.setIconColor(Color.BLUE);
-        } else {
-            connect.setIconColor(Color.WHITE);
-        }
     }
 
     @UiHandler("connect")
     public void onConnectClick(ClickEvent event) {
-        if (Bgpio.hasBoard()) {
-            controller.switchUseBoard();
-            checkConnectButtonState();
-        }
+        controller.switchUseBoard(connect);
     }
 
     @UiHandler("save")
@@ -72,7 +59,7 @@ public class MainToolbar extends Composite {
 
     @UiHandler("open")
     public void onOpenClick(ClickEvent event) {
-
+        controller.showCircuitDoalog();
     }
 
     @UiHandler("export")
