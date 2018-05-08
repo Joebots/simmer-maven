@@ -22,7 +22,6 @@ package com.joebotics.simmer.client;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.json.client.JSONObject;
@@ -994,7 +993,6 @@ public class Simmer {
      * end options menu
      **/
     private void bindEventHandlers() {
-        cv.sinkEvents(Event.MOUSEEVENTS | Event.TOUCHEVENTS | Event.KEYEVENTS);
         cv.addMouseDownHandler(simmerController);
         cv.addMouseMoveHandler(simmerController);
         cv.addMouseUpHandler(simmerController);
@@ -1005,11 +1003,7 @@ public class Simmer {
         cv.addTouchEndHandler(simmerController);
         cv.addTouchCancelHandler(simmerController);
         cv.addDomHandler(simmerController, ContextMenuEvent.getType());
-        mainMenuBar.addDomHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                doMainMenuChecks();
-            }
-        }, ClickEvent.getType());
+        mainMenuBar.addDomHandler(event -> doMainMenuChecks(), ClickEvent.getType());
         Event.addNativePreviewHandler(simmerController);
         cv.addMouseWheelHandler(simmerController);
     }
@@ -1172,7 +1166,7 @@ public class Simmer {
         int width = Math.round(RootLayoutPanel.get().getOffsetWidth() - 400);
         int height = Math.round(RootLayoutPanel.get().getOffsetHeight() * .98f - 64);
 
-        mainPanel.getMainContainer().setWidth(width + "px");
+        mainPanel.setContainerSize(width, height);
 
         if (cv != null) {
             cv.setWidth(width + "PX");
@@ -2080,5 +2074,9 @@ public class Simmer {
 
     public SimmerEventBus getEventBus() {
         return eventBus;
+    }
+
+    public MainPanel getMainPanel() {
+        return mainPanel;
     }
 }

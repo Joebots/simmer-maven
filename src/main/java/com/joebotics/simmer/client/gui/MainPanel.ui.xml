@@ -27,11 +27,11 @@
             <m:MaterialLink ui:field="optionsButton" iconType="SETTINGS" text="Options"/>
         </m:MaterialSideNavDrawer>
 
-        <m:MaterialContainer>
+        <m:MaterialContainer ui:field="canvasContainer">
             <c:Canvas ui:field="canvas"/>
-            <m:MaterialContainer ui:field="contentContainer">
+        </m:MaterialContainer>
+        <m:MaterialContainer ui:field="contentContainer">
 
-            </m:MaterialContainer>
         </m:MaterialContainer>
     </m:MaterialPanel>
 </ui:UiBinder> 

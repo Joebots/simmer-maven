@@ -82,10 +82,10 @@
                     </g:HTMLPanel>
                 </m:MaterialColumn>
                 <m:MaterialColumn m:id="codeTab" grid="s12">
-                    <jbw:TextArea ui:field="codeTab" label="Code" resizeRule="AUTO" />
+                    <jbw:TextArea ui:field="codeTab"/>
                 </m:MaterialColumn>
                 <m:MaterialColumn m:id="consoleTab" grid="s12">
-                    <jbw:TextArea ui:field="consoleTab" label="Console" resizeRule="AUTO" />
+                    <jbw:TextArea ui:field="consoleTab"/>
                 </m:MaterialColumn>
             </m:MaterialColumn>
             <m:MaterialColumn grid="s1">

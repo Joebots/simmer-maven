@@ -225,7 +225,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         int t = e.getTypeInt();
         int code = e.getNativeEvent().getKeyCode();
 
-        if (dialogIsShowing()) {
+        if (!isSchemaVisible()) {
             if (Simmer.getScrollValuePopup() != null && Simmer.getScrollValuePopup().isShowing()
                 && (t & Event.ONKEYDOWN) != 0) {
                 if (code == KeyCodes.KEY_ESCAPE || code == KeyCodes.KEY_SPACE)
@@ -241,6 +241,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             }
             return;
         }
+
         if ((t & Event.ONKEYDOWN) != 0) {
 
             if (code == KeyCodes.KEY_BACKSPACE || code == KeyCodes.KEY_DELETE) {
@@ -459,35 +460,18 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         }
     }
 
-    protected void scrollValues(int x, int y, int deltay) {
+    private void scrollValues(int x, int y, int deltay) {
         AbstractCircuitElement mouseElm = simmer.getMouseElm();
 
-        if (mouseElm != null && !dialogIsShowing()) {
-            if (mouseElm instanceof ResistorElm || mouseElm instanceof CapacitorElm
-                || mouseElm instanceof InductorElm) {
+        if (mouseElm != null && isSchemaVisible()) {
+            if (mouseElm instanceof ResistorElm || mouseElm instanceof CapacitorElm || mouseElm instanceof InductorElm) {
                 simmer.setScrollValuePopup(new ScrollValuePopup(x, y, deltay, mouseElm, simmer));
             }
         }
     }
 
-    public boolean dialogIsShowing() {
-        if (simmer.getEditDialog() != null && simmer.getEditDialog().isShowing())
-            return true;
-        if (simmer.getExportAsLocalFileDialog() != null && simmer.getExportAsLocalFileDialog().isShowing())
-            return true;
-        if (simmer.getExportAsTextDialog() != null && simmer.getExportAsTextDialog().isShowing())
-            return true;
-        if (simmer.getExportAsLocalFileDialog() != null && simmer.getExportAsLocalFileDialog().isShowing())
-            return true;
-        if (simmer.getContextPanel() != null && simmer.getContextPanel().isShowing())
-            return true;
-        if (simmer.getScrollValuePopup() != null && simmer.getScrollValuePopup().isShowing())
-            return true;
-        if (simmer.getAboutBox() != null && simmer.getAboutBox().isShowing())
-            return true;
-        if (simmer.getImportFromTextDialog() != null && simmer.getImportFromTextDialog().isShowing())
-            return true;
-        return false;
+    private boolean isSchemaVisible() {
+        return simmer.getMainPanel().isCanvasVisible();
     }
 
     private void doSwitch() {

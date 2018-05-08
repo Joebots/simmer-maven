@@ -14,6 +14,9 @@ import com.joebotics.simmer.client.SimmerController;
 import com.joebotics.simmer.client.gui.views.AssistantView;
 import com.joebotics.simmer.client.gui.views.BlocksView;
 import com.joebotics.simmer.client.gui.views.CodeView;
+import com.joebotics.simmer.client.gui.views.ControlsView;
+import com.joebotics.simmer.client.gui.views.OptionsView;
+import com.joebotics.simmer.client.gui.views.OrderPartsView;
 import com.sun.istack.internal.Nullable;
 
 import gwt.material.design.client.MaterialDesignBase;
@@ -43,7 +46,7 @@ public class MainPanel extends Composite {
     MaterialPanel mainContainer;
 
     @UiField
-    MaterialContainer contentContainer;
+    MaterialContainer contentContainer, canvasContainer;
 
     private Widget cuttentToolbar;
 
@@ -63,12 +66,12 @@ public class MainPanel extends Composite {
 
     @UiHandler("optionsButton")
     public void onOptionsButtonClick(ClickEvent event) {
-
+        setContent(new OptionsView(), null);
     }
 
     @UiHandler("orderPartsButton")
     public void onOrderPartsButtonClick(ClickEvent event) {
-
+        setContent(new OrderPartsView(), null);
     }
 
     @UiHandler("assistantButton")
@@ -93,7 +96,7 @@ public class MainPanel extends Composite {
 
     @UiHandler("controlsButton")
     public void onControlsButtonClick(ClickEvent event) {
-
+        setContent(new ControlsView(), null);
     }
 
     private RunToolbar getRunToolbar() {
@@ -107,8 +110,9 @@ public class MainPanel extends Composite {
         return canvas;
     }
 
-    public Widget getMainContainer() {
-        return mainContainer;
+    public void setContainerSize(int width, int height) {
+        mainContainer.setWidth(width + "px");
+        contentContainer.setHeight(height + "px");
     }
 
     public void setToolbar(Widget widget) {
@@ -124,7 +128,7 @@ public class MainPanel extends Composite {
         cuttentToolbar = null;
     }
 
-    public void setContent(@Nullable Widget content, Widget toolbar) {
+    public void setContent(@Nullable Widget content, @Nullable Widget toolbar) {
         if (toolbar != null) {
             setToolbar(toolbar);
         } else {
@@ -134,11 +138,18 @@ public class MainPanel extends Composite {
         contentContainer.clear();
 
         if (content != null) {
-            canvas.setVisible(false);
+            canvasContainer.setVisible(false);
+            contentContainer.setVisible(true);
             contentContainer.add(content);
         } else {
-            canvas.setVisible(true);
+            canvasContainer.setVisible(true);
+            contentContainer.setVisible(false);
+            contentContainer.clear();
         }
+    }
+
+    public boolean isCanvasVisible() {
+        return canvasContainer.isVisible();
     }
 
 }
