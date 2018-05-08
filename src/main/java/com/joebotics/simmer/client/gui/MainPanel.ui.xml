@@ -17,12 +17,12 @@
             </m:MaterialNavBar>
         </m:MaterialHeader>
 
-        <m:MaterialSideNavDrawer m:id="sidenavDrawer" ui:field="sideNav" width="300">
+        <m:MaterialSideNavDrawer m:id="sidenavDrawer" ui:field="sideNav" width="300" closeOnClick="true">
             <m:MaterialLink ui:field="circuitButton" iconType="DEVELOPER_BOARD" text="Circuit"/>
             <m:MaterialLink ui:field="blocksButton" iconType="STORAGE" text="Blocks"/>
             <m:MaterialLink ui:field="codeButton" iconType="DESCRIPTION" text="Code"/>
             <m:MaterialLink ui:field="controlsButton" iconType="KEYBOARD" text="Controls"/>
-            <m:MaterialLink ui:field="assistantDialog" iconType="FORUM" text="Assistant"/>
+            <m:MaterialLink ui:field="assistantButton" iconType="FORUM" text="Assistant"/>
             <m:MaterialLink ui:field="orderPartsButton" iconType="SHOPPING_CART" text="Order Parts"/>
             <m:MaterialLink ui:field="optionsButton" iconType="SETTINGS" text="Options"/>
         </m:MaterialSideNavDrawer>

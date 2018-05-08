@@ -10,7 +10,14 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
+import com.joebotics.simmer.client.SimmerController;
+import com.joebotics.simmer.client.gui.views.AssistantView;
+import com.joebotics.simmer.client.gui.views.BlocksView;
+import com.joebotics.simmer.client.gui.views.CodeView;
+import com.sun.istack.internal.Nullable;
+
 import gwt.material.design.client.MaterialDesignBase;
+import gwt.material.design.client.ui.MaterialContainer;
 import gwt.material.design.client.ui.MaterialNavBar;
 import gwt.material.design.client.ui.MaterialPanel;
 
@@ -35,10 +42,18 @@ public class MainPanel extends Composite {
     @UiField
     MaterialPanel mainContainer;
 
+    @UiField
+    MaterialContainer contentContainer;
+
     private Widget cuttentToolbar;
 
-    public MainPanel() {
+    protected SimmerController controller;
+
+    private RunToolbar runToolbar;
+
+    public MainPanel(SimmerController controller) {
         initWidget(uiBinder.createAndBindUi(this));
+        this.controller = controller;
     }
 
     @UiFactory
@@ -56,9 +71,36 @@ public class MainPanel extends Composite {
 
     }
 
-    @UiHandler("assistantDialog")
+    @UiHandler("assistantButton")
     public void onAssistantButtonClick(ClickEvent event) {
+        setContent(new AssistantView(), null);
+    }
 
+    @UiHandler("circuitButton")
+    public void onCircuitButtonClick(ClickEvent event) {
+        setContent(null, new MainToolbar(controller));
+    }
+
+    @UiHandler("blocksButton")
+    public void onBlockButtonClick(ClickEvent event) {
+        setContent(new BlocksView(), getRunToolbar());
+    }
+
+    @UiHandler("codeButton")
+    public void onCodeButtonClick(ClickEvent event) {
+        setContent(new CodeView(), getRunToolbar());
+    }
+
+    @UiHandler("controlsButton")
+    public void onControlsButtonClick(ClickEvent event) {
+
+    }
+
+    private RunToolbar getRunToolbar() {
+        if (runToolbar == null) {
+            runToolbar = new RunToolbar(controller);
+        }
+        return runToolbar;
     }
 
     public Canvas getCanvas() {
@@ -80,6 +122,23 @@ public class MainPanel extends Composite {
             cuttentToolbar.removeFromParent();
         }
         cuttentToolbar = null;
+    }
+
+    public void setContent(@Nullable Widget content, Widget toolbar) {
+        if (toolbar != null) {
+            setToolbar(toolbar);
+        } else {
+            removeToolbar();
+        }
+
+        contentContainer.clear();
+
+        if (content != null) {
+            canvas.setVisible(false);
+            contentContainer.add(content);
+        } else {
+            canvas.setVisible(true);
+        }
     }
 
 }

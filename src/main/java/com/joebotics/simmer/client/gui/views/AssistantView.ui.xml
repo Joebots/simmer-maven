@@ -1,0 +1,8 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:m='urn:import:gwt.material.design.client.ui'>
+
+    <m:MaterialPanel>
+        <g:Frame ui:field="frame" url="https://bazaar.dev-demo-joebotics.us/get-help" styleName="bordered" addStyleNames="fullBackground"></g:Frame>
+    </m:MaterialPanel>
+</ui:UiBinder>

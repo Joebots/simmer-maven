@@ -1,0 +1,69 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:m='urn:import:gwt.material.design.client.ui'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:jbw='urn:import:com.joebotics.simmer.client.gui.widget'>
+
+    <m:MaterialPanel>
+        <m:MaterialRow>
+            <m:MaterialColumn grid="s12">
+                <g:HTMLPanel ui:field="toolboxPanel">
+                    <!-- Toolbox -->
+                    <xml id="toolbox" style="display: none">
+                        <category name="Logic">
+                            <block type="controls_if"></block>
+                            <block type="logic_compare"></block>
+                            <block type="logic_operation"></block>
+                            <block type="logic_negate"></block>
+                            <block type="logic_boolean"></block>
+                        </category>
+                        <category name="Loops">
+                            <block type="controls_repeat_ext">
+                                <value name="TIMES">
+                                    <block type="math_number">
+                                        <field name="NUM">10</field>
+                                    </block>
+                                </value>
+                            </block>
+                            <block type="controls_whileUntil"></block>
+                        </category>
+                        <category name="Math">
+                            <block type="math_number"></block>
+                            <block type="math_arithmetic"></block>
+                            <block type="math_single"></block>
+                        </category>
+                        <category name="Text">
+                            <block type="text"></block>
+                            <block type="text_length"></block>
+                            <block type="text_print"></block>
+                            <block type="text_prompt_ext">
+                                <value name="TEXT">
+                                    <block type="text"></block>
+                                </value>
+                            </block>
+                        </category>
+                        <category name="Variables" custom="VARIABLE"></category>
+                        <category name="Functions" custom="PROCEDURE"></category>
+                        <category name="GPIO">
+                            <block type="pin_write"></block>
+                            <block type="servo_write"></block>
+                            <block type="pin_read"></block>
+                            <block type="pin_changed"></block>
+                            <block type="pin_digital"></block>
+                            <block type="pin_analog"></block>
+                        </category>
+                        <category name="time">
+                            <block type="sleep_ms"></block>
+                        </category>
+                    </xml>
+                </g:HTMLPanel>
+                <g:HTMLPanel ui:field="blocklyPanel">
+                </g:HTMLPanel>
+            </m:MaterialColumn>
+        </m:MaterialRow>
+        <m:MaterialRow>
+            <m:MaterialColumn>
+                <jbw:TextArea ui:field="console" label="Console" resizeRule="AUTO" />
+            </m:MaterialColumn>
+        </m:MaterialRow>
+    </m:MaterialPanel>
+</ui:UiBinder>
