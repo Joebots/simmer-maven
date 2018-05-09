@@ -7,25 +7,22 @@
     </ui:style>
     <ma:window.MaterialWindow ui:field="modal" title="{i18n.Circuits}" toolbarColor="GREEN" styleName="shifted-window">
         <m:MaterialRow>
-            <m:MaterialColumn grid="s11">
+            <m:MaterialColumn grid="s10">
                 <ma:tree.MaterialTree ui:field="circuitsTree" fontSize="1.2em">
                 </ma:tree.MaterialTree>
             </m:MaterialColumn>
-            <m:MaterialColumn grid="s1">
-                <m:MaterialButton ui:field="btnCollapse" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
-                                  iconType="VERTICAL_ALIGN_CENTER"/>
-                <m:MaterialLabel text="Collapse" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
+            <m:MaterialColumn grid="s2">
+                <m:MaterialButton ui:field="btnCollapse" waves="LIGHT" size="MEDIUM" text="Collapse" marginTop="8"
+                                  iconType="VERTICAL_ALIGN_CENTER" grid="s12"/>
 
-                <m:MaterialButton ui:field="btnExpand" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
-                                  iconType="ZOOM_OUT_MAP"/>
-                <m:MaterialLabel text="Expand" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
+                <m:MaterialButton ui:field="btnExpand" waves="LIGHT" size="MEDIUM" text="Expand" marginTop="8"
+                                  iconType="ZOOM_OUT_MAP" grid="s12"/>
 
-                <m:MaterialLink ui:field="btnImport" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
-                                iconType="FOLDER_OPEN"/>
-                <m:MaterialLabel text="Open" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
+                <m:MaterialButton ui:field="btnImport" waves="LIGHT" size="MEDIUM" text="Open" marginTop="8"
+                                  iconType="FOLDER_OPEN" grid="s12"/>
 
-                <m:MaterialLink ui:field="btnExport" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM" iconType="SAVE"/>
-                <m:MaterialLabel text="Save" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
+                <m:MaterialButton ui:field="btnExport" waves="LIGHT" size="MEDIUM" iconType="SAVE" text="Save" grid="s12"
+                                  marginTop="8"/>
             </m:MaterialColumn>
         </m:MaterialRow>
     </ma:window.MaterialWindow>

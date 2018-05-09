@@ -22,7 +22,6 @@ import gwt.material.design.addins.client.window.MaterialWindow;
 import gwt.material.design.client.constants.CenterOn;
 import gwt.material.design.client.constants.IconType;
 import gwt.material.design.client.ui.MaterialButton;
-import gwt.material.design.client.ui.MaterialLink;
 
 public class CircuitsDialog extends Composite {
 
@@ -38,16 +37,7 @@ public class CircuitsDialog extends Composite {
     MaterialTree circuitsTree;
 
     @UiField
-    MaterialButton btnCollapse;
-
-    @UiField
-    MaterialButton btnExpand;
-
-    @UiField
-    MaterialLink btnImport;
-
-    @UiField
-    MaterialLink btnExport;
+    MaterialButton btnCollapse, btnExpand, btnImport, btnExport;
 
     private FileUtils fileUtils;
 

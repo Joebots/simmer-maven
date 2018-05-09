@@ -43,5 +43,6 @@
 
         </m:MaterialContainer>
         <jbd:CircuitsDialog ui:field="circuitsDialog"/>
+        <jbd:EditDialog ui:field="editDialog"/>
     </m:MaterialPanel>
 </ui:UiBinder> 

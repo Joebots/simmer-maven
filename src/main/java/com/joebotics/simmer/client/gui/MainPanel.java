@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import com.joebotics.simmer.client.SimmerController;
 import com.joebotics.simmer.client.gui.dialog.CircuitsDialog;
+import com.joebotics.simmer.client.gui.dialog.EditDialog;
 import com.joebotics.simmer.client.gui.views.AssistantView;
 import com.joebotics.simmer.client.gui.views.BlocksView;
 import com.joebotics.simmer.client.gui.views.CodeView;
@@ -52,6 +53,9 @@ public class MainPanel extends Composite {
 
     @UiField
     CircuitsDialog circuitsDialog;
+
+    @UiField
+    EditDialog editDialog;
 
     @UiField
     HTMLPanel activeComponentsContainer;
@@ -166,4 +170,7 @@ public class MainPanel extends Composite {
         circuitsDialog.open();
     }
 
+    public EditDialog getEditDialog() {
+        return editDialog;
+    }
 }
