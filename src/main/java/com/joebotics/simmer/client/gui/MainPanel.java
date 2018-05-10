@@ -23,7 +23,6 @@ import com.joebotics.simmer.client.gui.views.CodeView;
 import com.joebotics.simmer.client.gui.views.ControlsView;
 import com.joebotics.simmer.client.gui.views.OptionsView;
 import com.joebotics.simmer.client.gui.views.OrderPartsView;
-import com.sun.istack.internal.Nullable;
 
 import gwt.material.design.client.MaterialDesignBase;
 import gwt.material.design.client.ui.MaterialButton;
@@ -172,7 +171,7 @@ public class MainPanel extends Composite {
         currentToolbar = null;
     }
 
-    public void setContent(@Nullable Widget content, @Nullable Widget toolbar, boolean isAddButtonVisible) {
+    public void setContent(Widget content, Widget toolbar, boolean isAddButtonVisible) {
         if (toolbar != null) {
             setToolbar(toolbar);
         } else {
