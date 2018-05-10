@@ -1,19 +1,19 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui"
-    xmlns:m="urn:import:gwt.material.design.client.ui">
-    <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N' />
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:m="urn:import:gwt.material.design.client.ui">
+
+    <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N'/>
 
     <ui:style>
 
     </ui:style>
-    <m:MaterialModal ui:field="modal" type="DEFAULT" dismissible="true" inDuration="500" outDuration="500"
-        styleName="shifted-dialog">
+    <m:MaterialModal ui:field="modal" type="DEFAULT" dismissible="true" inDuration="500" outDuration="500" styleName="shifted-dialog">
         <m:MaterialModalContent>
-            <m:MaterialTitle title="{i18n.Quit_Title}" description="{i18n.Quit_Text}" />
+            <m:MaterialTitle title="{i18n.Quit_Title}" description="{i18n.Quit_Text}"/>
         </m:MaterialModalContent>
         <m:MaterialModalFooter>
-            <m:MaterialButton ui:field="btnCancel" text="{i18n.Quit_Cancel}" type="FLAT" />
-            <m:MaterialButton ui:field="btnExit" text="{i18n.Quit_OK}" textColor="RED" type="FLAT" />
+            <m:MaterialButton ui:field="btnCancel" text="{i18n.Quit_Cancel}" type="FLAT"/>
+            <m:MaterialButton ui:field="btnExit" text="{i18n.Quit_OK}" textColor="RED" type="FLAT"/>
         </m:MaterialModalFooter>
     </m:MaterialModal>
 </ui:UiBinder>

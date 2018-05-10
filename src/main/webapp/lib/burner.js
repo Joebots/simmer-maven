@@ -113,6 +113,7 @@ Controller.prototype.showComponent = function (model) {
     var pstep = view.steps.previous;
     var step = view.steps[this.view.activeStep];
     var cmpBounds = this.resize(model.bounds, 10);
+    cmpBounds.top = cmpBounds.top + 64;
 
     var cmpName = getSimpleName(model.el);
     var snbr = view.activeStep + 1;
@@ -157,14 +158,13 @@ Controller.prototype.showComponent = function (model) {
     .forEach(pin => {
         var pinElement = document.createElement('div');
         var x = pin.position.x - 10;
-        var y = pin.position.y - 10;
+        var y = pin.position.y - 10 + 64;
         $(pinElement).css({top: y, left: x}).html(pin.activePinLabel);
         fragment.appendChild(pinElement);
     });
 
     var pinsHolder = document.querySelector('.active-pins');
     pinsHolder.appendChild(fragment);
-
 
     $("#active-component").css(cmpBounds).show();
     $(".burner-command-desc").html(commentary + steps);

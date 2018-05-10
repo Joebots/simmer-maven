@@ -1,0 +1,21 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:m='urn:import:gwt.material.design.client.ui'>
+
+    <m:MaterialRow>
+        <m:MaterialColumn grid="s8" style="position: absolute; bottom: 0; left: 0">
+            <m:MaterialCard backgroundColor="GREEN_LIGHTEN_2" style="min-height: 100px;">
+                <m:MaterialCardContent textColor="WHITE">
+                    <m:MaterialLabel class="burner-command-desc"/>
+                </m:MaterialCardContent>
+            </m:MaterialCard>
+        </m:MaterialColumn>
+        <m:MaterialColumn grid="s4" style="position: absolute; bottom: 15px; right: 0">
+            <m:MaterialButton m:id="forward-btn" text="Next" waves="DEFAULT" backgroundColor="GREEN_DARKEN_4"
+                              textColor="WHITE" size="MEDIUM" marginBottom="10" grid="s12"/>
+            <m:MaterialButton m:id="back-btn" text="Back" waves="DEFAULT" backgroundColor="GREEN_DARKEN_4" textColor="WHITE"
+                              size="MEDIUM" marginBottom="10" grid="s12"/>
+            <m:MaterialButton m:id="reset" text="Reset" waves="DEFAULT" backgroundColor="GREEN_DARKEN_4" textColor="WHITE"
+                              size="MEDIUM" grid="s12"/>
+        </m:MaterialColumn>
+    </m:MaterialRow>
+</ui:UiBinder>
