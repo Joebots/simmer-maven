@@ -83,4 +83,9 @@ public class MainToolbar extends Composite {
         controller.getMainPanel().showNotImplementedModal();
     }
 
+    @UiHandler("importSchema")
+    public void onImportSchemaClick(ClickEvent event) {
+        Simmer.getInstance().getLoadFileInput().click();
+    }
+
 }

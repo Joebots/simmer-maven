@@ -1,10 +1,25 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:m='urn:import:gwt.material.design.client.ui'>
+
+    <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N'/>
+
     <m:MaterialNavSection float="RIGHT">
-        <m:MaterialLink ui:field="edit" iconType="MODE_EDIT" textColor="WHITE" waves="LIGHT"/>
-        <m:MaterialLink ui:field="rotateLeft" iconType="ROTATE_LEFT" textColor="WHITE" waves="LIGHT"/>
-        <m:MaterialLink ui:field="rotateRight" iconType="ROTATE_RIGHT" textColor="WHITE" waves="LIGHT"/>
-        <m:MaterialLink ui:field="delete" iconType="DELETE" textColor="WHITE" waves="LIGHT"/>
+        <m:MaterialTooltip text="{i18n.Edit}">
+            <m:MaterialLink ui:field="edit" iconType="MODE_EDIT" textColor="WHITE" waves="LIGHT"/>
+        </m:MaterialTooltip>
+
+        <m:MaterialTooltip text="{i18n.RotateLeft}">
+            <m:MaterialLink ui:field="rotateLeft" iconType="ROTATE_LEFT" textColor="WHITE" waves="LIGHT"/>
+        </m:MaterialTooltip>
+
+        <m:MaterialTooltip text="{i18n.RotateRight}">
+            <m:MaterialLink ui:field="rotateRight" iconType="ROTATE_RIGHT" textColor="WHITE" waves="LIGHT"/>
+        </m:MaterialTooltip>
+
+        <m:MaterialTooltip text="{i18n.Delete}">
+            <m:MaterialLink ui:field="delete" iconType="DELETE" textColor="WHITE" waves="LIGHT"/>
+        </m:MaterialTooltip>
+
         <m:MaterialLink ui:field="more" iconType="MORE_VERT" textColor="WHITE" waves="LIGHT" activates="more"/>
 
         <m:MaterialDropDown activator="more" backgroundColor="GREEN">

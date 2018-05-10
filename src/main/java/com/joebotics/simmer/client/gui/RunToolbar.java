@@ -104,6 +104,11 @@ public class RunToolbar extends Composite implements InterpreterEventHandler {
         Bgpio.RunMode.debugInit();
     }
 
+    @UiHandler("importSchema")
+    public void onImportSchemaClick(ClickEvent event) {
+        Simmer.getInstance().getLoadFileInput().click();
+    }
+
     @Override
     public void onInterpreterStarted(InterpreterStartedEvent event) {
         run.setEnabled(false);

@@ -11,10 +11,12 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import com.joebotics.simmer.client.Simmer;
 import com.joebotics.simmer.client.SimmerController;
 import com.joebotics.simmer.client.gui.dialog.CircuitsDialog;
 import com.joebotics.simmer.client.gui.dialog.EditDialog;
 import com.joebotics.simmer.client.gui.dialog.SchematicDialog;
+import com.joebotics.simmer.client.gui.util.LoadFile;
 import com.joebotics.simmer.client.gui.views.AssistantView;
 import com.joebotics.simmer.client.gui.views.BlocksView;
 import com.joebotics.simmer.client.gui.views.CodeView;
@@ -81,6 +83,12 @@ public class MainPanel extends Composite {
     public MainPanel(SimmerController controller) {
         initWidget(uiBinder.createAndBindUi(this));
         this.controller = controller;
+
+        if (LoadFile.isSupported()) {
+            LoadFile loadFile = new LoadFile((Simmer.getInstance()));
+            Simmer.getInstance().setLoadFileInput(loadFile);
+            rootContainer.add(loadFile);
+        }
     }
 
     @UiFactory
