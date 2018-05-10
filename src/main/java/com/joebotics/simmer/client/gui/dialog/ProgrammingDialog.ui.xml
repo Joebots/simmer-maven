@@ -72,6 +72,7 @@
                                 <block type="pin_changed"></block>
                                 <block type="pin_digital"></block>
                                 <block type="pin_analog"></block>
+                                <block type="i2c_event"></block>
                             </category>
                             <category name="time">
                                 <block type="sleep_ms"></block>

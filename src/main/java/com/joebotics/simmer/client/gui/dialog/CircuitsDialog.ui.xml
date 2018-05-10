@@ -8,7 +8,7 @@
     <ma:window.MaterialWindow ui:field="modal" title="{i18n.Circuits}" toolbarColor="GREEN" styleName="shifted-window">
         <m:MaterialRow>
             <m:MaterialColumn grid="s11">
-                <ma:tree.MaterialTree ui:field="circuitsTree" fontSize="1.2em">
+                <ma:tree.MaterialTree ui:field="circuitsTree" fontSize="1.4em">
                 </ma:tree.MaterialTree>
             </m:MaterialColumn>
             <m:MaterialColumn grid="s1">

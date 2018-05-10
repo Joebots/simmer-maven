@@ -12,7 +12,7 @@
                               addStyleNames="shifted-window">
         <m:MaterialRow>
             <m:MaterialColumn grid="s11">
-                <ma:tree.MaterialTree ui:field="compTree" fontSize="1.2em">
+                <ma:tree.MaterialTree ui:field="compTree" fontSize="1.4em">
                     <ma:tree.MaterialTreeItem ui:id="components-add-wire" iconType="EXTENSION" text="{i18n.Add_Wire}"
                                               target="WireElm"/>
                     <ma:tree.MaterialTreeItem ui:id="components-add-resistor" iconType="EXTENSION" text="{i18n.Add_Resistor}"
@@ -192,7 +192,9 @@
                                                   text="{i18n.KY_034}"
                                                   target="KY_034"/>
                         <ma:tree.MaterialTreeItem ui:id="components-sensor-kits-sg90" iconType="EXTENSION" text="{i18n.SG90}"
-                                                  target="SG90"/>
+                                                  target="SG90" />
+                        <ma:tree.MaterialTreeItem ui:id="components-sensor-kits-lsm303" iconType="EXTENSION" text="{i18n.LSM303}"
+                                                  target="LSM303" />
                     </ma:tree.MaterialTreeItem>
 
                     <!-- Active Components -->

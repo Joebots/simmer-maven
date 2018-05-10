@@ -40,6 +40,15 @@ SimmerAPI.prototype.gpioOn = function(pinNumber, callback) {
     }
 };
 
+SimmerAPI.prototype.onI2CEvent = function(address, register, messageLength, callback) {
+    console.log(`SimmerAPI.onI2CEvent(${address}, ${register}, ${messageLength}, ${callback})`);
+    if (this.board.eventBus) {
+        this.board.eventBus.addHandler(com.joebotics.simmer.client.event.GpioEvent.TYPE, function(event) {
+            callback(event.getValue());
+        });
+    }
+};
+
 SimmerAPI.prototype.reset = function() {
 };
 
