@@ -12,6 +12,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.joebotics.simmer.client.Simmer;
 import com.joebotics.simmer.client.gui.BreadBoard;
@@ -83,8 +84,8 @@ public class OptionsDialog extends Composite {
         showBreadboardBanks.setValue(false, true);
     }
 
-    @UiHandler({ "showCurrentCheckItem", "showVoltageCheckItem", "showPowerCheckItem", "showValuesCheckItem",
-            "euroResistorCheckItem", "conventionCheckItem" })
+    @UiHandler({"showCurrentCheckItem", "showVoltageCheckItem", "showPowerCheckItem", "showValuesCheckItem",
+            "euroResistorCheckItem", "conventionCheckItem"})
     public void checkItemHandler(ValueChangeEvent<Boolean> event) {
         MaterialCheckBox comp = (MaterialCheckBox) event.getSource();
         model.setValue(OptionKey.valueOf(comp.getName()), comp.getValue());
@@ -95,6 +96,7 @@ public class OptionsDialog extends Composite {
         model.setValue(OptionKey.SIMULATION_SPEED, speedBar.getValue());
         speedBar.getThumb().getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
     }
+
     @UiHandler("speedBar")
     public void speedBarHandler(TouchStartEvent event) {
         model.setValue(OptionKey.SIMULATION_SPEED, speedBar.getValue());
@@ -105,15 +107,16 @@ public class OptionsDialog extends Composite {
     public void currentBarHandler(ChangeEvent event) {
         model.setValue(OptionKey.CURRENT_SPEED, currentBar.getValue());
         currentBar.getThumb().getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
-
     }
+
     @UiHandler("currentBar")
     public void currentBarHandler(TouchStartEvent event) {
         model.setValue(OptionKey.CURRENT_SPEED, currentBar.getValue());
         currentBar.getThumb().getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
 
     }
-    @UiHandler({ "smallGridCheckItem", "backgroundCheckItem" })
+
+    @UiHandler({"smallGridCheckItem", "backgroundCheckItem"})
     public void checkGridHandler(ValueChangeEvent<Boolean> event) {
         checkItemHandler(event);
         Simmer.getInstance().setGrid();
@@ -130,11 +133,10 @@ public class OptionsDialog extends Composite {
         BreadBoard.applyConfig();
         breadboardWidth.getThumb().getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
     }
+
     @UiHandler({"breadboardWidth"})
     public void breadboardWidthHandler(TouchStartEvent event) {
-
         breadboardWidth.getThumb().getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
-
     }
 
     @UiHandler({"breadboardHeight"})
@@ -142,24 +144,23 @@ public class OptionsDialog extends Composite {
         BreadBoard.config.height = event.getValue();
         BreadBoard.applyConfig();
         breadboardHeight.getThumb().getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
-
     }
+
     @UiHandler({"breadboardHeight"})
     public void breadboardHeightHandler(TouchStartEvent event) {
         breadboardHeight.getThumb().getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
     }
+
     @UiHandler({"breadboardRowCount"})
     public void breadboardRowCountHandler(ValueChangeEvent<Integer> event) {
         BreadBoard.config.rowCount = event.getValue();
         BreadBoard.applyConfig();
         breadboardRowCount.getThumb().getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
-
-
     }
+
     @UiHandler({"breadboardRowCount"})
     public void breadboardRowCountHandler(TouchStartEvent event) {
         breadboardRowCount.getThumb().getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
-
     }
 
     @UiHandler({"breadboardTopMargin"})
@@ -167,14 +168,11 @@ public class OptionsDialog extends Composite {
         BreadBoard.config.topMargin = event.getValue();
         BreadBoard.applyConfig();
         breadboardTopMargin.getThumb().getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
-
     }
 
     @UiHandler({"breadboardTopMargin"})
     public void breadboardTopMarginHandler(TouchStartEvent event) {
-
         breadboardTopMargin.getThumb().getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
-
     }
 
     @UiHandler({"breadboardLeftMargin"})
@@ -182,13 +180,11 @@ public class OptionsDialog extends Composite {
         BreadBoard.config.leftMargin = event.getValue();
         BreadBoard.applyConfig();
         breadboardLeftMargin.getThumb().getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
-
     }
+
     @UiHandler({"breadboardLeftMargin"})
     public void breadboardLeftMarginHandler(TouchStartEvent event) {
-
         breadboardLeftMargin.getThumb().getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
-
     }
 
     @UiHandler({"breadboardRowThickness"})
@@ -196,12 +192,11 @@ public class OptionsDialog extends Composite {
         BreadBoard.config.thickness = event.getValue();
         BreadBoard.applyConfig();
         breadboardRowThickness.getThumb().getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
-
     }
+
     @UiHandler({"breadboardRowThickness"})
     public void breadboardRowThicknessHandler(TouchStartEvent event) {
         breadboardRowThickness.getThumb().getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
-
     }
 
     @UiHandler("btnSaveConfig")
@@ -227,13 +222,99 @@ public class OptionsDialog extends Composite {
         BreadBoard.applyConfig();
     }
 
+    @UiHandler("addToSpeed")
+    public void addToSpeedBar(ClickEvent event) {
+        speedBar.setValue(speedBar.getValue() + 1, true);
+    }
+
+    @UiHandler("removeFromSpeed")
+    public void removeFromSpeedBar(ClickEvent event) {
+        speedBar.setValue(speedBar.getValue() - 1, true);
+    }
+
+    @UiHandler("addToCurrent")
+    public void addToCurrentBar(ClickEvent event) {
+        currentBar.setValue(currentBar.getValue() + 1, true);
+    }
+
+    @UiHandler("removeFromCurrent")
+    public void removeFromCurrentBar(ClickEvent event) {
+        currentBar.setValue(currentBar.getValue() - 1, true);
+    }
+
+    @UiHandler("addBreadBoardWidth")
+    public void addBreadBoardWidth(ClickEvent event) {
+        breadboardWidth.setValue(breadboardWidth.getValue() + 1, true);
+    }
+
+    @UiHandler("removeBreadBoardWidth")
+    public void removeBreadBoardWidth(ClickEvent event) {
+        breadboardWidth.setValue(breadboardWidth.getValue() - 1, true);
+    }
+
+    @UiHandler("addBreadBoardHeight")
+    public void addBreadBoardHeight(ClickEvent event) {
+        breadboardHeight.setValue(breadboardHeight.getValue() + 1, true);
+    }
+
+    @UiHandler("removeBreadBoardHeight")
+    public void removeBreadBoardHeight(ClickEvent event) {
+        breadboardHeight.setValue(breadboardHeight.getValue() - 1, true);
+    }
+
+    @UiHandler("addBreadBoardRowCount")
+    public void addBreadBoardRowCount(ClickEvent event) {
+        breadboardRowCount.setValue(breadboardRowCount.getValue() + 1, true);
+    }
+
+    @UiHandler("removeBreadBoardRowCount")
+    public void removeBreadBoardRowCount(ClickEvent event) {
+        breadboardRowCount.setValue(breadboardRowCount.getValue() - 1, true);
+    }
+
+    @UiHandler("addBreadBoardTopMargin")
+    public void addBreadBoardTopMargin(ClickEvent event) {
+        breadboardTopMargin.setValue(breadboardTopMargin.getValue() + 1, true);
+    }
+
+    @UiHandler("removeBreadBoardTopMargin")
+    public void removeBreadBoardTopMargin(ClickEvent event) {
+        breadboardTopMargin.setValue(breadboardTopMargin.getValue() - 1, true);
+    }
+
+    @UiHandler("addBreadBoardLeftMargin")
+    public void addBreadBoardLeftMargin(ClickEvent event) {
+        breadboardLeftMargin.setValue(breadboardLeftMargin.getValue() + 1, true);
+    }
+
+    @UiHandler("removeBreadBoardLeftMargin")
+    public void removeBreadBoardLeftMargin(ClickEvent event) {
+        breadboardLeftMargin.setValue(breadboardLeftMargin.getValue() - 1, true);
+    }
+
+    @UiHandler("addBreadBoardRowThickness")
+    public void addBreadBoardRowThickness(ClickEvent event) {
+        breadboardRowThickness.setValue(breadboardRowThickness.getValue() + 1, true);
+    }
+
+    @UiHandler("removeBreadBoardRowThickness")
+    public void removeBreadBoardRowThickness(ClickEvent event) {
+        breadboardRowThickness.setValue(breadboardRowThickness.getValue() - 1, true);
+    }
+
     private void fillBreadboardFields() {
         breadboardWidth.setValue(BreadBoard.config.width);
+        breadboardWidth.setMargin(15);
         breadboardHeight.setValue(BreadBoard.config.height);
+        breadboardHeight.setMargin(15);
         breadboardRowCount.setValue(BreadBoard.config.rowCount);
+        breadboardRowCount.setMargin(15);
         breadboardTopMargin.setValue(BreadBoard.config.topMargin);
+        breadboardTopMargin.setMargin(15);
         breadboardLeftMargin.setValue(BreadBoard.config.leftMargin);
+        breadboardLeftMargin.setMargin(15);
         breadboardRowThickness.setValue(BreadBoard.config.thickness);
+        breadboardRowThickness.setMargin(15);
     }
 
     public void open() {
