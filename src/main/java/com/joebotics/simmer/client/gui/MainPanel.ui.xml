@@ -9,10 +9,14 @@
     <ui:import field="com.joebotics.simmer.client.gui.util.Display.*"/>
 
     <ui:style>
-
+        .fab-add {
+            position: absolute;
+            right: 23px;
+            z-index: 100;
+        }
     </ui:style>
 
-    <m:MaterialPanel ui:field="mainContainer">
+    <m:MaterialPanel ui:field="rootContainer">
         <m:MaterialHeader>
             <m:MaterialNavBar ui:field="navBar" activates="sidenavDrawer" backgroundColor="GREEN" shadow="1"
                               paddingRight="30">
@@ -30,8 +34,11 @@
             <m:MaterialLink ui:field="optionsButton" iconType="SETTINGS" text="Options"/>
         </m:MaterialSideNavDrawer>
 
+        <m:MaterialButton ui:field="addButton" type="FLOATING" iconType="ADD" size="LARGE" waves="LIGHT"
+                          styleName="{style.fab-add}"/>
         <m:MaterialContainer ui:field="canvasContainer">
             <c:Canvas ui:field="canvas"/>
+
         </m:MaterialContainer>
         <g:HTMLPanel ui:field="activeComponentsContainer">
             <div id="active-component"></div>
@@ -44,5 +51,6 @@
         </m:MaterialContainer>
         <jbd:CircuitsDialog ui:field="circuitsDialog"/>
         <jbd:EditDialog ui:field="editDialog"/>
+        <jbd:SchematicDialog ui:field="addDialog"/>
     </m:MaterialPanel>
 </ui:UiBinder> 
