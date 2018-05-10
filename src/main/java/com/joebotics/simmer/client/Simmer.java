@@ -272,6 +272,7 @@ public class Simmer {
         // main.setLayout(new CircuitLayout());
         mainPanel = new MainPanel(simmerController);
         editDialog = mainPanel.getEditDialog();
+
         // layoutPanel = new DockLayoutPanel(Unit.PX);
         mainPanel.setToolbar(new MainToolbar(simmerController));
         sidePanel = new SidePanel(this);

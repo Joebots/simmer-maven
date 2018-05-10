@@ -37,7 +37,7 @@ public class CircuitsDialog extends Composite {
     MaterialTree circuitsTree;
 
     @UiField
-    MaterialButton btnCollapse, btnExpand, btnImport, btnExport;
+    MaterialButton btnCollapse, btnExpand;
 
     private FileUtils fileUtils;
 
@@ -106,17 +106,17 @@ public class CircuitsDialog extends Composite {
         circuitsTree.expand();
     }
 
-    @UiHandler("btnImport")
     public void btnImportHandler(ClickEvent event) {
         Simmer.getInstance().getLoadFileInput().click();
         modal.close();
     }
 
-    @UiHandler("btnExport")
     public void btnExportHandler(ClickEvent event) {
         Simmer.getInstance().setBlocklyXml(Bgpio.getBlocks());
-        String url = Simmer.getInstance().getFileOps().getCircuitUrl();
-        this.fileUtils.download(url, Simmer.getInstance().getCircuitModel().getTitle());
+        this.fileUtils.download(
+            Simmer.getInstance().getFileOps().getCircuitUrl(),
+            Simmer.getInstance().getCircuitModel().getTitle()
+        );
         modal.close();
     }
 

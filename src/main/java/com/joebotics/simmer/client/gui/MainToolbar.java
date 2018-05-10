@@ -7,7 +7,10 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 
+import com.joebotics.simmer.client.Simmer;
 import com.joebotics.simmer.client.SimmerController;
+import com.joebotics.simmer.client.gui.util.LoadFile;
+import com.joebotics.simmer.client.util.FileUtils;
 
 import gwt.material.design.client.ui.MaterialLink;
 import gwt.material.design.client.ui.MaterialNavSection;
@@ -24,17 +27,21 @@ public class MainToolbar extends Composite {
     private static MainToolbarUiBinder uiBinder = GWT.create(MainToolbarUiBinder.class);
 
     @UiField
-    MaterialLink connect;
+    MaterialLink connect, importSchema;
 
     private SimmerController controller;
+
+    private FileUtils fileUtils;
 
     public MainToolbar(SimmerController controller) {
         initWidget(uiBinder.createAndBindUi(this));
 
         this.controller = controller;
+        this.fileUtils = new FileUtils();
 
         controller.checkBoardConnectionState(connect);
 
+        importSchema.setVisible(LoadFile.isSupported());
     }
 
     @UiHandler("connect")
@@ -44,32 +51,36 @@ public class MainToolbar extends Composite {
 
     @UiHandler("save")
     public void onSaveClick(ClickEvent event) {
-
+        Simmer.getInstance().setBlocklyXml(Bgpio.getBlocks());
+        fileUtils.download(
+            Simmer.getInstance().getFileOps().getCircuitUrl(),
+            Simmer.getInstance().getCircuitModel().getTitle()
+        );
     }
 
     @UiHandler("shot")
     public void onShotClick(ClickEvent event) {
-
+        controller.getMainPanel().showNotImplementedModal();
     }
 
     @UiHandler("help")
     public void onHelpClick(ClickEvent event) {
-
+        controller.getMainPanel().showNotImplementedModal();
     }
 
     @UiHandler("open")
     public void onOpenClick(ClickEvent event) {
-        controller.showCircuitDoalog();
+        controller.showCircuitDialog();
     }
 
     @UiHandler("export")
     public void onExportClick(ClickEvent event) {
-
+        controller.getMainPanel().showNotImplementedModal();
     }
 
     @UiHandler("share")
     public void onShareClick(ClickEvent event) {
-
+        controller.getMainPanel().showNotImplementedModal();
     }
 
 }

@@ -40,6 +40,7 @@ import com.joebotics.simmer.client.elcomp.SwitchElm;
 import com.joebotics.simmer.client.gui.Bgpio;
 import com.joebotics.simmer.client.gui.ComponentToolbar;
 import com.joebotics.simmer.client.gui.EditOptions;
+import com.joebotics.simmer.client.gui.MainPanel;
 import com.joebotics.simmer.client.gui.MainToolbar;
 import com.joebotics.simmer.client.gui.Scope;
 import com.joebotics.simmer.client.gui.dialog.AboutBox;
@@ -62,7 +63,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
 
     private boolean useBoard;
 
-    public SimmerController(Simmer simmer) {
+    SimmerController(Simmer simmer) {
         this.simmer = simmer;
         this.finder = new CircuitElementFinder(simmer);
         this.dragHelper = new CirciutElmDragHelper(simmer);
@@ -538,12 +539,8 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         dragHelper.stopDrag();
     }
 
-    public boolean isUseBoard() {
+    private boolean isUseBoard() {
         return useBoard;
-    }
-
-    public void setUseBoard(boolean useBoard) {
-        this.useBoard = useBoard;
     }
 
     public void switchUseBoard(MaterialLink connect) {
@@ -566,7 +563,11 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         }
     }
 
-    public void showCircuitDoalog() {
+    public void showCircuitDialog() {
         simmer.getMainPanel().showCircuitsDialog();
+    }
+
+    public MainPanel getMainPanel() {
+        return simmer.getMainPanel();
     }
 }

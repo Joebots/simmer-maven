@@ -26,6 +26,7 @@ import com.sun.istack.internal.Nullable;
 import gwt.material.design.client.MaterialDesignBase;
 import gwt.material.design.client.ui.MaterialButton;
 import gwt.material.design.client.ui.MaterialContainer;
+import gwt.material.design.client.ui.MaterialModal;
 import gwt.material.design.client.ui.MaterialNavBar;
 import gwt.material.design.client.ui.MaterialPanel;
 
@@ -67,6 +68,9 @@ public class MainPanel extends Composite {
 
     @UiField
     MaterialButton addButton;
+
+    @UiField
+    MaterialModal notImplementedModal;
 
     private Widget currentToolbar;
 
@@ -122,6 +126,11 @@ public class MainPanel extends Composite {
     @UiHandler("addButton")
     public void onAddButtonClick(ClickEvent event) {
         addDialog.open();
+    }
+
+    @UiHandler("closeModal")
+    public void onCloseModalClick(ClickEvent event) {
+        notImplementedModal.close();
     }
 
     private RunToolbar getRunToolbar() {
@@ -189,5 +198,9 @@ public class MainPanel extends Composite {
 
     public EditDialog getEditDialog() {
         return editDialog;
+    }
+
+    public void showNotImplementedModal() {
+        notImplementedModal.open();
     }
 }

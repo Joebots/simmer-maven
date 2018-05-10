@@ -1,16 +1,28 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:m='urn:import:gwt.material.design.client.ui'>
+
+    <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N'/>
+
     <m:MaterialNavSection float="RIGHT">
-        <m:MaterialLink ui:field="connect" iconType="POWER" textColor="WHITE" waves="LIGHT"/>
-        <m:MaterialLink ui:field="save" iconType="SAVE" textColor="WHITE" waves="LIGHT"/>
-        <m:MaterialLink ui:field="shot" iconType="PHOTO_CAMERA" textColor="WHITE" waves="LIGHT"/>
-        <m:MaterialLink ui:field="help" iconType="HELP_OUTLINE" textColor="WHITE" waves="LIGHT"/>
+        <m:MaterialTooltip text="{i18n.ConnectToBoard}">
+            <m:MaterialLink ui:field="connect" iconType="POWER" textColor="WHITE" waves="LIGHT"/>
+        </m:MaterialTooltip>
+        <m:MaterialTooltip text="{i18n.Save}">
+            <m:MaterialLink ui:field="save" iconType="SAVE" textColor="WHITE" waves="LIGHT"/>
+        </m:MaterialTooltip>
+        <m:MaterialTooltip text="{i18n.Shot}">
+            <m:MaterialLink ui:field="shot" iconType="PHOTO_CAMERA" textColor="WHITE" waves="LIGHT"/>
+        </m:MaterialTooltip>
+        <m:MaterialTooltip text="{i18n.Help}">
+            <m:MaterialLink ui:field="help" iconType="HELP_OUTLINE" textColor="WHITE" waves="LIGHT"/>
+        </m:MaterialTooltip>
         <m:MaterialLink ui:field="more" iconType="MORE_VERT" textColor="WHITE" waves="LIGHT" activates="more"/>
 
         <m:MaterialDropDown activator="more" backgroundColor="GREEN">
-            <m:MaterialLink ui:field="open" textColor="WHITE" text="Open"/>
-            <m:MaterialLink ui:field="export" textColor="WHITE" text="Export"/>
-            <m:MaterialLink ui:field="share" textColor="WHITE" text="Share"/>
+            <m:MaterialLink ui:field="open" textColor="WHITE" text="{i18n.Open}"/>
+            <m:MaterialLink ui:field="importSchema" textColor="WHITE" text="{i18n.Import}"/>
+            <m:MaterialLink ui:field="export" textColor="WHITE" text="{i18n.Export}"/>
+            <m:MaterialLink ui:field="share" textColor="WHITE" text="{i18n.Share}"/>
         </m:MaterialDropDown>
     </m:MaterialNavSection>
 </ui:UiBinder>

@@ -11,12 +11,11 @@
         </m:MaterialColumn>
         <m:MaterialColumn grid="s4" style="position: absolute; bottom: 15px; right: 0">
             <m:MaterialButton m:id="forward-btn" text="Next" waves="DEFAULT" backgroundColor="GREEN_DARKEN_4"
-                              textColor="WHITE"
-                              size="MEDIUM" marginBottom="10"/>
+                              textColor="WHITE" size="MEDIUM" marginBottom="10" grid="s12"/>
             <m:MaterialButton m:id="back-btn" text="Back" waves="DEFAULT" backgroundColor="GREEN_DARKEN_4" textColor="WHITE"
-                              size="MEDIUM" marginBottom="10"/>
+                              size="MEDIUM" marginBottom="10" grid="s12"/>
             <m:MaterialButton m:id="reset" text="Reset" waves="DEFAULT" backgroundColor="GREEN_DARKEN_4" textColor="WHITE"
-                              size="MEDIUM"/>
+                              size="MEDIUM" grid="s12"/>
         </m:MaterialColumn>
     </m:MaterialRow>
 </ui:UiBinder>

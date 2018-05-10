@@ -52,5 +52,15 @@
         <jbd:CircuitsDialog ui:field="circuitsDialog"/>
         <jbd:EditDialog ui:field="editDialog"/>
         <jbd:SchematicDialog ui:field="addDialog"/>
+
+        <m:MaterialModal ui:field="notImplementedModal" type="DEFAULT" dismissible="false" inDuration="500"
+                         outDuration="500">
+            <m:MaterialModalContent>
+                <m:MaterialTitle title="Not implemented yet" description="This feature will be added in future releases."/>
+            </m:MaterialModalContent>
+            <m:MaterialModalFooter>
+                <m:MaterialButton ui:field="closeModal" text="Ok" type="FLAT"/>
+            </m:MaterialModalFooter>
+        </m:MaterialModal>
     </m:MaterialPanel>
 </ui:UiBinder> 

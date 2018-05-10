@@ -14,6 +14,8 @@ import com.joebotics.simmer.client.event.InterpreterEventHandler;
 import com.joebotics.simmer.client.event.InterpreterPausedEvent;
 import com.joebotics.simmer.client.event.InterpreterStartedEvent;
 import com.joebotics.simmer.client.event.InterpreterStoppedEvent;
+import com.joebotics.simmer.client.gui.util.LoadFile;
+import com.joebotics.simmer.client.util.FileUtils;
 
 import gwt.material.design.client.ui.MaterialLink;
 import gwt.material.design.client.ui.MaterialNavSection;
@@ -30,14 +32,17 @@ public class RunToolbar extends Composite implements InterpreterEventHandler {
     private static RunToolbarUiBinder uiBinder = GWT.create(RunToolbarUiBinder.class);
 
     @UiField
-    MaterialLink run, debug, connect;
+    MaterialLink run, debug, connect, importSchema;
 
     private SimmerController controller;
+
+    private FileUtils fileUtils;
 
     RunToolbar(SimmerController controller) {
         initWidget(uiBinder.createAndBindUi(this));
 
         this.controller = controller;
+        this.fileUtils = new FileUtils();
 
         EventBus eventBus = Simmer.getInstance().getEventBus();
         eventBus.addHandler(InterpreterStartedEvent.TYPE, this);
@@ -47,6 +52,7 @@ public class RunToolbar extends Composite implements InterpreterEventHandler {
 
         controller.checkBoardConnectionState(connect);
 
+        importSchema.setVisible(LoadFile.isSupported());
     }
 
     @UiHandler("connect")
@@ -56,32 +62,36 @@ public class RunToolbar extends Composite implements InterpreterEventHandler {
 
     @UiHandler("save")
     public void onSaveClick(ClickEvent event) {
-
+        Simmer.getInstance().setBlocklyXml(Bgpio.getBlocks());
+        fileUtils.download(
+            Simmer.getInstance().getFileOps().getCircuitUrl(),
+            Simmer.getInstance().getCircuitModel().getTitle()
+        );
     }
 
     @UiHandler("shot")
     public void onShotClick(ClickEvent event) {
-
+        controller.getMainPanel().showNotImplementedModal();
     }
 
     @UiHandler("help")
     public void onHelpClick(ClickEvent event) {
-
+        controller.getMainPanel().showNotImplementedModal();
     }
 
     @UiHandler("open")
     public void onOpenClick(ClickEvent event) {
-        controller.showCircuitDoalog();
+        controller.showCircuitDialog();
     }
 
     @UiHandler("export")
     public void onExportClick(ClickEvent event) {
-
+        controller.getMainPanel().showNotImplementedModal();
     }
 
     @UiHandler("share")
     public void onShareClick(ClickEvent event) {
-
+        controller.getMainPanel().showNotImplementedModal();
     }
 
     @UiHandler("run")
