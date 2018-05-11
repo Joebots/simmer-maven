@@ -70,14 +70,14 @@
                         <m:MaterialRow>
                             <m:MaterialColumn grid="s1">
                                 <m:MaterialButton ui:field="breadboardWidthDec" type="FLOATING" waves="LIGHT" size="MEDIUM"
-                                                  iconType="REMOVE"/>
+                                                  iconType="REMOVE" style="margin-top:20px"/>
                             </m:MaterialColumn>
                             <m:MaterialColumn grid="s10">
                                 <m:MaterialRange ui:field="breadboardWidth" min="300" max="400"/>
                             </m:MaterialColumn>
                             <m:MaterialColumn grid="s1">
                                 <m:MaterialButton ui:field="breadboardWidthInc" type="FLOATING" waves="LIGHT" size="MEDIUM"
-                                                  iconType="ADD"/>
+                                                  iconType="ADD" style="margin-top:20px"/>
                             </m:MaterialColumn>
                         </m:MaterialRow>
 
