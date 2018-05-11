@@ -1,5 +1,6 @@
 package com.joebotics.simmer.client.elcomp.sensors;
 
+import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.user.client.ui.Image;
 import com.joebotics.simmer.client.elcomp.ChipElm;
@@ -10,7 +11,7 @@ import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.StringTokenizer;
 
 /**
- * KY-037 Microphone sound sensor module
+ * KY-038 Microphone sound sensor module
  */
 public class KY038Elm extends ChipElm {
     private final ImageElement microphone = ImageElement.as(new Image("imgs/components/microphone.svg").getElement());
@@ -31,7 +32,7 @@ public class KY038Elm extends ChipElm {
 
     @Override
     public String getChipName() {
-        return "KY-037";
+        return "KY-038";
     }
 
     @Override
@@ -40,7 +41,7 @@ public class KY038Elm extends ChipElm {
     }
 
     public int getDumpType() {
-        return 537;
+        return 538;
     }
 
     public int getPostCount() {
@@ -61,8 +62,13 @@ public class KY038Elm extends ChipElm {
     @Override
     public void draw(Graphics g) {
         Point center = getCenterPoint();
-        g.getContext().drawImage(microphone, center.getX() - microphone.getWidth() / 2, center.getY() - microphone.getHeight() / 2);
+        Pin digitalPin = getPins()[0];
+        Pin analogPin = getPins()[3];
+        Context2d context = g.getContext();
+        context.drawImage(microphone, center.getX() - microphone.getWidth() / 2, center.getY() - microphone.getHeight() / 2);
 
+        drawPinValue(g, digitalPin, digitalPin.getValue() ? "1" : "0");
+        drawPinValue(g, analogPin, String.valueOf(analogPin.getVoltage()));
         super.draw(g);
     }
 }

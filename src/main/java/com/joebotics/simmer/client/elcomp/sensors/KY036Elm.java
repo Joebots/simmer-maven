@@ -1,5 +1,6 @@
 package com.joebotics.simmer.client.elcomp.sensors;
 
+import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.user.client.ui.Image;
 import com.joebotics.simmer.client.elcomp.ChipElm;
@@ -61,8 +62,13 @@ public class KY036Elm extends ChipElm {
     @Override
     public void draw(Graphics g) {
         Point center = getCenterPoint();
-        g.getContext().drawImage(metalSensor, center.getX() - metalSensor.getWidth() / 2, center.getY() - metalSensor.getHeight() / 2);
+        Pin digitalPin = getPins()[0];
+        Pin analogPin = getPins()[3];
+        Context2d context = g.getContext();
+        context.drawImage(metalSensor, center.getX() - metalSensor.getWidth() / 2, center.getY() - metalSensor.getHeight() / 2);
 
+        drawPinValue(g, digitalPin, digitalPin.getValue() ? "1" : "0");
+        drawPinValue(g, analogPin, String.valueOf(analogPin.getVoltage()));
         super.draw(g);
     }
 }

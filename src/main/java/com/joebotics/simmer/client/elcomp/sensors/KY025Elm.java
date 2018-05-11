@@ -68,18 +68,12 @@ public class KY025Elm extends ChipElm {
     public void draw(Graphics g) {
         Pin digitalPin = getPins()[0];
         Pin analogPin = getPins()[3];
-        Point digitalPinPosition = digitalPin.getTextloc();
-        Point analogPinPosition = analogPin.getTextloc();
         Point center = getCenterPoint();
         Context2d context = g.getContext();
         context.drawImage(magnet, center.getX() - magnet.getWidth() / 2, center.getY() - magnet.getHeight() / 2);
 
-        g.setFont(unitsFont);
-//        context.setTextAlign(Context2d.TextAlign.CENTER);
-        drawCenteredText(g, digitalPin.getValue() ? "1" : "DS", digitalPinPosition.getX() - 20, digitalPinPosition.getY() + 3, true);
-//        g.drawString(digitalPin.getValue() ? "1" : "0", digitalPinPosition.getX() - 20, digitalPinPosition.getY() + 5);
-        g.drawString(String.valueOf(analogPin.getVoltage()), analogPinPosition.getX() - 20, analogPinPosition.getY());
-//        drawValues(g, "AS", analogPin.getVoltage());
+        drawPinValue(g, digitalPin, digitalPin.getValue() ? "1" : "0");
+        drawPinValue(g, analogPin, String.valueOf(analogPin.getVoltage()));
         super.draw(g);
     }
 }
