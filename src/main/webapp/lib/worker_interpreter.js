@@ -57,7 +57,7 @@ BrowserInterpreter.debugStep = function () {
                 // Program complete, no more code to execute.
                 if (BrowserInterpreter.DEBUG)
                     console.log("Javascript Debug steps ended");
-                notifySopped();
+                notifyStopped();
                 return;
             }
         }

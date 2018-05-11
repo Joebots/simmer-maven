@@ -20,7 +20,7 @@
     <m:MaterialPanel ui:field="rootContainer">
         <m:MaterialHeader>
             <m:MaterialNavBar ui:field="navBar" activates="sidenavDrawer" backgroundColor="GREEN" shadow="1"
-                              paddingRight="30">
+                              paddingRight="25">
 
             </m:MaterialNavBar>
         </m:MaterialHeader>

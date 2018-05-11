@@ -513,7 +513,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         if (simmer.getContextPanel() != null) {
             simmer.getContextPanel().hide();
         }
-        
+
         dragHelper.startDrag(p);
     }
 
@@ -558,7 +558,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         if (!Bgpio.hasBoard()) {
             connect.setIconColor(Color.GREEN_DARKEN_4);
         } else if (isUseBoard()) {
-            connect.setIconColor(Color.BLUE);
+            connect.setIconColor(Color.CYAN_ACCENT_3);
         } else {
             connect.setIconColor(Color.WHITE);
         }
