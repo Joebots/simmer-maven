@@ -5,6 +5,7 @@ import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.util.StringTokenizer;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.canvas.dom.client.Context2d;
 import com.joebotics.simmer.client.gui.util.Point;
 
 /**
@@ -45,6 +46,13 @@ public class KY025Elm extends ChipElm {
         return 4;
     }
 
+    @Override
+    public void doStep() {
+        Pin digitalOut =  getPins()[0];
+
+        digitalOut.setValue(getVolts()[3] >= Pin.VOLTAGE_THRESHOLD_LEVEL);
+    }
+
     public void setupPins() {
         setSizeX(2);
         setSizeY(4);
@@ -58,9 +66,20 @@ public class KY025Elm extends ChipElm {
 
     @Override
     public void draw(Graphics g) {
+        Pin digitalPin = getPins()[0];
+        Pin analogPin = getPins()[3];
+        Point digitalPinPosition = digitalPin.getTextloc();
+        Point analogPinPosition = analogPin.getTextloc();
         Point center = getCenterPoint();
-        g.getContext().drawImage(magnet, center.getX() - magnet.getWidth() / 2, center.getY() - magnet.getHeight() / 2);
+        Context2d context = g.getContext();
+        context.drawImage(magnet, center.getX() - magnet.getWidth() / 2, center.getY() - magnet.getHeight() / 2);
 
+        g.setFont(unitsFont);
+//        context.setTextAlign(Context2d.TextAlign.CENTER);
+        drawCenteredText(g, digitalPin.getValue() ? "1" : "DS", digitalPinPosition.getX() - 20, digitalPinPosition.getY() + 3, true);
+//        g.drawString(digitalPin.getValue() ? "1" : "0", digitalPinPosition.getX() - 20, digitalPinPosition.getY() + 5);
+        g.drawString(String.valueOf(analogPin.getVoltage()), analogPinPosition.getX() - 20, analogPinPosition.getY());
+//        drawValues(g, "AS", analogPin.getVoltage());
         super.draw(g);
     }
 }
