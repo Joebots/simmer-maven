@@ -13,6 +13,10 @@
             <m:MaterialLink ui:field="debug" iconType="BUG_REPORT" textColor="WHITE" waves="LIGHT"/>
         </jbw:CustomMaterialTooltip>
 
+        <jbw:CustomMaterialTooltip text="{i18n.Stop}">
+            <m:MaterialLink ui:field="stop" iconType="STOP" textColor="WHITE" waves="LIGHT"/>
+        </jbw:CustomMaterialTooltip>
+
         <jbw:CustomMaterialTooltip text="{i18n.ConnectToBoard}">
             <m:MaterialLink ui:field="connect" iconType="POWER" textColor="WHITE" waves="LIGHT"/>
         </jbw:CustomMaterialTooltip>

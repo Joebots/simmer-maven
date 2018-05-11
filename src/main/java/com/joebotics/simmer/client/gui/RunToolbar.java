@@ -32,7 +32,7 @@ public class RunToolbar extends Composite implements InterpreterEventHandler {
     private static RunToolbarUiBinder uiBinder = GWT.create(RunToolbarUiBinder.class);
 
     @UiField
-    MaterialLink run, debug, connect, importSchema;
+    MaterialLink run, debug, stop, connect, importSchema;
 
     private SimmerController controller;
 
@@ -53,6 +53,7 @@ public class RunToolbar extends Composite implements InterpreterEventHandler {
         controller.checkBoardConnectionState(connect);
 
         importSchema.setVisible(LoadFile.isSupported());
+        stop.setVisible(false);
     }
 
     @UiHandler("connect")
@@ -99,6 +100,11 @@ public class RunToolbar extends Composite implements InterpreterEventHandler {
         Bgpio.RunMode.run();
     }
 
+    @UiHandler("stop")
+    public void onStopClick(ClickEvent event) {
+        Bgpio.RunMode.stop();
+    }
+
     @UiHandler("debug")
     public void onDebugClick(ClickEvent event) {
         Bgpio.RunMode.debugInit();
@@ -111,8 +117,9 @@ public class RunToolbar extends Composite implements InterpreterEventHandler {
 
     @Override
     public void onInterpreterStarted(InterpreterStartedEvent event) {
-        run.setEnabled(false);
-        debug.setEnabled(false);
+        run.setVisible(false);
+        debug.setVisible(false);
+        stop.setVisible(true);
     }
 
     @Override
@@ -122,7 +129,8 @@ public class RunToolbar extends Composite implements InterpreterEventHandler {
 
     @Override
     public void onInterpreterStopped(InterpreterStoppedEvent event) {
-        run.setEnabled(true);
-        debug.setEnabled(true);
+        run.setVisible(true);
+        debug.setVisible(true);
+        stop.setVisible(false);
     }
 }
