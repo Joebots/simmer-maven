@@ -1,6 +1,5 @@
 package com.joebotics.simmer.client;
 
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -504,15 +503,17 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
 
         AbstractCircuitElement element = finder.selectElement(p);
         simmer.setSelectedCircuitElement(element);
-        Document.get().getElementById("component-context-buttons").getStyle().setProperty("display", "none");
-        Document.get().getElementById("circuit-context-buttons").getStyle().setProperty("display", "block");
+
         if (element != null) {
-            Document.get().getElementById("component-context-buttons").getStyle().setProperty("display", "block");
-            Document.get().getElementById("circuit-context-buttons").getStyle().setProperty("display", "none");
+            simmer.setToolbar(new ComponentToolbar(this));
+        } else {
+            simmer.setToolbar(new MainToolbar(this));
         }
+
         if (simmer.getContextPanel() != null) {
             simmer.getContextPanel().hide();
         }
+        
         dragHelper.startDrag(p);
     }
 

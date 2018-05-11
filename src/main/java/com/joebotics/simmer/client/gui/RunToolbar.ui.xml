@@ -1,32 +1,33 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:m='urn:import:gwt.material.design.client.ui'>
+             xmlns:m='urn:import:gwt.material.design.client.ui'
+             xmlns:jbw="urn:import:com.joebotics.simmer.client.gui.widget">
 
     <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N'/>
 
     <m:MaterialNavSection float="RIGHT">
-        <m:MaterialTooltip text="{i18n.Run}">
+        <jbw:CustomMaterialTooltip text="{i18n.Run}">
             <m:MaterialLink ui:field="run" iconType="PLAY_ARROW" textColor="WHITE" waves="LIGHT"/>
-        </m:MaterialTooltip>
+        </jbw:CustomMaterialTooltip>
 
-        <m:MaterialTooltip text="{i18n.Debug}">
+        <jbw:CustomMaterialTooltip text="{i18n.Debug}">
             <m:MaterialLink ui:field="debug" iconType="BUG_REPORT" textColor="WHITE" waves="LIGHT"/>
-        </m:MaterialTooltip>
+        </jbw:CustomMaterialTooltip>
 
-        <m:MaterialTooltip text="{i18n.ConnectToBoard}">
+        <jbw:CustomMaterialTooltip text="{i18n.ConnectToBoard}">
             <m:MaterialLink ui:field="connect" iconType="POWER" textColor="WHITE" waves="LIGHT"/>
-        </m:MaterialTooltip>
+        </jbw:CustomMaterialTooltip>
 
-        <m:MaterialTooltip text="{i18n.Save}">
+        <jbw:CustomMaterialTooltip text="{i18n.Save}">
             <m:MaterialLink ui:field="save" iconType="SAVE" textColor="WHITE" waves="LIGHT"/>
-        </m:MaterialTooltip>
+        </jbw:CustomMaterialTooltip>
 
-        <m:MaterialTooltip text="{i18n.Shot}">
+        <jbw:CustomMaterialTooltip text="{i18n.Shot}">
             <m:MaterialLink ui:field="shot" iconType="PHOTO_CAMERA" textColor="WHITE" waves="LIGHT"/>
-        </m:MaterialTooltip>
+        </jbw:CustomMaterialTooltip>
 
-        <m:MaterialTooltip text="{i18n.Help}">
+        <jbw:CustomMaterialTooltip text="{i18n.Help}">
             <m:MaterialLink ui:field="help" iconType="HELP_OUTLINE" textColor="WHITE" waves="LIGHT"/>
-        </m:MaterialTooltip>
+        </jbw:CustomMaterialTooltip>
 
         <m:MaterialLink ui:field="more" iconType="MORE_VERT" textColor="WHITE" waves="LIGHT" activates="more"/>
 
