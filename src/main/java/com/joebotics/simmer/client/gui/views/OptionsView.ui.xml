@@ -18,10 +18,38 @@
                 </m:MaterialTabItem>
             </m:MaterialTab>
             <m:MaterialColumn m:id="emulatorTab" grid="s12" height="100%">
-                <m:MaterialLabel text="{i18n.Simulation_Speed}"/>
-                <m:MaterialRange ui:field="speedBar" min="0" max="260" value="3"/>
-                <m:MaterialLabel text="{i18n.Current_Speed}"/>
-                <m:MaterialRange ui:field="currentBar" min="1" max="100" value="50"/>
+                <m:MaterialColumn grid="s12">
+                    <m:MaterialLabel text="{i18n.Simulation_Speed}"/>
+                </m:MaterialColumn>
+                <m:MaterialRow>
+                    <m:MaterialColumn grid="s1">
+                        <m:MaterialButton ui:field="speedBarDec" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                          iconType="REMOVE" style="margin-top:20px"/>
+                    </m:MaterialColumn>
+                    <m:MaterialColumn grid="s10">
+                        <m:MaterialRange ui:field="speedBar" min="0" max="260" value="3"/>
+                    </m:MaterialColumn>
+                    <m:MaterialColumn grid="s1">
+                        <m:MaterialButton ui:field="speedBarInc" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                          iconType="ADD" style="margin-top:20px"/>
+                    </m:MaterialColumn>
+                </m:MaterialRow>
+                <m:MaterialColumn grid="s12">
+                    <m:MaterialLabel text="{i18n.Current_Speed}"/>
+                </m:MaterialColumn>
+                <m:MaterialRow>
+                    <m:MaterialColumn grid="s1">
+                        <m:MaterialButton ui:field="currentBarDec" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                          iconType="REMOVE" style="margin-top:20px"/>
+                    </m:MaterialColumn>
+                    <m:MaterialColumn grid="s10">
+                        <m:MaterialRange ui:field="currentBar" min="1" max="100" value="50"/>
+                    </m:MaterialColumn>
+                    <m:MaterialColumn grid="s1">
+                        <m:MaterialButton ui:field="currentBarInc" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                          iconType="ADD" style="margin-top:20px"/>
+                    </m:MaterialColumn>
+                </m:MaterialRow>
                 <m:MaterialCheckBox ui:field="showCurrentCheckItem" text="{i18n.Show_Current}" name="{SHOW_CURRENT.name}"/>
                 <m:MaterialCheckBox ui:field="showVoltageCheckItem" text="{i18n.Show_Voltage}" name="{SHOW_VOLTAGE.name}"/>
                 <m:MaterialCheckBox ui:field="showPowerCheckItem" text="{i18n.Show_Power}" name="{SHOW_POWER.name}"/>
@@ -34,22 +62,99 @@
                 <m:MaterialCheckBox ui:field="conventionCheckItem" text="{i18n.Conventional_Current_Motion}"
                                     name="{CONVENTIONAL_CURRENT_MOTION.name}"/>
             </m:MaterialColumn>
-            <m:MaterialColumn m:id="breadboardTab" grid="s12" height="100%">
+            <m:MaterialColumn m:id="breadboardTab" grid="s12">
                 <m:MaterialRow margin="8">
                     <m:MaterialColumn grid="s11" height="100%">
                         <m:MaterialSwitch ui:field="showBreadboardBanks" onLabel="{i18n.showBreadboardBanks}"/>
                         <m:MaterialLabel text="{i18n.breadboardWidth}"/>
-                        <m:MaterialRange ui:field="breadboardWidth" min="300" max="400"/>
+                        <m:MaterialRow>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardWidthDec" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="REMOVE"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s10">
+                                <m:MaterialRange ui:field="breadboardWidth" min="300" max="400"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardWidthInc" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="ADD"/>
+                            </m:MaterialColumn>
+                        </m:MaterialRow>
+
                         <m:MaterialLabel text="{i18n.breadboardHeight}"/>
-                        <m:MaterialRange ui:field="breadboardHeight" min="400" max="700"/>
+                        <m:MaterialRow>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardHeightDec" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="REMOVE" style="margin-top:20px"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s10">
+                                <m:MaterialRange ui:field="breadboardHeight" min="400" max="700"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardHeightInc" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="ADD" style="margin-top:20px"/>
+                            </m:MaterialColumn>
+                        </m:MaterialRow>
+
                         <m:MaterialLabel text="{i18n.breadboardRowCount}"/>
-                        <m:MaterialRange ui:field="breadboardRowCount" min="8" max="40"/>
+                        <m:MaterialRow>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardRowCountDec" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="REMOVE" style="margin-top:20px"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s10">
+                                <m:MaterialRange ui:field="breadboardRowCount" min="8" max="40"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardRowCountInc" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="ADD" style="margin-top:20px"/>
+                            </m:MaterialColumn>
+                        </m:MaterialRow>
+
                         <m:MaterialLabel text="{i18n.breadboardTopMargin}"/>
-                        <m:MaterialRange ui:field="breadboardTopMargin" min="0" max="120"/>
+                        <m:MaterialRow>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardTopMarginDec" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="REMOVE" style="margin-top:20px"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s10">
+                                <m:MaterialRange ui:field="breadboardTopMargin" min="0" max="120"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardTopMarginInc" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="ADD" style="margin-top:20px"/>
+                            </m:MaterialColumn>
+                        </m:MaterialRow>
+
                         <m:MaterialLabel text="{i18n.breadboardLeftMargin}"/>
-                        <m:MaterialRange ui:field="breadboardLeftMargin" min="0" max="120"/>
+                        <m:MaterialRow>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardLeftMarginDec" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="REMOVE" style="margin-top:20px"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s10">
+                                <m:MaterialRange ui:field="breadboardLeftMargin" min="0" max="120"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardLeftMarginInc" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="ADD" style="margin-top:20px"/>
+                            </m:MaterialColumn>
+                        </m:MaterialRow>
+
                         <m:MaterialLabel text="{i18n.breadboardRowThickness}"/>
-                        <m:MaterialRange ui:field="breadboardRowThickness" min="1" max="15"/>
+                        <m:MaterialRow>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardRowThicknessDec" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="REMOVE" style="margin-top:20px"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s10">
+                                <m:MaterialRange ui:field="breadboardRowThickness" min="1" max="15"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardRowThicknessInc" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="ADD" style="margin-top:20px"/>
+                            </m:MaterialColumn>
+                        </m:MaterialRow>
                     </m:MaterialColumn>
                     <m:MaterialColumn grid="s1" styleName="center">
                         <m:MaterialButton ui:field="btnSaveConfig" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
