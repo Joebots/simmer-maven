@@ -155,6 +155,8 @@
                                                   target="KY_033" />
                         <ma:tree.MaterialTreeItem ui:id="components-sensor-kits-ky-034" iconType="EXTENSION" text="{i18n.KY_034}"
                                                   target="KY_034" />
+                        <ma:tree.MaterialTreeItem ui:id="components-sensor-kits-ky-040" iconType="EXTENSION" text="{i18n.KY_040}"
+                                                  target="KY_040" />
                         <ma:tree.MaterialTreeItem ui:id="components-sensor-kits-sg90" iconType="EXTENSION" text="{i18n.SG90}"
                                                   target="SG90" />
                     </ma:tree.MaterialTreeItem>
