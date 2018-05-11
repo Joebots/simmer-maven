@@ -365,12 +365,6 @@ public class CircuitElementFactory {
         if (n == "KY_035")
             return new KY035Elm(x1, y1);
 
-        if (n == "KY_039")
-            return new KY039Elm(x1, y1);
-
-        if (n == "KY_040")
-            return new KY040Elm(x1, y1);
-
         if (n == "KY_036")
             return new KY036Elm(x1, y1);
 
@@ -379,6 +373,12 @@ public class CircuitElementFactory {
 
         if (n == "KY_038")
             return new KY038Elm(x1, y1);
+
+        if (n == "KY_039")
+            return new KY039Elm(x1, y1);
+
+        if (n == "KY_040")
+            return new KY040Elm(x1, y1);
 
         if (n == "SG90")
             return new SG90(x1, y1);
@@ -715,12 +715,6 @@ public class CircuitElementFactory {
         if (tint == 535)
             return  new KY035Elm(x1, y1, x2, y2, f, st);
 
-        if (tint == 539)
-            return  new KY039Elm(x1, y1, x2, y2, f, st);
-
-        if (tint == 540)
-            return  new KY040Elm(x1, y1, x2, y2, f, st);
-
         if (tint == 536)
             return  new KY036Elm(x1, y1, x2, y2, f, st);
 
@@ -729,6 +723,12 @@ public class CircuitElementFactory {
 
         if (tint == 538)
             return  new KY038Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 539)
+            return  new KY039Elm(x1, y1, x2, y2, f, st);
+
+        if (tint == 540)
+            return  new KY040Elm(x1, y1, x2, y2, f, st);
 
         if (tint == 590)
             return  new SG90(x1, y1, x2, y2, f, st);
