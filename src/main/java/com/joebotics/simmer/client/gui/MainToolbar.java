@@ -57,12 +57,12 @@ public class MainToolbar extends Composite {
             Simmer.getInstance().getCircuitModel().getTitle()
         );
     }
-
+/*
     @UiHandler("shot")
     public void onShotClick(ClickEvent event) {
         controller.getMainPanel().showNotImplementedModal();
     }
-
+*/
     @UiHandler("help")
     public void onHelpClick(ClickEvent event) {
         controller.getMainPanel().showNotImplementedModal();

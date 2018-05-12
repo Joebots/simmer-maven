@@ -99,4 +99,11 @@ public class GpioInputElm extends LogicInputElm implements GpioEventHandler {
             Simmer.getInstance().needAnalyze();
         }
     }
+
+    @Override
+    public void delete() {
+        if (this.gpioPin != null) {
+            gpioManager.releasePin(this.gpioPin);
+        }
+    }
 }

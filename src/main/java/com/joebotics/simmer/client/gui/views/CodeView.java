@@ -33,9 +33,8 @@ public class CodeView extends Composite {
 
     public CodeView() {
         initWidget(uiBinder.createAndBindUi(this));
-
+        Bgpio.setCodeArea(code);
         updateLayout();
-
         Window.addResizeHandler(event -> updateLayout());
     }
 
@@ -45,6 +44,7 @@ public class CodeView extends Composite {
 
         Bgpio.setCodeArea(code);
         Bgpio.setConsoleArea(console);
+        Bgpio.renderCode();
     }
 
     private void updateLayout() {

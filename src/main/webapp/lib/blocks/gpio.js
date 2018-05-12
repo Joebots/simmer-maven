@@ -258,8 +258,8 @@ Blockly.JavaScript["i2c_event"] = function(block) {
     var messageLength = block.getFieldValue("MESSAGE_LENGTH");
     var eventVar = Blockly.JavaScript.variableDB_.getName(block.getFieldValue('EVENT'), Blockly.Variables.NAME_TYPE);
     var callback = Blockly.JavaScript.statementToCode(block, "DO");
-    var code = `onI2CEvent(${address}, ${register}, ${messageLength} function(${eventVar}) {\n` +
+    var code = `onI2CEvent(${address}, ${register}, ${messageLength}, function(${eventVar}) {\n` +
         `    ${callback}\n` +
-        `});`;
+        `});\n`;
     return code;
 };

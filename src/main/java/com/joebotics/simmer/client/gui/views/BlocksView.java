@@ -53,7 +53,6 @@ public class BlocksView extends Composite {
         params.sounds = false;
 
         Window.addResizeHandler(event -> updateLayout());
-
     }
 
     @Override

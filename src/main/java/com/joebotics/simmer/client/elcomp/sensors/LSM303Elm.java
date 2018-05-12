@@ -31,7 +31,6 @@ public class LSM303Elm extends ChipElm {
     }
 
     public void execute() {
-        getPins()[0].setValue(false);
     }
 
     @Override
@@ -41,7 +40,7 @@ public class LSM303Elm extends ChipElm {
 
     @Override
     public int getVoltageSourceCount() {
-        return 1;
+        return 0;
     }
 
     public int getDumpType() {
@@ -53,18 +52,18 @@ public class LSM303Elm extends ChipElm {
     }
 
     public void setupPins() {
-        setSizeX(2);
-        setSizeY(8);
+        setSizeX(8);
+        setSizeY(4);
         setPins(new Pin[getPostCount()]);
 
-        getPins()[0] = new Pin(0, Side.EAST, "SCL");
-        getPins()[1] = new Pin(1, Side.EAST, "SDA");
-        getPins()[2] = new Pin(2, Side.EAST, "I2");
-        getPins()[3] = new Pin(3, Side.EAST, "I1");
-        getPins()[4] = new Pin(4, Side.EAST, "DRDY");
-        getPins()[5] = new Pin(5, Side.EAST, "GND");
-        getPins()[6] = new Pin(6, Side.EAST, "Vin");
-        getPins()[7] = new Pin(7, Side.EAST, "3V3");
+        getPins()[0] = new Pin(0, Side.SOUTH, "SCL");
+        getPins()[1] = new Pin(1, Side.SOUTH, "SDA");
+        getPins()[2] = new Pin(2, Side.SOUTH, "I2");
+        getPins()[3] = new Pin(3, Side.SOUTH, "I1");
+        getPins()[4] = new Pin(4, Side.SOUTH, "DRDY");
+        getPins()[5] = new Pin(5, Side.SOUTH, "GND");
+        getPins()[6] = new Pin(6, Side.SOUTH, "Vin");
+        getPins()[7] = new Pin(7, Side.SOUTH, "3V3");
     }
 
     @Override
@@ -79,7 +78,7 @@ public class LSM303Elm extends ChipElm {
 
     public void draw(Graphics g) {
         Point center = getCenterPoint();
-        g.getContext().drawImage(accel, center.getX() - accel.getWidth() / 2, rectPointsY[0] + accel.getHeight() / 2);
+        g.getContext().drawImage(accel, center.getX() - accel.getWidth() / 2, center.getY() - accel.getHeight() / 2);
         super.draw(g);
     }
 }
