@@ -1,17 +1,20 @@
 package com.joebotics.simmer.client.elcomp.sensors;
 
 import com.joebotics.simmer.client.elcomp.*;
+import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Graphics;
 import com.joebotics.simmer.client.util.StringTokenizer;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.user.client.ui.Image;
 import com.joebotics.simmer.client.gui.util.Point;
+import gwt.material.design.client.ui.MaterialSwitch;
 
 /**
  * KY-015 Combi-Sensor Temperature+Humidity
  */
 public class KY015Elm extends ChipElm {
     private final ImageElement thermometer = ImageElement.as(new Image("imgs/components/temp-humid.svg").getElement());
+    private boolean celsiusScale = true;
 
     public KY015Elm(int xx, int yy) {
         super(xx, yy);
@@ -35,6 +38,27 @@ public class KY015Elm extends ChipElm {
     @Override
     public int getVoltageSourceCount() {
         return 1;
+    }
+
+    @Override
+    public void setEditValue(int n, EditInfo ei) {
+        if (n == 2) {
+            celsiusScale = ei.switchElm.getValue();
+        } else {
+            super.setEditValue(n, ei);
+        }
+    }
+
+    @Override
+    public EditInfo getEditInfo(int n) {
+        if (n == 2) {
+            EditInfo ei = new EditInfo("Scale", 0, -1, -1);
+            ei.switchElm = new MaterialSwitch("Celsius", "Fahrenheit");
+            ei.switchElm.setValue(celsiusScale);
+            return ei;
+        }
+
+        return super.getEditInfo(n);
     }
 
     public int getDumpType() {
