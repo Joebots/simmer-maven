@@ -11,8 +11,9 @@ html, body {
     -khtml-user-select: none; /* Konqueror HTML */
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome and Opera */
+    user-select: none;
+    /* Non-prefixed version, currently
+                                     supported by Chrome and Opera */
 
     font-face: Verdana;
 }
@@ -24,8 +25,8 @@ iframe {
     /*border: 1px solid yellow;*/
 }
 
-#burner-controls, #app-controls, #active-component, .active-pins > div, #active-component-picture {
-    z-index: 100;
+.shifted-window a.window-title {
+    line-height: 25px;
 }
 
 #modal, #code, #blockly, #properties {
@@ -34,22 +35,22 @@ iframe {
     border: none; /*1px solid black;*/
 }
 
-#bbframe{
+#bbframe {
     overflow: hidden;
 }
 
-#app-controls{
+#app-controls {
     position: absolute;
     top: 70%;
     width: 66%;
-    text-align:center;
+    text-align: center;
 }
 
-#app-version{
+#app-version {
     margin: 5px;
     color: white;
     position: absolute;
-    bottom: 0;
+    top: 0;
     right: 0;
     z-index: 200;
 }
@@ -73,29 +74,29 @@ iframe {
 .m5ths,
 .l5ths,
 .xl5ths {
-  margin-left: auto;
-  left: auto;
-  right: auto;
+    margin-left: auto;
+    left: auto;
+    right: auto;
 }
 
 .row .col.s5ths {
-  width: 20%;
+    width: 20%;
 }
 
 @media only screen and (min-width: 601px) {
-  .row .col.m5ths {
-    width: 20%;
-  }
+    .row .col.m5ths {
+        width: 20%;
+    }
 }
 
 @media only screen and (min-width: 993px) {
-  .row .col.l5ths {
-    width: 20%;
-  }
+    .row .col.l5ths {
+        width: 20%;
+    }
 }
 
 @media only screen and (min-width: 1201px) {
-  .row .col.xl5ths {
-    width: 20%;
-  }
+    .row .col.xl5ths {
+        width: 20%;
+    }
 }

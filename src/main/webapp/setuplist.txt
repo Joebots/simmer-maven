@@ -9,6 +9,8 @@ demo-stop-light-with-blockly.txt Stop Light with Blockly
 demo-rpm-counter-with-blockly.txt Magnetic RPM Counter
 demo-temperature-sensor-LED-with-blockly.txt Temperature Sensor Controlling RGB LED
 demo-robotic-arm-blockly.txt Robotic Arm
+demo-accel-compass-with-blockly.txt Adafruit LSM303 Accel+Compass
+
 -
 +Basics
 ohms.txt Ohm's Law

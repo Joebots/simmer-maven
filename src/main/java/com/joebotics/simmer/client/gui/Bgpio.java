@@ -51,6 +51,9 @@ public class Bgpio {
     @JsMethod
     public static native void setEventBus(EventBus eventBus);
 
+    @JsMethod
+    public static native void renderCode();
+
     @JsType(isNative = true, name = "Bgpio.runMode", namespace = JsPackage.GLOBAL)
     public static class RunMode {
         @JsMethod

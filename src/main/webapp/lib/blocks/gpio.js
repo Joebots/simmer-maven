@@ -3,6 +3,7 @@
 /** Common HSV hue for all blocks in this file. */
 var GPIO_HUE = 250;
 var GPIO_GREEN = 65;
+var GPIO_RED = 128;
 
 var PINS = GpioHardwareConfig;
 
@@ -222,4 +223,43 @@ Blockly.Blocks["pin_analog"] = {
 Blockly.JavaScript["pin_analog"] = function(block) {
     var code = block.getFieldValue("VALUE");
     return [ code, Blockly.JavaScript.ORDER_ATOMIC ];
+};
+
+Blockly.Blocks["i2c_event"] = {
+    /**
+     * Description.
+     *
+     * @this Blockly.Block
+     */
+    init : function() {
+        this.appendDummyInput()
+            .appendField("on I2C")
+            .appendField(new Blockly.FieldVariable("event"), "EVENT")
+            .appendField("address #")
+            .appendField(new Blockly.FieldNumber("0x27", 0, 127, 1), "ADDRESS")
+            .appendField("register #")
+            .appendField(new Blockly.FieldNumber("-1", -1, 127, 1), "REGISTER")
+            .appendField("message")
+            .appendField(new Blockly.FieldNumber("4", 0, 127, 1), "MESSAGE_LENGTH")
+            .appendField("bytes");
+        this.appendStatementInput("DO")
+            .appendField("do");
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setTooltip("");
+        this.setColour(GPIO_RED);
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.JavaScript["i2c_event"] = function(block) {
+    var address = block.getFieldValue("ADDRESS");
+    var register = block.getFieldValue("REGISTER");
+    var messageLength = block.getFieldValue("MESSAGE_LENGTH");
+    var eventVar = Blockly.JavaScript.variableDB_.getName(block.getFieldValue('EVENT'), Blockly.Variables.NAME_TYPE);
+    var callback = Blockly.JavaScript.statementToCode(block, "DO");
+    var code = `onI2CEvent(${address}, ${register}, ${messageLength}, function(${eventVar}) {\n` +
+        `    ${callback}\n` +
+        `});\n`;
+    return code;
 };

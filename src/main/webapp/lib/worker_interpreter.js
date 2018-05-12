@@ -30,6 +30,11 @@ BrowserInterpreter.API = {
         var callbackId = "gpioOn_" + pin;
         BrowserInterpreter.API._callbacks[callbackId] = callback;
         self.postMessage({method: 'gpioOn', params: {pin: pin, callbackId: callbackId}})
+    },
+    onI2CEvent: function (address, register, messageLength, callback) {
+        var callbackId = "onI2CEvent_" + address + register + messageLength;
+        BrowserInterpreter.API._callbacks[callbackId] = callback;
+        self.postMessage({method: 'onI2CEvent', params: {address: address, register: register, messageLength: messageLength, callbackId: callbackId}})
     }
 };
 
@@ -57,7 +62,7 @@ BrowserInterpreter.debugStep = function () {
                 // Program complete, no more code to execute.
                 if (BrowserInterpreter.DEBUG)
                     console.log("Javascript Debug steps ended");
-                notifySopped();
+                notifyStopped();
                 return;
             }
         }
@@ -201,6 +206,29 @@ BrowserInterpreter.debugInterpreterInit = function (interpreter, scope) {
     };
     interpreter.setProperty(scope, "gpioRead", interpreter
         .createAsyncFunction(wrapper));
+
+    // Add an API function for listening pin value changes
+    var wrapper = function (address, register, messageLength, callback) {
+        if (BrowserInterpreter.DEBUG)
+            console.log(`address: ${address}, register: ${register}, messageLength: ${messageLength} on event ${callback}`);
+        // A durty hack to add callback functions for Simmer
+        var callbackNode = {
+            type: "Program",
+            body: callback.node.body.body
+        };
+        BrowserInterpreter.API.onI2CEvent(address, register, messageLength, function (result) {
+            var valueCode = "var value = " + JSON.stringify(result) + ";";
+            if (BrowserInterpreter.DEBUG) {
+                console.log(`valueCode: ${valueCode}`);
+                console.log(`callbackNode: ${callbackNode}`);
+            }
+            interpreter.appendCode(valueCode);
+            interpreter.appendCode(callbackNode);
+        });
+        BrowserInterpreter.hasCallbacks = true;
+    };
+    interpreter.setProperty(scope, "onI2CEvent", interpreter
+        .createNativeFunction(wrapper));
 
     // Add an API function for waiting an amount of time
     var wrapper = function (value) {

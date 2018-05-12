@@ -382,6 +382,9 @@ public class CircuitElementFactory {
 
         if (n == "SG90")
             return new SG90(x1, y1);
+
+        if (n == "LSM303")
+            return new LSM303Elm(x1, y1);
         return null;
     }
 
@@ -732,6 +735,9 @@ public class CircuitElementFactory {
 
         if (tint == 590)
             return  new SG90(x1, y1, x2, y2, f, st);
+
+        if (tint == 603)
+            return  new LSM303Elm(x1, y1, x2, y2, f, st);
         return null;
     }
 }

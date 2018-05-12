@@ -8,8 +8,7 @@
     <ui:style>
     
     </ui:style>
-    <ma:window.MaterialWindow ui:field="modal" title="{i18n.Programming}" toolbarColor="GREEN"
-        styleName="shifted-window">
+    <ma:window.MaterialWindow ui:field="modal" title="{i18n.Programming}" toolbarColor="GREEN" styleName="shifted-window">
         <m:MaterialRow height="100%">
             <m:MaterialColumn grid="s11" height="100%">
                 <m:MaterialTab backgroundColor="WHITE">
@@ -73,6 +72,7 @@
                                 <block type="pin_changed"></block>
                                 <block type="pin_digital"></block>
                                 <block type="pin_analog"></block>
+                                <block type="i2c_event"></block>
                             </category>
                             <category name="time">
                                 <block type="sleep_ms"></block>
@@ -83,10 +83,10 @@
                     </g:HTMLPanel>
                 </m:MaterialColumn>
                 <m:MaterialColumn m:id="codeTab" grid="s12">
-                    <jbw:TextArea ui:field="codeTab" label="Code" resizeRule="AUTO" />
+                    <jbw:TextArea ui:field="codeTab"/>
                 </m:MaterialColumn>
                 <m:MaterialColumn m:id="consoleTab" grid="s12">
-                    <jbw:TextArea ui:field="consoleTab" label="Console" resizeRule="AUTO" />
+                    <jbw:TextArea ui:field="consoleTab"/>
                 </m:MaterialColumn>
             </m:MaterialColumn>
             <m:MaterialColumn grid="s1">
