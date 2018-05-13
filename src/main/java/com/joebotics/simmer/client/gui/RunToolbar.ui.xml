@@ -17,6 +17,10 @@
             <m:MaterialLink ui:field="stop" iconType="STOP" textColor="WHITE" waves="LIGHT"/>
         </jbw:CustomMaterialTooltip>
 
+        <jbw:CustomMaterialTooltip text="{i18n.Next_Step}">
+            <m:MaterialLink ui:field="nextStep" iconType="SKIP_NEXT" textColor="WHITE" waves="LIGHT"/>
+        </jbw:CustomMaterialTooltip>
+
         <jbw:CustomMaterialTooltip text="{i18n.ConnectToBoard}">
             <m:MaterialLink ui:field="connect" iconType="POWER" textColor="WHITE" waves="LIGHT"/>
         </jbw:CustomMaterialTooltip>

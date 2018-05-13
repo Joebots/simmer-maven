@@ -32,11 +32,13 @@ public class RunToolbar extends Composite implements InterpreterEventHandler {
     private static RunToolbarUiBinder uiBinder = GWT.create(RunToolbarUiBinder.class);
 
     @UiField
-    MaterialLink run, debug, stop, connect, importSchema;
+    MaterialLink run, debug, stop, nextStep, connect, importSchema;
 
     private SimmerController controller;
 
     private FileUtils fileUtils;
+
+    private boolean isDebug;
 
     RunToolbar(SimmerController controller) {
         initWidget(uiBinder.createAndBindUi(this));
@@ -54,6 +56,7 @@ public class RunToolbar extends Composite implements InterpreterEventHandler {
 
         importSchema.setVisible(LoadFile.isSupported());
         stop.setVisible(false);
+        nextStep.setVisible(false);
     }
 
     @UiHandler("connect")
@@ -108,6 +111,12 @@ public class RunToolbar extends Composite implements InterpreterEventHandler {
     @UiHandler("debug")
     public void onDebugClick(ClickEvent event) {
         Bgpio.RunMode.debugInit();
+        isDebug = true;
+    }
+
+    @UiHandler("nextStep")
+    public void onNextStepClick(ClickEvent event) {
+        Bgpio.RunMode.debugStep();
     }
 
     @UiHandler("importSchema")
@@ -120,6 +129,7 @@ public class RunToolbar extends Composite implements InterpreterEventHandler {
         run.setVisible(false);
         debug.setVisible(false);
         stop.setVisible(true);
+        nextStep.setVisible(isDebug);
     }
 
     @Override
@@ -132,5 +142,7 @@ public class RunToolbar extends Composite implements InterpreterEventHandler {
         run.setVisible(true);
         debug.setVisible(true);
         stop.setVisible(false);
+        nextStep.setVisible(true);
+        isDebug = false;
     }
 }
