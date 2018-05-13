@@ -100,3 +100,7 @@ iframe {
         width: 20%;
     }
 }
+
+.controls-grid {
+    background: url(../imgs/bg_controls_grid.png) repeat;
+}
