@@ -23,6 +23,7 @@ package com.joebotics.simmer.client.elcomp;
 //import java.text.DecimalFormat;
 //import java.text.NumberFormat;
 
+import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONNumber;
@@ -510,6 +511,20 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
         if (cx)
             g.getContext().setTextAlign("center");
         g.drawString(s, x, y);
+        g.getContext().restore();
+    }
+
+    protected void drawPinValue(Graphics g, Pin pin, String text) {
+        Context2d context = g.getContext();
+        context.save();
+        context.setTextBaseline("middle");
+        context.setTextAlign("right");
+        Point pinTextPosition = pin.getTextloc();
+
+        int offsetY = g.getCurrentFontSize() / 4;
+        int offsetX = -(int) g.getContext().measureText(pin.getText()).getWidth();
+
+        g.drawString(text, pinTextPosition.getX() + offsetX, pinTextPosition.getY() + offsetY);
         g.getContext().restore();
     }
 
