@@ -1,5 +1,6 @@
 package com.joebotics.simmer.client.elcomp.sensors;
 
+import com.google.gwt.canvas.dom.client.Context2d;
 import com.joebotics.simmer.client.elcomp.*;
 import com.joebotics.simmer.client.gui.EditInfo;
 import com.joebotics.simmer.client.gui.util.Graphics;
@@ -82,8 +83,23 @@ public class KY015Elm extends ChipElm {
     @Override
     public void draw(Graphics g) {
         Point center = getCenterPoint();
-        g.getContext().drawImage(thermometer, center.getX() - thermometer.getWidth() / 2, center.getY() - thermometer.getHeight() / 2);
+        Pin signalPin = getPins()[2];
 
+        // TODO: Get the temp in a proper way
+        double temperatureValue = signalPin.getCurrent();
+
+        // Dummy humidity
+        double humidityValue = signalPin.getCurrent() * 2 + 25;
+
+        Context2d context = g.getContext();
+        context.drawImage(thermometer, center.getX() - thermometer.getWidth() / 2, center.getY() - thermometer.getHeight() / 2);
+
+        drawPinValue(g, signalPin, String.valueOf(celsiusScale ? temperatureValue : fahrenheitCelsius(temperatureValue))
+        + " / " + humidityValue + "%");
         super.draw(g);
+    }
+
+    private double fahrenheitCelsius(double fahrenheit) {
+        return Math.round(((fahrenheit - 32) * 5) / 9);
     }
 }
