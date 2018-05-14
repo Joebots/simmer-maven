@@ -13,6 +13,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 import com.joebotics.simmer.client.Simmer;
 import com.joebotics.simmer.client.SimmerController;
+import com.joebotics.simmer.client.gui.dialog.AddControlDialog;
+import com.joebotics.simmer.client.gui.dialog.AddControlDialog.AddControllerDialogListener;
 import com.joebotics.simmer.client.gui.dialog.CircuitsDialog;
 import com.joebotics.simmer.client.gui.dialog.EditDialog;
 import com.joebotics.simmer.client.gui.dialog.SchematicDialog;
@@ -62,6 +64,9 @@ public class MainPanel extends Composite {
     EditDialog editDialog;
 
     @UiField
+    AddControlDialog addControlDialog;
+
+    @UiField
     SchematicDialog addDialog;
 
     @UiField
@@ -74,6 +79,7 @@ public class MainPanel extends Composite {
     MaterialModal notImplementedModal;
 
     private Widget currentToolbar;
+    private Widget currentContent;
 
     private SimmerController controller;
 
@@ -127,12 +133,16 @@ public class MainPanel extends Composite {
 
     @UiHandler("controlsButton")
     public void onControlsButtonClick(ClickEvent event) {
-        setContent(new ControlsView(), null, true);
+        setContent(new ControlsView(controller), null, true);
     }
 
     @UiHandler("addButton")
     public void onAddButtonClick(ClickEvent event) {
-        addDialog.open();
+        if (currentContent instanceof ControlsView) {
+            addControlDialog.open((AddControllerDialogListener) currentContent);
+        } else {
+            addDialog.open();
+        }
     }
 
     @UiHandler("closeModal")
@@ -185,11 +195,13 @@ public class MainPanel extends Composite {
             activeComponentsContainer.setVisible(false);
             contentContainer.setVisible(true);
             contentContainer.add(content);
+            currentContent = content;
         } else {
             canvasContainer.setVisible(true);
             activeComponentsContainer.setVisible(true);
             contentContainer.setVisible(false);
             contentContainer.clear();
+            currentContent = null;
         }
 
         addButton.setVisible(isAddButtonVisible);

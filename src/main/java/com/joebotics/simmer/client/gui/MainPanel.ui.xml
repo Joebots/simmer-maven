@@ -27,7 +27,7 @@
 
         <m:MaterialSideNavDrawer m:id="sidenavDrawer" ui:field="sideNav" width="300" closeOnClick="true">
             <ma:sideprofile.MaterialSideProfile backgroundColor="GREEN">
-                <m:MaterialImage url="imgs/at1.jpg" />
+                <m:MaterialImage url="imgs/at1.jpg"/>
                 <m:MaterialLabel text="John Doe" textColor="WHITE"/>
             </ma:sideprofile.MaterialSideProfile>
 
@@ -58,6 +58,7 @@
         <jbd:CircuitsDialog ui:field="circuitsDialog"/>
         <jbd:EditDialog ui:field="editDialog"/>
         <jbd:SchematicDialog ui:field="addDialog"/>
+        <jbd:AddControlDialog ui:field="addControlDialog"/>
 
         <m:MaterialModal ui:field="notImplementedModal" type="DEFAULT" dismissible="false" inDuration="500"
                          outDuration="500" styleName="shifted-dialog">
