@@ -85,9 +85,18 @@ public class MainPanel extends Composite {
 
     private RunToolbar runToolbar;
 
+    private BlocksView blocksView;
+    private CodeView codeView;
+    private ControlsView controlsView;
+
     public MainPanel(SimmerController controller) {
         initWidget(uiBinder.createAndBindUi(this));
+
         this.controller = controller;
+
+        this.blocksView = new BlocksView();
+        this.codeView = new CodeView();
+        this.controlsView = new ControlsView(controller);
 
         if (LoadFile.isSupported()) {
             LoadFile loadFile = new LoadFile((Simmer.getInstance()));
@@ -123,17 +132,17 @@ public class MainPanel extends Composite {
 
     @UiHandler("blocksButton")
     public void onBlockButtonClick(ClickEvent event) {
-        setContent(new BlocksView(), getRunToolbar(), true);
+        setContent(blocksView, getRunToolbar(), true);
     }
 
     @UiHandler("codeButton")
     public void onCodeButtonClick(ClickEvent event) {
-        setContent(new CodeView(), getRunToolbar(), false);
+        setContent(codeView, getRunToolbar(), false);
     }
 
     @UiHandler("controlsButton")
     public void onControlsButtonClick(ClickEvent event) {
-        setContent(new ControlsView(controller), null, true);
+        setContent(controlsView, null, true);
     }
 
     @UiHandler("addButton")
