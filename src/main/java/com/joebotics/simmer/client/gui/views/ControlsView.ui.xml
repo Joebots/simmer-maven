@@ -1,7 +1,8 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:m='urn:import:gwt.material.design.client.ui'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
-             xmlns:g.table='urn:import:com.google.gwt.user.cellview.client'>
+             xmlns:g.table='urn:import:com.google.gwt.user.cellview.client'
+             xmlns:jbd="urn:import:com.joebotics.simmer.client.gui.dialog">
 
     <m:MaterialPanel height="100%">
         <m:MaterialRow>
@@ -17,5 +18,6 @@
                 </m:MaterialPanel>
             </m:MaterialColumn>
         </m:MaterialRow>
+        <jbd:EditControlDialog ui:field="editControlDialog"/>
     </m:MaterialPanel>
 </ui:UiBinder>

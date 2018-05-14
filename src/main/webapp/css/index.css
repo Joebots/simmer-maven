@@ -104,3 +104,11 @@ iframe {
 .controls-grid {
     background: url(../imgs/bg_controls_grid.png) repeat;
 }
+
+.edit-control-select ul.select-dropdown {
+    height: 300px;
+}
+
+.com-google-gwt-user-cellview-client-CellTable-Style-cellTableKeyboardSelectedCell {
+    border: 2px solid #628cd5 !important;
+}
