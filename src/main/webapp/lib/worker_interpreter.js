@@ -217,7 +217,7 @@ BrowserInterpreter.debugInterpreterInit = function (interpreter, scope) {
             body: callback.node.body.body
         };
         BrowserInterpreter.API.onI2CEvent(address, register, messageLength, function (result) {
-            var valueCode = `var ${callback.node.params[0].name} = ${JSON.stringify(result)};`;
+            var valueCode = `var ${callback.node.params[0].name} = '${JSON.stringify(result)}';`;
             if (BrowserInterpreter.DEBUG) {
                 console.log(`valueCode: ${valueCode}`);
                 console.log(`callbackNode: ${callbackNode}`);
