@@ -14,7 +14,7 @@
         <m:MaterialRow>
             <m:MaterialColumn grid="s12" backgroundColor="WHITE">
                 <m:MaterialPanel ui:field="controlsListContainer">
-                    <g.table:CellTable ui:field="table"/>
+                    <g.table:DataGrid ui:field="table"/>
                 </m:MaterialPanel>
             </m:MaterialColumn>
         </m:MaterialRow>

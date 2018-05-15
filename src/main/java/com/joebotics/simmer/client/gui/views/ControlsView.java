@@ -6,7 +6,7 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -93,7 +93,7 @@ public class ControlsView extends Composite implements AddControlDialog.AddContr
     AbsolutePanel controlsContainer;
 
     @UiField
-    CellTable<ControlModel> table;
+    DataGrid<ControlModel> table;
 
     @UiField
     EditControlDialog editControlDialog;
@@ -169,8 +169,9 @@ public class ControlsView extends Composite implements AddControlDialog.AddContr
         int containerHeight = Math.round(parentHeight * .666f);
         controlsContainer.setHeight(containerHeight + "px");
 
-        int consoleContainerHeight = Math.round(parentHeight * .333f - 45);
-        controlsListContainer.setHeight(consoleContainerHeight + "px");
+        int controlsListHeight = Math.round(parentHeight * .333f - 45);
+        controlsListContainer.setHeight(controlsListHeight + "px");
+        table.setHeight(controlsListHeight + "px");
     }
 
     @Override

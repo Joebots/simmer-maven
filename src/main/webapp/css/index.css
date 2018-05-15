@@ -109,6 +109,6 @@ iframe {
     height: 300px;
 }
 
-.com-google-gwt-user-cellview-client-CellTable-Style-cellTableKeyboardSelectedCell {
+.com-google-gwt-user-cellview-client-DataGrid-Style-dataGridKeyboardSelectedCell {
     border: 2px solid #628cd5 !important;
 }
