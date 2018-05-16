@@ -162,6 +162,11 @@ public abstract class ChipElm extends AbstractCircuitElement {
 		return "chip";
 	}
 
+	@Override
+	public String getComponentName() {
+		return getChipName();
+	}
+
 	public boolean getConnection(int n1, int n2) {
 		return false;
 	}
