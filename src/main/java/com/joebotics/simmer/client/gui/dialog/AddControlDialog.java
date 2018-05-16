@@ -44,6 +44,7 @@ public class AddControlDialog extends Composite {
         textBoxControl.getElement().getStyle().setBorderStyle(Style.BorderStyle.SOLID);
         textBoxControl.getElement().getStyle().setBorderWidth(2, Style.Unit.PX);
         textBoxControl.getElement().getStyle().setBorderColor("#000000");
+        textBoxControl.setHeight("26px");
     }
 
     @UiHandler("buttonControl")

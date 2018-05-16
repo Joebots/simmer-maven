@@ -1,29 +1,35 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:ma='urn:import:gwt.material.design.addins.client.window'
+             xmlns:m.html='urn:import:gwt.material.design.client.ui.html'
              xmlns:m="urn:import:gwt.material.design.client.ui"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
     <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N'/>
 
     <ma:MaterialWindow ui:field="modal" title="{i18n.Controls}" toolbarColor="GREEN" styleName="shifted-window">
-        <m:MaterialRow marginTop="16">
-            <m:MaterialColumn grid="s12">
-                <g:Label ui:field="labelControl" text="{i18n.Label}"/>
-            </m:MaterialColumn>
-        </m:MaterialRow>
         <m:MaterialRow>
-            <m:MaterialColumn grid="s12">
-                <m:MaterialIcon ui:field="iconControl" iconType="ANDROID" iconSize="LARGE"/>
-            </m:MaterialColumn>
-        </m:MaterialRow>
-        <m:MaterialRow>
-            <m:MaterialColumn grid="s12">
-                <g:Button ui:field="buttonControl" text="{i18n.Button}"/>
-            </m:MaterialColumn>
-        </m:MaterialRow>
-        <m:MaterialRow>
-            <m:MaterialColumn grid="s12">
-                <g:TextBox ui:field="textBoxControl" text="{i18n.TextInput}" width="100px"/>
+            <m:MaterialColumn grid="2" textAlign="CENTER">
+                <m:MaterialRow marginTop="16">
+                    <m:MaterialColumn grid="s12">
+                        <g:Label ui:field="labelControl" text="{i18n.Label}"/>
+                    </m:MaterialColumn>
+                </m:MaterialRow>
+                <m:MaterialRow>
+                    <m:MaterialColumn grid="s12">
+                        <m:MaterialIcon ui:field="iconControl" iconType="ANDROID" iconSize="LARGE" grid="s12"/>
+                        <m.html:Span text="{i18n.Icon}" grid="s12" textColor="GREY"/>
+                    </m:MaterialColumn>
+                </m:MaterialRow>
+                <m:MaterialRow>
+                    <m:MaterialColumn grid="s12">
+                        <g:Button ui:field="buttonControl" text="{i18n.Button}"/>
+                    </m:MaterialColumn>
+                </m:MaterialRow>
+                <m:MaterialRow>
+                    <m:MaterialColumn grid="s12">
+                        <g:TextBox ui:field="textBoxControl" text="{i18n.TextInput}" width="100px"/>
+                    </m:MaterialColumn>
+                </m:MaterialRow>
             </m:MaterialColumn>
         </m:MaterialRow>
     </ma:MaterialWindow>
