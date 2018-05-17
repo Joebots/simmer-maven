@@ -23,6 +23,7 @@ import com.google.gwt.event.dom.client.TouchCancelEvent;
 import com.google.gwt.event.dom.client.TouchCancelHandler;
 import com.google.gwt.event.dom.client.TouchEndEvent;
 import com.google.gwt.event.dom.client.TouchEndHandler;
+import com.google.gwt.event.dom.client.TouchEvent;
 import com.google.gwt.event.dom.client.TouchMoveEvent;
 import com.google.gwt.event.dom.client.TouchMoveHandler;
 import com.google.gwt.event.dom.client.TouchStartEvent;
@@ -493,8 +494,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
     @Override
     public void onTouchStart(TouchStartEvent e) {
         e.preventDefault();
-        Touch touch = e.getTouches().get(0);
-        Point p = new Point(touch.getClientX(), touch.getClientY());
+        Point p = getTouchPoint(e);
 
         AbstractCircuitElement mouseElm = simmer.getMouseElm();
         if (mouseElm != null) {
@@ -517,11 +517,15 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         dragHelper.startDrag(p);
     }
 
+    private Point getTouchPoint(TouchEvent<?> event) {
+        Touch touch = event.getTouches().get(0);
+        return new Point(touch.getRelativeX(event.getRelativeElement()), touch.getRelativeY(event.getRelativeElement()));
+    }
+
     @Override
     public void onTouchMove(TouchMoveEvent e) {
         e.preventDefault();
-        Touch touch = e.getTouches().get(0);
-        Point p = new Point(touch.getClientX(), touch.getClientY());
+        Point p = getTouchPoint(e);
         dragHelper.doDrag(p);
     }
 
