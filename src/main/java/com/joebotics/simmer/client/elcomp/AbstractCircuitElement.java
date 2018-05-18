@@ -1247,7 +1247,8 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
     }
 
     public String getComponentName() {
-        return "";
+        String name = getName();
+        return name.substring(name.lastIndexOf(".") + 1, name.indexOf("Elm"));
     }
 
     public Footprint getFootprint() {

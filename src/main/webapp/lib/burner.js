@@ -82,11 +82,6 @@ Controller.prototype.resize = function (bounds, padding) {
     }
 };
 
-function getSimpleName(component) {
-    model = {el: component};
-    return model.el.substring(model.el.lastIndexOf(".") + 1, model.el.indexOf("Elm"));
-}
-
 function getPinLabels(pins) {
     return pins.map(pin => {
         var pinidx = pin.index;
@@ -116,10 +111,10 @@ Controller.prototype.showComponent = function (model) {
     var cmpBounds = this.resize(model.bounds, 10);
     cmpBounds.top = cmpBounds.top + 64;
 
-    var cmpName = getSimpleName(model.el);
+    var cmpName = '';
     var snbr = view.activeStep + 1;
     var steps = `<div id="pagination">${snbr}/${view.totalSteps}</div>`;
-    cmpName = cmpName == "Voltage" ? "Voltage Source" : (model.componentName || cmpName);
+    cmpName = model.componentName == "Voltage" ? "Voltage Source" : model.componentName;
     var links = "";
 
     var pinInfo = Controller.PIN_INFO[cmpName] || {};
@@ -138,7 +133,7 @@ Controller.prototype.showComponent = function (model) {
             continue;
 
         if (this.rendered[q] && !step.bbpin.isRail) {
-            const name = model.componentName || getSimpleName(q)
+            const name = model.componentName
             links = ` where the ${name} is plugged in`;
             if (pinInfo.hints) {
                 links += "<br/><br/><b><i>Remember " + pinInfo.hints.join(" and ") + "</i></b>";
