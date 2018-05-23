@@ -63,7 +63,7 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
     public static Font unitsFont;
 
     public static double voltageRange = 5;
-    public static Color whiteColor, selectColor, lightGrayColor;
+    public static Color whiteColor, selectColor, lightGrayColor, redColor;
 
     protected Rectangle boundingBox;
     protected double curcount;
@@ -115,6 +115,8 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
     private Pin[] pins;
 
     protected String footprintName;
+
+    public Pin activePin;
 
     protected static int abs(int x) {
         return x < 0 ? -x : x;
@@ -600,9 +602,11 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
     }
 
     // TODO: Badger: utils
-    private void drawPost(Graphics g, int x0, int y0) {
-        g.setColor(whiteColor);
+    private void drawPost(Graphics g, int x0, int y0, boolean active) {
+        g.getContext().save();
+        g.setColor(active ? redColor : whiteColor);
         g.fillOval(x0 - 3, y0 - 3, 7, 7);
+        g.getContext().restore();
     }
 
     // TODO: Badger: utils
@@ -613,7 +617,9 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
         if (sim.getMouseMode() == MouseMode.DRAG_ROW || sim.getMouseMode() == MouseMode.DRAG_COLUMN)
             return;
 
-        drawPost(g, x0, y0);
+        boolean active = collidesActivePin(new Point(x0, y0));
+//log("active" + String.valueOf(active));
+        drawPost(g, x0, y0, active);
     }
 
     // TODO: Badger: utils
@@ -624,6 +630,15 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
             drawPost(g, p.getX(), p.getY(), nodes[i]);
             drawPinText(g, pin);
         }
+    }
+
+    protected boolean collidesActivePin(Point pinPoint) {
+        if(activePin != null) {
+            Point activePinPosition = activePin.getPost();
+            return pinPoint.equals(activePinPosition);
+        }
+
+        return false;
     }
 
     public void drawPinText(Graphics g, Pin pin) {
@@ -1282,8 +1297,35 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
     }
 
     public void click(Point point) {
+        int radius = 10;
+        Rectangle clickArea = new Rectangle(point.getX() - radius / 2, point.getY() - radius / 2,
+                radius, radius);
 
+        Point p = getPins()[0].getPost();
+
+        log("Pin" + String.valueOf(clickArea.contains(p.getX(), p.getY())));
+
+        setActivePin(point);
     }
+
+    protected void setActivePin(Point point) {
+        int radius = 10;
+        Rectangle clickArea = new Rectangle(point.getX() - radius / 2, point.getY() - radius / 2,
+                radius, radius);
+
+        for(Pin pin : getPins()) {
+            Point post = pin.getPost();
+            if(clickArea.contains(post.getX(), post.getY())) {
+                activePin = pin;
+                break;
+            }
+        }
+    }
+
+    public native void log(String msg)/*-{
+		$wnd.console.log(msg);
+	}-*/;
+
     public Point getCenterPoint() {
         return new Point(Math.round(x1 + (x2- x1) / 2),Math.round(y1 + (y2 - y1) / 2));
     }

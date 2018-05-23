@@ -49,9 +49,13 @@ import com.joebotics.simmer.client.gui.menu.ScrollValuePopup;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.MessageI18N;
 import com.joebotics.simmer.client.util.MouseModeEnum;
+import com.joebotics.simmer.client.util.CircuitElementFactory;
 
 import gwt.material.design.client.constants.Color;
 import gwt.material.design.client.ui.MaterialLink;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SimmerController implements MouseDownHandler, MouseWheelHandler, MouseMoveHandler, MouseUpHandler,
     MouseOutHandler, TouchCancelHandler, TouchEndHandler, TouchMoveHandler, TouchStartHandler, ClickHandler,
@@ -85,6 +89,29 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         AbstractCircuitElement mouseElm = simmer.getMouseElm();
         if (mouseElm != null) {
             mouseElm.click(p);
+
+            List<Point> pinsPosts = new ArrayList<Point>();
+            for (int i = 0; i != simmer.getElmList().size(); i++) {
+                AbstractCircuitElement node = simmer.getElm(i);
+                if(node.activePin != null) {
+                    pinsPosts.add(node.activePin.getPost());
+                    log(node.getName() + " " + node.activePin.getText());
+
+                    if(pinsPosts.size() == 2) {
+                        break;
+                    }
+                }
+            }
+
+            if(pinsPosts.size() > 1) {
+                log("Pins count");
+                Point start = pinsPosts.get(0);
+                Point end = pinsPosts.get(1);
+
+                AbstractCircuitElement wire = CircuitElementFactory.createCircuitElement('w', start.getX(), start.getY(), end.getX(), end.getY(), 0, null);
+                wire.setPoints();
+                simmer.getElmList().add(wire    );
+            }
         }
         AbstractCircuitElement element = finder.selectElement(p);
         simmer.setSelectedCircuitElement(element);
@@ -491,6 +518,10 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         }
     }
 
+    public native void log(String msg)/*-{
+		$wnd.console.log(msg);
+	}-*/;
+
     @Override
     public void onTouchStart(TouchStartEvent e) {
         e.preventDefault();
@@ -499,6 +530,12 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         AbstractCircuitElement mouseElm = simmer.getMouseElm();
         if (mouseElm != null) {
             mouseElm.click(p);
+            for (int i = 0; i != simmer.getElmList().size(); i++) {
+                AbstractCircuitElement node = simmer.getElm(i);
+                if(node.activePin != null) {
+                    log(node.getName() + " " + node.activePin.getText());
+                }
+            }
         }
 
         AbstractCircuitElement element = finder.selectElement(p);

@@ -342,7 +342,12 @@ public class Simmer {
         return muString;
     }
 
+    public native void log(String msg)/*-{
+		$wnd.console.log(msg);
+	}-*/;
+
     private void analyzeCircuit() {
+        log("analyzeCircuit");
         calcCircuitBottom();
 
         if (getElmList().isEmpty())
@@ -1493,10 +1498,12 @@ public class Simmer {
         if (options.getBoolean(OptionKey.WHITE_BACKGROUND)) {
             AbstractCircuitElement.whiteColor = Color.black;
             AbstractCircuitElement.lightGrayColor = Color.black;
+            AbstractCircuitElement.redColor = Color.red;
             g.setColor(Color.white);
         } else {
             AbstractCircuitElement.whiteColor = Color.white;
             AbstractCircuitElement.lightGrayColor = Color.lightGray;
+            AbstractCircuitElement.redColor = Color.red;
             g.setColor(Color.black);
         }
 
