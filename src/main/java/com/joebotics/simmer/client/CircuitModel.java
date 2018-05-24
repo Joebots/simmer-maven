@@ -72,6 +72,7 @@ public class CircuitModel {
 
             JSONObject entry = new JSONObject();
             entry.put("name", new JSONString(element.getName()));
+            entry.put("componentName", new JSONString(element.getComponentName()));
             components.set(idx++, entry);
 
             createJSONTargets(links, entry);

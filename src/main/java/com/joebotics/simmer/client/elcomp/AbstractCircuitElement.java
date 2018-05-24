@@ -1246,6 +1246,11 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
         return getClass().getName() + "@" + Integer.toHexString(hashCode());
     }
 
+    public String getComponentName() {
+        String name = getName();
+        return name.substring(name.lastIndexOf(".") + 1, name.indexOf("Elm"));
+    }
+
     public Footprint getFootprint() {
         if (footprintName != null) {
             return Simmer.getInstance().getFootprintManager().getFootprint(footprintName);
