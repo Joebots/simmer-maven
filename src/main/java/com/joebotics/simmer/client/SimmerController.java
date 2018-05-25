@@ -86,7 +86,6 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         start.setActivePin(null);
         end.setActivePin(null);
 
-        simmer.enableItems();
         simmer.needAnalyze();
     }
 
