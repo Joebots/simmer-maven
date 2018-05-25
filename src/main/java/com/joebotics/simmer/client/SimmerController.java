@@ -73,6 +73,39 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         this.dragHelper = new CirciutElmDragHelper(simmer);
     }
 
+    private void wireComponents(AbstractCircuitElement start, AbstractCircuitElement end) {
+        Point startPost = start.activePin.getPost();
+        Point endPost = end.activePin.getPost();
+
+        // Add a wire between the components
+        AbstractCircuitElement wire = CircuitElementFactory.createCircuitElement('w', startPost.getX(), startPost.getY(),
+                endPost.getX(), endPost.getY(), 0, null);
+
+        wire.setPoints();
+        simmer.getElmList().add(wire);
+        start.setActivePin(null);
+        end.setActivePin(null);
+    }
+
+    private void updateComponentConnections() {
+        List<AbstractCircuitElement> nodes = new ArrayList<AbstractCircuitElement>();
+        for (int i = 0; i != simmer.getElmList().size(); i++) {
+            AbstractCircuitElement node = simmer.getElm(i);
+            if(node.activePin != null) {
+                nodes.add(node);
+
+                if(nodes.size() == 2) {
+                    break;
+                }
+            }
+        }
+
+        if(nodes.size() > 1) {
+
+            wireComponents(nodes.get(0), nodes.get(1));
+        }
+    }
+
     public void rotateElement(boolean clockwise) {
         AbstractCircuitElement element = simmer.getSelectedCircuitElement();
         Point centerPoint = element.getCenterPoint();
@@ -90,28 +123,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         if (mouseElm != null) {
             mouseElm.click(p);
 
-            List<Point> pinsPosts = new ArrayList<Point>();
-            for (int i = 0; i != simmer.getElmList().size(); i++) {
-                AbstractCircuitElement node = simmer.getElm(i);
-                if(node.activePin != null) {
-                    pinsPosts.add(node.activePin.getPost());
-                    log(node.getName() + " " + node.activePin.getText());
-
-                    if(pinsPosts.size() == 2) {
-                        break;
-                    }
-                }
-            }
-
-            if(pinsPosts.size() > 1) {
-                log("Pins count");
-                Point start = pinsPosts.get(0);
-                Point end = pinsPosts.get(1);
-
-                AbstractCircuitElement wire = CircuitElementFactory.createCircuitElement('w', start.getX(), start.getY(), end.getX(), end.getY(), 0, null);
-                wire.setPoints();
-                simmer.getElmList().add(wire    );
-            }
+            updateComponentConnections();
         }
         AbstractCircuitElement element = finder.selectElement(p);
         simmer.setSelectedCircuitElement(element);
@@ -530,12 +542,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         AbstractCircuitElement mouseElm = simmer.getMouseElm();
         if (mouseElm != null) {
             mouseElm.click(p);
-            for (int i = 0; i != simmer.getElmList().size(); i++) {
-                AbstractCircuitElement node = simmer.getElm(i);
-                if(node.activePin != null) {
-                    log(node.getName() + " " + node.activePin.getText());
-                }
-            }
+            updateComponentConnections();
         }
 
         AbstractCircuitElement element = finder.selectElement(p);

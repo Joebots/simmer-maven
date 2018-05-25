@@ -618,7 +618,6 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
             return;
 
         boolean active = collidesActivePin(new Point(x0, y0));
-//log("active" + String.valueOf(active));
         drawPost(g, x0, y0, active);
     }
 
@@ -1301,10 +1300,6 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
         Rectangle clickArea = new Rectangle(point.getX() - radius / 2, point.getY() - radius / 2,
                 radius, radius);
 
-        Point p = getPins()[0].getPost();
-
-        log("Pin" + String.valueOf(clickArea.contains(p.getX(), p.getY())));
-
         setActivePin(point);
     }
 
@@ -1322,9 +1317,9 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
         }
     }
 
-    public native void log(String msg)/*-{
-		$wnd.console.log(msg);
-	}-*/;
+    public void setActivePin(Pin pin) {
+        activePin = pin;
+    }
 
     public Point getCenterPoint() {
         return new Point(Math.round(x1 + (x2- x1) / 2),Math.round(y1 + (y2 - y1) / 2));
