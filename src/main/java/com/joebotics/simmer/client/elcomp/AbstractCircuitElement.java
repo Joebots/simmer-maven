@@ -631,7 +631,7 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 
 //        boolean active = collidesActivePin(new Point(x0, y0));
         drawPost(g, x0, y0);
-//        highlightActivePin(g);
+        highlightActivePin(g);
     }
 
     // TODO: Badger: utils
