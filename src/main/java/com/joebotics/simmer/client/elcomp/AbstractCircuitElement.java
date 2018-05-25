@@ -63,7 +63,7 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
     public static Font unitsFont;
 
     public static double voltageRange = 5;
-    public static Color whiteColor, selectColor, lightGrayColor, redColor;
+    public static Color whiteColor, selectColor, lightGrayColor;
 
     protected Rectangle boundingBox;
     protected double curcount;
@@ -601,12 +601,24 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
         g.fillRect(x2 - 3, y2 - 3, 7, 7);
     }
 
+    public native void log(String msg)/*-{
+		$wnd.console.log(msg);
+	}-*/;
+
     // TODO: Badger: utils
-    private void drawPost(Graphics g, int x0, int y0, boolean active) {
-        g.getContext().save();
-        g.setColor(active ? redColor : whiteColor);
+    private void drawPost(Graphics g, int x0, int y0) {
+//        g.getContext().save();
+        g.setColor(whiteColor);
         g.fillOval(x0 - 3, y0 - 3, 7, 7);
-        g.getContext().restore();
+//        g.getContext().restore();
+    }
+
+    private void highlightActivePin(Graphics g) {
+        if(activePin != null) {
+            Point post = activePin.getPost();
+            g.setColor(whiteColor);
+            g.drawCircle(post.getX(), post.getY(), 10);
+        }
     }
 
     // TODO: Badger: utils
@@ -617,8 +629,9 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
         if (sim.getMouseMode() == MouseMode.DRAG_ROW || sim.getMouseMode() == MouseMode.DRAG_COLUMN)
             return;
 
-        boolean active = collidesActivePin(new Point(x0, y0));
-        drawPost(g, x0, y0, active);
+//        boolean active = collidesActivePin(new Point(x0, y0));
+        drawPost(g, x0, y0);
+//        highlightActivePin(g);
     }
 
     // TODO: Badger: utils
