@@ -884,8 +884,8 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 
     private void initBoundingBox() {
         boundingBox = new Rectangle();
-        boundingBox.setBounds(min(x1, x2), min(y1, y2), abs(x2 - x1) + 1, abs(y2
-                - y1) + 1);
+        boundingBox.setBounds(min(x1, x2), min(y1, y2), abs(x2 - x1) + 35, abs(y2
+                - y1) + 35);
     }
 
     // TODO: Badger: utils
