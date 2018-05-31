@@ -85,10 +85,12 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         simmer.getElmList().add(wire);
         start.setActivePin(null);
         end.setActivePin(null);
+
+        simmer.needAnalyze();
     }
 
     private void updateComponentConnections() {
-        List<AbstractCircuitElement> nodes = new ArrayList<AbstractCircuitElement>();
+        List<AbstractCircuitElement> nodes = new ArrayList<>();
         for (int i = 0; i != simmer.getElmList().size(); i++) {
             AbstractCircuitElement node = simmer.getElm(i);
             if(node.activePin != null) {
