@@ -631,7 +631,7 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 
 //        boolean active = collidesActivePin(new Point(x0, y0));
         drawPost(g, x0, y0);
-//        highlightActivePin(g);
+        highlightActivePin(g);
     }
 
     // TODO: Badger: utils
@@ -1309,15 +1309,11 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
     }
 
     public void click(Point point) {
-        int radius = 10;
-        Rectangle clickArea = new Rectangle(point.getX() - radius / 2, point.getY() - radius / 2,
-                radius, radius);
-
         setActivePin(point);
     }
 
     protected void setActivePin(Point point) {
-        int radius = 10;
+        int radius = 25;
         Rectangle clickArea = new Rectangle(point.getX() - radius / 2, point.getY() - radius / 2,
                 radius, radius);
 
