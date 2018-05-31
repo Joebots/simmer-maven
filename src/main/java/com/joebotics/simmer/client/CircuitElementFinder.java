@@ -14,28 +14,20 @@ public class CircuitElementFinder {
         this.simmer = simmer;
     }
 
-    public native void log(String msg)/*-{
-		$wnd.console.log(msg);
-	}-*/;
-
     public AbstractCircuitElement selectElement(Point p) {
         AbstractCircuitElement element = findCoveredElement(p);
         if (element == null) {
-            log("Element is null");
             element = findNextElement(p);
         }
         if (element == null) {
             element = selectScope(p);
         } else {
-            log("Finde post");
             int post = findPost(element, p);
             if (post != -1) {
-                log("Post found" + String.valueOf(post));
                 simmer.setMousePost(post);
             }
         }
         simmer.setMouseElm(element);
-        log("Set mouse element " + (element == null ? "null" : element.getName()));
         return element;
     }
 
