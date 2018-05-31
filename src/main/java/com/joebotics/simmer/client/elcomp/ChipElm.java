@@ -28,7 +28,6 @@ import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.GraphicsUtil;
 import com.joebotics.simmer.client.util.OptionKey;
 import com.joebotics.simmer.client.util.StringTokenizer;
-import com.joebotics.simmer.client.gui.util.Rectangle;
 
 import gwt.material.design.client.ui.MaterialCheckBox;
 
@@ -164,9 +163,9 @@ public abstract class ChipElm extends AbstractCircuitElement {
 	}
 
 	@Override
-    public Rectangle getBoundingBox() {
-        return new Rectangle(boundingBox.x, boundingBox.y, boundingBox.width + 30, boundingBox.height + 30);
-    }
+	public String getComponentName() {
+		return getChipName();
+	}
 
 	public boolean getConnection(int n1, int n2) {
 		return false;

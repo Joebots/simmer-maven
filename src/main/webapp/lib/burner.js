@@ -55,6 +55,7 @@ Controller.prototype.getActiveComponent = function () {
     return {
         stepIdx: this.view.activeStep,
         el: step.component.name,
+        componentName: step.component.componentName,
         cmp: step.component,
         bounds: this.view.model.bounds[step.component.name]
     };
@@ -80,11 +81,6 @@ Controller.prototype.resize = function (bounds, padding) {
         "border-radius": padding / 2
     }
 };
-
-function getSimpleName(component) {
-    model = {el: component};
-    return model.el.substring(model.el.lastIndexOf(".") + 1, model.el.indexOf("Elm"));
-}
 
 function getPinLabels(pins) {
     return pins.map(pin => {
@@ -115,10 +111,10 @@ Controller.prototype.showComponent = function (model) {
     var cmpBounds = this.resize(model.bounds, 10);
     cmpBounds.top = cmpBounds.top + 64;
 
-    var cmpName = getSimpleName(model.el);
+    var cmpName = '';
     var snbr = view.activeStep + 1;
     var steps = `<div id="pagination">${snbr}/${view.totalSteps}</div>`;
-    cmpName = cmpName == "Voltage" ? "Voltage Source" : cmpName;
+    cmpName = model.componentName == "Voltage" ? "Voltage Source" : model.componentName;
     var links = "";
 
     var pinInfo = Controller.PIN_INFO[cmpName] || {};
@@ -137,7 +133,8 @@ Controller.prototype.showComponent = function (model) {
             continue;
 
         if (this.rendered[q] && !step.bbpin.isRail) {
-            links = ` where the ${getSimpleName(q)} is plugged in`;
+            const name = model.componentName
+            links = ` where the ${name} is plugged in`;
             if (pinInfo.hints) {
                 links += "<br/><br/><b><i>Remember " + pinInfo.hints.join(" and ") + "</i></b>";
             }
@@ -402,7 +399,7 @@ function mapPinsToBreadboard(circuitModel, done, componentFilter, activeTerminal
                 }
             }
 
-            if (activeRow == activeTerminal.row && (++activeTerminal.row) >= this.banks[terminalBankIndices[0]].rows.length) {
+            if (activeRow == activeTerminal.row && (++activeTerminal.row) >= this.banks[terminalBankIndices[0]].rows) {
                 activeTerminal.row = 0;
             }
             done[cmp.name] = pinMapping;
@@ -604,7 +601,6 @@ BreadBoard.prototype.createBanks = function (banks) {
  * @param bank
  */
 BreadBoard.prototype.createBank = function (bank) {
-return [];
     var isVert = bank.dir == 'y';
 
     var thickness = this.config.thickness || 3;
@@ -633,17 +629,15 @@ return [];
         x1 -= thickness / 2;
         y1 -= thickness / 2;
 
-        var r = this.paper.rect(x1, y1, w, h);
-
-        r.bounds = {
-            x: x1,
-            y: y1,
-            width: w,
-            height: h
+        var r = {
+            bounds: {
+                x: x1,
+                y: y1,
+                width: w,
+                height: h
+            },
+            bank
         };
-
-        r.attr({fill: "white", opacity: 0});
-        r.bank = bank;
 
         result.push(r);
     }
