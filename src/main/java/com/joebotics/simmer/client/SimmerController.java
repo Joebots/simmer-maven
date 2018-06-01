@@ -486,9 +486,9 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             simmer.setMouseMode(MouseModeEnum.MouseMode.ADD_ELM);
             String s = item;
             if (s.length() > 0) {
-                AbstractCircuitElement element = CircuitElementFactory.constructElement(s, 100, 50);
+                AbstractCircuitElement element = CircuitElementFactory.constructElement(s, 0, 50);
                 element.setPoints();
-                element.drag(50, 50);
+                element.drag(100, 50);
                 simmer.getElmList().add(element);
 
                 simmer.needAnalyze();
