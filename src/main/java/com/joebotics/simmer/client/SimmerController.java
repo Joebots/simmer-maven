@@ -103,7 +103,6 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         }
 
         if(nodes.size() > 1) {
-
             wireComponents(nodes.get(0), nodes.get(1));
         }
     }
@@ -121,6 +120,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         e.preventDefault();
 
         Point p = new Point(e.getX(), e.getY());
+        finder.selectElement(p);
         AbstractCircuitElement mouseElm = simmer.getMouseElm();
         if (mouseElm != null) {
             mouseElm.click(p);
@@ -235,8 +235,6 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
                 return;
             }
             dragHelper.doDrag(p);
-        } else {
-            finder.selectElement(p);
         }
     }
 
@@ -488,13 +486,12 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             if (s.length() > 0) {
                 AbstractCircuitElement element = CircuitElementFactory.constructElement(s, 0, 50);
                 element.setPoints();
-                element.drag(100, 50);
+                element.drag(100, 50); // TODO: Consider moving to configuration
                 simmer.getElmList().add(element);
 
                 simmer.needAnalyze();
                 simmer.setMouseMode(MouseModeEnum.MouseMode.SELECT);
                 simmer.setDragElm(null);
-//                simmer.setMouseModeStr(s);
             }
             if (s.compareTo("DragAll") == 0)
                 simmer.setMouseMode(MouseModeEnum.MouseMode.DRAG_ALL);
@@ -541,16 +538,13 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         }
     }
 
-    public native void log(String msg)/*-{
-		$wnd.console.log(msg);
-	}-*/;
-
     @Override
     public void onTouchStart(TouchStartEvent e) {
         e.preventDefault();
         Point p = getTouchPoint(e);
 
         AbstractCircuitElement mouseElm = simmer.getMouseElm();
+        finder.selectElement(p);
         if (mouseElm != null) {
             mouseElm.click(p);
             updateComponentConnections();

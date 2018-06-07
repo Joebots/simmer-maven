@@ -342,12 +342,7 @@ public class Simmer {
         return muString;
     }
 
-    public native void log(String msg)/*-{
-		$wnd.console.log(msg);
-	}-*/;
-
     private void analyzeCircuit() {
-        log("analyzeCircuit");
         calcCircuitBottom();
 
         if (getElmList().isEmpty())

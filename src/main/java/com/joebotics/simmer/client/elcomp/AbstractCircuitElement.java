@@ -601,16 +601,12 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
         g.fillRect(x2 - 3, y2 - 3, 7, 7);
     }
 
-    public native void log(String msg)/*-{
-		$wnd.console.log(msg);
-	}-*/;
-
     // TODO: Badger: utils
     private void drawPost(Graphics g, int x0, int y0) {
-//        g.getContext().save();
+        g.getContext().save();
         g.setColor(whiteColor);
         g.fillOval(x0 - 3, y0 - 3, 7, 7);
-//        g.getContext().restore();
+        g.getContext().restore();
     }
 
     private void highlightActivePin(Graphics g) {
@@ -629,7 +625,6 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
         if (sim.getMouseMode() == MouseMode.DRAG_ROW || sim.getMouseMode() == MouseMode.DRAG_COLUMN)
             return;
 
-//        boolean active = collidesActivePin(new Point(x0, y0));
         drawPost(g, x0, y0);
         highlightActivePin(g);
     }
@@ -884,8 +879,8 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 
     private void initBoundingBox() {
         boundingBox = new Rectangle();
-        boundingBox.setBounds(min(x1, x2), min(y1, y2), abs(x2 - x1) + 35, abs(y2
-                - y1) + 35);
+        boundingBox.setBounds(min(x1, x2), min(y1, y2), abs(x2 - x1) + 1, abs(y2
+                - y1) + 1);
     }
 
     // TODO: Badger: utils
@@ -1318,6 +1313,7 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
     }
 
     protected void setActivePin(Point point) {
+        // Click area
         int radius = 25;
         Rectangle clickArea = new Rectangle(point.getX() - radius / 2, point.getY() - radius / 2,
                 radius, radius);
