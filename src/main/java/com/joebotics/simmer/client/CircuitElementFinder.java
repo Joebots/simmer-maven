@@ -118,7 +118,7 @@ public class CircuitElementFinder {
             // look for post close to the mouse pointer
             for (int i = 0; i != element.getPostCount(); i++) {
                 Point pt = element.getPost(i);
-                if (MathUtil.distanceSq(pt.getX(), pt.getY(), p.getX(), p.getY()) < 26) {
+                if (MathUtil.distanceSq(pt.getX(), pt.getY(), p.getX(), p.getY()) < 35) {
                     return i;
                 }
             }

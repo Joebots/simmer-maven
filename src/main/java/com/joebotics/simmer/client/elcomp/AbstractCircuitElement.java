@@ -116,6 +116,8 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 
     protected String footprintName;
 
+    public Pin activePin;
+
     protected static int abs(int x) {
         return x < 0 ? -x : x;
     }
@@ -601,8 +603,18 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 
     // TODO: Badger: utils
     private void drawPost(Graphics g, int x0, int y0) {
+        g.getContext().save();
         g.setColor(whiteColor);
         g.fillOval(x0 - 3, y0 - 3, 7, 7);
+        g.getContext().restore();
+    }
+
+    private void highlightActivePin(Graphics g) {
+        if(activePin != null) {
+            Point post = activePin.getPost();
+            g.setColor(whiteColor);
+            g.drawCircle(post.getX(), post.getY(), 10);
+        }
     }
 
     // TODO: Badger: utils
@@ -614,6 +626,7 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
             return;
 
         drawPost(g, x0, y0);
+        highlightActivePin(g);
     }
 
     // TODO: Badger: utils
@@ -624,6 +637,15 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
             drawPost(g, p.getX(), p.getY(), nodes[i]);
             drawPinText(g, pin);
         }
+    }
+
+    protected boolean collidesActivePin(Point pinPoint) {
+        if(activePin != null) {
+            Point activePinPosition = activePin.getPost();
+            return pinPoint.equals(activePinPosition);
+        }
+
+        return false;
     }
 
     public void drawPinText(Graphics g, Pin pin) {
@@ -1287,8 +1309,28 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
     }
 
     public void click(Point point) {
-
+        setActivePin(point);
     }
+
+    protected void setActivePin(Point point) {
+        // Click area
+        int radius = 25;
+        Rectangle clickArea = new Rectangle(point.getX() - radius / 2, point.getY() - radius / 2,
+                radius, radius);
+
+        for(Pin pin : getPins()) {
+            Point post = pin.getPost();
+            if(clickArea.contains(post.getX(), post.getY())) {
+                activePin = pin;
+                break;
+            }
+        }
+    }
+
+    public void setActivePin(Pin pin) {
+        activePin = pin;
+    }
+
     public Point getCenterPoint() {
         return new Point(Math.round(x1 + (x2- x1) / 2),Math.round(y1 + (y2 - y1) / 2));
     }

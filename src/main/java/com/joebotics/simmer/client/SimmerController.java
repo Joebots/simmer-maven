@@ -49,9 +49,13 @@ import com.joebotics.simmer.client.gui.menu.ScrollValuePopup;
 import com.joebotics.simmer.client.gui.util.Point;
 import com.joebotics.simmer.client.util.MessageI18N;
 import com.joebotics.simmer.client.util.MouseModeEnum;
+import com.joebotics.simmer.client.util.CircuitElementFactory;
 
 import gwt.material.design.client.constants.Color;
 import gwt.material.design.client.ui.MaterialLink;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SimmerController implements MouseDownHandler, MouseWheelHandler, MouseMoveHandler, MouseUpHandler,
     MouseOutHandler, TouchCancelHandler, TouchEndHandler, TouchMoveHandler, TouchStartHandler, ClickHandler,
@@ -69,6 +73,40 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         this.dragHelper = new CirciutElmDragHelper(simmer);
     }
 
+    private void wireComponents(AbstractCircuitElement start, AbstractCircuitElement end) {
+        Point startPost = start.activePin.getPost();
+        Point endPost = end.activePin.getPost();
+
+        // Add a wire between the components
+        AbstractCircuitElement wire = CircuitElementFactory.createCircuitElement('w', startPost.getX(), startPost.getY(),
+                endPost.getX(), endPost.getY(), 0, null);
+
+        wire.setPoints();
+        simmer.getElmList().add(wire);
+        start.setActivePin(null);
+        end.setActivePin(null);
+
+        simmer.needAnalyze();
+    }
+
+    private void updateComponentConnections() {
+        List<AbstractCircuitElement> nodes = new ArrayList<>();
+        for (int i = 0; i != simmer.getElmList().size(); i++) {
+            AbstractCircuitElement node = simmer.getElm(i);
+            if(node.activePin != null) {
+                nodes.add(node);
+
+                if(nodes.size() == 2) {
+                    break;
+                }
+            }
+        }
+
+        if(nodes.size() > 1) {
+            wireComponents(nodes.get(0), nodes.get(1));
+        }
+    }
+
     public void rotateElement(boolean clockwise) {
         AbstractCircuitElement element = simmer.getSelectedCircuitElement();
         Point centerPoint = element.getCenterPoint();
@@ -82,9 +120,12 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         e.preventDefault();
 
         Point p = new Point(e.getX(), e.getY());
+        finder.selectElement(p);
         AbstractCircuitElement mouseElm = simmer.getMouseElm();
         if (mouseElm != null) {
             mouseElm.click(p);
+
+            updateComponentConnections();
         }
         AbstractCircuitElement element = finder.selectElement(p);
         simmer.setSelectedCircuitElement(element);
@@ -194,8 +235,6 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
                 return;
             }
             dragHelper.doDrag(p);
-        } else {
-            finder.selectElement(p);
         }
     }
 
@@ -444,8 +483,16 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             // int prevMouseMode = mouseMode;
             simmer.setMouseMode(MouseModeEnum.MouseMode.ADD_ELM);
             String s = item;
-            if (s.length() > 0)
-                simmer.setMouseModeStr(s);
+            if (s.length() > 0) {
+                AbstractCircuitElement element = CircuitElementFactory.constructElement(s, 0, 50);
+                element.setPoints();
+                element.drag(100, 50); // TODO: Consider moving to configuration
+                simmer.getElmList().add(element);
+
+                simmer.needAnalyze();
+                simmer.setMouseMode(MouseModeEnum.MouseMode.SELECT);
+                simmer.setDragElm(null);
+            }
             if (s.compareTo("DragAll") == 0)
                 simmer.setMouseMode(MouseModeEnum.MouseMode.DRAG_ALL);
             else if (s.compareTo("DragRow") == 0)
@@ -497,8 +544,10 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         Point p = getTouchPoint(e);
 
         AbstractCircuitElement mouseElm = simmer.getMouseElm();
+        finder.selectElement(p);
         if (mouseElm != null) {
             mouseElm.click(p);
+            updateComponentConnections();
         }
 
         AbstractCircuitElement element = finder.selectElement(p);
