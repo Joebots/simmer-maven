@@ -42,11 +42,11 @@ public class OptionsView extends Composite {
     MaterialRange speedBar, currentBar;
 
     @UiField
-    MaterialSwitch showBreadboardBanks;
+    MaterialButton showBreadboardBanks;
 
     @UiField
     MaterialRange breadboardWidth, breadboardHeight, breadboardRowCount, breadboardTopMargin, breadboardLeftMargin,
-        breadboardRowThickness;
+        breadboardRowThickness, breadboardRowOffset;
 
     @UiField
     MaterialButton btnSaveConfig, btnResetConfig, btnDownloadConfig, btnUploadConfig;
@@ -55,6 +55,7 @@ public class OptionsView extends Composite {
     MaterialTab optionTabs;
 
     private Options model;
+    private boolean showAllBanks = false;
 
     public OptionsView() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -82,7 +83,8 @@ public class OptionsView extends Composite {
     @Override
     protected void onUnload() {
         super.onUnload();
-        showBreadboardBanks.setValue(false, true);
+        showAllBanks = false;
+        BreadBoard.showAllBanks(showAllBanks);
     }
 
     @UiHandler({"showCurrentCheckItem", "showVoltageCheckItem", "showPowerCheckItem", "showValuesCheckItem",
@@ -124,8 +126,9 @@ public class OptionsView extends Composite {
     }
 
     @UiHandler("showBreadboardBanks")
-    public void showBreadboardBanksHandler(ValueChangeEvent<Boolean> event) {
-        BreadBoard.showAllBanks(event.getValue());
+    public void showBreadboardBanksHandler(ClickEvent event) {
+        showAllBanks = !showAllBanks;
+        BreadBoard.showAllBanks(showAllBanks);
     }
 
     @UiHandler({"breadboardWidth"})
@@ -198,6 +201,18 @@ public class OptionsView extends Composite {
     @UiHandler({"breadboardRowThickness"})
     public void breadboardRowThicknessHandler(TouchStartEvent event) {
         breadboardRowThickness.getThumb().getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
+    }
+
+    @UiHandler({"breadboardRowOffset"})
+    public void breadboardRowOffsetHandler(ValueChangeEvent<Integer> event) {
+        BreadBoard.config.rowOffset = event.getValue();
+        BreadBoard.applyConfig();
+        breadboardRowOffset.getThumb().getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
+    }
+
+    @UiHandler({"breadboardRowThickness"})
+    public void breadboardRowOffsetHandler(TouchStartEvent event) {
+        breadboardRowOffset.getThumb().getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
     }
 
     @UiHandler("btnSaveConfig")
@@ -303,6 +318,16 @@ public class OptionsView extends Composite {
         breadboardRowThickness.setValue(breadboardRowThickness.getValue() - 1, true);
     }
 
+    @UiHandler("breadboardRowOffsetInc")
+    public void addBreadboardRowOffset(ClickEvent event) {
+        breadboardRowOffset.setValue(breadboardRowOffset.getValue() + 1, true);
+    }
+
+    @UiHandler("breadboardRowOffsetDec")
+    public void removeBreadboardRowOffset(ClickEvent event) {
+        breadboardRowOffset.setValue(breadboardRowOffset.getValue() - 1, true);
+    }
+
     private void fillBreadboardFields() {
         breadboardWidth.setValue(BreadBoard.config.width);
         breadboardHeight.setValue(BreadBoard.config.height);
@@ -310,6 +335,6 @@ public class OptionsView extends Composite {
         breadboardTopMargin.setValue(BreadBoard.config.topMargin);
         breadboardLeftMargin.setValue(BreadBoard.config.leftMargin);
         breadboardRowThickness.setValue(BreadBoard.config.thickness);
+        breadboardRowOffset.setValue(BreadBoard.config.rowOffset);
     }
-
 }

@@ -85,19 +85,19 @@ Controller.prototype.resize = function (bounds, padding) {
 function getPinLabels(pins) {
     return pins.map(pin => {
         var pinidx = pin.index;
-            var activePinLabel = pinidx + 1;
-            var label = pin.text ? `pin "${pin.text}"` : `pin # ${activePinLabel}`;
-            if (pin.text) {
-                activePinLabel = pin.text;
-            }
-            if (pin.description) {
-                label += " (" + pin.description + ")";
-            }
-            return {
-                activePinLabel: activePinLabel,
-                label: label,
-                position: pin.position
-            }
+        var activePinLabel = pinidx + 1;
+        var label = pin.text ? `pin "${pin.text}"` : `pin # ${activePinLabel}`;
+        if (pin.text) {
+            activePinLabel = pin.text;
+        }
+        if (pin.description) {
+            label += " (" + pin.description + ")";
+        }
+        return {
+            activePinLabel: activePinLabel,
+            label: label,
+            position: pin.position
+        }
     });
 }
 
@@ -152,13 +152,13 @@ Controller.prototype.showComponent = function (model) {
     var fragment = document.createDocumentFragment();
 
     pinLabels
-    .forEach(pin => {
-        var pinElement = document.createElement('div');
-        var x = pin.position.x - 10;
-        var y = pin.position.y - 10 + 64;
-        $(pinElement).css({top: y, left: x}).html(pin.activePinLabel);
-        fragment.appendChild(pinElement);
-    });
+        .forEach(pin => {
+            var pinElement = document.createElement('div');
+            var x = pin.position.x - 10;
+            var y = pin.position.y - 10 + 64;
+            $(pinElement).css({top: y, left: x}).html(pin.activePinLabel);
+            fragment.appendChild(pinElement);
+        });
 
     var pinsHolder = document.querySelector('.active-pins');
     pinsHolder.appendChild(fragment);
@@ -216,8 +216,8 @@ function copy(o) {
 }
 
 /**
-    Sort model components to have power, ground and GPIO components in the
-     head of the list to start circuit building from them
+ Sort model components to have power, ground and GPIO components in the
+ head of the list to start circuit building from them
  */
 function sortModelComponents(components) {
     var sortOrder = ["VoltageElm", "RailElm", "Ground", "Gpio"];
@@ -288,15 +288,16 @@ function mapPinsToBreadboard(circuitModel, done, componentFilter, activeTerminal
     if (!activeTerminal) {
         activeTerminal = {
             bank: terminalBankIndices[0],
-            row: 0
+            firstRow: this.banks[terminalBankIndices[0]].firstRow,
+            row: this.banks[terminalBankIndices[0]].firstRow
         }
     }
 
     const sensorsSet = new Set([]);
     Object.keys(circuitModel.pinOuts)
-    .filter(pin => circuitModel.pinOuts[pin].components[0].model.footprint)
-    .map(pin => circuitModel.pinOuts[pin])
-    .forEach(pin => sensorsSet.add(pin.components[0].model.name));
+        .filter(pin => circuitModel.pinOuts[pin].components[0].model.footprint)
+        .map(pin => circuitModel.pinOuts[pin])
+        .forEach(pin => sensorsSet.add(pin.components[0].model.name));
 
     const sensors = [...sensorsSet];
 
@@ -350,7 +351,7 @@ function mapPinsToBreadboard(circuitModel, done, componentFilter, activeTerminal
                     activeRow = 2;
                 } else if (isGPIO) {
                     activeBank = gpioBankIndex;
-                    activeRow = parseInt(GpioBreadBoardConfig[pin.text]) -1;
+                    activeRow = parseInt(GpioBreadBoardConfig[pin.text]) - 1;
                 } else if (isGround) {
                     activeBank = powerBankIndex;
                     activeRow = 0;
@@ -377,7 +378,7 @@ function mapPinsToBreadboard(circuitModel, done, componentFilter, activeTerminal
                     position: mapping.position,
                     bank: mapping.bank,
                     row: mapping.row,
-                    circuit:mapping.circuit,
+                    circuit: mapping.circuit,
                     components: mapping.components,
                     isRail: mapping.isRail,
                     isPowerRail: mapping.isPowerRail,
@@ -400,7 +401,7 @@ function mapPinsToBreadboard(circuitModel, done, componentFilter, activeTerminal
             }
 
             if (activeRow == activeTerminal.row && (++activeTerminal.row) >= this.banks[terminalBankIndices[0]].rows) {
-                activeTerminal.row = 0;
+                activeTerminal.row = activeTerminal.firstRow;
             }
             done[cmp.name] = pinMapping;
         }
@@ -422,13 +423,15 @@ BreadBoard.prototype.applyConfig = function () {
         breadboard: {
             banks: this.config.banks.map(bank =>
                 Object.assign({
-                    rows: this.config.rowCount,
+                    rows: bank.rows,
                     topMargin: this.config.topMargin,
                     leftMargin: this.config.leftMargin,
-                    offsetX: 0,
-                    offsetY: 0,
+                    rowOffset: this.config.rowOffset,
+                    rowCount: this.config.rowCount,
                     thickness: this.config.thickness,
                     pitch: this.config.pitch,
+                    offsetX: 0,
+                    offsetY: 0,
                     vertical: bank.dir === 'y',
                     height: bank.dir === 'y' ? this.config.height - (this.config.pitch * 4) : 0
                 }, bank)
@@ -443,7 +446,7 @@ BreadBoard.prototype.applyConfig = function () {
         }
     });
 
-    if(this._showAllBanks) {
+    if (this._showAllBanks) {
         BurnerNew.highlightAll(this._showAllBanks);
     }
 
@@ -452,7 +455,7 @@ BreadBoard.prototype.applyConfig = function () {
 };
 
 BreadBoard.prototype.doNext = function (e) {
-	BurnerNew.next();
+    BurnerNew.next();
 
     var self = e.data.that;
 
@@ -465,20 +468,16 @@ BreadBoard.prototype.doNext = function (e) {
 };
 
 BreadBoard.prototype.doBack = function (e) {
-	BurnerNew.prev();
-
+    BurnerNew.prev();
     var self = e.data.that;
-
     self.activeStep--;
     sanity(self)
     var model = self.controller.getActiveComponent();
     self.controller.showComponent(model);
-
     console.log("doBack", self.activeStep);
 };
 
 BreadBoard.prototype.reset = function (cb) {
-
     if (this.clicked || !this.steps)
         return;
 
@@ -531,23 +530,23 @@ BreadBoard.prototype.layout = function (circuitModel, cb) {
         return cmp.name.indexOf("Wire") != -1;
     }, activeTerminal);
 
-	BurnerNew.layout(this.model.components
-	  .filter(component => isExternalComponent(component) && component.pins.length)
-      .map(component => ({
-        pins: component.pins.map(pin => {
-          const data = this.pinsToBb[pin.toString()];
+    BurnerNew.layout(this.model.components
+        .filter(component => isExternalComponent(component) && component.pins.length)
+        .map(component => ({
+            pins: component.pins.map(pin => {
+                const data = this.pinsToBb[pin.toString()];
 
-          return {
-            bank: data.bank,
-            row: data.row,
-            text: data.text || data.description || data.index + 1,
-            isRail: data.isRail,
-            isPowerRail: data.isPowerRail,
-            isGPIO: data.isGPIO,
-            isGroundRail: data.isGroundRail
-          };
-        })
-      })));
+                return {
+                    bank: data.bank,
+                    row: data.row,
+                    text: data.text || data.description || data.index + 1,
+                    isRail: data.isRail,
+                    isPowerRail: data.isPowerRail,
+                    isGPIO: data.isGPIO,
+                    isGroundRail: data.isGroundRail
+                };
+            })
+        })));
 
     var comps = this.model.components;
     for (var d in comps) {
@@ -615,6 +614,7 @@ BreadBoard.prototype.createBank = function (bank) {
     bank.offsetX = bank.offsetX || 0;
     bank.offsetY = bank.offsetY || 0;
     bank.rows = bank.rows || this.config.rowCount;
+    bank.firstRow = this.config.rowOffset || 0;
 
     var x = this.config.leftMargin + bank.offsetX;
     var y = this.config.topMargin + bank.offsetY;
