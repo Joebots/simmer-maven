@@ -24,6 +24,7 @@ package com.joebotics.simmer.client.elcomp;
 //import java.text.NumberFormat;
 
 import com.google.gwt.canvas.dom.client.Context2d;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONNumber;
@@ -1228,18 +1229,10 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
     }
 
     protected double updateDotCount(double cur, double cc) {
-
-        if (sim.getSidePanel().getStoppedCheck().getState())
-            return cc;
+        if (cur == 0 || sim.getSidePanel().getStoppedCheck().getState())
+            return 0;
         double cadd = cur * currentMult;
-		/*
-		 * if (cur != 0 && cadd <= .05 && cadd >= -.05) cadd = (cadd < 0) ? -.05
-		 * : .05;
-		 */
         cadd %= 8;
-		/*
-		 * if (cadd > 8) cadd = 8; if (cadd < -8) cadd = -8;
-		 */
         return cc + cadd;
     }
 

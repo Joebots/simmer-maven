@@ -58,7 +58,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SimmerController implements MouseDownHandler, MouseWheelHandler, MouseMoveHandler, MouseUpHandler,
-    MouseOutHandler, TouchCancelHandler, TouchEndHandler, TouchMoveHandler, TouchStartHandler, ClickHandler,
+    TouchCancelHandler, TouchEndHandler, TouchMoveHandler, TouchStartHandler, ClickHandler,
     DoubleClickHandler, ContextMenuHandler, Event.NativePreviewHandler {
 
     private final Simmer simmer;
@@ -114,6 +114,7 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
         element.rotate(centerPoint, Math.PI / 2 * (clockwise ? -1 : 1));
         dragHelper.doDrag(centerPoint);
         dragHelper.stopDrag();
+        simmer.needAnalyze();
     }
 
     public void onClick(ClickEvent e) {
@@ -236,14 +237,6 @@ public class SimmerController implements MouseDownHandler, MouseWheelHandler, Mo
             }
             dragHelper.doDrag(p);
         }
-    }
-
-    @Override
-    public void onMouseOut(MouseOutEvent e) {
-        simmer.setScopeSelected(-1);
-        simmer.setMouseElm(null);
-        simmer.setPlotXElm(null);
-        simmer.setPlotYElm(null);
     }
 
     @Override
