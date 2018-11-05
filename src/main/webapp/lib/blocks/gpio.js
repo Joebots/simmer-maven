@@ -59,7 +59,8 @@ Blockly.Blocks["pin_write"] = {
         this.setHelpUrl("");
         this.setColour(GPIO_HUE);
         var arr = Object.keys(PINS).filter(function (key) {
-            return !key.startsWith("ANALOG");
+            //return !key.startsWith("ANALOG");
+            return true;
         }).map(function(key) {
             return [ key, key ];
         });

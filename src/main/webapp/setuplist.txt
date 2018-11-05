@@ -380,5 +380,8 @@ spark-sawtooth.txt Sawtooth Generator
 tesla.txt Tesla Coil
 spark-marx.txt Marx Generator
 -
++Tools
+gpio-test.txt GPIO Output Test
+-
 -
 blank.txt Blank Circuit
