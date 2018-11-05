@@ -22,6 +22,7 @@ import gwt.material.design.client.ui.MaterialButton;
 import gwt.material.design.client.ui.MaterialModal;
 import gwt.material.design.client.ui.MaterialModalContent;
 import gwt.material.design.client.ui.MaterialTextBox;
+import gwt.material.design.client.ui.MaterialSwitch;
 
 public class EditDialog extends Composite {
 
@@ -101,6 +102,8 @@ public class EditDialog extends Composite {
             } else if (editInfo.texta != null) {
                 editInfo.texta.setLabel(editInfo.name);
                 content.add(editInfo.texta);
+            } else if(editInfo.switchElm != null) {
+                content.add(editInfo.switchElm);
             } else {
                 editInfo.textf = new MaterialTextBox();
                 editInfo.textf.setLabel(editInfo.name);

@@ -1,0 +1,216 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:m='urn:import:gwt.material.design.client.ui'>
+
+    <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N'/>
+    <ui:import field="com.joebotics.simmer.client.util.OptionKey.*"/>
+
+    <ui:style>
+        .range-row {
+            margin-bottom: 0px;
+        }
+    </ui:style>
+
+    <m:MaterialPanel backgroundColor="WHITE" height="100%">
+        <m:MaterialRow>
+            <m:MaterialTab backgroundColor="WHITE" ui:field="optionTabs">
+                <m:MaterialTabItem waves="LIGHT" grid="s2">
+                    <m:MaterialLink text="{i18n.Emulator}" href="#emulatorTab" styleName="active"/>
+                </m:MaterialTabItem>
+                <m:MaterialTabItem waves="LIGHT" grid="s2">
+                    <m:MaterialLink text="{i18n.Breadboard}" href="#breadboardTab"/>
+                </m:MaterialTabItem>
+                <m:MaterialTabItem waves="LIGHT" grid="s2">
+                    <m:MaterialLink text="{i18n.Hardware}" href="#hardwareTab"/>
+                </m:MaterialTabItem>
+            </m:MaterialTab>
+            <m:MaterialColumn m:id="emulatorTab" grid="s12" height="100%">
+                <m:MaterialRow addStyleNames="valign-wrapper {style.range-row}">
+                    <m:MaterialColumn grid="s2" addStyleNames="valign center">
+                        <m:MaterialLabel text="{i18n.Simulation_Speed}"/>
+                    </m:MaterialColumn>
+                    <m:MaterialColumn grid="s1">
+                        <m:MaterialButton ui:field="speedBarDec" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                          iconType="REMOVE"/>
+                    </m:MaterialColumn>
+                    <m:MaterialColumn grid="s8">
+                        <m:MaterialRange ui:field="speedBar" min="0" max="260" value="3"/>
+                    </m:MaterialColumn>
+                    <m:MaterialColumn grid="s1">
+                        <m:MaterialButton ui:field="speedBarInc" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                          iconType="ADD"/>
+                    </m:MaterialColumn>
+                </m:MaterialRow>
+                <m:MaterialRow addStyleNames="valign-wrapper {style.range-row}">
+                    <m:MaterialColumn grid="s2" addStyleNames="valign center">
+                        <m:MaterialLabel text="{i18n.Current_Speed}"/>
+                    </m:MaterialColumn>
+                    <m:MaterialColumn grid="s1">
+                        <m:MaterialButton ui:field="currentBarDec" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                          iconType="REMOVE"/>
+                    </m:MaterialColumn>
+                    <m:MaterialColumn grid="s8">
+                        <m:MaterialRange ui:field="currentBar" min="1" max="100" value="50"/>
+                    </m:MaterialColumn>
+                    <m:MaterialColumn grid="s1">
+                        <m:MaterialButton ui:field="currentBarInc" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                          iconType="ADD"/>
+                    </m:MaterialColumn>
+                </m:MaterialRow>
+                <m:MaterialCheckBox ui:field="showCurrentCheckItem" text="{i18n.Show_Current}" name="{SHOW_CURRENT.name}"/>
+                <m:MaterialCheckBox ui:field="showVoltageCheckItem" text="{i18n.Show_Voltage}" name="{SHOW_VOLTAGE.name}"/>
+                <m:MaterialCheckBox ui:field="showPowerCheckItem" text="{i18n.Show_Power}" name="{SHOW_POWER.name}"/>
+                <m:MaterialCheckBox ui:field="showValuesCheckItem" text="{i18n.Show_Values}" name="{SHOW_VALUES.name}"/>
+                <m:MaterialCheckBox ui:field="smallGridCheckItem" text="{i18n.Small_Grid}" name="{SMALL_GRID.name}"/>
+                <m:MaterialCheckBox ui:field="euroResistorCheckItem" text="{i18n.European_Resistors}"
+                                    name="{EURO_RESISTORS.name}"/>
+                <m:MaterialCheckBox ui:field="backgroundCheckItem" text="{i18n.White_Background}"
+                                    name="{WHITE_BACKGROUND.name}"/>
+                <m:MaterialCheckBox ui:field="conventionCheckItem" text="{i18n.Conventional_Current_Motion}"
+                                    name="{CONVENTIONAL_CURRENT_MOTION.name}"/>
+            </m:MaterialColumn>
+            <m:MaterialColumn m:id="breadboardTab" grid="s12">
+                <m:MaterialRow margin="8">
+                    <m:MaterialColumn grid="s11" height="100%">
+                        <m:MaterialRow addStyleNames="valign-wrapper {style.range-row}">
+                            <m:MaterialColumn grid="s2" addStyleNames="valign center">
+                                <m:MaterialLabel text="{i18n.breadboardWidth}"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardWidthDec" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="REMOVE"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s8">
+                                <m:MaterialRange ui:field="breadboardWidth" min="300" max="400"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardWidthInc" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="ADD"/>
+                            </m:MaterialColumn>
+                        </m:MaterialRow>
+
+                        <m:MaterialRow addStyleNames="valign-wrapper {style.range-row}">
+                            <m:MaterialColumn grid="s2" addStyleNames="valign center">
+                                <m:MaterialLabel text="{i18n.breadboardHeight}"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardHeightDec" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="REMOVE"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s8">
+                                <m:MaterialRange ui:field="breadboardHeight" min="400" max="700"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardHeightInc" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="ADD"/>
+                            </m:MaterialColumn>
+                        </m:MaterialRow>
+
+                        <m:MaterialRow addStyleNames="valign-wrapper {style.range-row}">
+                            <m:MaterialColumn grid="s2" addStyleNames="valign center">
+                                <m:MaterialLabel text="{i18n.breadboardRowCount}"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardRowCountDec" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="REMOVE"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s8">
+                                <m:MaterialRange ui:field="breadboardRowCount" min="8" max="40"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardRowCountInc" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="ADD"/>
+                            </m:MaterialColumn>
+                        </m:MaterialRow>
+
+                        <m:MaterialRow addStyleNames="valign-wrapper {style.range-row}">
+                            <m:MaterialColumn grid="s2" addStyleNames="valign center">
+                                <m:MaterialLabel text="{i18n.breadboardRowOffset}"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardRowOffsetDec" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="REMOVE"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s8">
+                                <m:MaterialRange ui:field="breadboardRowOffset" min="0" max="5"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardRowOffsetInc" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="ADD"/>
+                            </m:MaterialColumn>
+                        </m:MaterialRow>
+
+                        <m:MaterialRow addStyleNames="valign-wrapper {style.range-row}">
+                            <m:MaterialColumn grid="s2" addStyleNames="valign center">
+                                <m:MaterialLabel text="{i18n.breadboardTopMargin}"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardTopMarginDec" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="REMOVE"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s8">
+                                <m:MaterialRange ui:field="breadboardTopMargin" min="0" max="120"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardTopMarginInc" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="ADD"/>
+                            </m:MaterialColumn>
+                        </m:MaterialRow>
+
+                        <m:MaterialRow addStyleNames="valign-wrapper {style.range-row}">
+                            <m:MaterialColumn grid="s2" addStyleNames="valign center">
+                                <m:MaterialLabel text="{i18n.breadboardLeftMargin}"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardLeftMarginDec" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="REMOVE"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s8">
+                                <m:MaterialRange ui:field="breadboardLeftMargin" min="0" max="120"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardLeftMarginInc" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="ADD"/>
+                            </m:MaterialColumn>
+                        </m:MaterialRow>
+
+                        <m:MaterialRow addStyleNames="valign-wrapper {style.range-row}">
+                            <m:MaterialColumn grid="s2" addStyleNames="valign center">
+                                <m:MaterialLabel text="{i18n.breadboardRowThickness}"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardRowThicknessDec" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="REMOVE"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s8">
+                                <m:MaterialRange ui:field="breadboardRowThickness" min="1" max="15"/>
+                            </m:MaterialColumn>
+                            <m:MaterialColumn grid="s1">
+                                <m:MaterialButton ui:field="breadboardRowThicknessInc" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                                  iconType="ADD"/>
+                            </m:MaterialColumn>
+                        </m:MaterialRow>
+                    </m:MaterialColumn>
+                    <m:MaterialColumn grid="s1" styleName="center">
+                        <m:MaterialButton ui:field="showBreadboardBanks" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                          iconType="HIGHLIGHT" iconPosition="NONE"/>
+                        <m:MaterialLabel text="{i18n.showBreadboardBanks}" textColor="BLACK" textAlign="CENTER"/>
+                        <m:MaterialButton ui:field="btnSaveConfig" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                          iconType="SAVE" iconPosition="NONE"/>
+                        <m:MaterialLabel text="Save" textColor="BLACK" textAlign="CENTER" marginLeft="12" marginRight="12"/>
+                        <m:MaterialButton ui:field="btnResetConfig" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                          iconType="SETTINGS_BACKUP_RESTORE"/>
+                        <m:MaterialLabel text="Restore" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
+                        <m:MaterialButton ui:field="btnDownloadConfig" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                          iconType="FILE_DOWNLOAD"/>
+                        <m:MaterialLabel text="Download" textColor="BLACK" textAlign="CENTER"/>
+                        <m:MaterialButton ui:field="btnUploadConfig" margin="8" type="FLOATING" waves="LIGHT" size="MEDIUM"
+                                          iconType="FILE_UPLOAD"/>
+                        <m:MaterialLabel text="Upload" textColor="BLACK" textAlign="CENTER" marginLeft="4" marginRight="4"/>
+                    </m:MaterialColumn>
+                </m:MaterialRow>
+            </m:MaterialColumn>
+            <m:MaterialColumn m:id="hardwareTab" grid="s12" height="100%">
+            </m:MaterialColumn>
+        </m:MaterialRow>
+    </m:MaterialPanel>
+</ui:UiBinder>

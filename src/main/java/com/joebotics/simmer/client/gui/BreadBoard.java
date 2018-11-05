@@ -55,6 +55,9 @@ public class BreadBoard {
         public int thickness;
 
         @JsProperty
+        public int rowOffset;
+
+        @JsProperty
         public int pitch;
 
         @JsProperty

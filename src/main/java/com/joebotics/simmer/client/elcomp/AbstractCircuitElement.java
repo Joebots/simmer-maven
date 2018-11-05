@@ -23,6 +23,8 @@ package com.joebotics.simmer.client.elcomp;
 //import java.text.DecimalFormat;
 //import java.text.NumberFormat;
 
+import com.google.gwt.canvas.dom.client.Context2d;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONNumber;
@@ -114,6 +116,8 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
     private Pin[] pins;
 
     protected String footprintName;
+
+    public Pin activePin;
 
     protected static int abs(int x) {
         return x < 0 ? -x : x;
@@ -513,6 +517,20 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
         g.getContext().restore();
     }
 
+    protected void drawPinValue(Graphics g, Pin pin, String text) {
+        Context2d context = g.getContext();
+        context.save();
+        context.setTextBaseline("middle");
+        context.setTextAlign("right");
+        Point pinTextPosition = pin.getTextloc();
+
+        int offsetY = g.getCurrentFontSize() / 4;
+        int offsetX = -(int) g.getContext().measureText(pin.getText()).getWidth();
+
+        g.drawString(text, pinTextPosition.getX() + offsetX, pinTextPosition.getY() + offsetY);
+        g.getContext().restore();
+    }
+
     // TODO: Badger: utils
     protected void drawCoil(Graphics g, int hs, Point p1, Point p2, double v1, double v2) {
 //		double len = distance(p1, p2);
@@ -586,8 +604,18 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 
     // TODO: Badger: utils
     private void drawPost(Graphics g, int x0, int y0) {
+        g.getContext().save();
         g.setColor(whiteColor);
         g.fillOval(x0 - 3, y0 - 3, 7, 7);
+        g.getContext().restore();
+    }
+
+    private void highlightActivePin(Graphics g) {
+        if(activePin != null) {
+            Point post = activePin.getPost();
+            g.setColor(whiteColor);
+            g.drawCircle(post.getX(), post.getY(), 10);
+        }
     }
 
     // TODO: Badger: utils
@@ -599,6 +627,7 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
             return;
 
         drawPost(g, x0, y0);
+        highlightActivePin(g);
     }
 
     // TODO: Badger: utils
@@ -609,6 +638,15 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
             drawPost(g, p.getX(), p.getY(), nodes[i]);
             drawPinText(g, pin);
         }
+    }
+
+    protected boolean collidesActivePin(Point pinPoint) {
+        if(activePin != null) {
+            Point activePinPosition = activePin.getPost();
+            return pinPoint.equals(activePinPosition);
+        }
+
+        return false;
     }
 
     public void drawPinText(Graphics g, Pin pin) {
@@ -1191,18 +1229,10 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
     }
 
     protected double updateDotCount(double cur, double cc) {
-
-        if (sim.getSidePanel().getStoppedCheck().getState())
-            return cc;
+        if (cur == 0 || sim.getSidePanel().getStoppedCheck().getState())
+            return 0;
         double cadd = cur * currentMult;
-		/*
-		 * if (cur != 0 && cadd <= .05 && cadd >= -.05) cadd = (cadd < 0) ? -.05
-		 * : .05;
-		 */
         cadd %= 8;
-		/*
-		 * if (cadd > 8) cadd = 8; if (cadd < -8) cadd = -8;
-		 */
         return cc + cadd;
     }
 
@@ -1229,6 +1259,11 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 
     public String getName() {
         return getClass().getName() + "@" + Integer.toHexString(hashCode());
+    }
+
+    public String getComponentName() {
+        String name = getName();
+        return name.substring(name.lastIndexOf(".") + 1, name.indexOf("Elm"));
     }
 
     public Footprint getFootprint() {
@@ -1265,4 +1300,52 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
         }
         return result;
     }
+
+    public void click(Point point) {
+        setActivePin(point);
+    }
+
+    protected void setActivePin(Point point) {
+        // Click area
+        int radius = 25;
+        Rectangle clickArea = new Rectangle(point.getX() - radius / 2, point.getY() - radius / 2,
+                radius, radius);
+
+        for(Pin pin : getPins()) {
+            Point post = pin.getPost();
+            if(clickArea.contains(post.getX(), post.getY())) {
+                activePin = pin;
+                break;
+            }
+        }
+    }
+
+    public void setActivePin(Pin pin) {
+        activePin = pin;
+    }
+
+    public Point getCenterPoint() {
+        return new Point(Math.round(x1 + (x2- x1) / 2),Math.round(y1 + (y2 - y1) / 2));
+    }
+
+    public void rotate(Point origin, double angle) {
+        Point point1 = new Point(x1, y1);
+        Point point2 = new Point(x2, y2);
+        Point newPoint1 = rotatePoint(point1, origin, angle);
+        Point newPoint2 = rotatePoint(point2, origin, angle);
+        x1 = newPoint1.getX();
+        y1 = newPoint1.getY();
+        x2 = newPoint2.getX();
+        y2 = newPoint2.getY();
+        boundingBox.rotate(origin, angle);
+        setPoints();
+    }
+
+    private Point rotatePoint(Point origin, Point point, double angle) {
+        Point normalizedPoint = new Point(point.getX() - origin.getX(), point.getY() - origin.getY());
+        int rotatedX = (int)Math.round(normalizedPoint.getX() * Math.cos(angle) - normalizedPoint.getY() * Math.sin(angle));
+        int rotatedY = (int)Math.round(normalizedPoint.getX() * Math.sin(angle) + normalizedPoint.getY() * Math.cos(angle));
+        return new Point(point.getX() + rotatedX, point.getY() + rotatedY);
+    }
+
 }

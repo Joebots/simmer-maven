@@ -41,6 +41,11 @@ public class WireElm extends AbstractCircuitElement {
 		super(xa, ya, xb, yb, f);
 	}
 
+	@Override
+	public String getComponentName() {
+		return "Wire";
+	}
+
 	public void draw(Graphics g) {
 		setVoltageColor(g, getVolts()[0]);
 		GraphicsUtil.drawThickLine(g, getPoint1(), getPoint2());

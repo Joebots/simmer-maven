@@ -3,3 +3,6 @@ simmer.iml
 target
 .classpath
 war/
+node/
+node_modules/
+src/main/webapp/lib/burner/dist/

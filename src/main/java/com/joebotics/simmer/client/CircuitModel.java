@@ -19,12 +19,21 @@ import com.joebotics.simmer.client.elcomp.CircuitNodeLink;
 import com.joebotics.simmer.client.model.Footprint;
 
 public class CircuitModel {
+    private String title;
     private List<AbstractCircuitElement> elmList;
     private List<CircuitNode> nodeList;
 
     public CircuitModel() {
         this.elmList = new ArrayList<AbstractCircuitElement>();
         resetNodeList();
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public List<AbstractCircuitElement> getElmList() {
@@ -63,6 +72,7 @@ public class CircuitModel {
 
             JSONObject entry = new JSONObject();
             entry.put("name", new JSONString(element.getName()));
+            entry.put("componentName", new JSONString(element.getComponentName()));
             components.set(idx++, entry);
 
             createJSONTargets(links, entry);

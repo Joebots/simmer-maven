@@ -1,0 +1,41 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:m="urn:import:gwt.material.design.client.ui"
+             xmlns:ma="urn:import:gwt.material.design.client.ui.html">
+
+    <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N'/>
+
+    <ui:style>
+        .edit-dialog-title {
+            margin-top: 17px;
+            margin-left: 20px;
+        }
+    </ui:style>
+
+    <m:MaterialModal ui:field="modal" type="DEFAULT" dismissible="true" inDuration="500" outDuration="500"
+                     styleName="shifted-dialog">
+        <m:MaterialNavBar>
+            <ma:Heading size="H5" float="LEFT" text="{i18n.EditControl}" styleName="{style.edit-dialog-title}"/>
+            <m:MaterialNavSection float="RIGHT">
+                <m:MaterialLink ui:field="btnClose" iconType="CLEAR" iconColor="WHITE" circle="true" iconSize="SMALL"/>
+            </m:MaterialNavSection>
+        </m:MaterialNavBar>
+        <m:MaterialModalContent height="300px">
+            <m:MaterialPanel ui:field="editTextContainer">
+                <m:MaterialTextBox ui:field="editText" label="{i18n.ChangeControlValue}"/>
+            </m:MaterialPanel>
+            <m:MaterialPanel ui:field="editIconContainer">
+                <m:MaterialRow>
+                    <m:MaterialColumn grid="s2">
+                        <m:MaterialIcon ui:field="iconPreview" iconSize="MEDIUM"/>
+                    </m:MaterialColumn>
+                    <m:MaterialColumn grid="s10">
+                        <m:MaterialListValueBox ui:field="editIcon" placeholder="{i18n.SelectIcon}" grid="s12"/>
+                    </m:MaterialColumn>
+                </m:MaterialRow>
+            </m:MaterialPanel>
+        </m:MaterialModalContent>
+        <m:MaterialModalFooter>
+            <m:MaterialButton ui:field="btnSave" text="{i18n.Save}" type="FLAT"/>
+        </m:MaterialModalFooter>
+    </m:MaterialModal>
+</ui:UiBinder>

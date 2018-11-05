@@ -55,6 +55,11 @@ Bgpio.BrowserInterpreter.onmessage = function (event) {
                 Bgpio.BrowserInterpreter.postMessage({method: 'callback', params: {callbackId: params.callbackId, args: [value]}});
             });
             break;
+        case 'onI2CEvent':
+            Bgpio.API.onI2CEvent(params.address, params.register, params.messageLength, function (value) {
+                Bgpio.BrowserInterpreter.postMessage({method: 'callback', params: {callbackId: params.callbackId, args: [value]}});
+            });
+            break;
     }
 };
 
@@ -63,7 +68,6 @@ Bgpio.API = Bgpio.SimmerAPI;
 Bgpio.init = function(container, params) {
     Bgpio.workspace = Blockly.inject(container, params);
     Bgpio.workspace.addChangeListener(Bgpio.renderCode);
-    
     Bgpio.clearJsConsole();
     return Bgpio.workspace;
 };
@@ -200,7 +204,7 @@ Bgpio.getCode = function() {
 
 Bgpio.renderCode = function() {
     // Only regenerate the code if a block is not being dragged
-    if (!Bgpio.codeArea || Bgpio.workspace.isDragging()) {
+    if (!Bgpio.codeArea || !Bgpio.workspace || Bgpio.workspace.isDragging()) {
         return;
     }
     // Render Code with latest change highlight and syntax highlighting

@@ -53,6 +53,7 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.joebotics.simmer.client.integration.JSEventBusProxy;
 import com.joebotics.simmer.client.integration.SimmerEvents;
@@ -69,15 +70,12 @@ public class Launcher implements EntryPoint {
     public void onModuleLoad() {
         mysim = Simmer.getInstance(); // new Simmer();
         mysim.init();
+
         mysim.getFileOps().dumpCircuit();
 
-        Window.addResizeHandler(new ResizeHandler() {
-
-            public void onResize(ResizeEvent event) {
-                mysim.setCanvasSize();
-                mysim.getSidePanel().setiFrameHeight();
-
-            }
+        Window.addResizeHandler(event -> {
+            mysim.setCanvasSize();
+            mysim.getSidePanel().setiFrameHeight();
         });
 
         mysim.updateCircuit();
