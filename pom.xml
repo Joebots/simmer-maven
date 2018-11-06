@@ -5,7 +5,7 @@
     <groupId>com.joebotics</groupId>
     <artifactId>simmer</artifactId>
     <packaging>war</packaging>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
     <name>simmer-gwt</name>
 
     <properties>
