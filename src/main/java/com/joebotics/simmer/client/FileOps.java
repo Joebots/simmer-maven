@@ -203,11 +203,6 @@ public class FileOps {
         } catch (RequestException e) {
             GWT.log(MessageI18N.getMessage("failed_file_reading"), e);
         }
-
-        String s = "";
-        if (s != null && s.isEmpty() && Character.isUpperCase(s.charAt(0))) {
-
-        }
     }
 
     public void readSetup(byte b[], int len, String title, boolean retain, boolean centre) {
