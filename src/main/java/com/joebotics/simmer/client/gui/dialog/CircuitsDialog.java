@@ -90,7 +90,7 @@ public class CircuitsDialog extends Composite {
             nodeName = node.getData().getName();
 
             item = new MaterialTreeItem(nodeName, IconType.FILE_DOWNLOAD);
-            item.setTarget(node.getData().getTarget());
+            item.setTarget(node.getData().getFileName());
             item.setId(circuitIdPrefix + "-" + nodeName.toLowerCase().replace(' ', '-'));
         }
         return item;

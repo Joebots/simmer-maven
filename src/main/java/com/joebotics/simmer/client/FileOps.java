@@ -10,6 +10,10 @@ import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.xml.client.Document;
+import com.google.gwt.xml.client.Node;
+import com.google.gwt.xml.client.NodeList;
+import com.google.gwt.xml.client.XMLParser;
 import com.joebotics.simmer.client.elcomp.AbstractCircuitElement;
 import com.joebotics.simmer.client.gui.Bgpio;
 import com.joebotics.simmer.client.gui.Scope;
@@ -17,12 +21,7 @@ import com.joebotics.simmer.client.gui.dialog.ExportAsLocalFileDialog;
 import com.joebotics.simmer.client.gui.dialog.ExportAsTextDialog;
 import com.joebotics.simmer.client.gui.dialog.ExportAsUrlDialog;
 import com.joebotics.simmer.client.gui.util.LoadFile;
-import com.joebotics.simmer.client.util.Base64Util;
-import com.joebotics.simmer.client.util.CircuitElementFactory;
-import com.joebotics.simmer.client.util.HintTypeEnum;
-import com.joebotics.simmer.client.util.MessageI18N;
-import com.joebotics.simmer.client.util.OptionKey;
-import com.joebotics.simmer.client.util.StringTokenizer;
+import com.joebotics.simmer.client.util.*;
 
 public class FileOps {
     private Simmer simmer;
@@ -88,52 +87,31 @@ public class FileOps {
         return dump;
     }
 
-    protected void processSetupList(byte b[], int len, final boolean openDefault) {
-        TreeNode<CircuitLinkInfo> stack[] = new TreeNode[6];
-        int stackptr = 0;
-        TreeNode<CircuitLinkInfo> circuitsTree = new TreeNode(null);
-        TreeNode<CircuitLinkInfo> currentNode = circuitsTree;
-        stack[stackptr++] = currentNode;
-        int p;
-        for (p = 0; p < len;) {
-            int l;
-            for (l = 0; l != len - p; l++)
-                if (b[l + p] == '\n') {
-                    l++;
-                    break;
-                }
-            String line = new String(b, p, l - 1);
-            switch (line.charAt(0)) {
-            case '#':
-                // Commented out record
-                break;
-            case '+':
-                TreeNode n = currentNode.addChild(new CircuitLinkInfo(line.substring(1)));
-                currentNode = stack[stackptr++] = n;
-                break;
-            case '-':
-                currentNode = stack[--stackptr - 1];
-                break;
-            default:
-                int i = line.indexOf(' ');
-                if (i > 0) {
-                    String title = line.substring(i + 1);
-                    boolean first = false;
-                    if (line.charAt(0) == '>')
-                        first = true;
-                    String file = line.substring(first ? 1 : 0, i);
-                    currentNode.addChild(new CircuitLinkInfo(title, file));
-                    if (first && simmer.getStartCircuit() == null) {
-                        simmer.setStartCircuit(file);
-                        simmer.setStartLabel(title);
-                        if (openDefault && simmer.getStopMessage() == null)
-                            readSetupFile(simmer.getStartCircuit(), true);
-                    }
-                }
+    protected TreeNode<CircuitLinkInfo> parseNode(Node parent){
+
+        // cats and subcats
+        if(parent.getNodeName().equalsIgnoreCase("category")) {
+            CircuitLinkInfo inf = new CircuitLinkInfo(parent.getAttributes().getNamedItem("name").getNodeValue());
+            TreeNode<CircuitLinkInfo> result = new TreeNode<>(inf);
+
+            NodeList entries = parent.getChildNodes();
+
+            // recurse
+            for(int i=0; i<entries.getLength(); i++){
+
+                if(entries.item(i) != null && entries.item(i).getNodeType() == Node.ELEMENT_NODE)
+                    result.addChild(parseNode(entries.item(i)).getData());
             }
-            p += l;
+
+            return result;
         }
-        simmer.setCircuitsTree(circuitsTree);
+        // entries
+        else if(parent != null && parent.getAttributes() != null){
+            CircuitLinkInfo inf = new CircuitLinkInfo(parent.getAttributes().getNamedItem("name").getNodeValue(), parent.getAttributes().getNamedItem("value").getNodeValue());
+            return new TreeNode<>(inf);
+        }
+
+        return null;
     }
 
     public void readHint(StringTokenizer st) {
@@ -179,11 +157,16 @@ public class FileOps {
         }
     }
 
-    public void getSetupList(final boolean openDefault) {
-        //String url = GWT.getHostPageBaseURL();
-        //url = url + "setuplist.txt" + "?v=" + Math.random();
-        String url = "setuplist.txt" + "?v=" + Math.random();
-        RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
+    public void loadSetupList(boolean openDefault){
+        loadSetupList("setuplist.txt", openDefault);
+    }
+
+    public void loadSetupList(String url, boolean openDefault) {
+//        String url = "setuplist.txt" + "?v=" + Math.random();
+//        String url = "circuits/catalog.xml" + "?v=" + Math.random();
+        String resource = url +  "?v=" + Math.random();
+        RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, resource);
+
         try {
             requestBuilder.sendRequest(null, new RequestCallback() {
                 public void onError(Request request, Throwable exception) {
@@ -194,7 +177,7 @@ public class FileOps {
                     // processing goes here
                     if (response.getStatusCode() == Response.SC_OK) {
                         String text = response.getText();
-                        processSetupList(text.getBytes(), text.length(), openDefault);
+                        processCircuitCatalog(text.getBytes(), text.length(), openDefault, url);
                         // end or processing
                     } else
                         GWT.log(MessageI18N.getMessage("Bad_file_server_response") + response.getStatusText());
@@ -203,6 +186,81 @@ public class FileOps {
         } catch (RequestException e) {
             GWT.log(MessageI18N.getMessage("failed_file_reading"), e);
         }
+    }
+
+    protected TreeNode<CircuitLinkInfo> processXmlCircuitCatalog(String xml){
+
+        String bytes = new String(xml);
+        Document document = XMLParser.parse(bytes);
+        NodeList rootCategories = document.getElementsByTagName("category");
+        TreeNode<CircuitLinkInfo> catalog = new TreeNode<>( new CircuitLinkInfo("categories") );
+
+        for(int i=0; i<rootCategories.getLength(); i++){
+            Node categoryel = rootCategories.item(i);
+//            Element categoryel = (Element)rootCategories.item(i);
+            TreeNode<CircuitLinkInfo> category = parseNode(categoryel);
+            catalog.addChild(category.data);
+        }
+
+        return catalog;
+    }
+
+    protected void processCircuitCatalog(byte b[], int len, final boolean openDefault, String url) {
+        TreeNode<CircuitLinkInfo> catalog = url.contains(".xml")
+                                ?processXmlCircuitCatalog(new String(b))
+                                :processLegacyCircuitCatalog(b, len, openDefault);
+
+        simmer.setCircuitsTree(catalog);
+    }
+
+    protected TreeNode<CircuitLinkInfo> processLegacyCircuitCatalog(byte b[], int len, final boolean openDefault) {
+
+        TreeNode<CircuitLinkInfo> stack[] = new TreeNode[6];
+        int stackptr = 0;
+        TreeNode<CircuitLinkInfo> circuitsTree = new TreeNode(null);
+        TreeNode<CircuitLinkInfo> currentNode = circuitsTree;
+        stack[stackptr++] = currentNode;
+        int p;
+        for (p = 0; p < len;) {
+            int l;
+            for (l = 0; l != len - p; l++)
+                if (b[l + p] == '\n') {
+                    l++;
+                    break;
+                }
+            String line = new String(b, p, l - 1);
+            switch (line.charAt(0)) {
+            case '#':
+                // Commented out record
+                break;
+            case '+':
+                TreeNode n = currentNode.addChild(new CircuitLinkInfo(line.substring(1)));
+                currentNode = stack[stackptr++] = n;
+                break;
+            case '-':
+                currentNode = stack[--stackptr - 1];
+                break;
+            default:
+                int i = line.indexOf(' ');
+                if (i > 0) {
+                    String title = line.substring(i + 1);
+                    boolean first = false;
+                    if (line.charAt(0) == '>')
+                        first = true;
+                    String file = line.substring(first ? 1 : 0, i);
+                    currentNode.addChild(new CircuitLinkInfo(title, file));
+                    if (first && simmer.getStartCircuit() == null) {
+                        simmer.setStartCircuit(file);
+                        simmer.setStartLabel(title);
+                        if (openDefault && simmer.getStopMessage() == null)
+                            readSetupFile(simmer.getStartCircuit(), true);
+                    }
+                }
+            }
+            p += l;
+        }
+
+        return circuitsTree;
     }
 
     public void readSetup(byte b[], int len, String title, boolean retain, boolean centre) {

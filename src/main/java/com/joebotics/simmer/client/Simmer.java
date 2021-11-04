@@ -311,7 +311,7 @@ public class Simmer {
 
         if (startCircuitText != null) {
 
-            fileOps.getSetupList(false);
+            fileOps.loadSetupList(false);
             fileOps.readSetup(startCircuitText, false);
 
         } else {
@@ -319,10 +319,10 @@ public class Simmer {
             fileOps.readSetup(null, 0, "blank.txt", false, false);
 
             if (stopMessage == null && startCircuit != null) {
-                fileOps.getSetupList(false);
+                fileOps.loadSetupList(false);
                 fileOps.readSetupFile(startCircuit, true);
             } else
-                fileOps.getSetupList(true);
+                fileOps.loadSetupList(true);
         }
 
         mainMenuBar.getEditMenu().enableUndoRedo();

@@ -2,22 +2,22 @@ package com.joebotics.simmer.client;
 
 public class CircuitLinkInfo {
     private String name;
-    private String target;
+    private String fileName;
 
     public CircuitLinkInfo(String name) {
         this(name, null);
     }
 
-    public CircuitLinkInfo(String name, String target) {
+    public CircuitLinkInfo(String name, String fileName) {
         this.name = name;
-        this.target = target;
+        this.fileName = fileName;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getTarget() {
-        return target;
+    public String getFileName() {
+        return fileName;
     }
 }
