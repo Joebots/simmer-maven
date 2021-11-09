@@ -16,13 +16,6 @@
     <inherits name="gwt.material.design.themes.ThemeGreen"/>
     <inherits name="com.github.vedenin.gwt.dnd.gwt_dnd"/>
     <inherits name="com.google.gwt.xml.XML"/>
-    <inherits name="com.google.gwt.xml.XML"/>
-    <inherits name="com.google.gwt.xml.XML"/>
-    <inherits name="com.google.gwt.xml.XML"/>
-    <inherits name="com.google.gwt.xml.XML"/>
-    <inherits name="com.google.gwt.xml.XML"/>
-    <inherits name="com.google.gwt.xml.XML"/>
-    <inherits name="com.google.gwt.xml.XML"/>
 
     <set-property name="gwt.logging.enabled" value="TRUE"/>
     <set-property name="gwt.logging.consoleHandler" value="ENABLED"/>

@@ -1,55 +1,59 @@
-var Bgpio = Bgpio || {};
+// Singleton
+class SimmerAPI{
+    static instance
+    board
 
-var SimmerAPI = function(board) {
-    this.board = board;
-};
+    constructor() {
+        if(!SimmerAPI.instance){
+            this.board = new BlocklyGPIO()
+            SimmerAPI.instance = this
+        }
 
-SimmerAPI.prototype.connect = function() {
-};
-
-SimmerAPI.prototype.disconnect = function() {
-};
-
-SimmerAPI.prototype.gpioWrite = function(pinNumber, value) {
-    console.log(`SimmerAPI.gpioWrite(${pinNumber}, ${value})`);
-    if (this.board.eventBus) {
-        this.board.eventBus.fireEvent(new com.joebotics.simmer.client.event.GpioEvent(pinNumber, value))
+        return SimmerAPI.instance
     }
-};
 
-SimmerAPI.prototype.servoWrite = function(pinNumber, angle) {
-    console.log(`SimmerAPI.servoWrite(${pinNumber}, ${angle})`);
-    if (this.board.eventBus) {
-        this.board.eventBus.fireEvent(new com.joebotics.simmer.client.event.ServoEvent(pinNumber, angle))
+    connect(){}
+
+    disconnect(){}
+
+    gpioWrite(pinNumber, value){
+        console.log(`SimmerAPI.gpioWrite(${pinNumber}, ${value})`);
+        if (this.board.eventBus) {
+            this.board.eventBus.fireEvent(new com.joebotics.simmer.client.event.GpioEvent(pinNumber, value))
+        }
     }
-};
 
-SimmerAPI.prototype.gpioRead = function(pinNumber, callback) {
-    console.log(`SimmerAPI.gpioRead(${pinNumber}, ${callback})`);
-    /*if (this.board.eventBus) {
-        this.board.eventBus.fireEvent(new com.joebotics.simmer.client.event.GpioEvent(pinNumber, value))
-    }*/
-};
-
-SimmerAPI.prototype.gpioOn = function(pinNumber, callback) {
-    console.log(`SimmerAPI.onGpioChanged(${pinNumber}, ${callback})`);
-    if (this.board.eventBus) {
-        this.board.eventBus.addHandler(com.joebotics.simmer.client.event.GpioEvent.TYPE, function(event) {
-            callback(event.getPinNumber(), event.getValue());
-        });
+    servoWrite(pinNumber, angle){
+        console.log(`SimmerAPI.servoWrite(${pinNumber}, ${angle})`);
+        if (this.board.eventBus) {
+            this.board.eventBus.fireEvent(new com.joebotics.simmer.client.event.ServoEvent(pinNumber, angle))
+        }
     }
-};
 
-SimmerAPI.prototype.onI2CEvent = function(address, register, messageLength, callback) {
-    console.log(`SimmerAPI.onI2CEvent(${address}, ${register}, ${messageLength}, ${callback})`);
-    if (this.board.eventBus) {
-        this.board.eventBus.addHandler(com.joebotics.simmer.client.event.GpioEvent.TYPE, function(event) {
-            callback(event.getValue());
-        });
+    gpioRead(pinNumber, callback){
+        console.log(`SimmerAPI.gpioRead(${pinNumber}, ${callback})`);
+        if (this.board.eventBus) {
+            this.board.eventBus.fireEvent(new com.joebotics.simmer.client.event.GpioEvent(pinNumber, value))
+        }
     }
-};
 
-SimmerAPI.prototype.reset = function() {
-};
+    gpioOn(pinNumber, callback){
+        console.log(`SimmerAPI.onGpioChanged(${pinNumber}, ${callback})`);
+        if (this.board.eventBus) {
+            this.board.eventBus.addHandler(com.joebotics.simmer.client.event.GpioEvent.TYPE, function(event) {
+                callback(event.getPinNumber(), event.getValue());
+            });
+        }
+    }
 
-Bgpio.SimmerAPI = new SimmerAPI(Bgpio);
+    onI2CEvent(address, register, messageLength, callback){
+        console.log(`SimmerAPI.onI2CEvent(${address}, ${register}, ${messageLength}, ${callback})`);
+        if (this.board.eventBus) {
+            this.board.eventBus.addHandler(com.joebotics.simmer.client.event.GpioEvent.TYPE, function(event) {
+                callback(event.getValue());
+            });
+        }
+    }
+
+    reset(){}
+}

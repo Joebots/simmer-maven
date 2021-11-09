@@ -116,6 +116,7 @@ BrowserInterpreter.run = function (code) {
 BrowserInterpreter.stop = function () {
     if (BrowserInterpreter.DEBUG)
         console.log("Manually stopping running JavaScript");
+
     BrowserInterpreter.hasCallbacks = false
     BrowserInterpreter.pauseProcess = true;
     clearTimeout(BrowserInterpreter.processId);
@@ -140,29 +141,27 @@ BrowserInterpreter.debugInterpreterInit = function (interpreter, scope) {
         text = text ? text.toString() : "";
         return interpreter.createPrimitive(alert(text));
     };
-    interpreter.setProperty(scope, "alert", interpreter
-        .createNativeFunction(wrapper));
+    interpreter.setProperty(scope, "alert", interpreter.createNativeFunction(wrapper));
 
     // Add an API function for the prompt() block.
     var wrapper = function (text) {
         text = text ? text.toString() : "";
         return interpreter.createPrimitive(prompt(text));
     };
-    interpreter.setProperty(scope, "prompt", interpreter
-        .createNativeFunction(wrapper));
+    interpreter.setProperty(scope, "prompt", interpreter.createNativeFunction(wrapper));
 
     // Add an API function for highlighting blocks.
     var wrapper = function (id) {
         id = id ? id.toString() : "";
         return interpreter.createPrimitive(highlightBlock(id));
     };
-    interpreter.setProperty(scope, "highlightBlock", interpreter
-        .createNativeFunction(wrapper));
+    interpreter.setProperty(scope, "highlightBlock", interpreter.createNativeFunction(wrapper));
 
     // Add an API function for listening pin value changes
     var wrapper = function (pin, callback) {
         if (BrowserInterpreter.DEBUG)
             console.log("pin->" + pin + " on change " + callback);
+
         // A durty hack to add callback functions for Simmer
         var callbackNode = {
             type: "Program",
@@ -175,37 +174,36 @@ BrowserInterpreter.debugInterpreterInit = function (interpreter, scope) {
         });
         BrowserInterpreter.hasCallbacks = true;
     };
-    interpreter.setProperty(scope, "gpioOn", interpreter
-        .createNativeFunction(wrapper));
+    interpreter.setProperty(scope, "gpioOn", interpreter.createNativeFunction(wrapper));
 
     // Add an API function for write pin value
     var wrapper = function (pin, value) {
         if (BrowserInterpreter.DEBUG)
             console.log("pin->" + pin + " set " + value);
+
         BrowserInterpreter.API.gpioWrite(pin, value);
     };
-    interpreter.setProperty(scope, "gpioWrite", interpreter
-        .createNativeFunction(wrapper));
+    interpreter.setProperty(scope, "gpioWrite", interpreter.createNativeFunction(wrapper));
 
     // Add an API function for write pin value
     var wrapper = function (pin, value) {
         if (BrowserInterpreter.DEBUG)
             console.log("servo->" + pin + " set " + value);
+
         BrowserInterpreter.API.servoWrite(pin, value);
     };
-    interpreter.setProperty(scope, "servoWrite", interpreter
-        .createNativeFunction(wrapper));
+    interpreter.setProperty(scope, "servoWrite", interpreter.createNativeFunction(wrapper));
 
     // Add an API function for read pin value
     var wrapper = function (pin, callback) {
         if (BrowserInterpreter.DEBUG)
             console.log("get pin->" + pin);
+
         BrowserInterpreter.API.gpioRead(pin, function (value) {
             callback(value);
         });
     };
-    interpreter.setProperty(scope, "gpioRead", interpreter
-        .createAsyncFunction(wrapper));
+    interpreter.setProperty(scope, "gpioRead", interpreter.createAsyncFunction(wrapper));
 
     // Add an API function for listening pin value changes
     var wrapper = function (address, register, messageLength, callback) {
@@ -227,26 +225,25 @@ BrowserInterpreter.debugInterpreterInit = function (interpreter, scope) {
         });
         BrowserInterpreter.hasCallbacks = true;
     };
-    interpreter.setProperty(scope, "onI2CEvent", interpreter
-        .createNativeFunction(wrapper));
+    interpreter.setProperty(scope, "onI2CEvent", interpreter.createNativeFunction(wrapper));
 
     // Add an API function for waiting an amount of time
     var wrapper = function (value) {
         if (BrowserInterpreter.DEBUG)
             console.log("wait for " + value + " ms");
+
         BrowserInterpreter.sleepTime = value;
     };
-    interpreter.setProperty(scope, "sleep", interpreter
-        .createNativeFunction(wrapper));
+    interpreter.setProperty(scope, "sleep", interpreter.createNativeFunction(wrapper));
 
     // Add an API function for printing into the fake console
     var wrapper = function (text) {
         if (BrowserInterpreter.DEBUG)
             console.log("Print in fake console: " + text);
+
         appendTextJsConsole(text);
     };
-    interpreter.setProperty(scope, "println", interpreter
-        .createNativeFunction(wrapper));
+    interpreter.setProperty(scope, "println", interpreter.createNativeFunction(wrapper));
 };
 
 function highlightBlock(id) {

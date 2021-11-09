@@ -1,297 +1,370 @@
 /**
  * @license Licensed under the Apache License, Version 2.0 (the "License"):
  *          http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * @fileoverview Description.
  */
 'use strict';
 
-var Bgpio = Bgpio || {};
+class RunMode{
+    selected = 0
+    types = [ "Simulation", "Execution" ]
+    blocklyGpio
 
-Bgpio.workspace = null;
-Bgpio.eventBus = null;
-Bgpio.DEBUG = false;
-Bgpio.PIN_COUNT = 26;
-
-Bgpio.codeArea = null;
-Bgpio.consoleArea = null;
-
-Bgpio.BrowserInterpreter = new Worker("lib/worker_interpreter.js");
-Bgpio.BrowserInterpreter.onmessage = function (event) {
-    var method = event.data.method;
-    var params = event.data.params;
-    if (!method) {
-        return;
+    constructor(blocklyGpio) {
+        this.blocklyGpio = blocklyGpio
     }
-    switch (method) {
-        case 'notifyStarted':
-            Bgpio.notifyStarted(params.debug);
-            break;
-        case 'notifyStopped':
-            Bgpio.notifyStopped();
-            break;
-        case 'clearJsConsole':
-            Bgpio.clearJsConsole();
-            break;
-        case 'appendTextJsConsole':
-            Bgpio.appendTextJsConsole(params.text);
-            break;
-        case 'highlightBlock':
-            Bgpio.workspace.highlightBlock(params.id);
-            break;
-        case 'gpioWrite':
-            Bgpio.API.gpioWrite(params.pin, params.value);
-            break;
-        case 'servoWrite':
-            Bgpio.API.servoWrite(params.pin, params.angle);
-            break;
-        case 'gpioRead':
-            Bgpio.API.gpioRead(params.pin, function (value) {
-                Bgpio.BrowserInterpreter.postMessage({method: 'callback', params: {callbackId: params.callbackId, args: [value]}});
-            });
-            break;
-        case 'gpioOn':
-            Bgpio.API.gpioOn(params.pin, function (value) {
-                Bgpio.BrowserInterpreter.postMessage({method: 'callback', params: {callbackId: params.callbackId, args: [value]}});
-            });
-            break;
-        case 'onI2CEvent':
-            Bgpio.API.onI2CEvent(params.address, params.register, params.messageLength, function (value) {
-                Bgpio.BrowserInterpreter.postMessage({method: 'callback', params: {callbackId: params.callbackId, args: [value]}});
-            });
-            break;
-    }
-};
 
-Bgpio.API = Bgpio.SimmerAPI;
-
-Bgpio.init = function(container, params) {
-    Bgpio.workspace = Blockly.inject(container, params);
-    Bgpio.workspace.addChangeListener(Bgpio.renderCode);
-    Bgpio.clearJsConsole();
-    return Bgpio.workspace;
-};
-
-Bgpio.setBlocks = function(xmlText) {
-    var xml = Blockly.Xml.textToDom(xmlText);
-    Blockly.Xml.domToWorkspace(xml, Bgpio.workspace);
-};
-
-Bgpio.getBlocks = function() {
-    if (Bgpio.workspace) {
-        var xml = Blockly.Xml.workspaceToDom(Bgpio.workspace);
-        return Blockly.Xml.domToText(xml);
-    }
-    return null;
-};
-
-Bgpio.getBlocksCount = function() {
-    if (Bgpio.workspace) {
-        return Bgpio.workspace.getTopBlocks().length;
-    }
-    return 0;
-};
-
-Bgpio.clearBlocks = function() {
-    if (Bgpio.workspace) {
-        Bgpio.workspace.clear();
-    }
-};
-
-Bgpio.setCodeArea = function(element) {
-    Bgpio.codeArea = element;
-};
-
-Bgpio.setConsoleArea = function(element) {
-    Bgpio.consoleArea = element;
-};
-
-Bgpio.resize = function() {
-    Blockly.svgResize(Bgpio.workspace);
-};
-
-Bgpio.runMode = {
-    selected : 0,
-    types : [ 'Simulation', 'Execution' ],
-    getSelectedMode : function() {
+    getSelectedMode() {
         return this.types[this.selected];
-    },
-    selectMode : function(id) {
+    }
+    selectMode(id) {
         this.selected = id;
         this.updateState_();
-    },
-    selectNextMode : function() {
+    }
+    selectNextMode() {
         this.selected++;
         if (this.selected >= this.types.length)
             this.selected = 0;
         this.updateState_();
-    },
-    debugInit : function() {
-        Bgpio.workspace.traceOn(true);
-        Bgpio.workspace.highlightBlock(null);
-        Bgpio.clearJsConsole();
-        Bgpio.BrowserInterpreter.postMessage({method: 'debugInit', params: {code: Bgpio.generateJavaScriptCode()}});
-    },
-    debugStep : function() {
-        Bgpio.BrowserInterpreter.postMessage({method: 'debugStep', params: null});
-    },
-    run : function() {
-        Bgpio.workspace.traceOn(true);
-        Bgpio.workspace.highlightBlock(null);
-        Bgpio.clearJsConsole();
-        Bgpio.BrowserInterpreter.postMessage({method: 'run', params: {code: Bgpio.generateJavaScriptCode()}});
-    },
-    stop : function() {
-        Bgpio.BrowserInterpreter.postMessage({method: 'stop', params: null});
-    },
-    API : Bgpio.SimmerAPI,
-    updateState_ : function() {
+    }
+    debugInit() {
+        this.blocklyGpio.workspace.traceOn(true);
+        this.blocklyGpio.workspace.highlightBlock(null);
+        this.blocklyGpio.clearJsConsole();
+        this.blocklyGpio.BrowserInterpreter.postMessage({method: 'debugInit', params: {code: this.blocklyGpio.generateJavaScriptCode()}});
+    }
+    debugStep() {
+        this.blocklyGpio.BrowserInterpreter.postMessage({method: 'debugStep', params: null});
+    }
+    run() {
+        this.blocklyGpio.workspace.traceOn(true);
+        this.blocklyGpio.workspace.highlightBlock(null);
+        this.blocklyGpio.clearJsConsole();
+        let renderedCode = this.blocklyGpio.generateJavaScriptCode()
+        console.log("run()", renderedCode)
+        this.blocklyGpio.BrowserInterpreter.postMessage({method: 'run', params: {code: renderedCode}});
+    }
+    stop() {
+        this.blocklyGpio.BrowserInterpreter.postMessage({method: 'stop', params: null});
+    }
+    updateState_() {
         if (this.selected === 0) {
-            Bgpio.API = Bgpio.SimmerAPI;
-            Bgpio.clearJsConsole('Simulated print output.\n');
+            this.blocklyGpio.API = new SimmerAPI();
+            this.blocklyGpio.clearJsConsole('Simulated print output.\n');
         } else {
-            if (Bgpio.BoardAPI) {
-                Bgpio.API = Bgpio.BoardAPI;
-                Bgpio.clearJsConsole('Board print output.\n');
+            if (this.blocklyGpio.BoardAPI) {
+                this.blocklyGpio.API = BlocklyGPIO.BoardAPI;
+                this.blocklyGpio.clearJsConsole('Board print output.\n');
             } else {
-                Bgpio.clearJsConsole('Board not found.\n');
+                this.blocklyGpio.clearJsConsole('Board not found.\n');
             }
         }
-    },
-};
-
-/*******************************************************************************
- * Blockly related
- ******************************************************************************/
-Bgpio.prepareJavaScript = function () {
-    Blockly.JavaScript.addReservedWords("highlightBlock");
-    Blockly.JavaScript.addReservedWords("setDiagramPin");
-    Blockly.JavaScript.addReservedWords("delayMs");
-    Blockly.JavaScript.addReservedWords("jsPrint");
-
-    Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
-    if (BrowserInterpreter.stepping) {
-        Blockly.JavaScript.STATEMENT_PREFIX = "highlightBlock(%1);\n";
-    } else {
-        Blockly.JavaScript.STATEMENT_PREFIX = null;
-    }
-    var code = generateJavaScriptCode();
-    if (BrowserInterpreter.DEBUG)
-        console.log("About to execute code:\n" + code);
-    return code;
-};
-
-Bgpio.generateJavaScriptCode = function() {
-    return Blockly.JavaScript.workspaceToCode(Bgpio.workspace);
-};
-
-Bgpio.generatePythonCode = function() {
-    return Blockly.Python.workspaceToCode(Bgpio.workspace);
-};
-
-Bgpio.generateXml = function() {
-    var xmlDom = Blockly.Xml.workspaceToDom(Bgpio.workspace);
-    var xmlText = Blockly.Xml.domToPrettyText(xmlDom);
-    return xmlText;
-};
-
-Bgpio.getCode = function() {
-    if (Bgpio.codeArea) {
-        return Bgpio.codeArea.getText();
-    }
-    return null;
-};
-
-Bgpio.renderCode = function() {
-    // Only regenerate the code if a block is not being dragged
-    if (!Bgpio.codeArea || !Bgpio.workspace || Bgpio.workspace.isDragging()) {
-        return;
-    }
-    // Render Code with latest change highlight and syntax highlighting
-    Bgpio.codeArea.clear();
-    Bgpio.codeArea.setText(Bgpio.generateJavaScriptCode());
-};
-
-Bgpio.setPinDefaults = function() {
-    console.log("Bgpio.setPinDefaults()");
-    for (var i = 0; i < Bgpio.PIN_COUNT; i++) {
-        Bgpio.API.gpioWrite(i + 1, false);
     }
 };
 
-/*******************************************************************************
- * Other
- ******************************************************************************/
-Bgpio.getRaspPiIp = function() {
-    /*
-     * var ipField = document.getElementById('raspPiIp'); var ip =
-     * ipField.value; if
-     * (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
-     * .test(ip)) { ipField.style.color = "green"; return ipField.value; }
-     * ipField.style.color = "red";
-     */
-    // DEBUG return "localhost";
-    return null;
-};
+// singleton
+class BlocklyGPIO{
 
-Bgpio.hasBoard = function() {
-    return typeof Bgpio.BoardAPI != "undefined";
-}
+    static instance
 
-Bgpio.setUseBoard = function(value) {
-    if (value) {
-        // Board mode
-        Bgpio.runMode.selectMode(1);
-        Bgpio.API.connect();
-    } else {
-        Bgpio.API.disconnect();
-        // Simulator mode
-        Bgpio.runMode.selectMode(0);
+    workspace = null;
+    eventBus = null;
+    DEBUG = false;
+
+    PIN_COUNT = 26;
+    codeArea = null;
+
+    consoleArea = null;
+    API = SimmerAPI
+
+    BrowserInterpreter = new Worker("lib/worker_interpreter.js");
+    runMode = undefined
+
+    constructor() {
+        if(!BlocklyGPIO.instance){
+
+            this.runMode = new RunMode(this)
+            BlocklyGPIO.instance = this
+            this.API = new SimmerAPI()
+            console.log("BlocklyGPIO.constructor", this);
+
+            this.BrowserInterpreter.onmessage = function (event) {
+                var method = event.data.method;
+                var params = event.data.params;
+                if (!method) {
+                    return;
+                }
+                switch (method) {
+                    case 'notifyStarted':
+                        BlocklyGPIO.instance.notifyStarted(params.debug);
+                        break;
+                    case 'notifyStopped':
+                        BlocklyGPIO.instance.notifyStopped();
+                        break;
+                    case 'clearJsConsole':
+                        BlocklyGPIO.instance.clearJsConsole();
+                        break;
+                    case 'appendTextJsConsole':
+                        BlocklyGPIO.instance.appendTextJsConsole(params.text);
+                        break;
+                    case 'highlightBlock':
+                        BlocklyGPIO.instance.workspace.highlightBlock(params.id);
+                        break;
+                    case 'gpioWrite':
+                        BlocklyGPIO.instance.API.gpioWrite(params.pin, params.value);
+                        break;
+                    case 'servoWrite':
+                        BlocklyGPIO.instance.API.servoWrite(params.pin, params.angle);
+                        break;
+                    case 'gpioRead':
+                        BlocklyGPIO.instance.API.gpioRead(params.pin, function (value) {
+                            BrowserInterpreter.postMessage({method: 'callback', params: {callbackId: params.callbackId, args: [value]}});
+                        });
+                        break;
+                    case 'gpioOn':
+                        BlocklyGPIO.instance.API.gpioOn(params.pin, function (value) {
+                            BrowserInterpreter.postMessage({method: 'callback', params: {callbackId: params.callbackId, args: [value]}});
+                        });
+                        break;
+                    case 'onI2CEvent':
+                        BlocklyGPIO.instance.API.onI2CEvent(params.address, params.register, params.messageLength, function (value) {
+                            BrowserInterpreter.postMessage({method: 'callback', params: {callbackId: params.callbackId, args: [value]}});
+                        });
+                        break;
+                }
+            };
+            this.API = new SimmerAPI()
+        }
+
+        return BlocklyGPIO.instance
     }
-}
 
-Bgpio.getUseBoard = function() {
-    return this.runMode.selected === 1;
-}
+    initWorkspace(container, params) {
+        console.log("BlocklyGPIO.initWorkspace", container, params, this);
 
-Bgpio.setEventBus = function(eventBus) {
-    this.eventBus = eventBus;
-}
+        this.workspace = Blockly.inject(container, params);
+        this.workspace.addChangeListener(this.renderCode);
+        this.clearJsConsole();
+        return this.workspace;
+    };
 
-Bgpio.notifyStarted = function(debug) {
-    if (this.eventBus) {
-        this.eventBus
-                .fireEvent(new com.joebotics.simmer.client.event.InterpreterStartedEvent(
-                        debug))
+    setBlocks(xmlText) {
+        var xml = Blockly.Xml.textToDom(xmlText);
+        Blockly.Xml.domToWorkspace(xml, Bgpio.workspace);
+    };
+
+    getBlocks() {
+        console.log("BlocklyGPIO.getBlocks", this);
+
+        if (this.workspace) {
+            var xml = Blockly.Xml.workspaceToDom(this.workspace);
+            return Blockly.Xml.domToText(xml);
+        }
+        return null;
+    };
+
+    getBlocksCount() {
+        console.log("BlocklyGPIO.getBlocksCount", this);
+
+        if (this.workspace) {
+            return this.workspace.getTopBlocks().length;
+        }
+        return 0;
+    };
+
+    clearBlocks() {
+        console.log("BlocklyGPIO.clearBlocks", this);
+
+        if (this.workspace) {
+            this.workspace.clear();
+        }
+    };
+
+    setCodeArea(element) {
+        console.log("BlocklyGPIO.setCodeArea", this);
+        this.codeArea = element;
+    };
+
+    setConsoleArea(element) {
+        console.log("BlocklyGPIO.setConsoleArea", element, this);
+        this.consoleArea = element;
+    };
+
+    resize() {
+        console.log("BlocklyGPIO.resize", this);
+        Blockly.svgResize(this.workspace);
+    };
+
+    prepareJavaScript() {
+        console.log("BlocklyGPIO.prepareJavaScript", this);
+
+        Blockly.JavaScript.addReservedWords("highlightBlock");
+        Blockly.JavaScript.addReservedWords("setDiagramPin");
+        Blockly.JavaScript.addReservedWords("delayMs");
+        Blockly.JavaScript.addReservedWords("jsPrint");
+
+        Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+        if (BrowserInterpreter.stepping) {
+            Blockly.JavaScript.STATEMENT_PREFIX = "highlightBlock(%1);\n";
+        } else {
+            Blockly.JavaScript.STATEMENT_PREFIX = null;
+        }
+
+        var code = generateJavaScriptCode();
+        if (BrowserInterpreter.DEBUG)
+            console.log("About to execute code:\n" + code);
+
+        return code;
+    };
+
+    generateJavaScriptCode() {
+        console.log("BlocklyGPIO.generateJavaScriptCode", this);
+
+        return Blockly.JavaScript.workspaceToCode(this.workspace);
+    };
+
+    generatePythonCode() {
+        console.log("BlocklyGPIO.generateXml", this);
+
+        return Blockly.Python.workspaceToCode(this.workspace);
+    };
+
+    generateXml() {
+        console.log("BlocklyGPIO.generateXml", this);
+
+        var xmlDom = Blockly.Xml.workspaceToDom(this.workspace);
+        var xmlText = Blockly.Xml.domToPrettyText(xmlDom);
+        return xmlText;
+    };
+
+    getCode() {
+
+        console.log("BlocklyGPIO.getCode", this);
+
+/*        if (this.codeArea) {
+            return this.codeArea.getText();
+        }
+        return null;*/
+    };
+
+    renderCode() {
+
+        var me = this || new BlocklyGPIO()
+        console.log("BlocklyGPIO.renderCode", me)
+
+        // Render Code with latest change highlight and syntax highlighting
+        setTimeout(()=>{
+            console.log("me.codeArea", me.codeArea)
+
+            // Only regenerate the code if a block is not being dragged
+            if (!me.codeArea || !me.workspace || me.workspace.isDragging()) {
+                return;
+            }
+
+            // me.codeArea.setText("");
+            // me.codeArea.setText(me.generateJavaScriptCode());
+
+        }, 100)
+    };
+
+    setPinDefaults() {
+        console.log("BlocklyGPIO.setPinDefaults", this);
+
+        for (var i = 0; i < PIN_COUNT; i++) {
+            this.API.gpioWrite(i + 1, false);
+        }
+    };
+
+    /*******************************************************************************
+     * Other
+     ******************************************************************************/
+    getRaspPiIp() {
+        /*
+         * var ipField = document.getElementById('raspPiIp'); var ip =
+         * ipField.value; if
+         * (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+         * .test(ip)) { ipField.style.color = "green"; return ipField.value; }
+         * ipField.style.color = "red";
+         */
+        // DEBUG return "localhost";
+        return null;
+    };
+
+    hasBoard() {
+        console.log("BlocklyGPIO.hasBoard", this);
+
+        return typeof BoardAPI != "undefined";
     }
-}
 
-Bgpio.notifyPaused = function() {
-    if (this.eventBus) {
-        this.eventBus
-                .fireEvent(new com.joebotics.simmer.client.event.InterpreterPausedEvent())
-    }
-}
+    setUseBoard(value) {
+        console.log("BlocklyGPIO.setUseBoard", this);
 
-Bgpio.notifyStopped = function() {
-    this.workspace.highlightBlock(null);
-    if (this.eventBus) {
-        this.eventBus
-                .fireEvent(new com.joebotics.simmer.client.event.InterpreterStoppedEvent())
-    }
-}
-
-Bgpio.appendTextJsConsole = function(text) {
-    if (Bgpio.consoleArea) {
-        Bgpio.consoleArea.appendText(text + '\n');
-    }
-};
-
-Bgpio.clearJsConsole = function(text) {
-    if (Bgpio.consoleArea) {
-        Bgpio.consoleArea.clear();
-        if (text) {
-            Bgpio.consoleArea.setText(text);
+        if (value) {
+            // Board mode
+            this.runMode.selectMode(1);
+            this.API.connect();
+        } else {
+            this.API.disconnect();
+            // Simulator mode
+            this.runMode.selectMode(0);
         }
     }
+
+    getUseBoard() {
+        console.log("BlocklyGPIO.getUseBoard", this);
+        return this.runMode.selected === 1;
+    }
+
+    setEventBus(eventBus) {
+        console.log("BlocklyGPIO.setEventBus", this);
+        this.eventBus = eventBus;
+    }
+
+    notifyStarted(debug) {
+        console.log("BlocklyGPIO.notifyStarted", this);
+
+        if (this.eventBus) {
+            // this.eventBus.fireEvent(new com.joebotics.simmer.client.event.InterpreterStartedEvent(debug))
+        }
+    }
+
+    notifyPaused() {
+        console.log("BlocklyGPIO.notifyPaused", this);
+
+        if (this.eventBus) {
+            // this.eventBus.fireEvent(new com.joebotics.simmer.client.event.InterpreterPausedEvent())
+        }
+    }
+
+    notifyStopped() {
+        console.log("BlocklyGPIO.notifyStopped", this);
+
+        this.workspace.highlightBlock(null);
+        if (this.eventBus) {
+            // this.eventBus.fireEvent(new com.joebotics.simmer.client.event.InterpreterStoppedEvent())
+        }
+    }
+
+    appendTextJsConsole(text) {
+        console.log("BlocklyGPIO.appendTextJsConsole", this);
+
+        /*        if (this.consoleArea) {
+                    this.consoleArea.appendText(text + '\n');
+                }*/
+    };
+
+    clearJsConsole(text) {
+        console.log("BlocklyGPIO.clearJsConsole", this);
+
+        /*        if (this.consoleArea) {
+                    this.consoleArea.setText("");
+                    if (text) {
+                        consoleArea.setText(text);
+                    }
+                }*/
+    };
 };
+
+// new BlocklyGPIO();
+var Bgpio = Bgpio || new BlocklyGPIO();
