@@ -70,7 +70,8 @@
             <m:MaterialColumn grid="s12" backgroundColor="WHITE">
                 <m:MaterialPanel ui:field="consoleContainer">
                     <ma:Heading size="H6" text="Console output"/>
-                    <jbw:TextArea ui:field="console"/>
+                    <g:HTMLPanel ui:field="console"/>
+<!--                    <jbw:TextArea ui:field="console"/>-->
                 </m:MaterialPanel>
             </m:MaterialColumn>
         </m:MaterialRow>

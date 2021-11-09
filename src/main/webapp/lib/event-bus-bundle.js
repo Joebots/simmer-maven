@@ -104,7 +104,6 @@ function EventBus(config){
 	 * @param expr the regular expression string to test against events
 	 * @param listener the listener handler function invoked if <code>expr</code> matches the event name
 	 */
-
 	EventBus.prototype.unbind = function(expr, listener){
 
 		for( var i in entries ){

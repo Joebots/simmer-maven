@@ -2,6 +2,7 @@ package com.joebotics.simmer.client.gui.widget;
 
 import com.google.gwt.dom.client.Style;
 
+import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 
 @JsType
@@ -15,6 +16,7 @@ public class TextArea extends com.google.gwt.user.client.ui.TextArea {
 
 
     @Override
+    @JsMethod
     public void setText(String text) {
         super.setText(text);
     }
@@ -28,6 +30,7 @@ public class TextArea extends com.google.gwt.user.client.ui.TextArea {
         return super.getText();
     }
 
+    @JsMethod
     public void clear() {
         super.setText("");
     }

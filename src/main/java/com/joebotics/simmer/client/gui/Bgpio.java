@@ -1,5 +1,6 @@
 package com.joebotics.simmer.client.gui;
 
+import com.google.gwt.user.client.ui.HTMLPanel;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -16,7 +17,7 @@ public class Bgpio {
     public static Element workspace;
 
     @JsMethod
-    public static native Element init(Element container, Params params);
+    public static native Element initWorkspace(Element container, Params params);
 
     @JsMethod
     public static native void setBlocks(String xmlText);
@@ -31,10 +32,10 @@ public class Bgpio {
     public static native String clearBlocks();
 
     @JsMethod
-    public static native void setCodeArea(TextArea element);
+    public static native void setCodeArea(HTMLPanel element);
 
     @JsMethod
-    public static native void setConsoleArea(TextArea element);
+    public static native void setConsoleArea(HTMLPanel element);
 
     @JsMethod
     public static native boolean hasBoard();

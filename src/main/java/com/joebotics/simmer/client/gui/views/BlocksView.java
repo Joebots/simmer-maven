@@ -33,7 +33,7 @@ public class BlocksView extends Composite {
     HTMLPanel blocklyPanel;
 
     @UiField
-    TextArea console;
+    HTMLPanel console;
 
     @UiField
     MaterialPanel consoleContainer;
@@ -60,7 +60,7 @@ public class BlocksView extends Composite {
         super.onLoad();
 
         if (workspacePlayground == null) {
-            workspacePlayground = Bgpio.init(blocklyPanel.getElement(), params);
+            workspacePlayground = Bgpio.initWorkspace(blocklyPanel.getElement(), params);
         }
         String xmlText = Simmer.getInstance().getBlocklyXml();
         if (xmlText != null && Bgpio.getBlocksCount() == 0) {

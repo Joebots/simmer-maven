@@ -131,9 +131,7 @@
                 <!-- Plugin configuration. There are many available options, see gwt-maven-plugin documentation at codehaus.org -->
                 <configuration>
                     <runTarget>simmer.html</runTarget>
-                    <modules>
-                        <module>com.joebotics.simmer.simmer</module>
-                    </modules>
+                    <module>com.joebotics.simmer.simmer</module>
                     <i18nConstantsWithLookupBundles>
                         <resourceBundle>com.joebotics.simmer.client.util.I18N</resourceBundle>
                     </i18nConstantsWithLookupBundles>

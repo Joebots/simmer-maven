@@ -5,6 +5,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 import com.joebotics.simmer.client.gui.Bgpio;
@@ -23,10 +24,10 @@ public class CodeView extends Composite {
     private static CodeViewUiBinder uiBinder = GWT.create(CodeViewUiBinder.class);
 
     @UiField
-    TextArea console;
+    HTMLPanel console;
 
     @UiField
-    TextArea code;
+    HTMLPanel code;
 
     @UiField
     MaterialPanel codeContainer, consoleContainer;
