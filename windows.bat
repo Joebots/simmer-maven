@@ -4,6 +4,8 @@ mvn clean install
 CD ./simmer-cordova
 SET location=%cd%
 ECHO Generating apk from %location%
-cordova build --release android
+cordova platform add android
+cordova build
+cordova build --release
 ECHO Building APK Successfully Done!!
 PAUSE
