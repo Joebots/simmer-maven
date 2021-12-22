@@ -1,0 +1,9 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:m='urn:import:gwt.material.design.client.ui'
+             xmlns:c='urn:import:com.google.gwt.canvas.client'>
+
+    <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N'/>
+    <m:MaterialContainer ui:field="canvasContainer">
+        <c:Canvas ui:field="canvas"/>
+    </m:MaterialContainer>
+</ui:UiBinder>
