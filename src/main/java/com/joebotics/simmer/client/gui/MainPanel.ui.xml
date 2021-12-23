@@ -4,6 +4,7 @@
              xmlns:m='urn:import:gwt.material.design.client.ui'
              xmlns:ma="urn:import:gwt.material.design.addins.client"
              xmlns:jbd='urn:import:com.joebotics.simmer.client.gui.dialog'
+             xmlns:jbg="urn:import:com.joebotics.simmer.client.gui"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
     <ui:with field='i18n' type='com.joebotics.simmer.client.util.I18N'/>
@@ -42,10 +43,11 @@
 
         <m:MaterialButton ui:field="addButton" type="FLOATING" iconType="ADD" size="LARGE" waves="LIGHT"
                           styleName="{style.fab-add}"/>
-        <m:MaterialContainer ui:field="canvasContainer">
-            <c:Canvas ui:field="canvas"/>
+<!--        <m:MaterialContainer ui:field="canvasContainer">-->
+<!--            <c:Canvas ui:field="canvas"/>-->
 
-        </m:MaterialContainer>
+<!--        </m:MaterialContainer>-->
+        <jbg:CanvasContainer ui:field="canvasContainer"></jbg:CanvasContainer>
         <g:HTMLPanel ui:field="activeComponentsContainer">
             <div id="active-component"></div>
             <div class="active-pins"></div>

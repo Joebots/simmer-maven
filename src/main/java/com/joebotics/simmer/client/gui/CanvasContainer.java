@@ -3,6 +3,7 @@ package com.joebotics.simmer.client.gui;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
@@ -25,8 +26,17 @@ public class CanvasContainer extends Composite {
 
     private SimmerController controller;
 
-    private CanvasContainer(SimmerController controller) {
-        this.controller = controller;
+    public CanvasContainer() {
         initWidget(uiBinder.createAndBindUi(this));
+        this.canvasContainer = new MaterialContainer();
+    }
+
+    @UiFactory
+    Canvas createCanvas() {
+        return Canvas.createIfSupported();
+    }
+
+    public Canvas getCanvas() {
+        return canvas;
     }
 }

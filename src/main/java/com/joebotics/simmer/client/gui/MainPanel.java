@@ -45,8 +45,8 @@ public class MainPanel extends Composite {
 
     }
 
-    @UiField
-    Canvas canvas;
+//    @UiField
+//    Canvas canvas;
 
     @UiField
     MaterialNavBar navBar;
@@ -55,7 +55,10 @@ public class MainPanel extends Composite {
     MaterialPanel rootContainer;
 
     @UiField
-    MaterialContainer contentContainer, canvasContainer;
+    MaterialContainer contentContainer;
+
+    @UiField
+    CanvasContainer canvasContainer;
 
     @UiField
     CircuitsDialog circuitsDialog;
@@ -127,7 +130,7 @@ public class MainPanel extends Composite {
 
     @UiHandler("circuitButton")
     public void onCircuitButtonClick(ClickEvent event) {
-        setContent(null, new MainToolbar(controller), true);
+        setContent(new CanvasContainer(), new MainToolbar(controller), true);
     }
 
     @UiHandler("blocksButton")
@@ -166,9 +169,9 @@ public class MainPanel extends Composite {
         return runToolbar;
     }
 
-    public Canvas getCanvas() {
-        return canvas;
-    }
+//    public Canvas getCanvas() {
+//        return canvas;
+//    }
 
     public void setContainerSize(int width, int height) {
         rootContainer.setWidth(width + "px");
@@ -200,7 +203,10 @@ public class MainPanel extends Composite {
         contentContainer.clear();
 
         if (content != null) {
-            canvasContainer.setVisible(false);
+            if(content.getClass().getSimpleName().equals("CanvasContainer"))
+                canvasContainer.setVisible(true);
+            else
+                canvasContainer.setVisible(false);
             activeComponentsContainer.setVisible(false);
             contentContainer.setVisible(true);
             contentContainer.add(content);
@@ -231,4 +237,6 @@ public class MainPanel extends Composite {
     public void showNotImplementedModal() {
         notImplementedModal.open();
     }
+
+    public CanvasContainer getCanvasContainer(){ return canvasContainer; }
 }

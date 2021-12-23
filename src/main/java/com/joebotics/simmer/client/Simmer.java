@@ -281,7 +281,7 @@ public class Simmer {
 
         RootLayoutPanel.get().add(mainPanel);
         RootPanel.get("controls-container").add(new ControlsPanel());
-        cv = mainPanel.getCanvas();
+        cv = mainPanel.getCanvasContainer().getCanvas();
         if (cv == null) {
             // fire circuit broken event here
             // {source: simmer, component: ce, message:
