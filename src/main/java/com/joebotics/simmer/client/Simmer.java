@@ -53,11 +53,7 @@ import com.joebotics.simmer.client.elcomp.SwitchElm;
 import com.joebotics.simmer.client.elcomp.VoltageElm;
 import com.joebotics.simmer.client.elcomp.WireElm;
 import com.joebotics.simmer.client.event.SimmerEventBus;
-import com.joebotics.simmer.client.gui.ControlsPanel;
-import com.joebotics.simmer.client.gui.MainPanel;
-import com.joebotics.simmer.client.gui.MainToolbar;
-import com.joebotics.simmer.client.gui.Scope;
-import com.joebotics.simmer.client.gui.SidePanel;
+import com.joebotics.simmer.client.gui.*;
 import com.joebotics.simmer.client.gui.dialog.AboutBox;
 import com.joebotics.simmer.client.gui.dialog.EditDialog;
 import com.joebotics.simmer.client.gui.dialog.ExportAsLocalFileDialog;
@@ -194,6 +190,8 @@ public class Simmer {
 
     private MainPanel mainPanel;
 
+    private CanvasContainer canvasContainer;
+
     private static Simmer instance;
 
     private static final Logger lager = Logger.getLogger(Simmer.class.getName());
@@ -226,10 +224,13 @@ public class Simmer {
         boolean printable = false;
         boolean convention = true;
         boolean euro = false;
-
+//        canvasContainer = new CanvasContainer();
+//        canvasContainer.initializeAbstractCircuitClass(this);
         AbstractCircuitElement.initClass(this);
         QueryParameters qp = new QueryParameters();
+//        lager.info("LOAD FILE DATA"+qp.getValue("cct"));
 
+//        Timer timer = canvasContainer.getTimerWithUpdateCircuit();
         Timer timer = new Timer() {
             public void run() {
                 updateCircuit();
@@ -281,6 +282,8 @@ public class Simmer {
 
         RootLayoutPanel.get().add(mainPanel);
         RootPanel.get("controls-container").add(new ControlsPanel());
+//        canvasContainer.getCanvasAndSetCircuit(timer);
+//        RootPanel.get("canvas-container").add(canvasContainer);
         cv = mainPanel.getCanvasContainer().getCanvas();
         if (cv == null) {
             // fire circuit broken event here
