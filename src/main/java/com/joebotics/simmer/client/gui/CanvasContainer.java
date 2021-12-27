@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 
 public class CanvasContainer extends Composite {
 
+    private static final Logger lager = Logger.getLogger(CanvasContainer.class.getName());
     interface CanvasContainerUiBinder extends UiBinder<Widget, CanvasContainer> {
 
     }
@@ -41,10 +42,10 @@ public class CanvasContainer extends Composite {
     private static CanvasContainerUiBinder uiBinder = GWT.create(CanvasContainerUiBinder.class);
 
     @UiField
-    Canvas canvas;
+    Canvas canvasCantainer;
 
-    @UiField
-    MaterialContainer canvasContainer;
+//    @UiField
+//    MaterialContainer canvasContainer;
 
     private double circuitMatrix[][], circuitRightSide[], origRightSide[], origMatrix[][];
     private int circuitMatrixSize, circuitMatrixFullSize;
@@ -83,7 +84,6 @@ public class CanvasContainer extends Composite {
     private String blocklyXml;
     private SimmerEventBus eventBus;
     private FootprintManager footprintManager;
-    private static final Logger lager = Logger.getLogger(CanvasContainer.class.getName());
     private SidePanel sidePanel;
     private MainMenuBar mainMenuBar;
     private String mouseModeStr = "Select";
@@ -110,7 +110,7 @@ public class CanvasContainer extends Composite {
 
     public CanvasContainer() {
         initWidget(uiBinder.createAndBindUi(this));
-        this.canvasContainer = new MaterialContainer();
+//        this.canvasContainer = new MaterialContainer();
     }
 
     @UiFactory
@@ -126,7 +126,7 @@ public class CanvasContainer extends Composite {
         options = new Options(Dictionary.getDictionary("SimmerOptions"));
     }
 
-    public Timer getTimerWithUpdateCircuit() {
+    public Timer getTimerWithUpdateCircuit(SimmerController s) {
         Timer timer = new Timer() {
             public void run() {
                 updateCircuit();
@@ -149,59 +149,63 @@ public class CanvasContainer extends Composite {
         this.selectedArea = selectedArea;
     }
 
-    public void getCanvasAndSetCircuit(Timer timer) {
-        startCircuit = "demo-powering-an-led.txt";
-        cv = getCanvas();
-        if (cv == null) {
-            // fire circuit broken event here
-            // {source: simmer, component: ce, message:
-            // "Voltage_source/wire_loop_with_no_resistance!"}
-            String message = MessageI18N
-                    .getMessage("Not_working._You_need_a_browser_that_supports_the_CANVAS_element.");
-            JSEventBusProxy.fireError(SimmerEvents.SYSTEM_ERROR, message);
-            RootPanel.get().add(new Label(message));
-            return;
-        }
+//    public void getCanvasAndSetCircuit(Timer timer) {
+//        startCircuit = "demo-powering-an-led.txt";
+//        cv = getCanvas();
+//        if (cv == null) {
+//            // fire circuit broken event here
+//            // {source: simmer, component: ce, message:
+//            // "Voltage_source/wire_loop_with_no_resistance!"}
+//            String message = MessageI18N
+//                    .getMessage("Not_working._You_need_a_browser_that_supports_the_CANVAS_element.");
+//            JSEventBusProxy.fireError(SimmerEvents.SYSTEM_ERROR, message);
+//            RootPanel.get().add(new Label(message));
+//            return;
+//        }
+//
+//        cvcontext = cv.getContext2d();
+//        backcv = Canvas.createIfSupported();
+//        backcontext = backcv.getContext2d();
+//        setCanvasSize();
+//        sidePanel.createSideBar();
+//        setGrid();
+//
+//        circuitModel = new CircuitModel();
+//
+//        scopes = new Scope[20];
+//        scopeColCount = new int[20];
+//        scopeCount = 0;
+//
+//        // element popup menu
+//        elmMenuBar = new ElementPopupMenu();
+//
+//        if (startCircuitText != null) {
+//
+//            fileOps.loadSetupList(false);
+//            fileOps.readSetup(startCircuitText, false);
+//
+//        } else {
+//
+//            fileOps.readSetup(null, 0, "blank.txt", false, false);
+//
+//            if (stopMessage == null && startCircuit != null) {
+//                fileOps.loadSetupList(false);
+////                fileOps.readSetupFile(startCircuit, true);
+//            } else
+//                fileOps.loadSetupList(true);
+//        }
+//
+//        mainMenuBar.getEditMenu().enableUndoRedo();
+//        sidePanel.setiFrameHeight();
+//        bindEventHandlers();
+//
+//        // setup timer
+//        timer.scheduleRepeating(FASTTIMER);
+//        JSEventBusProxy.init();
+//    }
 
-        cvcontext = cv.getContext2d();
-        backcv = Canvas.createIfSupported();
-        backcontext = backcv.getContext2d();
-        setCanvasSize();
-        sidePanel.createSideBar();
-        setGrid();
-
-        circuitModel = new CircuitModel();
-
-        scopes = new Scope[20];
-        scopeColCount = new int[20];
-        scopeCount = 0;
-
-        // element popup menu
-        elmMenuBar = new ElementPopupMenu();
-
-        if (startCircuitText != null) {
-
-            fileOps.loadSetupList(false);
-            fileOps.readSetup(startCircuitText, false);
-
-        } else {
-
-            fileOps.readSetup(null, 0, "blank.txt", false, false);
-
-            if (stopMessage == null && startCircuit != null) {
-                fileOps.loadSetupList(false);
-//                fileOps.readSetupFile(startCircuit, true);
-            } else
-                fileOps.loadSetupList(true);
-        }
-
-        mainMenuBar.getEditMenu().enableUndoRedo();
-        sidePanel.setiFrameHeight();
-        bindEventHandlers();
-
-        // setup timer
-        timer.scheduleRepeating(FASTTIMER);
-        JSEventBusProxy.init();
+    public SidePanel getSidePanel() {
+        return sidePanel;
     }
 
     private void bindEventHandlers() {
@@ -1354,6 +1358,6 @@ public class CanvasContainer extends Composite {
     }
 
     public Canvas getCanvas() {
-        return canvas;
+        return canvasCantainer;
     }
 }

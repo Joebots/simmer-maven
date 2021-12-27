@@ -110,7 +110,7 @@ public class Simmer {
     private int gridRound;
     private int gridSize;
 
-    private final int FASTTIMER = 40;
+    private final int FASTTIMER = 1000;
     private SwitchElm heldSwitchElm;
 
     private HintType hintType = HintType.HINT_UNSET;
@@ -224,16 +224,16 @@ public class Simmer {
         boolean printable = false;
         boolean convention = true;
         boolean euro = false;
-//        canvasContainer = new CanvasContainer();
-//        canvasContainer.initializeAbstractCircuitClass(this);
-        AbstractCircuitElement.initClass(this);
+        canvasContainer = new CanvasContainer();
+        canvasContainer.initializeAbstractCircuitClass(this);
+//        AbstractCircuitElement.initClass(this);
         QueryParameters qp = new QueryParameters();
 //        lager.info("LOAD FILE DATA"+qp.getValue("cct"));
 
-//        Timer timer = canvasContainer.getTimerWithUpdateCircuit();
+//        Timer timer = canvasContainer.getTimerWithUpdateCircuit(simmerController);
         Timer timer = new Timer() {
             public void run() {
-                updateCircuit();
+                canvasContainer.updateCircuit();
             }
         };
 
@@ -285,6 +285,7 @@ public class Simmer {
 //        canvasContainer.getCanvasAndSetCircuit(timer);
 //        RootPanel.get("canvas-container").add(canvasContainer);
         cv = mainPanel.getCanvasContainer().getCanvas();
+//        cv = canvasContainer.getCanvas();
         if (cv == null) {
             // fire circuit broken event here
             // {source: simmer, component: ce, message:
@@ -299,10 +300,11 @@ public class Simmer {
         cvcontext = cv.getContext2d();
         backcv = Canvas.createIfSupported();
         backcontext = backcv.getContext2d();
+//        canvasContainer.setCanvasSize();
         setCanvasSize();
         sidePanel.createSideBar();
+//        canvasContainer.setGrid();
         setGrid();
-
         circuitModel = new CircuitModel();
 
         scopes = new Scope[20];
@@ -318,6 +320,7 @@ public class Simmer {
             fileOps.readSetup(startCircuitText, false);
 
         } else {
+
 
             fileOps.readSetup(null, 0, "blank.txt", false, false);
 
@@ -2046,6 +2049,10 @@ public class Simmer {
 
     public SidePanel getSidePanel() {
         return sidePanel;
+    }
+
+    public CanvasContainer getCanvasContainer() {
+        return canvasContainer;
     }
 
     public Options getOptions() {
