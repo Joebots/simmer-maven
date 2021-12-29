@@ -55,6 +55,7 @@ public class CanvasContainer extends Composite {
     private boolean circuitNonLinear;
     private Canvas backcv;
     private Canvas cv;
+    private Context2d backcontext;
     private Rectangle circuitArea;
     private RowInfo circuitRowInfo[];
     private SimmerController controller;
@@ -94,7 +95,6 @@ public class CanvasContainer extends Composite {
     private int scopeSelected = -1;
     private int subIterations;
     private double t;
-    private Context2d backcontext;
     private boolean dumpMatrix;
     private boolean converged;
     private long lastTime = 0, lastFrameTime, lastIterTime, secTime = 0;
@@ -107,10 +107,10 @@ public class CanvasContainer extends Composite {
     private int gridRound;
     private int gridSize;
     private final int FASTTIMER = 40;
+    private Simmer simmer;
 
     public CanvasContainer() {
         initWidget(uiBinder.createAndBindUi(this));
-//        this.canvasContainer = new MaterialContainer();
     }
 
     @UiFactory
@@ -119,20 +119,132 @@ public class CanvasContainer extends Composite {
     }
 
     public void initializeAbstractCircuitClass(Simmer s) {
+        this.simmer = s;
         AbstractCircuitElement.initClass(s);
-        sidePanel = new SidePanel(s);
-//        mainMenuBar = new MainMenuBar(s);
         fileOps = new FileOps(s);
         options = new Options(Dictionary.getDictionary("SimmerOptions"));
+        backcv = Canvas.createIfSupported();
+        backcontext = backcv.getContext2d();
+        sidePanel = new SidePanel(simmer);
+//        fileOps = new FileOps(simmer);
     }
 
-    public Timer getTimerWithUpdateCircuit(SimmerController s) {
-        Timer timer = new Timer() {
-            public void run() {
-                updateCircuit();
-            }
-        };
-        return timer;
+    public void fileOperations() {
+        circuitModel = new CircuitModel();
+        if (startCircuitText != null) {
+
+            fileOps.loadSetupList(false);
+            fileOps.readSetup(startCircuitText, false);
+
+        } else {
+
+
+            fileOps.readSetup(null, 0, "blank.txt", false, false);
+
+            if (stopMessage == null && startCircuit != null) {
+                fileOps.loadSetupList(false);
+                fileOps.readSetupFile(startCircuit, true);
+            } else
+                fileOps.loadSetupList(true);
+        }
+    }
+
+    public FileOps getFileOps() {
+        return fileOps;
+    }
+
+    public int getScopeCount() {
+        return this.scopeCount;
+    }
+
+    public Scope[] getScopes() {
+        return scopes;
+    }
+
+    private String getHint() {
+        AbstractCircuitElement c1 = getElm(hintItem1);
+        AbstractCircuitElement c2 = getElm(hintItem2);
+
+        if (c1 == null || c2 == null)
+            return null;
+
+        if (hintType == HintTypeEnum.HintType.HINT_LC) {
+            if (!(c1 instanceof InductorElm))
+                return null;
+
+            if (!(c2 instanceof CapacitorElm))
+                return null;
+
+            InductorElm ie = (InductorElm) c1;
+            CapacitorElm ce = (CapacitorElm) c2;
+
+            return "res.f = " + AbstractCircuitElement
+                    .getUnitText(1 / (2 * Math.PI * Math.sqrt(ie.getInductance() * ce.getCapacitance())), "Hz");
+        }
+        if (hintType == HintTypeEnum.HintType.HINT_RC) {
+            if (!(c1 instanceof ResistorElm))
+                return null;
+
+            if (!(c2 instanceof CapacitorElm))
+                return null;
+
+            ResistorElm re = (ResistorElm) c1;
+            CapacitorElm ce = (CapacitorElm) c2;
+
+            return "RC = " + AbstractCircuitElement.getUnitText(re.getResistance() * ce.getCapacitance(), "s");
+        }
+        if (hintType == HintTypeEnum.HintType.HINT_3DB_C) {
+            if (!(c1 instanceof ResistorElm))
+                return null;
+
+            if (!(c2 instanceof CapacitorElm))
+                return null;
+
+            ResistorElm re = (ResistorElm) c1;
+            CapacitorElm ce = (CapacitorElm) c2;
+
+            return "f.3db = " + AbstractCircuitElement
+                    .getUnitText(1 / (2 * Math.PI * re.getResistance() * ce.getCapacitance()), "Hz");
+        }
+        if (hintType == HintTypeEnum.HintType.HINT_3DB_L) {
+            if (!(c1 instanceof ResistorElm))
+                return null;
+
+            if (!(c2 instanceof InductorElm))
+                return null;
+
+            ResistorElm re = (ResistorElm) c1;
+            InductorElm ie = (InductorElm) c2;
+
+            return "f.3db = "
+                    + AbstractCircuitElement.getUnitText(re.getResistance() / (2 * Math.PI * ie.getInductance()), "Hz");
+        }
+        if (hintType == HintTypeEnum.HintType.HINT_TWINT) {
+            if (!(c1 instanceof ResistorElm))
+                return null;
+
+            if (!(c2 instanceof CapacitorElm))
+                return null;
+
+            ResistorElm re = (ResistorElm) c1;
+            CapacitorElm ce = (CapacitorElm) c2;
+
+            return "fc = " + AbstractCircuitElement
+                    .getUnitText(1 / (2 * Math.PI * re.getResistance() * ce.getCapacitance()), "Hz");
+        }
+        return null;
+    }
+
+    public HintTypeEnum.HintType getHintType() {
+        return hintType;
+    }
+
+    public int getHintItem1() {
+        return hintItem1;
+    }
+
+    public int getHintItem2() {
+        return hintItem2;
     }
 
     public void setGrid() {
@@ -148,61 +260,6 @@ public class CanvasContainer extends Composite {
     public void setSelectedArea(Rectangle selectedArea) {
         this.selectedArea = selectedArea;
     }
-
-//    public void getCanvasAndSetCircuit(Timer timer) {
-//        startCircuit = "demo-powering-an-led.txt";
-//        cv = getCanvas();
-//        if (cv == null) {
-//            // fire circuit broken event here
-//            // {source: simmer, component: ce, message:
-//            // "Voltage_source/wire_loop_with_no_resistance!"}
-//            String message = MessageI18N
-//                    .getMessage("Not_working._You_need_a_browser_that_supports_the_CANVAS_element.");
-//            JSEventBusProxy.fireError(SimmerEvents.SYSTEM_ERROR, message);
-//            RootPanel.get().add(new Label(message));
-//            return;
-//        }
-//
-//        cvcontext = cv.getContext2d();
-//        backcv = Canvas.createIfSupported();
-//        backcontext = backcv.getContext2d();
-//        setCanvasSize();
-//        sidePanel.createSideBar();
-//        setGrid();
-//
-//        circuitModel = new CircuitModel();
-//
-//        scopes = new Scope[20];
-//        scopeColCount = new int[20];
-//        scopeCount = 0;
-//
-//        // element popup menu
-//        elmMenuBar = new ElementPopupMenu();
-//
-//        if (startCircuitText != null) {
-//
-//            fileOps.loadSetupList(false);
-//            fileOps.readSetup(startCircuitText, false);
-//
-//        } else {
-//
-//            fileOps.readSetup(null, 0, "blank.txt", false, false);
-//
-//            if (stopMessage == null && startCircuit != null) {
-//                fileOps.loadSetupList(false);
-////                fileOps.readSetupFile(startCircuit, true);
-//            } else
-//                fileOps.loadSetupList(true);
-//        }
-//
-//        mainMenuBar.getEditMenu().enableUndoRedo();
-//        sidePanel.setiFrameHeight();
-//        bindEventHandlers();
-//
-//        // setup timer
-//        timer.scheduleRepeating(FASTTIMER);
-//        JSEventBusProxy.init();
-//    }
 
     public SidePanel getSidePanel() {
         return sidePanel;
@@ -258,6 +315,10 @@ public class CanvasContainer extends Composite {
             if (elm == getElmList().get(i))
                 return i;
         return -1;
+    }
+
+    public CircuitModel getCircuitModel() {
+        return circuitModel;
     }
 
     private void setupScopes() {
@@ -346,6 +407,10 @@ public class CanvasContainer extends Composite {
         if (speed == 0)
             return 0;
         return .1 * Math.exp((speed - 61) / 24.);
+    }
+
+    public Options getOptions() {
+        return options;
     }
 
     private void runCircuit() {
@@ -481,85 +546,17 @@ public class CanvasContainer extends Composite {
         return timeStep;
     }
 
+    public void setTimeStep(double timeStep) {
+        this.timeStep = timeStep;
+    }
+
     public MouseModeEnum.MouseMode getTempMouseMode() {
         return tempMouseMode;
     }
 
-    private String getHint() {
-        AbstractCircuitElement c1 = getElm(hintItem1);
-        AbstractCircuitElement c2 = getElm(hintItem2);
-
-        if (c1 == null || c2 == null)
-            return null;
-
-        if (hintType == HintTypeEnum.HintType.HINT_LC) {
-            if (!(c1 instanceof InductorElm))
-                return null;
-
-            if (!(c2 instanceof CapacitorElm))
-                return null;
-
-            InductorElm ie = (InductorElm) c1;
-            CapacitorElm ce = (CapacitorElm) c2;
-
-            return "res.f = " + AbstractCircuitElement
-                    .getUnitText(1 / (2 * Math.PI * Math.sqrt(ie.getInductance() * ce.getCapacitance())), "Hz");
-        }
-        if (hintType == HintTypeEnum.HintType.HINT_RC) {
-            if (!(c1 instanceof ResistorElm))
-                return null;
-
-            if (!(c2 instanceof CapacitorElm))
-                return null;
-
-            ResistorElm re = (ResistorElm) c1;
-            CapacitorElm ce = (CapacitorElm) c2;
-
-            return "RC = " + AbstractCircuitElement.getUnitText(re.getResistance() * ce.getCapacitance(), "s");
-        }
-        if (hintType == HintTypeEnum.HintType.HINT_3DB_C) {
-            if (!(c1 instanceof ResistorElm))
-                return null;
-
-            if (!(c2 instanceof CapacitorElm))
-                return null;
-
-            ResistorElm re = (ResistorElm) c1;
-            CapacitorElm ce = (CapacitorElm) c2;
-
-            return "f.3db = " + AbstractCircuitElement
-                    .getUnitText(1 / (2 * Math.PI * re.getResistance() * ce.getCapacitance()), "Hz");
-        }
-        if (hintType == HintTypeEnum.HintType.HINT_3DB_L) {
-            if (!(c1 instanceof ResistorElm))
-                return null;
-
-            if (!(c2 instanceof InductorElm))
-                return null;
-
-            ResistorElm re = (ResistorElm) c1;
-            InductorElm ie = (InductorElm) c2;
-
-            return "f.3db = "
-                    + AbstractCircuitElement.getUnitText(re.getResistance() / (2 * Math.PI * ie.getInductance()), "Hz");
-        }
-        if (hintType == HintTypeEnum.HintType.HINT_TWINT) {
-            if (!(c1 instanceof ResistorElm))
-                return null;
-
-            if (!(c2 instanceof CapacitorElm))
-                return null;
-
-            ResistorElm re = (ResistorElm) c1;
-            CapacitorElm ce = (CapacitorElm) c2;
-
-            return "fc = " + AbstractCircuitElement
-                    .getUnitText(1 / (2 * Math.PI * re.getResistance() * ce.getCapacitance()), "Hz");
-        }
-        return null;
-    }
-
-    public void updateCircuit() {
+    public void updateCircuit(Canvas canvas) {
+        this.cv = canvas;
+        this.cvcontext = cv.getContext2d();
         long mystarttime;
         AbstractCircuitElement realMouseElm;
         mystarttime = System.currentTimeMillis();

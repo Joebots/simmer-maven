@@ -66,20 +66,20 @@ public class FileOps {
         f |= (simmer.getOptions().getBoolean(OptionKey.SHOW_POWER)) ? 8 : 0;
         f |= (simmer.getOptions().getBoolean(OptionKey.SHOW_VALUES)) ? 0 : 16;
         // 32 = linear scale in afilter
-        String dump = "$ " + f + " " + simmer.getTimeStep() + " " + simmer.getIterCount() + " "
-                + simmer.getOptions().getInteger(OptionKey.CURRENT_SPEED) + " " + AbstractCircuitElement.voltageRange
-                + " " + simmer.getSidePanel().getPowerBar().getValue() + "\n";
+        String dump = "$ " + f + " " + simmer.getCanvasContainer().getTimeStep() + " " + simmer.getCanvasContainer().getIterCount() + " "
+                + simmer.getCanvasContainer().getOptions().getInteger(OptionKey.CURRENT_SPEED) + " " + AbstractCircuitElement.voltageRange
+                + " " + simmer.getCanvasContainer().getSidePanel().getPowerBar().getValue() + "\n";
 
-        for (i = 0; i != simmer.getElmList().size(); i++)
-            dump += simmer.getElm(i).dump() + "\n";
+        for (i = 0; i != simmer.getCanvasContainer().getElmList().size(); i++)
+            dump += simmer.getCanvasContainer().getElm(i).dump() + "\n";
 
-        for (i = 0; i != simmer.getScopeCount(); i++) {
-            String d = simmer.getScopes()[i].dump();
+        for (i = 0; i != simmer.getCanvasContainer().getScopeCount(); i++) {
+            String d = simmer.getCanvasContainer().getScopes()[i].dump();
             if (d != null)
                 dump += d + "\n";
         }
-        if (simmer.getHintType() != HintTypeEnum.HintType.HINT_UNSET)
-            dump += "h " + simmer.getHintType() + " " + simmer.getHintItem1() + " " + simmer.getHintItem2() + "\n";
+        if (simmer.getCanvasContainer().getHintType() != HintTypeEnum.HintType.HINT_UNSET)
+            dump += "h " + simmer.getCanvasContainer().getHintType() + " " + simmer.getCanvasContainer().getHintItem1() + " " + simmer.getCanvasContainer().getHintItem2() + "\n";
         // Blockly blocks
         if (simmer.getBlocklyXml() != null) {
             dump += "& " + Base64Util.encodeString(simmer.getBlocklyXml());
@@ -266,22 +266,23 @@ public class FileOps {
     public void readSetup(byte b[], int len, String title, boolean retain, boolean centre) {
         int i;
         if (!retain) {
-            for (i = 0; i != simmer.getElmList().size(); i++) {
+            for (i = 0; i != simmer.getCanvasContainer().getElmList().size(); i++) {
                 AbstractCircuitElement ce = simmer.getElm(i);
                 ce.delete();
             }
-            simmer.getElmList().clear();
+            simmer.getCanvasContainer().getElmList().clear();
             simmer.setHintType(HintTypeEnum.HintType.HINT_UNSET);
             simmer.setTimeStep(5e-6);
             simmer.setGrid();
-            simmer.getSidePanel().getPowerBar().setValue(50);
+            simmer.getCanvasContainer().getSidePanel().getPowerBar().setValue(50);
             AbstractCircuitElement.voltageRange = 5;
             simmer.setScopeCount(0);
             Bgpio.clearBlocks();
             simmer.setBlocklyXml(null);
-            simmer.getCircuitModel().setTitle(null);
+            simmer.consoleLog("HELLO "+simmer.getCanvasContainer().getCircuitModel());
+            simmer.getCanvasContainer().getCircuitModel().setTitle(null);
         }
-        simmer.getCircuitModel().setTitle(title);
+        simmer.getCanvasContainer().getCircuitModel().setTitle(title);
         // cv.repaint();
         for (int p = 0; p < len;) {
             int l;
@@ -351,7 +352,7 @@ public class FileOps {
             p += l;
 
         }
-        simmer.getSidePanel().setPowerBarEnable();
+        simmer.getCanvasContainer().getSidePanel().setPowerBarEnable();
         simmer.enableItems();
         // if (!retain)
         // handleResize(); // for scopes
@@ -377,7 +378,7 @@ public class FileOps {
         readSetup(text.getBytes(), text.length(), title, retain, centre);
     }
 
-    protected void readSetupFile(String str, boolean centre) {
+    public void readSetupFile(String str, boolean centre) {
         simmer.setT(0);
         //String url = GWT.getHostPageBaseURL();
         String url = "circuits/" + str + "?v=" + Math.random();

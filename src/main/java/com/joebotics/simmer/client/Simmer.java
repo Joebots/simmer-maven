@@ -233,7 +233,7 @@ public class Simmer {
 //        Timer timer = canvasContainer.getTimerWithUpdateCircuit(simmerController);
         Timer timer = new Timer() {
             public void run() {
-                canvasContainer.updateCircuit();
+                canvasContainer.updateCircuit(canvasContainer.getCanvas());
             }
         };
 
@@ -276,7 +276,7 @@ public class Simmer {
 
         // layoutPanel = new DockLayoutPanel(Unit.PX);
         mainPanel.setToolbar(new MainToolbar(simmerController));
-        sidePanel = new SidePanel(this);
+//        sidePanel = new SidePanel(this);
         popupDrawMenu = new DrawMenu(this, true);
         mainMenuBar = new MainMenuBar(this);
 
@@ -298,14 +298,14 @@ public class Simmer {
         }
 
         cvcontext = cv.getContext2d();
-        backcv = Canvas.createIfSupported();
-        backcontext = backcv.getContext2d();
-//        canvasContainer.setCanvasSize();
-        setCanvasSize();
-        sidePanel.createSideBar();
-//        canvasContainer.setGrid();
-        setGrid();
-        circuitModel = new CircuitModel();
+//        backcv = Canvas.createIfSupported();
+//        backcontext = backcv.getContext2d();
+        canvasContainer.setCanvasSize();
+//        setCanvasSize();
+        canvasContainer.getSidePanel().createSideBar();
+        canvasContainer.setGrid();
+//        setGrid();
+//        circuitModel = new CircuitModel();
 
         scopes = new Scope[20];
         scopeColCount = new int[20];
@@ -314,22 +314,23 @@ public class Simmer {
         // element popup menu
         elmMenuBar = new ElementPopupMenu();
 
-        if (startCircuitText != null) {
-
-            fileOps.loadSetupList(false);
-            fileOps.readSetup(startCircuitText, false);
-
-        } else {
-
-
-            fileOps.readSetup(null, 0, "blank.txt", false, false);
-
-            if (stopMessage == null && startCircuit != null) {
-                fileOps.loadSetupList(false);
-                fileOps.readSetupFile(startCircuit, true);
-            } else
-                fileOps.loadSetupList(true);
-        }
+//        if (startCircuitText != null) {
+//
+//            fileOps.loadSetupList(false);
+//            fileOps.readSetup(startCircuitText, false);
+//
+//        } else {
+//
+//
+//            fileOps.readSetup(null, 0, "blank.txt", false, false);
+//
+//            if (stopMessage == null && startCircuit != null) {
+//                fileOps.loadSetupList(false);
+//                fileOps.readSetupFile(startCircuit, true);
+//            } else
+//                fileOps.loadSetupList(true);
+//        }
+        canvasContainer.fileOperations();
 
         mainMenuBar.getEditMenu().enableUndoRedo();
         sidePanel.setiFrameHeight();
@@ -1736,7 +1737,7 @@ public class Simmer {
     }
 
     public List<CircuitNode> getNodeList() {
-        return circuitModel.getNodeList();
+        return canvasContainer.getCircuitModel().getNodeList();
     }
 
     public double getT() {
@@ -1943,7 +1944,7 @@ public class Simmer {
     }
 
     public List<AbstractCircuitElement> getElmList() {
-        return circuitModel.getElmList();
+        return canvasContainer.getCircuitModel().getElmList();
     }
 
     public int getGridSize() {
@@ -2090,4 +2091,8 @@ public class Simmer {
     public MainPanel getMainPanel() {
         return mainPanel;
     }
+
+    public static native void consoleLog (String message ) /*-{
+        console.log("Print ", message);
+    }-*/;
 }

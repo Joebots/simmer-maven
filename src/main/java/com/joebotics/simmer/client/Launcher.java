@@ -71,20 +71,20 @@ public class Launcher implements EntryPoint {
         mysim = Simmer.getInstance(); // new Simmer();
         mysim.init();
 
-        mysim.getFileOps().dumpCircuit();
+        mysim.getCanvasContainer().getFileOps().dumpCircuit();
 
         Window.addResizeHandler(event -> {
-            mysim.setCanvasSize();
-            mysim.getSidePanel().setiFrameHeight();
+            mysim.getCanvasContainer().setCanvasSize();
+            mysim.getCanvasContainer().getSidePanel().setiFrameHeight();
         });
 
-        mysim.updateCircuit();
+        mysim.getCanvasContainer().updateCircuit(mysim.getCanvasContainer().getCanvas());
 
         JSONObject data = new JSONObject();
         data.put("version", new JSONString(versionString));
         JSEventBusProxy.fireEvent(SimmerEvents.SYSTEM_LOADED, data);
 
-        lager.info(mysim.getFileOps().dumpCircuit());
+        lager.info(mysim.getCanvasContainer().getFileOps().dumpCircuit());
     }
 
 }

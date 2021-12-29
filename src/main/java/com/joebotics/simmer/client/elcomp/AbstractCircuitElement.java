@@ -576,7 +576,7 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 
     // TODO: Badger: utils
     protected void drawDots(Graphics g, Point pa, Point pb, double pos) {
-        if (sim.getSidePanel().getStoppedCheck().getState() || pos == 0 || !sim.getOptions().getBoolean(OptionKey.SHOW_CURRENT))
+        if (sim.getCanvasContainer().getSidePanel().getStoppedCheck().getState() || pos == 0 || !sim.getOptions().getBoolean(OptionKey.SHOW_CURRENT))
             return;
         int dx = pb.getX() - pa.getX();
         int dy = pb.getY() - pa.getY();
@@ -620,7 +620,7 @@ public abstract class AbstractCircuitElement implements Editable, Serializable {
 
     // TODO: Badger: utils
     protected void drawPost(Graphics g, int x0, int y0, int n) {
-        if (sim.getDragElm() == null && !needsHighlight() && sim.getCircuitNode(n).links.size() == 2)
+        if (sim.getDragElm() == null && !needsHighlight() && sim.getCanvasContainer().getCircuitNode(n).links.size() == 2)
             return;
 
         if (sim.getMouseMode() == MouseMode.DRAG_ROW || sim.getMouseMode() == MouseMode.DRAG_COLUMN)
