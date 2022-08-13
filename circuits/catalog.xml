@@ -1,0 +1,388 @@
+<!--setuplist.xml first line need not be a comment-->
+<catalog>
+    <category name="Demo">
+        <entry name="Powering an LED" file="demo-powering-an-led.txt"/>
+        <entry name="Capacitor Test" file="demo-capacitor-test.txt"/>
+        <entry name="Blinking LED" file="demo-blinking-led.txt"/>
+        <entry name="Touch Sensor" file="demo-touch-sensor.txt"/>
+        <entry name="Blinking LED with Blockly" file="demo-blinking-led-with-blockly.txt"/>
+        <entry name="Stop Light with Blockly" file="demo-stop-light-with-blockly.txt"/>
+        <entry name="Magnetic RPM Counter" file="demo-rpm-counter-with-blockly.txt"/>
+        <entry name="Temperature Sensor Controlling RGB LED" file="demo-temperature-sensor-LED-with-blockly.txt"/>
+        <entry name="Robotic Arm" file="demo-robotic-arm-blockly.txt"/>
+        <entry name="Adafruit LSM303 Accel+Compass" file="demo-accel-compass-with-blockly.txt"/>
+    </category>
+    <category name="Basics">
+        <entry name="Ohm's Law" file="ohms.txt"/>
+        <entry name="Resistors" file="resistors.txt"/>
+        <entry name="Capacitor" file="cap.txt"/>
+        <entry name="Inductor" file="induct.txt"/>
+        <entry name="LRC Circuit" file=">lrc.txt"/>
+        <entry name="Voltage Divider" file="voltdivide.txt"/>
+        <entry name="Potentiometer" file="pot.txt"/>
+        <entry name="Potentiometer Divider" file="potdivide.txt"/>
+        <entry name="Thevenin's Theorem" file="thevenin.txt"/>
+        <entry name="Norton's Theorem" file="norton.txt"/>
+    </category>
+    <category name="A/C Circuits">
+        <entry name="Capacitor" file="capac.txt"/>
+        <entry name="Inductor" file="inductac.txt"/>
+        <entry name="Caps of Various Capacitances" file="capmultcaps.txt"/>
+        <entry name="Caps w/ Various Frequencies" file="capmultfreq.txt"/>
+        <entry name="Inductors of Various Inductances" file="indmultind.txt"/>
+        <entry name="Inductors w/ Various Frequencies" file="indmultfreq.txt"/>
+        <entry name="Impedances of Same Magnitude" file="impedance.txt"/>
+        <entry name="Series Resonance" file="res-series.txt"/>
+        <entry name="Parallel Resonance" file="res-par.txt"/>
+    </category>
+    <category name="Passive Filters">
+        <entry name="High-Pass Filter (RC)" file="filt-hipass.txt"/>
+        <entry name="Low-Pass Filter (RC)" file="filt-lopass.txt"/>
+        <entry name="High-Pass Filter (RL)" file="filt-hipass-l.txt"/>
+        <entry name="Low-Pass Filter (RL)" file="filt-lopass-l.txt"/>
+        <entry name="Band-pass Filter" file="bandpass.txt"/>
+        <entry name="Notch Filter" file="notch.txt"/>
+        <entry name="Twin-T Filter" file="twint.txt"/>
+        <entry name="Crossover" file="crossover.txt"/>
+        <entry name="Butterworth Low-Pass (10 pole)" file="butter10lo.txt"/>
+        <entry name="Bessel vs Butterworth" file="besselbutter.txt"/>
+        <entry name="Band-pass with Ringing" file="ringing.txt"/>
+    </category>
+    <category name="Other Passive Circuits">
+        <category name="Series/Parallel">
+            <entry name="Inductors in Series" file="indseries.txt"/>
+            <entry name="Inductors in Parallel" file="indpar.txt"/>
+            <entry name="Caps in Series" file="capseries.txt"/>
+            <entry name="Caps in Parallel" file="cappar.txt"/>
+        </category>
+        <category name="Transformers">
+            <entry name="Transformer" file="transformer.txt"/>
+            <entry name="Transformer w/ DC" file="transformerdc.txt"/>
+            <entry name="Step-Up Transformer" file="transformerup.txt"/>
+            <entry name="Step-Down Transformer" file="transformerdown.txt"/>
+            <entry name="Long-Distance Power Transmission" file="longdist.txt"/>
+        </category>
+        <category name="Relays">
+            <entry name="Relay" file="relay.txt"/>
+            <entry name="Relay AND" file="relayand.txt"/>
+            <entry name="Relay OR" file="relayor.txt"/>
+            <entry name="Relay XOR" file="relayxor.txt"/>
+            <entry name="Relay Mux" file="relaymux.txt"/>
+            <entry name="Relay Flip-Flop" file="relayff.txt"/>
+            <entry name="Relay Toggle Flip-Flop" file="relaytff.txt"/>
+            <entry name="Relay Counter" file="relayctr.txt"/>
+        </category>
+        <entry name="3-Way Light Switches" file="3way.txt"/>
+        <entry name="3- and 4-Way Light Switches" file="4way.txt"/>
+        <entry name="Differentiator" file="diff.txt"/>
+        <entry name="Wheatstone Bridge" file="wheatstone.txt"/>
+        <entry name="Critically Damped LRC" file="lrc-critical.txt"/>
+        <entry name="Current Source" file="currentsrcelm.txt"/>
+        <entry name="Inductive Kickback" file="inductkick.txt"/>
+        <entry name="Blocking Inductive Kickback" file="inductkick-snub.txt"/>
+        <entry name="Power Factor" file="powerfactor1.txt"/>
+        <entry name="Power Factor Correction" file="powerfactor2.txt"/>
+        <entry name="Resistor Grid" file="grid.txt"/>
+        <entry name="Resistor Grid 2" file="grid2.txt"/>
+        <entry name="Resistor Cube" file="cube.txt"/>
+        <category name="Coupled LC's">
+            <entry name="LC Modes (2)" file="coupled1.txt"/>
+            <entry name="Weak Coupling" file="coupled2.txt"/>
+            <entry name="LC Modes (3)" file="coupled3.txt"/>
+            <entry name="LC Ladder" file="ladder.txt"/>
+        </category>
+        <entry name="Phase-Sequence Network" file="phaseseq.txt"/>
+        <entry name="Lissajous Figures" file="lissa.txt"/>
+    </category>
+    <category name="Diodes">
+        <entry name="Diode" file="diodevar.txt"/>
+        <entry name="Diode I/V Curve" file="diodecurve.txt"/>
+        <entry name="Half-Wave Rectifier" file="rectify.txt"/>
+        <entry name="Full-Wave Rectifier" file="fullrect.txt"/>
+        <entry name="Full-Wave Rectifier w/ Filter" file="fullrectf.txt"/>
+        <entry name="Diode Limiter" file="diodelimit.txt"/>
+        <category name="Zener Diodes">
+            <entry name="I/V Curve" file="zeneriv.txt"/>
+            <entry name="Voltage Reference" file="zenerref.txt"/>
+            <entry name="Voltage Reference w/ Follower" file="zenerreffollow.txt"/>
+        </category>
+        <entry name="DC Restoration" file="dcrestoration.txt"/>
+        <entry name="Blocking Inductive Kickback" file="inductkick-block.txt"/>
+        <entry name="Spike Generator" file="spikegen.txt"/>
+        <category name="Voltage Multipliers">
+            <entry name="Voltage Doubler" file="voltdouble.txt"/>
+            <entry name="Voltage Doubler 2" file="voltdouble2.txt"/>
+            <entry name="Voltage Tripler" file="volttriple.txt"/>
+            <entry name="Voltage Quadrupler" file="voltquad.txt"/>
+        </category>
+        <entry name="AM Detector" file="amdetect.txt"/>
+        <entry name="Waveform Clipper" file="diodeclip.txt"/>
+        <entry name="Triangle-to-Sine Converter" file="sinediode.txt"/>
+        <entry name="Ring Modulator" file="ringmod.txt"/>
+    </category>
+    <category name="Op-Amps">
+        <entry name="Op-Amp" file="opamp.txt"/>
+        <entry name="Op-Amp Feedback" file="opampfeedback.txt"/>
+        <category name="Amplifiers">
+            <entry name="Inverting Amplifier" file="amp-invert.txt"/>
+            <entry name="Noninverting Amplifier" file="amp-noninvert.txt"/>
+            <entry name="Follower" file="amp-follower.txt"/>
+            <entry name="Differential Amplifier" file="amp-diff.txt"/>
+            <entry name="Summing Amplifier" file="amp-sum.txt"/>
+            <entry name="Log Amplifier" file="logconvert.txt"/>
+            <entry name="Class-D Amplifier" file="classd.txt"/>
+        </category>
+        <category name="Oscillators">
+            <entry name="Relaxation Oscillator" file="relaxosc.txt"/>
+            <entry name="Phase-Shift Oscillator" file="phaseshiftosc.txt"/>
+            <entry name="Triangle Wave Generator" file="triangle.txt"/>
+            <entry name="Sine Wave Generator" file="sine.txt"/>
+            <entry name="Sawtooth Wave Generator" file="sawtooth.txt"/>
+            <entry name="Voltage-Controlled Oscillator" file="vco.txt"/>
+            <entry name="Rossler Circuit" file="rossler.txt"/>
+        </category>
+        <entry name="Half-Wave Rectifier (inverting)" file="amp-rect.txt"/>
+        <entry name="Full-Wave Rectifier" file="amp-fullrect.txt"/>
+        <entry name="Peak Detector" file="peak-detect.txt"/>
+        <entry name="Integrator" file="amp-integ.txt"/>
+        <entry name="Differentiator" file="amp-dfdx.txt"/>
+        <entry name="Schmitt Trigger" file="amp-schmitt.txt"/>
+        <entry name="Negative Impedance Converter" file="nic-r.txt"/>
+        <entry name="Gyrator" file="gyrator.txt"/>
+        <entry name="Capacitance Multiplier" file="capmult.txt"/>
+        <entry name="Howland Current Source" file="howland.txt"/>
+        <entry name="I-to-V Converter" file="itov.txt"/>
+        <entry name="Voltage Regulator" file="opamp-regulator.txt"/>
+        <entry name="741 Internals" file="opint.txt"/>
+        <entry name="741 (inverting amplifier)" file="opint-invert-amp.txt"/>
+        <entry name="741 Slew Rate" file="opint-slew.txt"/>
+        <entry name="741 Current Limits" file="opint-current.txt"/>
+    </category>
+    <category name="Transistors">
+        <entry name="NPN Transistor" file="npn.txt"/>
+        <entry name="PNP Transistor" file="pnp.txt"/>
+        <entry name="Switch" file="transswitch.txt"/>
+        <entry name="Emitter Follower" file="follower.txt"/>
+        <category name="Multivibrators">
+            <entry name="Astable Multivib" file="multivib-a.txt"/>
+            <entry name="Bistable Multivib (Flip-Flop)" file="multivib-bi.txt"/>
+            <entry name="Monostable Multivib (One-Shot)" file="multivib-mono.txt"/>
+        </category>
+        <entry name="Common-Emitter Amplifier" file="ceamp.txt"/>
+        <entry name="Unity-Gain Phase Splitter" file="phasesplit.txt"/>
+        <entry name="Schmitt Trigger" file="schmitt.txt"/>
+        <entry name="Current Source" file="currentsrc.txt"/>
+        <entry name="Current Source Ramp" file="currentsrcramp.txt"/>
+        <entry name="Current Mirror" file="mirror.txt"/>
+        <entry name="Darlington Pair" file="darlington.txt"/>
+        <category name="Differential Amplifiers">
+            <entry name="Differential Input" file="trans-diffamp.txt"/>
+            <entry name="Common-Mode Input" file="trans-diffamp-common.txt"/>
+            <entry name="Common-Mode w/Current Source" file="trans-diffamp-cursrc.txt"/>
+        </category>
+        <category name="Push-Pull Follower">
+            <entry name="Simple, with distortion" file="pushpullxover.txt"/>
+            <entry name="Improved" file="pushpull.txt"/>
+        </category>
+        <category name="Oscillators">
+            <entry name="Colpitts Oscillator" file="colpitts.txt"/>
+            <entry name="Hartley Oscillator" file="hartley.txt"/>
+            <entry name="Emitter-Coupled LC Oscillator" file="eclosc.txt"/>
+        </category>
+    </category>
+    <category name="MOSFETs">
+        <entry name="n-MOSFET" file="nmosfet.txt"/>
+        <entry name="p-MOSFET" file="pmosfet.txt"/>
+        <entry name="Switch" file="mosswitch.txt"/>
+        <entry name="Source Follower" file="mosfollower.txt"/>
+        <entry name="Current Source" file="moscurrentsrc.txt"/>
+        <entry name="Current Ramp" file="moscurrentramp.txt"/>
+        <entry name="Current Mirror" file="mosmirror.txt"/>
+        <entry name="Common-Source Amplifier" file="mosfetamp.txt"/>
+        <entry name="CMOS Inverter" file="cmosinverter.txt"/>
+        <entry name="CMOS Inverter (w/capacitance)" file="cmosinvertercap.txt"/>
+        <entry name="CMOS Inverter (slow transition)" file="cmosinverterslow.txt"/>
+        <entry name="CMOS Transmission Gate" file="cmostransgate.txt"/>
+        <entry name="CMOS Multiplexer" file="mux.txt"/>
+        <entry name="Sample-and-Hold" file="samplenhold.txt"/>
+        <entry name="Delayed Buffer" file="delayrc.txt"/>
+        <entry name="Leading-Edge Detector" file="leadingedge.txt"/>
+        <entry name="Switchable Filter" file="switchfilter.txt"/>
+        <entry name="Voltage Inverter" file="voltinvert.txt"/>
+        <entry name="Inverter Amplifier" file="invertamp.txt"/>
+        <entry name="Inverter Oscillator" file="inv-osc.txt"/>
+    </category>
+    <category name="555 Timer Chip">
+        <entry name="Square Wave Generator" file="555square.txt"/>
+        <entry name="Internals" file="555int.txt"/>
+        <entry name="Sawtooth Oscillator" file="555saw.txt"/>
+        <entry name="Low-duty-cycle Oscillator" file="555lowduty.txt"/>
+        <entry name="Monostable Multivibrator" file="555monostable.txt"/>
+        <entry name="Pulse Width Modulator" file="555pulsemod.txt"/>
+        <entry name="Pulse Sequencer" file="555sequencer.txt"/>
+        <entry name="Schmitt Trigger (inverting)" file="555schmitt.txt"/>
+        <entry name="Missing Pulse Detector" file="555missing.txt"/>
+    </category>
+    <category name="Active Filters">
+        <entry name="VCVS Low-Pass Filter" file="filt-vcvs-lopass.txt"/>
+        <entry name="VCVS High-Pass Filter" file="filt-vcvs-hipass.txt"/>
+        <entry name="Switched-Capacitor Filter" file="switchedcap.txt"/>
+        <entry name="Allpass" file="allpass1.txt"/>
+        <entry name="Allpass w/ Square" file="allpass2.txt"/>
+    </category>
+    <category name="Logic Families">
+        <category name="RTL">
+            <entry name="RTL Inverter" file="rtlinverter.txt"/>
+            <entry name="RTL NOR" file="rtlnor.txt"/>
+            <entry name="RTL NAND" file="rtlnand.txt"/>
+        </category>
+        <category name="DTL">
+            <entry name="DTL Inverter" file="dtlinverter.txt"/>
+            <entry name="DTL NAND" file="dtlnand.txt"/>
+            <entry name="DTL NOR" file="dtlnor.txt"/>
+        </category>
+        <category name="TTL">
+            <entry name="TTL Inverter" file="ttlinverter.txt"/>
+            <entry name="TTL NAND" file="ttlnand.txt"/>
+            <entry name="TTL NOR" file="ttlnor.txt"/>
+        </category>
+        <category name="NMOS">
+            <entry name="NMOS Inverter" file="nmosinverter.txt"/>
+            <entry name="NMOS Inverter 2" file="nmosinverter2.txt"/>
+            <entry name="NMOS NAND" file="nmosnand.txt"/>
+        </category>
+        <category name="CMOS">
+            <entry name="CMOS Inverter" file="cmosinverter.txt"/>
+            <entry name="CMOS NAND" file="cmosnand.txt"/>
+            <entry name="CMOS NOR" file="cmosnor.txt"/>
+            <entry name="CMOS XOR" file="cmosxor.txt"/>
+            <entry name="CMOS Flip-Flop" file="cmosff.txt"/>
+            <entry name="CMOS Master-Slave Flip-Flop" file="cmosmsff.txt"/>
+        </category>
+        <category name="ECL">
+            <entry name="ECL NOR/OR" file="eclnor.txt"/>
+        </category>
+        <category name="Ternary">
+            <entry name="CGAND" file="3-cgand.txt"/>
+            <entry name="CGOR" file="3-cgor.txt"/>
+            <entry name="Complement (F210)" file="3-invert.txt"/>
+            <entry name="F211" file="3-f211.txt"/>
+            <entry name="F220" file="3-f220.txt"/>
+            <entry name="F221" file="3-f221.txt"/>
+        </category>
+    </category>
+    <category name="Combinational Logic">
+        <entry name="Exclusive OR" file="xor.txt"/>
+        <entry name="Half Adder" file="halfadd.txt"/>
+        <entry name="Full Adder" file="fulladd.txt"/>
+        <entry name="1-of-4 Decoder" file="decoder.txt"/>
+        <entry name="2-to-1 Mux" file="mux3state.txt"/>
+        <entry name="Majority Logic" file="majority.txt"/>
+        <entry name="2-Bit Comparator" file="digcompare.txt"/>
+        <entry name="7-Segment LED Decoder" file="7segdecoder.txt"/>
+    </category>
+    <category name="Sequential Logic">
+        <category name="Flip-Flops">
+            <entry name="SR Flip-Flop" file="nandff.txt"/>
+            <entry name="Clocked SR Flip-Flop" file="clockedsrff.txt"/>
+            <entry name="Master-Slave Flip-Flop" file="masterslaveff.txt"/>
+            <entry name="Edge-Triggered D Flip-Flop" file="edgedff.txt"/>
+            <entry name="JK Flip-Flop" file="jkff.txt"/>
+        </category>
+        <category name="Counters">
+            <entry name="4-Bit Ripple Counter" file="counter.txt"/>
+            <entry name="8-Bit Ripple Counter" file="counter8.txt"/>
+            <entry name="Synchronous Counter" file="synccounter.txt"/>
+            <entry name="Decimal Counter" file="deccounter.txt"/>
+            <entry name="Gray Code Counter" file="graycode.txt"/>
+            <entry name="Johnson Counter" file="johnsonctr.txt"/>
+        </category>
+        <entry name="Divide-by-2" file="divideby2.txt"/>
+        <entry name="Divide-by-3" file="divideby3.txt"/>
+        <entry name="LED Flasher" file="ledflasher.txt"/>
+        <entry name="Traffic Light" file="traffic.txt"/>
+        <entry name="Dynamic RAM" file="dram.txt"/>
+    </category>
+    <category name="Analog/Digital">
+        <entry name="Flash ADC" file="flashadc.txt"/>
+        <entry name="Delta-Sigma ADC" file="deltasigma.txt"/>
+        <entry name="Half-Flash (Subranging) ADC" file="hfadc.txt"/>
+        <entry name="Binary-Weighted DAC" file="dac.txt"/>
+        <entry name="R-2R Ladder DAC" file="r2rladder.txt"/>
+        <entry name="Switch-Tree DAC" file="swtreedac.txt"/>
+        <entry name="Digital Sine Wave" file="digsine.txt"/>
+    </category>
+    <category name="Phase-Locked Loops">
+        <entry name="XOR Phase Detector" file="xorphasedet.txt"/>
+        <entry name="Type I PLL" file="pll.txt"/>
+        <entry name="Phase Comparator (Type II)" file="phasecomp.txt"/>
+        <entry name="Phase Comparator Internals" file="phasecompint.txt"/>
+        <entry name="Type II PLL" file="pll2.txt"/>
+        <entry name="Type II PLL (fast)" file="pll2a.txt"/>
+        <entry name="Frequency Doubler" file="freqdouble.txt"/>
+    </category>
+    <category name="Transmission Lines">
+        <entry name="Simple TL" file="tl.txt"/>
+        <entry name="Standing Wave" file="tlstand.txt"/>
+        <entry name="Termination" file="tlterm.txt"/>
+        <entry name="Mismatched lines (Pulse)" file="tlmismatch.txt"/>
+        <entry name="Mismatched lines (Standing Wave)" file="tlmis1.txt"/>
+        <entry name="Impedance Matching (L-Section)" file="tlmatch1.txt"/>
+        <entry name="Impedance Matching (Shunt Stub)" file="tlmatch2.txt"/>
+        <entry name="Stub Frequency Response" file="tlfreq.txt"/>
+        <entry name="Low-Pass Filter" file="tllopass.txt"/>
+        <entry name="Light Switch" file="tllight.txt"/>
+    </category>
+    <category name="Misc Devices">
+        <category name="JFETs">
+            <entry name="JFET Current Source" file="jfetcurrentsrc.txt"/>
+            <entry name="JFET Follower" file="jfetfollower.txt"/>
+            <entry name="JFET Follower w/zero offset" file="jfetfollower-nooff.txt"/>
+            <entry name="Common-Source Amplifier" file="jfetamp.txt"/>
+            <entry name="Volume Control" file="volume.txt"/>
+        </category>
+        <category name="Tunnel Diodes">
+            <entry name="I/V Curve" file="tdiode.txt"/>
+            <entry name="LC Oscillator" file="tdosc.txt"/>
+            <entry name="Relaxation Oscillator" file="tdrelax.txt"/>
+        </category>
+        <category name="Memristors">
+            <entry name="Memristor" file="mr.txt"/>
+            <entry name="Sine Wave" file="mr-sine.txt"/>
+            <entry name="Square Wave" file="mr-square.txt"/>
+            <entry name="Triangle Wave" file="mr-triangle.txt"/>
+            <entry name="Hard-Switching 1" file="mr-sine2.txt"/>
+            <entry name="Hard-Switching 2" file="mr-sine3.txt"/>
+            <entry name="Crossbar Memory" file="mr-crossbar.txt"/>
+        </category>
+        <category name="Triodes">
+            <entry name="Triode" file="triode.txt"/>
+            <entry name="Amplifier" file="triodeamp.txt"/>
+        </category>
+        <category name="Silicon-Controlled Rectifiers">
+            <entry name="SCR" file="scr.txt"/>
+            <entry name="AC Trigger" file="scractrig.txt"/>
+        </category>
+        <category name="Current Conveyor">
+            <entry name="CCII+" file="cc2.txt"/>
+            <entry name="CCII-" file="cc2n.txt"/>
+            <entry name="Inductor Simulator" file="ccinductor.txt"/>
+            <entry name="CCII+ Implementation" file="cc2imp.txt"/>
+            <entry name="CCII- Implementation" file="cc2impn.txt"/>
+            <entry name="Current Amplifier" file="cciamp.txt"/>
+            <entry name="VCCS" file="ccvccs.txt"/>
+            <entry name="Current Differentiator" file="ccdiff.txt"/>
+            <entry name="Current Integrator" file="ccint.txt"/>
+            <entry name="Current-Controlled Voltage Source" file="ccitov.txt"/>
+        </category>
+        <category name="Spark Gap">
+            <entry name="Sawtooth Generator" file="spark-sawtooth.txt"/>
+            <entry name="Tesla Coil" file="tesla.txt"/>
+            <entry name="Marx Generator" file="spark-marx.txt"/>
+        </category>
+    </category>
+    <category name="Tools">
+        <entry name="GPIO Output Test" file="gpio-test.txt"/>
+    </category>
+    <entry name="Blank Circuit" file="blank.txt"/>
+</catalog>

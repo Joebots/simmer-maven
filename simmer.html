@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Insert this line above script imports to support jQuery for Electron app -->
+    <script>if (typeof module === 'object') {
+        window.module = module;
+        module = undefined;
+    }</script>
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">-->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <!-- Properties can be specified to influence deferred binding -->
+    <meta name="gwt:property" content="locale=en_US"/>
+
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/burner.css">
+
+    <script src="lib/jquery-1.12.3.min.js"></script>
+
+    <script src="lib/event-bus-bundle.js"></script>
+    <script src="lib/raphael.min.js"></script>
+    <script src="lib/burner.js"></script>
+    <script src="lib/burner/dist/bundle.min.js"></script>
+
+    <!-- Configuration -->
+    <script>
+        // Mapping simmer pins to hardware pins
+        const ARDUINO_HARDWARE_GPIO = {
+            ANALOG_1: "15",
+            ANALOG_2: "16",
+            ANALOG_3: "17",
+            ANALOG_4: "18",
+            ANALOG_5: "19",
+            ANALOG_6: "20",
+            DIGITAL_7: "2",
+            DIGITAL_11: "3",
+            DIGITAL_12: "4",
+            DIGITAL_13: "5",
+            DIGITAL_15: "6",
+            DIGITAL_16: "7",
+            DIGITAL_18: "8",
+            DIGITAL_19: "9",
+            DIGITAL_21: "10",
+            DIGITAL_22: "11",
+            DIGITAL_23: "12",
+            DIGITAL_24: "13",
+        };
+        // Mapping simmer pins to BagerBoard rows
+        const ARDUINO_BREADBOARD_GPIO = {
+            ANALOG_1: "1",
+            ANALOG_2: "2",
+            ANALOG_3: "3",
+            ANALOG_4: "4",
+            ANALOG_5: "5",
+            ANALOG_6: "6",
+            DIGITAL_7: "7",
+            DIGITAL_11: "11",
+            DIGITAL_12: "12",
+            DIGITAL_13: "13",
+            DIGITAL_15: "15",
+            DIGITAL_16: "16",
+            DIGITAL_18: "18",
+            DIGITAL_19: "19",
+            DIGITAL_21: "21",
+            DIGITAL_22: "22",
+            DIGITAL_23: "23",
+            DIGITAL_24: "24"
+        };
+        const RASPBERRY_PI3_HARDWARE_GPIO = {
+            GPIO_2: "3",
+            GPIO_3: "5",
+            GPIO_4: "7",
+            GPIO_5: "29",
+            GPIO_6: "31",
+            GPIO_7: "26",
+            GPIO_8: "24",
+            GPIO_9: "21",
+            GPIO_10: "19",
+            GPIO_11: "23",
+            GPIO_12: "32",
+            GPIO_13: "33",
+            GPIO_14: "8",
+            GPIO_15: "10",
+            GPIO_16: "36",
+            GPIO_17: "11",
+            GPIO_18: "12",
+            GPIO_19: "35",
+            GPIO_20: "38",
+            GPIO_21: "40",
+            GPIO_22: "15",
+            GPIO_23: "16",
+            GPIO_24: "18",
+            GPIO_25: "22",
+            GPIO_26: "37",
+            GPIO_27: "13"
+        };
+        const ODROID_C2_HARDWARE_GPIO = {
+            GPIO_0: "11",
+            GPIO_1: "12",
+            GPIO_2: "13",
+            GPIO_3: "15",
+            GPIO_4: "16",
+            GPIO_5: "18",
+            GPIO_6: "22",
+            GPIO_7: "7",
+            GPIO_10: "24",
+            GPIO_11: "26",
+            GPIO_12: "19",
+            GPIO_13: "21",
+            GPIO_14: "23",
+            GPIO_21: "29",
+            GPIO_22: "31",
+            GPIO_23: "33",
+            GPIO_24: "35",
+            GPIO_26: "32",
+            GPIO_27: "36"
+        };
+        var GpioHardwareConfig = ARDUINO_HARDWARE_GPIO;
+        var GpioBreadBoardConfig = ARDUINO_BREADBOARD_GPIO;
+
+        var globalBus;
+
+        var mm = function (value) {
+            return Math.floor(value / 0.169);
+        };
+
+        // physical dimensions of breadboard
+        // w: 65 mm, h: 112 mm
+        // 1 pair (PWR and GND), 2 terminal + 1 GPIO columns, 38 rows
+        var pitch = mm(2.54);
+
+        var BreadboardConfig = {
+            width: mm(65),
+            height: mm(90),
+            rowCount: 32,
+            rowOffset: 0,
+            leftMargin: mm(5),
+            topMargin: mm(5),
+            thickness: mm(1),
+            pitch: pitch,
+            banks: [
+                {type: "BUS", rows: 3, dir: 'y'},
+                {type: "TERMINAL", rows: 32, offsetX: mm(14)},
+                {type: "TERMINAL", rows: 32, offsetX: mm(29)},
+                {type: "GPIO", rows: 32, offsetX: mm(47)}
+            ]
+        };
+
+        var SimmerOptions = {
+            SHOW_CURRENT: true,
+            SHOW_VOLTAGE: true,
+            SHOW_POWER: false,
+            SHOW_VALUES: true,
+            SMALL_GRID: false,
+            EURO_RESISTORS: false,
+            WHITE_BACKGROUND: false,
+            CONVENTIONAL_CURRENT_MOTION: true,
+            SIMULATION_SPEED: 117,
+            CURRENT_SPEED: 50
+        };
+
+        var bboard = new BreadBoard(BreadboardConfig);
+    </script>
+
+    <!-- Google Blockly -->
+    <script src="lib/blockly/blockly_compressed.js"></script>
+    <script src="lib/blockly/blocks_compressed.js"></script>
+    <script src="lib/blockly/javascript_compressed.js"></script>
+    <script src="lib/blockly/python_compressed.js"></script>
+    <script src="lib/blockly/msg/js/en.js"></script>
+    <!-- Custom GPIO Blocks -->
+    <script src="lib/blocks/gpio.js"></script>
+    <script src="lib/blocks/text.js"></script>
+    <script src="lib/blocks/time.js"></script>
+    <script src="lib/origami/origami.min.js"></script>
+    <!-- Custom Scripts -->
+    <script src="lib/file_utils.js"></script>
+    <script src="lib/simmer_api.js"></script>
+    <script src="lib/blockly_gpio.js"></script>
+    <script src="lib/script_executor.js"></script>
+</head>
+
+<body>
+
+<div id="controls-container" style="position: absolute; bottom: 0; right: 0; width: 384px;">
+
+</div>
+
+<canvas id="burner" width="384" height="532" style="position: absolute; top: 0; right: 0"></canvas>
+
+<script src="simmer/simmer.nocache.js"></script>
+
+<script>
+    $(function () {
+        console.log("loading");
+        globalBus = new EventBus();
+
+        globalBus.bind(BreadBoard.CircuitStates.CIRCUIT_WORKING, function (e) {
+            bboard.layout(e.model);
+            window.workingCircuitEvent = e;
+        });
+
+        globalBus.bind(BreadBoard.CircuitStates.CIRCUIT_BROKEN_ANY, function (e) {
+            console.log("BROKEN");
+        });
+
+        globalBus.bind(".*", function (evt) {
+            console.log(evt.model);
+        });
+
+        globalBus.bind(BreadBoard.CircuitStates.SYSTEM_LOADED, function (e) {
+            console.log("system.loaded");
+            bboard.setTarget("breadboard");
+            BurnerNew.load('#burner');
+            $("#reset").click(function (evt) {
+                globalBus.fire("circuit.working", window.workingCircuitEvent);
+                $("#wizard-text").html("");
+            });
+        });
+
+        $("#bblayout").click(function (evt) {
+            top.ALLOW_BB_MOVE = top.ALLOW_BB_MOVE ? !top.ALLOW_BB_MOVE : true;
+        });
+
+    });
+</script>
+</body>
+</html>

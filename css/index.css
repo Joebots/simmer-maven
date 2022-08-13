@@ -1,0 +1,114 @@
+html, body {
+    background-color: black !important;
+    color: white;
+    width: 1280px;
+    height: 800px;
+    overflow: hidden;
+    cursor: default;
+
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently
+                                     supported by Chrome and Opera */
+
+    font-face: Verdana;
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    /*border: 1px solid yellow;*/
+}
+
+.shifted-window a.window-title {
+    line-height: 25px;
+}
+
+#modal, #code, #blockly, #properties {
+    display: none;
+    position: absolute;
+    border: none; /*1px solid black;*/
+}
+
+#bbframe {
+    overflow: hidden;
+}
+
+#app-controls {
+    position: absolute;
+    top: 70%;
+    width: 66%;
+    text-align: center;
+}
+
+#app-version {
+    margin: 5px;
+    color: white;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 200;
+}
+
+.window > .window-toolbar > .window-action {
+    float: left;
+    margin: 0;
+    padding: 4px;
+    font-size: 1.7em;
+}
+
+.window > .window-toolbar > .window-title {
+    float: none;
+    margin-left: 10px;
+    vertical-align: text-top;
+}
+
+/* Extend material styles, add 5 column grid */
+/* Taken from https://stackoverflow.com/questions/39205432/materialize-grid-do-5-colums/43084048 */
+.s5ths,
+.m5ths,
+.l5ths,
+.xl5ths {
+    margin-left: auto;
+    left: auto;
+    right: auto;
+}
+
+.row .col.s5ths {
+    width: 20%;
+}
+
+@media only screen and (min-width: 601px) {
+    .row .col.m5ths {
+        width: 20%;
+    }
+}
+
+@media only screen and (min-width: 993px) {
+    .row .col.l5ths {
+        width: 20%;
+    }
+}
+
+@media only screen and (min-width: 1201px) {
+    .row .col.xl5ths {
+        width: 20%;
+    }
+}
+
+.controls-grid {
+    background: url(../imgs/bg_controls_grid.png) repeat;
+}
+
+.edit-control-select ul.select-dropdown {
+    height: 300px;
+}
+
+.com-google-gwt-user-cellview-client-DataGrid-Style-dataGridKeyboardSelectedCell {
+    border: 2px solid #628cd5 !important;
+}

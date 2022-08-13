@@ -1,0 +1,157 @@
+[
+  {
+    "name": "SIP3",
+    "leads": [
+      {
+        "number": 0,
+        "col": 0,
+        "row": 0
+      },
+      {
+        "number": 1,
+        "col": 0,
+        "row": 1
+      },
+      {
+        "number": 2,
+        "col": 0,
+        "row": 2
+      }
+    ]
+  },
+  {
+    "name": "SIP4",
+    "leads": [
+      {
+        "number": 0,
+        "col": 0,
+        "row": 0
+      },
+      {
+        "number": 1,
+        "col": 0,
+        "row": 1
+      },
+      {
+        "number": 2,
+        "col": 0,
+        "row": 2
+      },
+      {
+        "number": 3,
+        "col": 0,
+        "row": 3
+      }
+    ]
+  },
+  {
+    "name": "SIP5",
+    "leads": [
+      {
+        "number": 0,
+        "col": 0,
+        "row": 0
+      },
+      {
+        "number": 1,
+        "col": 0,
+        "row": 1
+      },
+      {
+        "number": 2,
+        "col": 0,
+        "row": 2
+      },
+      {
+        "number": 3,
+        "col": 0,
+        "row": 3
+      },
+      {
+        "number": 4,
+        "col": 0,
+        "row": 4
+      }
+    ]
+  },
+  {
+    "name": "SIP8",
+    "leads": [
+      {
+        "number": 0,
+        "col": 0,
+        "row": 0
+      },
+      {
+        "number": 1,
+        "col": 0,
+        "row": 1
+      },
+      {
+        "number": 2,
+        "col": 0,
+        "row": 2
+      },
+      {
+        "number": 3,
+        "col": 0,
+        "row": 3
+      },
+      {
+        "number": 4,
+        "col": 0,
+        "row": 4
+      },
+      {
+        "number": 5,
+        "col": 0,
+        "row": 5
+      },
+      {
+        "number": 6,
+        "col": 0,
+        "row": 6
+      },
+      {
+        "number": 7,
+        "col": 0,
+        "row": 7
+      }
+    ]
+  },
+  {
+    "name": "DIP6",
+    "leads": [
+      {
+        "number": 0,
+        "col": 0,
+        "row": 0
+      },
+      {
+        "number": 1,
+        "col": 0,
+        "row": 1
+      },
+      {
+        "number": 2,
+        "col": 0,
+        "row": 2
+      },
+      {
+        "number": 3,
+        "col": 1,
+        "row": 0
+      },
+      {
+        "number": 4,
+        "col": 1,
+        "row": 1
+      },
+      {
+        "number": 4,
+        "col": 1,
+        "row": 2
+      }
+    ]
+  }
+]
